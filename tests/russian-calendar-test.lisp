@@ -55,6 +55,22 @@
     (ok (business-day-p cal (make-date 2024 4 27)))
     (ng (weekend-day-p cal (make-date 2024 4 27)))))
 
+(deftest ru-decree-2023-pre-2024
+  "Постановление № 1505 (до 2024): 1 янв → 24 фев, 8 янв → 8 мая."
+  (let ((cal (russian-holidays-calendar :year 2023)))
+    (ok (holiday-p cal (make-date 2023 2 24)))
+    (ok (holiday-p cal (make-date 2023 5 8)))
+    (ok (ru-decree-for-year 2023))
+    (ok (ru-decree-for-year 2015))
+    (ng (ru-decree-for-year 2014))))
+
+(deftest ru-decree-2018-long-may
+  "Постановление № 1250: 28 апр → 30 апр (работа в субботу)."
+  (let ((cal (russian-holidays-calendar :year 2018)))
+    (ok (holiday-p cal (make-date 2018 4 30)))
+    (ok (business-day-p cal (make-date 2018 4 28)))
+    (ok (holiday-p cal (make-date 2018 3 9)))))
+
 (deftest ussr-victory-day-from-1965
   (let ((cal (ussr-holidays-calendar)))
     (ng (holiday-p cal (make-date 1964 5 9)))
