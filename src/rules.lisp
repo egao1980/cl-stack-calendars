@@ -7,8 +7,10 @@
 
 (defstruct holiday-rule
   (name nil :type (or null string))
-  (from nil :type (or null integer))
-  (to nil :type (or null integer)))
+  ;; Civil validity window for the rule itself (not versioned “as-of” knowledge).
+  ;; Integer = Gregorian year bound; DATE = inclusive day bound. NIL = open.
+  (from nil :type (or null integer date))
+  (to nil :type (or null integer date)))
 
 (defstruct (fixed-holiday-rule (:include holiday-rule))
   "A holiday on a fixed MONTH/DAY every year (e.g. Christmas), optionally
@@ -30,9 +32,35 @@ Sunday every year (e.g. Good Friday is offset -2)."
   (offset 0 :type integer)
   (orthodox nil))
 
+(defun normalize-rule-bound (bound)
+  "Accept NIL, a Gregorian year integer, a DATE, or a (YEAR MONTH DAY) list."
+  (cond ((null bound) nil)
+        ((typep bound 'date) bound)
+        ((integerp bound) bound)
+        ((and (consp bound) (= (length bound) 3))
+         (destructuring-bind (y m d) bound
+           (make-date y m d)))
+        (t (error 'invalid-holiday-rule
+                  :message (format nil "invalid :from/:to bound ~s (want year, date, or (y m d))"
+                                   bound)))))
+
+(defun rule-valid-at-p (rule date)
+  "True when DATE falls inside RULE's inclusive civil validity window.
+Year bounds apply to DATE's Gregorian year; date bounds compare by RD."
+  (flet ((from-ok (bound)
+           (cond ((null bound) t)
+                 ((integerp bound) (>= (date-year date) bound))
+                 (t (>= date bound))))
+         (to-ok (bound)
+           (cond ((null bound) t)
+                 ((integerp bound) (<= (date-year date) bound))
+                 (t (<= date bound)))))
+    (and (from-ok (holiday-rule-from rule))
+         (to-ok (holiday-rule-to rule)))))
+
+;;; Backward-compatible alias used by older call sites / tests.
 (defun rule-active-p (rule year)
-  (and (or (null (holiday-rule-from rule)) (>= year (holiday-rule-from rule)))
-       (or (null (holiday-rule-to rule)) (<= year (holiday-rule-to rule)))))
+  (rule-valid-at-p rule (make-date year 7 1)))
 
 ;;; --- weekday keywords ----------------------------------------------------
 
@@ -99,23 +127,31 @@ two-day contiguous weekend case (Saturday->Friday, Sunday->Monday)."
 
 (defgeneric rule-occurrence (rule year weekend-days)
   (:documentation "The DATE RULE falls on in YEAR (after any :OBSERVED
-shift), or NIL if RULE is not active in YEAR per its :FROM/:TO range."))
+shift), or NIL if that occurrence is outside RULE's :FROM/:TO civil
+validity window (year or date bounds)."))
 
 (defmethod rule-occurrence ((rule fixed-holiday-rule) year weekend-days)
-  (when (rule-active-p rule year)
-    (apply-observed-shift (make-date year (fixed-holiday-rule-month rule) (fixed-holiday-rule-day rule))
-                           (fixed-holiday-rule-observed rule)
-                           weekend-days)))
+  (let ((occurrence
+          (apply-observed-shift (make-date year (fixed-holiday-rule-month rule)
+                                            (fixed-holiday-rule-day rule))
+                                 (fixed-holiday-rule-observed rule)
+                                 weekend-days)))
+    (when (and occurrence (rule-valid-at-p rule occurrence))
+      occurrence)))
 
 (defmethod rule-occurrence ((rule nth-weekday-holiday-rule) year weekend-days)
   (declare (ignore weekend-days))
-  (when (rule-active-p rule year)
-    (nth-weekday-of-month year (nth-weekday-holiday-rule-month rule)
-                           (nth-weekday-holiday-rule-weekday rule)
-                           (nth-weekday-holiday-rule-nth rule))))
+  (let ((occurrence (nth-weekday-of-month year (nth-weekday-holiday-rule-month rule)
+                                           (nth-weekday-holiday-rule-weekday rule)
+                                           (nth-weekday-holiday-rule-nth rule))))
+    (when (and occurrence (rule-valid-at-p rule occurrence))
+      occurrence)))
 
 (defmethod rule-occurrence ((rule easter-holiday-rule) year weekend-days)
   (declare (ignore weekend-days))
-  (when (rule-active-p rule year)
-    (+ (if (easter-holiday-rule-orthodox rule) (easter-orthodox year) (easter-western year))
-       (easter-holiday-rule-offset rule))))
+  (let ((occurrence (+ (if (easter-holiday-rule-orthodox rule)
+                           (easter-orthodox year)
+                           (easter-western year))
+                       (easter-holiday-rule-offset rule))))
+    (when (rule-valid-at-p rule occurrence)
+      occurrence)))

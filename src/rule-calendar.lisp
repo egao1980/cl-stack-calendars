@@ -26,6 +26,14 @@ DEFINE-CALENDAR."))
 ;;; --- DEFINE-CALENDAR DSL -----------------------------------------------
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
+  (defun %bound-form (bound)
+    "Compile :FROM/:TO: year integer, (Y M D) list → MAKE-DATE, or NIL."
+    (cond ((null bound) nil)
+          ((integerp bound) bound)
+          ((and (consp bound) (= (length bound) 3) (every #'integerp bound))
+           `(make-date ,@bound))
+          (t `(normalize-rule-bound ,bound))))
+
   (defun %holiday-rule-constructor-form (clause)
     "Compile one DEFINE-CALENDAR rule CLAUSE into a form that builds the
 matching holiday-rule struct."
@@ -34,16 +42,21 @@ matching holiday-rule struct."
         (:fixed
          (destructuring-bind (name month day &key observed from to) args
            `(make-fixed-holiday-rule :name ,name :month ,month :day ,day
-                                      :observed ,observed :from ,from :to ,to)))
+                                      :observed ,observed
+                                      :from ,(%bound-form from)
+                                      :to ,(%bound-form to))))
         (:nth-weekday
          (destructuring-bind (name month weekday nth &key from to) args
            `(make-nth-weekday-holiday-rule :name ,name :month ,month
                                             :weekday (normalize-weekday ,weekday)
-                                            :nth ,nth :from ,from :to ,to)))
+                                            :nth ,nth
+                                            :from ,(%bound-form from)
+                                            :to ,(%bound-form to))))
         (:easter
          (destructuring-bind (name offset &key orthodox from to) args
            `(make-easter-holiday-rule :name ,name :offset ,offset :orthodox ,orthodox
-                                       :from ,from :to ,to)))))))
+                                       :from ,(%bound-form from)
+                                       :to ,(%bound-form to))))))))
 
 (defmacro define-calendar (name (&key register (weekend-days ''(6 7))) &body rules)
   "Define NAME as a RULE-CALENDAR subclass built from RULES clauses:
@@ -62,11 +75,17 @@ matching holiday-rule struct."
     OFFSET days from Western (or, if ORTHODOX, Orthodox) Easter Sunday —
     e.g. (:easter \"Good Friday\" -2).
 
-FROM/TO (on any clause) restrict the rule to years >= FROM and/or <= TO
-(default: unbounded in both directions). WEEKEND-DAYS is a form evaluating to
-a list of ISO weekday numbers (1=Monday..7=Sunday); default '(6 7). When
-:REGISTER is given (a string), an instance is also REGISTER-CALENDAR'd under
-that name.
+FROM/TO are the civil validity window for the rule (when the holiday
+existed), independent of versioned calendar-as-of snapshots:
+
+  - year integer — inclusive Gregorian year bound
+  - (YEAR MONTH DAY) — inclusive calendar-date bound
+  - NIL — open-ended
+
+Example: Juneteenth (:fixed \"Juneteenth\" 6 19 :observed :nearest-weekday
+:from (2021 6 19)). WEEKEND-DAYS is a form evaluating to a list of ISO
+weekday numbers (1=Monday..7=Sunday); default '(6 7). When :REGISTER is
+given (a string), an instance is also REGISTER-CALENDAR'd under that name.
 
 Expands to a DEFCLASS of NAME (a subclass of RULE-CALENDAR); (MAKE-INSTANCE
 'NAME) builds a working calendar."

@@ -6,6 +6,35 @@
     (ng (business-day-p cal (make-date 2024 5 27)))
     (ok (business-day-p cal (make-date 2024 5 28)))))
 
+(deftest us-federal-holiday-start-dates
+  "Civil :FROM/:TO windows — not the same axis as versioned calendar-as-of."
+  (let ((cal (us-federal-holidays-calendar)))
+    ;; Juneteenth: first federal observance 2021-06-18 (Sat 19 → Fri observed)
+    (ok (holiday-p cal (make-date 2021 6 18)))
+    (ng (holiday-p cal (make-date 2020 6 19)))
+    ;; MLK Day first observed 1986
+    (ok (holiday-p cal (make-date 1986 1 20)))
+    (ng (holiday-p cal (make-date 1985 1 21)))
+    ;; Veterans Day: Monday form 1971–1977, then back to Nov 11
+    (ok (holiday-p cal (make-date 1975 10 27))) ; 4th Monday Oct 1975
+    (ng (holiday-p cal (make-date 1975 11 11)))
+    (ok (holiday-p cal (make-date 1980 11 11))) ; Tue — post-1978 Nov 11 form
+    ;; Memorial Day: May 30 before Uniform Monday Holiday Act (1969-05-30 = Fri)
+    (ok (holiday-p cal (make-date 1969 5 30)))
+    (ng (holiday-p cal (make-date 1971 5 30))) ; 1971 → last Monday (May 31)
+    (ok (holiday-p cal (make-date 1971 5 31)))))
+
+(deftest rule-from-date-bound
+  (let ((cal (make-instance 'rule-calendar
+               :name "x"
+               :rules (list (make-fixed-holiday-rule
+                             :name "X"
+                             :month 6 :day 19
+                             :from (make-date 2021 6 19))))))
+    (ng (holiday-p cal (make-date 2021 6 18)))
+    (ok (holiday-p cal (make-date 2021 6 19)))
+    (ok (holiday-p cal (make-date 2022 6 19)))))
+
 (deftest target-good-friday
   (let ((cal (target-calendar)))
     (ok (holiday-p cal (make-date 2024 3 29)))
