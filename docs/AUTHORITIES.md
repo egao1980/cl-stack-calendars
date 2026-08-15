@@ -19,6 +19,9 @@ are keyed to legal / official acts — not customary summaries.
 | `RU` | ФЗ от 23.04.2012 № 35-ФЗ | NY block adds 6 and 8 Jan |
 | `RU` | Annual постановления Правительства «О переносе выходных дней» | Decree transfers in `data/ru/transfers.sexp` |
 | `USSR` | КЗоТ СССР / Указы Президиума ВС | Late-Soviet non-working days (see starter-russian.lisp) |
+| `country-calendar` | [date-holidays](https://github.com/commenthol/date-holidays) CC BY-SA 3.0 | 206 jurisdictions + stubs (TW, XK, EH, PS, NCY, …); years 2000–2040 public/bank |
+
+Hand-maintained starters beat `country-calendar` when both exist (e.g. prefer `russian-holidays-calendar` / `us-federal-holidays-calendar` over `"RU"` / `"US"` corpus rows).
 
 ## Statute-named `:observed` policies
 

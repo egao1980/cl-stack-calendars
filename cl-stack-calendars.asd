@@ -18,7 +18,8 @@
                (:file "trading-session")
                (:file "registry")
                (:file "starter-calendars")
-               (:file "starter-russian"))
+               (:file "starter-russian")
+               (:file "country-calendar"))
   :in-order-to ((test-op (test-op "cl-stack-calendars/tests"))))
 
 (defsystem "cl-stack-calendars/tests"
@@ -28,6 +29,7 @@
   :components ((:file "package")
                (:file "business-day-test")
                (:file "russian-calendar-test")
+               (:file "country-calendar-test")
                (:file "trading-session-test"))
   :perform (test-op (o c)
              (unless (symbol-call :rove :run c)

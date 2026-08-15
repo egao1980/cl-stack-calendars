@@ -27,6 +27,12 @@ Russian/USSR: `(russian-holidays-calendar :year 2026)` = ТК eras + decree tran
   (holiday-p cal (make-date 2026 1 9))   ; decree transfer
   (business-day-p cal (make-date 2024 4 27))) ; compensatory Saturday when :year 2024
 
+;; 212 country/territory calendars (2000–2040 public+bank), incl. TW/XK/EH + stubs
+(list-country-calendars)
+(holiday-p (country-calendar "DE") (make-date 2024 10 3))
+(holiday-p (country-calendar "TW") (make-date 2024 2 10))
+(holiday-p (country-calendar "XK") (make-date 2024 2 17))
+
 (let ((session (make-trading-session
                 :name "NYSE-RTH"
                 :zone "America/New_York"
@@ -37,7 +43,7 @@ Russian/USSR: `(russian-holidays-calendar :year 2026)` = ТК eras + decree tran
   (session-duration session (make-date 2024 3 10))) ; DST: open/close resolved independently
 ```
 
-Starter calendars: `weekend-only-calendar`, `target-calendar`, `us-federal-holidays-calendar`, `uk-bank-holidays-calendar`.
+Starter calendars: `weekend-only-calendar`, `target-calendar`, `us-federal-holidays-calendar`, `uk-bank-holidays-calendar`, `russian-holidays-calendar`, `ussr-holidays-calendar`.
 
 ## License
 

@@ -119,6 +119,19 @@
    #:russian-holidays-calendar
    #:make-russian-holidays-calendar
    #:load-ru-transfer-decrees
-   #:ru-decree-for-year))
+   #:ru-decree-for-year
+
+   ;; country / territory corpus (date-holidays)
+   #:country-holiday-calendar
+   #:country-calendar
+   #:load-country-calendar
+   #:list-country-calendars
+   #:country-calendar-codes
+   #:country-calendar-code
+   #:country-calendar-source
+   #:country-calendar-license
+   #:country-calendar-note
+   #:country-calendar-year-range
+   #:clear-country-calendar-cache))
 
 (in-package #:cl-stack-calendars)
