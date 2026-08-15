@@ -15,7 +15,11 @@ Statute-named `:observed` (prefer these):
 | `:jp-furikae` | 祝日法 Art. 3(2) — **Sunday only** |
 | `:ru-tk-112-transfer` | ТК РФ ст. 112 ч. 2 (except 1–8 Jan) |
 
-Russian/USSR: `(russian-holidays-calendar :year 2026)` = ТК eras + decree transfers; `(ussr-holidays-calendar)` for late-Soviet fixed days. See [`docs/AUTHORITIES.md`](docs/AUTHORITIES.md).
+Russian/USSR: `(russian-holidays-calendar :year 2026)` = ТК eras + decree transfers; `(ussr-holidays-calendar)` for late-Soviet fixed days.
+
+Normative starters (prefer over `country-calendar` corpus): `japan-holidays-calendar` (祝日法 + Tokyo equinoxes), `(china-holidays-calendar :year 2026)` (放假办法 + Beijing lunar + 调休), `india-holidays-calendar`, `germany-holidays-calendar` / `france-holidays-calendar` / `italy-holidays-calendar` / `spain-holidays-calendar` / `netherlands-holidays-calendar` / `belgium-holidays-calendar` / `austria-holidays-calendar` / `poland-holidays-calendar` / `sweden-holidays-calendar`, plus `target-calendar` (ECB). See [`docs/AUTHORITIES.md`](docs/AUTHORITIES.md).
+
+Jewish/Muslim **activity bans until sunset / from fajr** need lat/lon — use `datetime-protocol` `jewish-melacha-forbidden-p`, `islamic-fasting-p` with `+jerusalem+` / `+mecca+` (not civil midnight holiday calendars).
 
 `:bridge :adjacent` and China-style rearrangements without a cited decree are not silent defaults.
 
@@ -43,7 +47,7 @@ Russian/USSR: `(russian-holidays-calendar :year 2026)` = ТК eras + decree tran
   (session-duration session (make-date 2024 3 10))) ; DST: open/close resolved independently
 ```
 
-Starter calendars: `weekend-only-calendar`, `target-calendar`, `us-federal-holidays-calendar`, `uk-bank-holidays-calendar`, `russian-holidays-calendar`, `ussr-holidays-calendar`.
+Starter calendars: `weekend-only-calendar`, `target-calendar`, `us-federal-holidays-calendar`, `uk-bank-holidays-calendar`, `russian-holidays-calendar`, `ussr-holidays-calendar`, plus `(country-calendar "XX")` for the world corpus (`data/countries/`, CC BY-SA 3.0 via date-holidays).
 
 ## License
 

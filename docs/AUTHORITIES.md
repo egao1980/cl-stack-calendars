@@ -19,9 +19,30 @@ are keyed to legal / official acts — not customary summaries.
 | `RU` | ФЗ от 23.04.2012 № 35-ФЗ | NY block adds 6 and 8 Jan |
 | `RU` | Annual постановления Правительства «О переносе выходных дней» | Decree transfers in `data/ru/transfers.sexp` |
 | `USSR` | КЗоТ СССР / Указы Президиума ВС | Late-Soviet non-working days (see starter-russian.lisp) |
-| `country-calendar` | [date-holidays](https://github.com/commenthol/date-holidays) CC BY-SA 3.0 | 206 jurisdictions + stubs (TW, XK, EH, PS, NCY, …); years 2000–2040 public/bank |
+| `JP` | [国民の祝日に関する法律](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html) | 祝日 list; Art. 3(2) 振替; Art. 3(3) 国民の休日 |
+| `JP` | 春分日/秋分日 | Astronomical equinox civil date at Tokyo (`+tokyo+`) |
+| `CN` | 《全国年节及纪念日放假办法》 | Statutory festivals; lunar dates via Beijing astronomy |
+| `CN` | Annual 国办发明电 调休 | Transfers + 上班 in `data/cn/transfers.sexp` |
+| `IN` | Negotiable Instruments Act 1881 / DoPT | Three national + common gazetted (GF, Christmas) |
+| `DE` | Feiertagsgesetze / Einigungsvertrag Art. 2 | Bundeseinheitliche Feiertage |
+| `FR` | Code du travail L.3133-1 | Jours fériés légaux |
+| `IT` `ES` `NL` `BE` `AT` `PL` `SE` | National statutes (see starter-eu.lisp) | Federal/national common sets |
+| `country-calendar` | [date-holidays](https://github.com/commenthol/date-holidays) CC BY-SA 3.0 | 206 jurisdictions + stubs; years 2000–2040 public/bank |
 
-Hand-maintained starters beat `country-calendar` when both exist (e.g. prefer `russian-holidays-calendar` / `us-federal-holidays-calendar` over `"RU"` / `"US"` corpus rows).
+Hand-maintained starters beat `country-calendar` when both exist (prefer `japan-holidays-calendar` / `china-holidays-calendar` / `russian-holidays-calendar` / `us-federal-holidays-calendar` over corpus `"JP"` / `"CN"` / `"RU"` / `"US"`).
+
+## Sunrise / sunset–bound rules (lat/lon)
+
+Jewish and Muslim ritual intervals are **not** civil midnight calendars — they need an `astro-location`:
+
+| Tradition | Bound | API (`datetime-protocol`) |
+|-----------|--------|---------------------------|
+| Jewish day / Shabbat / yom tov start | Sunset | `jewish-day-begins`, `jewish-sunset` |
+| Melacha permitted again | Nightfall (tzeit) | `jewish-nightfall`, `jewish-shabbat-interval`, `jewish-melacha-forbidden-p` |
+| Islamic fast (Ramadan) | Fajr → Maghrib | `islamic-fasting-interval`, `islamic-fasting-p`, `islamic-fajr`, `islamic-maghrib` |
+| Hindu “at sunrise” festivals | Sunrise at Delhi/Ujjain | `sunrise` + `+delhi+` / `+ujjain+` (gazetted dates still from DoPT) |
+
+Reference loci: `+jerusalem+`, `+mecca+`, `+tokyo+`, `+beijing+`, `+delhi+`, `+ujjain+`.
 
 ## Statute-named `:observed` policies
 

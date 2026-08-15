@@ -19,6 +19,10 @@
                (:file "registry")
                (:file "starter-calendars")
                (:file "starter-russian")
+               (:file "starter-japan")
+               (:file "starter-china")
+               (:file "starter-india")
+               (:file "starter-eu")
                (:file "country-calendar"))
   :in-order-to ((test-op (test-op "cl-stack-calendars/tests"))))
 
@@ -29,6 +33,7 @@
   :components ((:file "package")
                (:file "business-day-test")
                (:file "russian-calendar-test")
+               (:file "normative-calendar-test")
                (:file "country-calendar-test")
                (:file "trading-session-test"))
   :perform (test-op (o c)

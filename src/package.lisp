@@ -44,6 +44,7 @@
    #:make-fixed-holiday-rule
    #:make-nth-weekday-holiday-rule
    #:make-easter-holiday-rule
+   #:make-computed-holiday-rule
    #:holiday-rule-authority
    #:holiday-rule-name
    #:holiday-rule-from
@@ -120,6 +121,20 @@
    #:make-russian-holidays-calendar
    #:load-ru-transfer-decrees
    #:ru-decree-for-year
+   #:japan-holidays-calendar
+   #:china-holidays-calendar
+   #:load-cn-transfer-notices
+   #:cn-notice-for-year
+   #:india-holidays-calendar
+   #:germany-holidays-calendar
+   #:france-holidays-calendar
+   #:italy-holidays-calendar
+   #:spain-holidays-calendar
+   #:netherlands-holidays-calendar
+   #:belgium-holidays-calendar
+   #:austria-holidays-calendar
+   #:poland-holidays-calendar
+   #:sweden-holidays-calendar
 
    ;; country / territory corpus (date-holidays)
    #:country-holiday-calendar

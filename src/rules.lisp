@@ -67,6 +67,17 @@ Sunday every year (e.g. Good Friday is offset -2)."
   (observed nil)
   (bridge nil :type (member nil :adjacent)))
 
+(defstruct (computed-holiday-rule (:include holiday-rule))
+  "Holiday whose nominal date is produced by COMPUTE, a function of one
+argument (Gregorian YEAR) returning a DATE. Used for astronomical equinoxes,
+Chinese lunar festivals, and sunrise/sunset-bound festivals. COMPUTE should
+close over an ASTRO-LOCATION (lat/lon/zone) when the rule depends on local
+solar day boundaries — see datetime-protocol:+TOKYO+, +BEIJING+, +DELHI+,
++JERUSALEM+."
+  (compute nil :type (or function symbol))
+  (observed nil)
+  (bridge nil :type (member nil :adjacent)))
+
 (defun normalize-rule-bound (bound)
   "Accept NIL, a Gregorian year integer, a DATE, or a (YEAR MONTH DAY) list."
   (cond ((null bound) nil)
@@ -281,15 +292,20 @@ both holidays becomes a holiday (国民の休日). DATE-NAME-ALIST is a list of
   (+ (if (easter-holiday-rule-orthodox rule) (easter-orthodox year) (easter-western year))
      (easter-holiday-rule-offset rule)))
 
+(defmethod rule-nominal-date ((rule computed-holiday-rule) year)
+  (funcall (computed-holiday-rule-compute rule) year))
+
 (defgeneric rule-observed (rule)
   (:method ((rule fixed-holiday-rule)) (fixed-holiday-rule-observed rule))
   (:method ((rule nth-weekday-holiday-rule)) (nth-weekday-holiday-rule-observed rule))
-  (:method ((rule easter-holiday-rule)) (easter-holiday-rule-observed rule)))
+  (:method ((rule easter-holiday-rule)) (easter-holiday-rule-observed rule))
+  (:method ((rule computed-holiday-rule)) (computed-holiday-rule-observed rule)))
 
 (defgeneric rule-bridge (rule)
   (:method ((rule fixed-holiday-rule)) (fixed-holiday-rule-bridge rule))
   (:method ((rule nth-weekday-holiday-rule)) (nth-weekday-holiday-rule-bridge rule))
-  (:method ((rule easter-holiday-rule)) (easter-holiday-rule-bridge rule)))
+  (:method ((rule easter-holiday-rule)) (easter-holiday-rule-bridge rule))
+  (:method ((rule computed-holiday-rule)) (computed-holiday-rule-bridge rule)))
 
 (defgeneric rule-authority (rule)
   (:method ((rule holiday-rule)) (holiday-rule-authority rule)))

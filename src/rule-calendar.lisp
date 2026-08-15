@@ -95,7 +95,14 @@ rearrangements in starter calendars (normative source of truth)."
                                        :observed ,observed :bridge ,bridge
                                        :authority ',authority
                                        :from ,(%bound-form from)
-                                       :to ,(%bound-form to))))))))
+                                       :to ,(%bound-form to))))
+        (:computed
+         (destructuring-bind (name compute &key observed bridge from to authority) args
+           `(make-computed-holiday-rule :name ,name :compute ,compute
+                                         :observed ,observed :bridge ,bridge
+                                         :authority ',authority
+                                         :from ,(%bound-form from)
+                                         :to ,(%bound-form to))))))))
 
 (defmacro define-calendar (name (&key register (weekend-days ''(6 7))
                                    sandwich-holidays-p sandwich-authority)
@@ -107,6 +114,8 @@ Each clause:
   (:fixed NAME MONTH DAY &key OBSERVED BRIDGE FROM TO AUTHORITY)
   (:nth-weekday NAME MONTH WEEKDAY NTH &key OBSERVED BRIDGE FROM TO AUTHORITY)
   (:easter NAME OFFSET &key ORTHODOX OBSERVED BRIDGE FROM TO AUTHORITY)
+  (:computed NAME COMPUTE &key OBSERVED BRIDGE FROM TO AUTHORITY)
+    ;; COMPUTE is a form evaluating to (YEAR) → DATE (equinoxes, Chinese lunar, …)
 
 AUTHORITY is the normative citation (statute, EO, ECB decision, proclamation).
 It is the source of truth for civil :FROM/:TO and for OBSERVED rearrangements.
