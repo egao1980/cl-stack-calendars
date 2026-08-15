@@ -204,6 +204,110 @@
   (:easter "Трійця (православна)" 49 :orthodox t :from 1991
    :authority "Orthodox Pentecost"))
 
+;;; Sudan (independence 1956)
+(define-calendar sudan-holidays-calendar (:register "SD")
+  (:fixed "Independence Day" 1 1 :from 1956
+   :authority "Independence 1 January 1956")
+  (:fixed "Coptic Christmas" 1 7 :from 1956
+   :authority "Coptic Christmas — public holiday")
+  (:easter "Coptic Easter" 0 :orthodox t :from 1956
+   :authority "Coptic / Orthodox Easter — public holiday")
+  (:fixed "Revolution Day" 12 19 :from 2019
+   :authority "December Revolution Day — public holiday from 2019")
+  (:fixed "Christmas Day" 12 25 :from 1956
+   :authority "Public holiday (Christmas)")
+  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1956 :authority "Public holiday (tabular)")
+  (:computed "Eid al-Fitr"
+   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
+   :from 1956 :authority "Eid al-Fitr Day 2")
+  (:computed "Eid al-Fitr"
+   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 2))))
+   :from 1956 :authority "Eid al-Fitr Day 3")
+  (:computed "Eid al-Adha" #'eid-al-adha :from 1956 :authority "Public holiday (tabular)")
+  (:computed "Eid al-Adha"
+   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 1))))
+   :from 1956 :authority "Eid al-Adha Day 2")
+  (:computed "Eid al-Adha"
+   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 2))))
+   :from 1956 :authority "Eid al-Adha Day 3")
+  (:computed "Islamic New Year" #'islamic-new-year-date :from 1956
+   :authority "1 Muharram (tabular)")
+  (:computed "Mawlid" #'mawlid-date :from 1956
+   :authority "Prophet's Birthday (tabular)"))
+
+;;; Iraq (independence 1932)
+(define-calendar iraq-holidays-calendar (:register "IQ")
+  (:fixed "New Year's Day" 1 1 :from 1932 :authority "Public holiday")
+  (:fixed "Army Day" 1 6 :from 1921
+   :authority "Iraqi Army Day")
+  (:fixed "Nowruz" 3 21 :from 1932
+   :authority "Nowruz — public holiday")
+  (:fixed "Labour Day" 5 1 :from 1932 :authority "Public holiday")
+  (:fixed "National Day" 10 3 :from 1932
+   :authority "Independence from UK 3 October 1932")
+  (:fixed "Victory Day" 12 10 :from 2018
+   :authority "Victory over ISIS — public holiday from late 2010s")
+  (:fixed "Christmas Day" 12 25 :from 1932
+   :authority "Public holiday (recognized)")
+  (:computed "Islamic New Year" #'islamic-new-year-date :from 1932
+   :authority "1 Muharram (tabular)")
+  (:computed "Ashura"
+   (lambda (y) (islamic-date-in-gregorian-year y 1 10))
+   :from 1932 :authority "10 Muharram (tabular)")
+  (:computed "Mawlid" #'mawlid-date :from 1932
+   :authority "Prophet's Birthday (tabular)")
+  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1932 :authority "Public holiday (tabular)")
+  (:computed "Eid al-Fitr"
+   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
+   :from 1932 :authority "Eid Day 2")
+  (:computed "Eid al-Fitr"
+   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 2))))
+   :from 1932 :authority "Eid Day 3")
+  (:computed "Eid al-Adha" #'eid-al-adha :from 1932 :authority "Public holiday (tabular)")
+  (:computed "Eid al-Adha"
+   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 1))))
+   :from 1932 :authority "Eid Adha Day 2")
+  (:computed "Eid al-Adha"
+   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 2))))
+   :from 1932 :authority "Eid Adha Day 3")
+  (:computed "Eid al-Adha"
+   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 3))))
+   :from 1932 :authority "Eid Adha Day 4")
+  (:computed "Eid al-Ghadir"
+   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 8))))
+   :from 1932
+   :authority "18 Dhu al-Hijjah — Eid al-Ghadir (tabular)"))
+
+;;; Afghanistan (independence 1919; regime changes — durable civil set)
+(define-calendar afghanistan-holidays-calendar (:register "AF")
+  (:fixed "Nowruz" 3 21 :from 1919 :to 2020
+   :authority "Nowruz — public holiday until Taliban suspension (2021–)")
+  (:fixed "Labour Day" 5 1 :from 1978
+   :authority "International Workers' Day")
+  (:fixed "Independence Day" 8 19 :from 1919
+   :authority "Independence / Treaty of Rawalpindi 19 August 1919")
+  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1919 :authority "Public holiday (tabular)")
+  (:computed "Eid al-Fitr"
+   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
+   :from 1919 :authority "Eid Day 2")
+  (:computed "Eid al-Fitr"
+   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 2))))
+   :from 1919 :authority "Eid Day 3")
+  (:computed "Eid al-Adha" #'eid-al-adha :from 1919 :authority "Public holiday (tabular)")
+  (:computed "Eid al-Adha"
+   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 1))))
+   :from 1919 :authority "Eid Adha Day 2")
+  (:computed "Eid al-Adha"
+   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 2))))
+   :from 1919 :authority "Eid Adha Day 3")
+  (:computed "Ashura"
+   (lambda (y) (islamic-date-in-gregorian-year y 1 10))
+   :from 1919 :authority "10 Muharram (tabular)")
+  (:computed "Mawlid" #'mawlid-date :from 1919
+   :authority "Prophet's Birthday (tabular)")
+  (:computed "Islamic New Year" #'islamic-new-year-date :from 1919
+   :authority "1 Muharram (tabular)"))
+
 (defun pakistan-holidays-calendar () (make-instance 'pakistan-holidays-calendar))
 (defun egypt-holidays-calendar () (make-instance 'egypt-holidays-calendar))
 (defun turkey-holidays-calendar () (make-instance 'turkey-holidays-calendar))
@@ -212,3 +316,6 @@
 (defun algeria-holidays-calendar () (make-instance 'algeria-holidays-calendar))
 (defun morocco-holidays-calendar () (make-instance 'morocco-holidays-calendar))
 (defun ukraine-holidays-calendar () (make-instance 'ukraine-holidays-calendar))
+(defun sudan-holidays-calendar () (make-instance 'sudan-holidays-calendar))
+(defun iraq-holidays-calendar () (make-instance 'iraq-holidays-calendar))
+(defun afghanistan-holidays-calendar () (make-instance 'afghanistan-holidays-calendar))

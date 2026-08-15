@@ -133,10 +133,10 @@
    :observed :uk-proclamation-substitute :from 1974
    :authority ("Banking and Financial Dealings Act 1971 s.1 (proclamation)"
                "https://www.gov.uk/bank-holidays"))
-  (:easter "Good Friday" -2
+  (:easter "Good Friday" -2 :from 1971
    :authority ("Common law Good Friday; Royal Proclamations"
                "https://www.gov.uk/bank-holidays"))
-  (:easter "Easter Monday" 1
+  (:easter "Easter Monday" 1 :from 1971
    :authority "Banking and Financial Dealings Act 1971 Sch.1 para.1")
   (:nth-weekday "Early May Bank Holiday" 5 :monday 1 :from 1978
    :authority ("Banking and Financial Dealings Act 1971 s.1 (proclamation, from 1978)"
@@ -146,11 +146,11 @@
   (:nth-weekday "Summer Bank Holiday" 8 :monday -1 :from 1971
    :authority "Banking and Financial Dealings Act 1971 Sch.1 para.1 (last Monday in August)")
   (:fixed "Christmas Day" 12 25
-   :observed :uk-proclamation-substitute
+   :observed :uk-proclamation-substitute :from 1971
    :authority ("Common law Christmas Day; Banking and Financial Dealings Act 1971 s.1 proclamations for substitutes"
                "https://www.gov.uk/bank-holidays"))
   (:fixed "Boxing Day" 12 26
-   :observed :uk-proclamation-substitute
+   :observed :uk-proclamation-substitute :from 1971
    :authority ("Banking and Financial Dealings Act 1971 Sch.1 para.1 (26 Dec if not Sunday; 27 Dec if 25 or 26 is Sunday); proclamations for Saturday substitutes"
                "https://www.legislation.gov.uk/ukpga/1971/80/schedule/1"
                "https://www.gov.uk/bank-holidays")))

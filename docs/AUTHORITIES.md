@@ -48,7 +48,7 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `IN` | Negotiable Instruments Act 1881 / DoPT | Three national + common gazetted (GF, Christmas, Id-ul-Fitr/Zuha, Muharram, Milad). Hindu lunar festivals via annual DoPT OM / DATA-CALENDAR |
 | `VN` | Bộ luật Lao động | Hung Kings from 2007; Quốc khánh 2 days from 2021; Ngày Văn hóa from 2026 |
 | `PH` | RA / proclamations | Ninoy Aquino Day 2004; EDSA 1986; Independence 4 Jul→12 Jun |
-| `ET` | Public Holidays Proclamation | Fasika (orthodox); Timkat/Enkutatash/Meskel leap-day shift; Eid/Mawlid |
+| `SD` `IQ` `AF` `AO` `UZ` | National statutes (starter-mena/africa/asia.lisp) | ≥35M fill: Sudan Coptic+Islamic; Iraq National Day/Victory/Ghadir; AF Independence + Nowruz to 2020; AO Liberation/Peace eras; UZ Navro'z/Independence |
 | `ID` `PK` `NG` `BR` `BD` `MX` `ET` `PH` `EG` `VN` `CD` `TR` `IR` `TH` `KR` `…` | National statutes (see `starter-asia/americas/africa/mena.lisp`) | Research window `[max(1900,formation), now]` with `:from`/`:to` eras |
 | `DE` | Feiertagsgesetze / Einigungsvertrag Art. 2 | Bundeseinheitliche Feiertage (Unity Day from 1990) |
 | `FR` | Code du travail L.3133-1 | Jours fériés; Victoire 8 mai 1953–58 then from 1982 |

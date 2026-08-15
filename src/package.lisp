@@ -206,6 +206,11 @@
    #:algeria-holidays-calendar
    #:morocco-holidays-calendar
    #:ukraine-holidays-calendar
+   #:sudan-holidays-calendar
+   #:iraq-holidays-calendar
+   #:afghanistan-holidays-calendar
+   #:angola-holidays-calendar
+   #:uzbekistan-holidays-calendar
    #:population-order
    #:formation-years
    #:country-formation-year

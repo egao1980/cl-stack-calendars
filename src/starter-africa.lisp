@@ -191,3 +191,26 @@
 (defun kenya-holidays-calendar () (make-instance 'kenya-holidays-calendar))
 (defun uganda-holidays-calendar () (make-instance 'uganda-holidays-calendar))
 (defun ghana-holidays-calendar () (make-instance 'ghana-holidays-calendar))
+
+;;; Angola (independence 1975)
+(define-calendar angola-holidays-calendar (:register "AO")
+  (:fixed "Ano Novo" 1 1 :from 1975 :authority "Feriado nacional")
+  (:fixed "Dia do Início da Luta Armada" 2 4 :from 1975
+   :authority "Início da luta armada de libertação nacional (1961)")
+  (:easter "Carnaval" -47 :from 1975
+   :authority "Carnaval — terça antes da Quarta-feira de Cinzas (Páscoa−47)")
+  (:fixed "Dia Internacional da Mulher" 3 8 :from 1975 :authority "Feriado nacional")
+  (:fixed "Dia da Libertação da África Austral" 3 23 :from 2019
+   :authority "Batalha de Cuito Cuanavale — feriado desde 2019")
+  (:easter "Sexta-Feira Santa" -2 :from 1975 :authority "Feriado nacional")
+  (:fixed "Dia da Paz" 4 4 :from 2002
+   :authority "Fim da guerra civil — 4 de abril")
+  (:fixed "Dia do Trabalhador" 5 1 :from 1975 :authority "Feriado nacional")
+  (:fixed "Dia do Fundador da Nação e dos Heróis Nacionais" 9 17 :from 1975
+   :authority "Aniversário de Agostinho Neto")
+  (:fixed "Dia de Finados" 11 2 :from 1975 :authority "Feriado nacional")
+  (:fixed "Dia da Independência" 11 11 :from 1975
+   :authority "Independência de Portugal — 11 de novembro de 1975")
+  (:fixed "Natal" 12 25 :from 1975 :authority "Feriado nacional"))
+
+(defun angola-holidays-calendar () (make-instance 'angola-holidays-calendar))

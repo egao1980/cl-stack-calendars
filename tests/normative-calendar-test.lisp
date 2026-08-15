@@ -89,6 +89,35 @@
       (when (>= pop 50)
         (ok (eq status :normative) (format nil "~a (≥~aM) normative" code pop))))))
 
+(deftest thirty-five-million-plus-all-normative
+  "Every ≥35M population code has a hand starter (not corpus)."
+  (dolist (row (normative-coverage-by-population))
+    (destructuring-bind (code pop name &key status) row
+      (declare (ignore name))
+      (when (>= pop 35)
+        (ok (eq status :normative) (format nil "~a (≥~aM) normative" code pop))))))
+
+(deftest sudan-iraq-angola-uzbekistan-samples
+  (let ((sd (sudan-holidays-calendar))
+        (iq (iraq-holidays-calendar))
+        (ao (angola-holidays-calendar))
+        (uz (uzbekistan-holidays-calendar))
+        (af (afghanistan-holidays-calendar)))
+    (ok (holiday-p sd (make-date 1956 1 1)))
+    (ok (holiday-p sd (make-date 2019 12 19)))
+    (ng (holiday-p sd (make-date 2018 12 19)))
+    (ok (holiday-p iq (make-date 1932 10 3)))
+    (ok (holiday-p iq (make-date 2018 12 10)))
+    (ok (holiday-p ao (make-date 1975 11 11)))
+    (ok (holiday-p ao (make-date 2002 4 4)))
+    (ng (holiday-p ao (make-date 2018 3 23)))
+    (ok (holiday-p ao (make-date 2019 3 23)))
+    (ok (holiday-p uz (make-date 1991 9 1)))
+    (ok (holiday-p uz (make-date 1991 3 21)))
+    (ok (holiday-p af (make-date 1919 8 19)))
+    (ok (holiday-p af (make-date 2020 3 21)))
+    (ng (holiday-p af (make-date 2022 3 21)))))
+
 (deftest vietnam-hung-kings-and-national-day-era
   (let* ((cal (vietnam-holidays-calendar))
          (hk-06 (chinese-lunar-date 2006 3 10 :location +beijing+))

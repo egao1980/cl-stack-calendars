@@ -380,6 +380,29 @@
   (:fixed "國慶日" 10 10 :from 1945
    :authority "國慶日 — Double Tenth"))
 
+;;; Uzbekistan (independence 1991)
+(define-calendar uzbekistan-holidays-calendar (:register "UZ")
+  (:fixed "Yangi Yil" 1 1 :from 1991
+   :authority "Yangi Yil Bayrami — New Year")
+  (:fixed "Vatan himoyachilari kuni" 1 14 :from 1992
+   :authority "Defender of the Fatherland Day")
+  (:fixed "Xalqaro Xotin-Qizlar Kuni" 3 8 :from 1991
+   :authority "International Women's Day")
+  (:fixed "Navro'z" 3 21 :from 1991
+   :authority "Navro'z Bayrami")
+  (:fixed "Xotira va Qadirlash Kuni" 5 9 :from 1999
+   :authority "Day of Remembrance and Honor (9 May)")
+  (:fixed "Mustaqillik Kuni" 9 1 :from 1991
+   :authority "Independence Day — 1 September 1991")
+  (:fixed "O'qituvchi va Murabbiylar Kuni" 10 1 :from 1997
+   :authority "Teachers' and Mentors' Day")
+  (:fixed "Konstitutsiya Kuni" 12 8 :from 1992
+   :authority "Constitution Day")
+  (:computed "Ramazon Hayit" #'eid-al-fitr :from 1991
+   :authority "Eid al-Fitr (tabular Hijri)")
+  (:computed "Qurbon Hayit" #'eid-al-adha :from 1991
+   :authority "Eid al-Adha (tabular Hijri)"))
+
 (defun indonesia-holidays-calendar (&key year transfers)
   "Indonesian national holidays. YEAR attaches cuti bersama TO days for that year."
   (let ((tr (or transfers (when year (id-transfers-for-year year)))))
@@ -398,3 +421,4 @@
 (defun myanmar-holidays-calendar () (make-instance 'myanmar-holidays-calendar))
 (defun malaysia-holidays-calendar () (make-instance 'malaysia-holidays-calendar))
 (defun taiwan-holidays-calendar () (make-instance 'taiwan-holidays-calendar))
+(defun uzbekistan-holidays-calendar () (make-instance 'uzbekistan-holidays-calendar))
