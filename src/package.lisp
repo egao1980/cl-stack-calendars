@@ -44,6 +44,10 @@
    #:make-fixed-holiday-rule
    #:make-nth-weekday-holiday-rule
    #:make-easter-holiday-rule
+   #:holiday-rule-authority
+   #:holiday-rule-name
+   #:holiday-rule-from
+   #:holiday-rule-to
 
    ;; data-calendar
    #:data-calendar

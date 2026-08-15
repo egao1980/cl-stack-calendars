@@ -10,16 +10,40 @@
   ;; Civil validity window for the rule itself (not versioned “as-of” knowledge).
   ;; Integer = Gregorian year bound; DATE = inclusive day bound. NIL = open.
   (from nil :type (or null integer date))
-  (to nil :type (or null integer date)))
+  (to nil :type (or null integer date))
+  ;; Normative citation(s): statute, EO, ECB decision, proclamation, etc.
+  ;; Source of truth for WHEN the holiday exists and HOW it is observed.
+  (authority nil :type (or null string list)))
+
+(defparameter *observed-policies*
+  '((:us-federal-in-lieu
+     :implements (:nearest-weekday)
+     :authority ("5 U.S.C. § 6103(b) (Saturday → preceding Friday)"
+                 "Exec. Order No. 11582 § 3(a) (Sunday → following Monday)")
+     :uri ("https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title5-section6103"
+           "https://www.federalregister.gov/executive-order/11582"))
+    (:uk-proclamation-substitute
+     :implements (:next-weekday)
+     :authority ("Banking and Financial Dealings Act 1971 s.1 & Sch.1; Royal Proclamations (substitute weekday when a bank holiday falls on a weekend — normally the following Monday; exclusive across Christmas/Boxing)"
+                 "https://www.legislation.gov.uk/ukpga/1971/80"
+                 "https://www.gov.uk/bank-holidays"))
+    (:jp-furikae
+     :implements (:jp-furikae)
+     :authority ("国民の祝日に関する法律（昭和23年法律第178号）第3条第2項 — 祝日が日曜日に当たるとき、その日後においてその日に最も近い国民の祝日でない日を休日とする（土曜は振替なし）")
+     :uri ("https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html"))
+    (:jp-kokumin-no-kyujitsu
+     :implements (:sandwich)
+     :authority ("国民の祝日に関する法律第3条第3項 — その前日及び翌日が国民の祝日である日は休日とする")
+     :uri ("https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html")))
+  "Normative observance policies. Prefer these over mechanical primitives in
+starter calendars; primitives exist only as implementation atoms.")
 
 (defstruct (fixed-holiday-rule (:include holiday-rule))
   "A holiday on a fixed MONTH/DAY every year (e.g. Christmas), optionally
-rearranged via OBSERVED when it falls on a weekend and/or BRIDGE'd to make
-a continuous holiday block."
+rearranged via a statute-backed OBSERVED policy when it falls on a weekend."
   (month 1 :type (integer 1 12))
   (day 1 :type (integer 1 31))
-  (observed nil :type (member nil :nearest-weekday :next-weekday :previous-weekday
-                                  :monday :substitute-next))
+  (observed nil)
   (bridge nil :type (member nil :adjacent)))
 
 (defstruct (nth-weekday-holiday-rule (:include holiday-rule))
@@ -28,8 +52,7 @@ a continuous holiday block."
   (month 1 :type (integer 1 12))
   (weekday 1 :type (integer 1 7))
   (nth 1 :type integer)
-  (observed nil :type (member nil :nearest-weekday :next-weekday :previous-weekday
-                                  :monday :substitute-next))
+  (observed nil)
   (bridge nil :type (member nil :adjacent)))
 
 (defstruct (easter-holiday-rule (:include holiday-rule))
@@ -37,8 +60,7 @@ a continuous holiday block."
 Sunday every year (e.g. Good Friday is offset -2)."
   (offset 0 :type integer)
   (orthodox nil)
-  (observed nil :type (member nil :nearest-weekday :next-weekday :previous-weekday
-                                  :monday :substitute-next))
+  (observed nil)
   (bridge nil :type (member nil :adjacent)))
 
 (defun normalize-rule-bound (bound)
@@ -99,27 +121,27 @@ be 1-5, or -1 for the last occurrence in the month."
              (offset (mod (- weekday (date-day-of-week first-date)) 7)))
         (+ first-date (+ offset (* 7 (1- nth)))))))
 
-;;; --- Observance: weekend moves, substitutes, bridges ----------------------
+;;; --- Observance (normative policies → mechanical atoms) -------------------
 ;;;;
-;;;; Countries rearrange working days when a holiday coincides with a weekend
-;;;; and/or to create a continuous holiday block (puente / long weekend):
+;;;; Prefer statute-named OBSERVED keywords in starter calendars:
 ;;;;
-;;;;   :NEAREST-WEEKDAY   US federal — Sat→Fri, Sun→Mon (move)
-;;;;   :NEXT-WEEKDAY      move to first following non-weekend day
-;;;;   :PREVIOUS-WEEKDAY  move to first preceding non-weekend day
-;;;;   :MONDAY            Commonwealth “Mondayise” — Sat/Sun → following Monday
-;;;;   :SUBSTITUTE-NEXT   keep the nominal date *and* add the next weekday when
-;;;;                      nominal falls on a weekend (Japan 振替休日 style)
+;;;;   :US-FEDERAL-IN-LIEU          5 U.S.C. § 6103(b) + EO 11582 § 3(a)
+;;;;   :UK-PROCLAMATION-SUBSTITUTE  BFDA 1971 + Royal Proclamations / gov.uk
+;;;;   :JP-FURIKAE                  祝日法第3条第2項 (Sunday only → next free day)
 ;;;;
-;;;; :BRIDGE :ADJACENT adds a weekday that closes a gap to the weekend:
-;;;;   observed on Tuesday → also Monday; on Thursday → also Friday.
+;;;; Mechanical primitives (implementation atoms, not country defaults):
+;;;;   :NEAREST-WEEKDAY :NEXT-WEEKDAY :PREVIOUS-WEEKDAY :MONDAY :SUBSTITUTE-NEXT
 ;;;;
-;;;; When several rules share a year (UK Christmas + Boxing Day), observance
-;;;; can be exclusive: already-claimed weekdays are skipped so two holidays
-;;;; don't collapse onto the same Monday.
+;;;; :BRIDGE :ADJACENT is NOT a general legal default (Spanish “puente” is
+;;;; typically customary / collective-agreement). Only attach it when the
+;;;; rule's :AUTHORITY cites a normative bridge. Japan’s continuous holiday
+;;;; block is :SANDWICH on the calendar (祝日法第3条第3項), not :BRIDGE.
 
 (defun weekendp (date weekend-days)
   (and (member (date-day-of-week date) weekend-days) t))
+
+(defun sundayp (date)
+  (= (date-day-of-week date) 7))
 
 (defun shift-forward-past-weekend (date weekend-days)
   "DATE, or the first following day that is not a WEEKEND-DAYS weekday."
@@ -134,7 +156,8 @@ be 1-5, or -1 for the last occurrence in the month."
         finally (return d)))
 
 (defun shift-nearest-past-weekend (date weekend-days)
-  "US-style nearest weekday: Sat→Fri, Sun→Mon for a contiguous weekend."
+  "Sat→Fri, Sun→Mon for a contiguous Sat/Sun weekend (5 U.S.C. § 6103(b) +
+EO 11582 § 3(a) for a Monday–Friday basic workweek)."
   (if (not (weekendp date weekend-days))
       date
       (let ((previous (- date 1)))
@@ -149,8 +172,15 @@ be 1-5, or -1 for the last occurrence in the month."
                    (member d claimed :test #'=))
           return d))
 
+(defun canonicalize-observed (observed)
+  "Map statute-named policies onto mechanical atoms (or leave JP-FURIKAE)."
+  (case observed
+    (:us-federal-in-lieu :nearest-weekday)
+    (:uk-proclamation-substitute :next-weekday)
+    (otherwise observed)))
+
 (defun apply-move-observed (date observed weekend-days claimed)
-  "Single moved observance date, or NIL when OBSERVED is additive (:SUBSTITUTE-NEXT)."
+  "Single moved observance date for move-style policies."
   (ecase observed
     ((nil) date)
     (:nearest-weekday (shift-nearest-past-weekend date weekend-days))
@@ -159,11 +189,10 @@ be 1-5, or -1 for the last occurrence in the month."
     (:monday
      (if (weekendp date weekend-days)
          (shift-forward-past-weekend-and-claimed date weekend-days claimed)
-         date))
-    (:substitute-next nil)))
+         date))))
 
 (defun apply-bridge-days (dates weekend-days bridge)
-  "Possibly extend DATES with bridge weekdays for a continuous holiday block."
+  "Extend DATES only when an AUTHORITY-cited :BRIDGE is present."
   (ecase bridge
     ((nil) dates)
     (:adjacent
@@ -171,26 +200,51 @@ be 1-5, or -1 for the last occurrence in the month."
        (dolist (d dates)
          (unless (weekendp d weekend-days)
            (case (date-day-of-week d)
-             (2 (push (- d 1) extra))   ; Tuesday → also Monday
-             (4 (push (+ d 1) extra))))) ; Thursday → also Friday
+             (2 (push (- d 1) extra))
+             (4 (push (+ d 1) extra)))))
        (remove-duplicates (append dates (nreverse extra)) :test #'=)))))
 
 (defun observe-dates (nominal observed bridge weekend-days &optional claimed)
-  "Return the list of holiday dates produced from NOMINAL under OBSERVED/BRIDGE.
-CLAIMED (other holidays already taken this year) makes :NEXT-WEEKDAY / :MONDAY
-exclusive. Validity of NOMINAL itself is the caller's responsibility."
-  (let* ((base
-          (ecase observed
+  "Holiday dates from NOMINAL under a (possibly statute-named) OBSERVED policy.
+CLAIMED makes exclusive next-weekday substitutes skip collisions (UK Christmas
++ Boxing under proclamations)."
+  (let* ((policy (canonicalize-observed observed))
+         (base
+          (ecase policy
             ((nil) (list nominal))
             ((:nearest-weekday :next-weekday :previous-weekday :monday)
-             (list (apply-move-observed nominal observed weekend-days claimed)))
+             (list (apply-move-observed nominal policy weekend-days claimed)))
             (:substitute-next
+             ;; Mechanical: any weekend day → also next free weekday.
+             ;; Prefer :JP-FURIKAE when encoding Japanese law (Sunday only).
              (if (weekendp nominal weekend-days)
+                 (list nominal
+                       (shift-forward-past-weekend-and-claimed nominal weekend-days claimed))
+                 (list nominal)))
+            (:jp-furikae
+             ;; 祝日法第3条第2項: Sunday only; Saturday does not transfer.
+             (if (sundayp nominal)
                  (list nominal
                        (shift-forward-past-weekend-and-claimed nominal weekend-days claimed))
                  (list nominal)))))
          (bridged (apply-bridge-days base weekend-days bridge)))
     (remove-if (lambda (d) (member d claimed :test #'=)) bridged)))
+
+(defun apply-sandwich-holidays (date-name-alist)
+  "祝日法第3条第3項: a non-holiday weekday whose previous and next days are
+both holidays becomes a holiday (国民の休日). DATE-NAME-ALIST is a list of
+(DATE . NAME); returns an extended alist."
+  (let* ((dates (sort (mapcar #'car date-name-alist) #'<))
+         (set dates)
+         (extra '()))
+    (dolist (d dates)
+      (let ((mid (+ d 1)))
+        (when (and (not (member mid set :test #'=))
+                   (member (+ mid 1) set :test #'=)
+                   (not (weekendp mid '(6 7))))
+          (push (cons mid "国民の休日") extra)
+          (push mid set))))
+    (append date-name-alist (nreverse extra))))
 
 ;;; --- RULE-OCCURRENCES -------------------------------------------------
 
@@ -219,11 +273,14 @@ exclusive. Validity of NOMINAL itself is the caller's responsibility."
   (:method ((rule nth-weekday-holiday-rule)) (nth-weekday-holiday-rule-bridge rule))
   (:method ((rule easter-holiday-rule)) (easter-holiday-rule-bridge rule)))
 
+(defgeneric rule-authority (rule)
+  (:method ((rule holiday-rule)) (holiday-rule-authority rule)))
+
 (defgeneric rule-occurrences (rule year weekend-days &optional claimed)
-  (:documentation "List of DATEs RULE produces in YEAR after OBSERVED/BRIDGE
-rearrangement. CLAIMED dates (already taken by earlier rules) make exclusive
-:NEXT-WEEKDAY / :MONDAY observance skip collisions. Empty when the nominal
-date is outside RULE's civil validity window."))
+  (:documentation "List of DATEs RULE produces in YEAR after statute-backed
+OBSERVED rearrangement. CLAIMED dates make exclusive substitutes skip
+collisions. Empty when the nominal date is outside RULE's civil validity
+window. See HOLIDAY-RULE-AUTHORITY for the normative citation."))
 
 (defmethod rule-occurrences ((rule holiday-rule) year weekend-days &optional claimed)
   (let ((nominal (rule-nominal-date rule year)))

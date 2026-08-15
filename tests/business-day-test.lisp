@@ -46,26 +46,69 @@
 
 (deftest substitute-next-keeps-weekend-and-weekday
   (let ((cal (make-instance 'rule-calendar
-               :name "jp-style"
+               :name "mech"
                :rules (list (make-fixed-holiday-rule
                              :name "X"
                              :month 1 :day 1
-                             :observed :substitute-next)))))
+                             :observed :substitute-next
+                             :authority "test mechanical primitive")))))
     ;; 2023-01-01 Sunday → substitute Monday 2023-01-02
     (ok (holiday-p cal (make-date 2023 1 1)))
     (ok (holiday-p cal (make-date 2023 1 2)))
     (ng (holiday-p cal (make-date 2023 1 3)))))
 
-(deftest bridge-adjacent-long-weekend
+(deftest jp-furikae-sunday-only
+  "祝日法第3条第2項: Sunday transfers; Saturday does not."
+  (let ((cal (make-instance 'rule-calendar
+               :name "jp"
+               :rules (list (make-fixed-holiday-rule
+                             :name "元日"
+                             :month 1 :day 1
+                             :observed :jp-furikae
+                             :authority "国民の祝日に関する法律第3条第2項")))))
+    ;; 2023-01-01 Sunday → 振替 2023-01-02
+    (ok (holiday-p cal (make-date 2023 1 1)))
+    (ok (holiday-p cal (make-date 2023 1 2)))
+    ;; 2022-01-01 Saturday → no 振替 Monday
+    (ok (holiday-p cal (make-date 2022 1 1)))
+    (ng (holiday-p cal (make-date 2022 1 3)))))
+
+(deftest jp-sandwich-kokumin-no-kyujitsu
+  "祝日法第3条第3項: weekday between two holidays becomes a holiday."
+  (let ((cal (make-instance 'rule-calendar
+               :name "jp-sandwich"
+               :sandwich-holidays-p t
+               :sandwich-authority "国民の祝日に関する法律第3条第3項"
+               :rules (list
+                       (make-fixed-holiday-rule :name "A" :month 9 :day 21
+                                                :authority "test")
+                       (make-fixed-holiday-rule :name "B" :month 9 :day 23
+                                                :authority "test")))))
+    ;; 2020-09-21 Mon, 22 Tue sandwich, 23 Wed
+    (ok (holiday-p cal (make-date 2020 9 21)))
+    (ok (holiday-p cal (make-date 2020 9 22)))
+    (ok (holiday-p cal (make-date 2020 9 23)))))
+
+(deftest bridge-adjacent-requires-explicit-use
+  "Puente-style bridge is opt-in with authority — not a silent default."
   (let ((cal (make-instance 'rule-calendar
                :name "puente"
                :rules (list (make-fixed-holiday-rule
                              :name "National Day"
-                             :month 5 :day 2   ; 2023-05-02 was Tuesday
-                             :bridge :adjacent)))))
-    (ok (holiday-p cal (make-date 2023 5 2)))  ; Tue
-    (ok (holiday-p cal (make-date 2023 5 1)))  ; Mon bridge
+                             :month 5 :day 2
+                             :bridge :adjacent
+                             :authority "test: collective agreement bridge")))))
+    (ok (holiday-p cal (make-date 2023 5 2)))
+    (ok (holiday-p cal (make-date 2023 5 1)))
     (ng (holiday-p cal (make-date 2023 5 3)))))
+
+(deftest starter-rules-carry-authority
+  (ok (holiday-rule-authority
+       (first (calendar-rules (us-federal-holidays-calendar)))))
+  (ok (holiday-rule-authority
+       (first (calendar-rules (uk-bank-holidays-calendar)))))
+  (ok (holiday-rule-authority
+       (first (calendar-rules (target-calendar))))))
 
 (deftest target-good-friday
   (let ((cal (target-calendar)))

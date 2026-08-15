@@ -1,62 +1,101 @@
 (in-package #:cl-stack-calendars)
 
-;;;; Starter calendars. Rules carry civil :FROM/:TO validity windows from
-;;;; published statutes / central-bank calendars. Versioned as-of snapshots
-;;;; (what was *known* at booking time) are a separate axis — see
-;;;; VERSIONED-CALENDAR.
+;;;; Starter calendars. Every rule cites its normative authority (statute,
+;;;; executive order, ECB decision, or royal proclamation). Observance
+;;;; policies are statute-named — see *OBSERVED-POLICIES* and docs/AUTHORITIES.md.
+;;;; Versioned as-of snapshots (what was *known* at booking time) are a
+;;;; separate axis — see VERSIONED-CALENDAR.
 
 (define-calendar weekend-only-calendar (:register "WEEKEND")
   ;; no holiday rules — Saturday/Sunday only
   )
 
-;;;; TARGET (ECB Trans-European Automated Real-time Gross settlement Express
-;;;; Transfer) — euro settlement calendar from TARGET go-live 1999-01-04.
-;;;; https://www.ecb.europa.eu/paym/target/target2/html/index.en.html
+;;;; TARGET closing days — ECB Governing Council decision of 14 Dec 2000
+;;;; (long-term calendar from 2002); calendar dates, no weekend in-lieu
+;;;; (weekends are already non-settlement).
+;;;; https://www.ecb.europa.eu/press/pr/date/2000/html/pr001214_4.en.html
 (define-calendar target-calendar (:register "TARGET")
-  (:fixed "New Year's Day" 1 1 :from 1999)
-  (:fixed "Labour Day" 5 1 :from 1999)
-  (:fixed "Christmas Day" 12 25 :from 1999)
-  (:fixed "Christmas Holiday" 12 26 :from 1999)
-  (:easter "Good Friday" -2 :from 1999)
-  (:easter "Easter Monday" 1 :from 1999))
+  (:fixed "New Year's Day" 1 1 :from 1999
+   :authority "ECB Governing Council decision 14 Dec 2000 (TARGET closing days)")
+  (:fixed "Labour Day" 5 1 :from 1999
+   :authority "ECB Governing Council decision 14 Dec 2000 (TARGET closing days)")
+  (:fixed "Christmas Day" 12 25 :from 1999
+   :authority "ECB Governing Council decision 14 Dec 2000 (TARGET closing days)")
+  (:fixed "Christmas Holiday" 12 26 :from 1999
+   :authority "ECB Governing Council decision 14 Dec 2000 (TARGET closing days)")
+  (:easter "Good Friday" -2 :from 1999
+   :authority "ECB Governing Council decision 14 Dec 2000 (TARGET closing days)")
+  (:easter "Easter Monday" 1 :from 1999
+   :authority "ECB Governing Council decision 14 Dec 2000 (TARGET closing days)"))
 
-;;;; US federal legal public holidays (5 U.S.C. § 6103), with Uniform Monday
-;;;; Holiday Act (effective 1971-01-01) and later statute dates.
-;;;; https://www.congress.gov/crs-product/R41990
+;;;; US federal legal public holidays — 5 U.S.C. § 6103(a) list; in-lieu
+;;;; observance for Mon–Fri schedules under § 6103(b) (Sat→Fri) and
+;;;; Exec. Order No. 11582 § 3(a) (Sun→Mon). Uniform Monday Holiday Act
+;;;; (Pub. L. 90-363) effective 1971-01-01.
 (define-calendar us-federal-holidays-calendar (:register "USFED")
-  (:fixed "New Year's Day" 1 1 :observed :nearest-weekday)
-  ;; Pub. L. 98-144; first observance 1986-01-20
-  (:nth-weekday "Martin Luther King Jr. Day" 1 :monday 3 :from 1986)
-  (:fixed "Washington's Birthday" 2 22 :observed :nearest-weekday :to 1970)
-  (:nth-weekday "Washington's Birthday" 2 :monday 3 :from 1971)
-  (:fixed "Memorial Day" 5 30 :observed :nearest-weekday :to 1970)
-  (:nth-weekday "Memorial Day" 5 :monday -1 :from 1971)
-  ;; Pub. L. 117-17 signed 2021-06-17; first federal observance 2021-06-18
-  ;; (Saturday Juneteenth observed Friday under nearest-weekday).
-  (:fixed "Juneteenth" 6 19 :observed :nearest-weekday :from (2021 6 18))
-  (:fixed "Independence Day" 7 4 :observed :nearest-weekday)
-  (:nth-weekday "Labor Day" 9 :monday 1 :from 1894)
-  (:nth-weekday "Columbus Day" 10 :monday 2 :from 1971)
-  (:fixed "Veterans Day" 11 11 :observed :nearest-weekday :to 1970)
-  (:nth-weekday "Veterans Day" 10 :monday 4 :from 1971 :to 1977)
-  (:fixed "Veterans Day" 11 11 :observed :nearest-weekday :from 1978)
-  (:nth-weekday "Thanksgiving Day" 11 :thursday 4 :from 1941)
-  (:fixed "Christmas Day" 12 25 :observed :nearest-weekday))
+  (:fixed "New Year's Day" 1 1
+   :observed :us-federal-in-lieu
+   :authority ("5 U.S.C. § 6103(a)–(b)" "Exec. Order No. 11582 § 3(a)"))
+  (:nth-weekday "Martin Luther King Jr. Day" 1 :monday 3 :from 1986
+   :authority "Pub. L. 98-144; 5 U.S.C. § 6103(a) (effective first Jan 1 after two years from 1983-11-02 → 1986)")
+  (:fixed "Washington's Birthday" 2 22 :observed :us-federal-in-lieu :to 1970
+   :authority "5 U.S.C. § 6103(a) (pre–Uniform Monday Holiday Act)")
+  (:nth-weekday "Washington's Birthday" 2 :monday 3 :from 1971
+   :authority "Pub. L. 90-363; 5 U.S.C. § 6103(a) (effective 1971-01-01)")
+  (:fixed "Memorial Day" 5 30 :observed :us-federal-in-lieu :to 1970
+   :authority "5 U.S.C. § 6103(a) (pre–Uniform Monday Holiday Act)")
+  (:nth-weekday "Memorial Day" 5 :monday -1 :from 1971
+   :authority "Pub. L. 90-363; 5 U.S.C. § 6103(a) (effective 1971-01-01)")
+  (:fixed "Juneteenth" 6 19 :observed :us-federal-in-lieu :from (2021 6 18)
+   :authority "Pub. L. 117-17 (2021-06-17); 5 U.S.C. § 6103(a)–(b)")
+  (:fixed "Independence Day" 7 4 :observed :us-federal-in-lieu
+   :authority ("5 U.S.C. § 6103(a)–(b)" "Exec. Order No. 11582 § 3(a)"))
+  (:nth-weekday "Labor Day" 9 :monday 1 :from 1894
+   :authority "5 U.S.C. § 6103(a) (Labor Day federal holiday)")
+  (:nth-weekday "Columbus Day" 10 :monday 2 :from 1971
+   :authority "Pub. L. 90-363; 5 U.S.C. § 6103(a) (effective 1971-01-01)")
+  (:fixed "Veterans Day" 11 11 :observed :us-federal-in-lieu :to 1970
+   :authority "5 U.S.C. § 6103(a) (pre–Uniform Monday Holiday Act)")
+  (:nth-weekday "Veterans Day" 10 :monday 4 :from 1971 :to 1977
+   :authority "Pub. L. 90-363; Pub. L. 94-97 returns Nov 11 effective 1978")
+  (:fixed "Veterans Day" 11 11 :observed :us-federal-in-lieu :from 1978
+   :authority ("Pub. L. 94-97" "5 U.S.C. § 6103(a)–(b)" "Exec. Order No. 11582 § 3(a)"))
+  (:nth-weekday "Thanksgiving Day" 11 :thursday 4 :from 1941
+   :authority "5 U.S.C. § 6103(a) (fourth Thursday in November)")
+  (:fixed "Christmas Day" 12 25 :observed :us-federal-in-lieu
+   :authority ("5 U.S.C. § 6103(a)–(b)" "Exec. Order No. 11582 § 3(a)")))
 
-;;;; England & Wales bank holidays (Banking and Financial Dealings Act 1971
-;;;; and later proclamations). Early May bank holiday from 1978.
-;;;; Christmas+Boxing use exclusive :NEXT-WEEKDAY so a weekend pair becomes
-;;;; Mon+Tue rather than both landing on Monday.
-;;;; https://www.gov.uk/bank-holidays
+;;;; England & Wales bank holidays — Banking and Financial Dealings Act 1971
+;;;; Sch.1 (statutory list) plus Royal Proclamations under s.1 for New Year's
+;;;; Day, Early May, Good Friday (common law), Christmas Day, and weekend
+;;;; substitutes published at https://www.gov.uk/bank-holidays.
+;;;; Christmas+Boxing use :UK-PROCLAMATION-SUBSTITUTE (exclusive next weekday).
 (define-calendar uk-bank-holidays-calendar (:register "GBLO")
-  (:fixed "New Year's Day" 1 1 :observed :next-weekday :from 1974)
-  (:easter "Good Friday" -2)
-  (:easter "Easter Monday" 1)
-  (:nth-weekday "Early May Bank Holiday" 5 :monday 1 :from 1978)
-  (:nth-weekday "Spring Bank Holiday" 5 :monday -1 :from 1971)
-  (:nth-weekday "Summer Bank Holiday" 8 :monday -1 :from 1971)
-  (:fixed "Christmas Day" 12 25 :observed :next-weekday)
-  (:fixed "Boxing Day" 12 26 :observed :next-weekday))
+  (:fixed "New Year's Day" 1 1
+   :observed :uk-proclamation-substitute :from 1974
+   :authority ("Banking and Financial Dealings Act 1971 s.1 (proclamation)"
+               "https://www.gov.uk/bank-holidays"))
+  (:easter "Good Friday" -2
+   :authority ("Common law Good Friday; Royal Proclamations"
+               "https://www.gov.uk/bank-holidays"))
+  (:easter "Easter Monday" 1
+   :authority "Banking and Financial Dealings Act 1971 Sch.1 para.1")
+  (:nth-weekday "Early May Bank Holiday" 5 :monday 1 :from 1978
+   :authority ("Banking and Financial Dealings Act 1971 s.1 (proclamation, from 1978)"
+               "https://www.gov.uk/bank-holidays"))
+  (:nth-weekday "Spring Bank Holiday" 5 :monday -1 :from 1971
+   :authority "Banking and Financial Dealings Act 1971 Sch.1 para.1 (last Monday in May)")
+  (:nth-weekday "Summer Bank Holiday" 8 :monday -1 :from 1971
+   :authority "Banking and Financial Dealings Act 1971 Sch.1 para.1 (last Monday in August)")
+  (:fixed "Christmas Day" 12 25
+   :observed :uk-proclamation-substitute
+   :authority ("Common law Christmas Day; Banking and Financial Dealings Act 1971 s.1 proclamations for substitutes"
+               "https://www.gov.uk/bank-holidays"))
+  (:fixed "Boxing Day" 12 26
+   :observed :uk-proclamation-substitute
+   :authority ("Banking and Financial Dealings Act 1971 Sch.1 para.1 (26 Dec if not Sunday; 27 Dec if 25 or 26 is Sunday); proclamations for Saturday substitutes"
+               "https://www.legislation.gov.uk/ukpga/1971/80/schedule/1"
+               "https://www.gov.uk/bank-holidays")))
 
 (defun weekend-only-calendar () (make-instance 'weekend-only-calendar))
 (defun target-calendar () (make-instance 'target-calendar))
