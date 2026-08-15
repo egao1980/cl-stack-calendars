@@ -61,8 +61,10 @@
     (ok (holiday-p cal (make-date 2023 2 24)))
     (ok (holiday-p cal (make-date 2023 5 8)))
     (ok (ru-decree-for-year 2023))
-    (ok (ru-decree-for-year 2015))
-    (ng (ru-decree-for-year 2014))))
+    (ok (ru-decree-for-year 2014))
+    (ok (ru-decree-for-year 1991))
+    (ng (ru-decree-for-year 2004))
+    (ng (ru-decree-for-year 1998))))
 
 (deftest ru-decree-2018-long-may
   "Постановление № 1250: 28 апр → 30 апр (работа в субботу)."
@@ -70,6 +72,49 @@
     (ok (holiday-p cal (make-date 2018 4 30)))
     (ok (business-day-p cal (make-date 2018 4 28)))
     (ok (holiday-p cal (make-date 2018 3 9)))))
+
+(deftest ru-decree-corpus-span
+  "Discretionary acts encoded from 1991 through current horizon."
+  (ok (ru-decree-for-year 1991))
+  (ok (ru-decree-for-year 2000))            ; ФЗ-217, not a постановление
+  (ok (ru-decree-for-year 2005))
+  (ok (ru-decree-for-year 2012))
+  (ok (ru-decree-for-year 2026))
+  (ok (>= (length (ru-transfer-decrees)) 30)))
+
+(deftest ru-decree-1992-january
+  "ПП № 1: 4 янв → 6 янв."
+  (let ((cal (russian-holidays-calendar :year 1992)))
+    (ok (holiday-p cal (make-date 1992 1 6)))
+    (ok (business-day-p cal (make-date 1992 1 4)))))
+
+(deftest ru-decree-2000-federal-law
+  "ФЗ-217: 6 мая → 8 мая."
+  (let ((cal (russian-holidays-calendar :year 2000)))
+    (ok (holiday-p cal (make-date 2000 5 8)))
+    (ok (business-day-p cal (make-date 2000 5 6)))))
+
+(deftest ru-decree-2005-may-bridge
+  "ПП № 262: 14 мая → 10 мая."
+  (let ((cal (russian-holidays-calendar :year 2005)))
+    (ok (holiday-p cal (make-date 2005 5 10)))
+    (ok (business-day-p cal (make-date 2005 5 14)))))
+
+(deftest ru-decree-2012-amended-may
+  "ПП № 581 ред. № 201: 5 мая → 7 мая, 12 мая → 8 мая."
+  (let ((cal (russian-holidays-calendar :year 2012)))
+    (ok (holiday-p cal (make-date 2012 5 7)))
+    (ok (holiday-p cal (make-date 2012 5 8)))
+    (ok (business-day-p cal (make-date 2012 5 5)))
+    (ok (business-day-p cal (make-date 2012 5 12)))))
+
+(deftest ru-decree-cross-year-1993-1994
+  "ПП № 1317: 4 янв 1994 → 31 дек 1993 (touches both years)."
+  (let ((cal-93 (russian-holidays-calendar :year 1993))
+        (cal-94 (russian-holidays-calendar :year 1994)))
+    (ok (holiday-p cal-93 (make-date 1993 12 31)))
+    (ok (business-day-p cal-94 (make-date 1994 1 4)))
+    (ok (holiday-p cal-94 (make-date 1994 3 7)))))
 
 (deftest ussr-victory-day-from-1965
   (let ((cal (ussr-holidays-calendar)))

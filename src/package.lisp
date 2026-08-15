@@ -120,7 +120,10 @@
    #:russian-holidays-calendar
    #:make-russian-holidays-calendar
    #:load-ru-transfer-decrees
+   #:ru-transfer-decrees
    #:ru-decree-for-year
+   #:ru-transfers-for-year
+   #:ru-working-days-for-year
    #:japan-holidays-calendar
    #:china-holidays-calendar
    #:load-cn-transfer-notices

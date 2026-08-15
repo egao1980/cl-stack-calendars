@@ -50,7 +50,31 @@ Each FROM weekend is also recorded as a compensatory WORKING day."
       (setf *ru-transfer-decrees* (load-ru-transfer-decrees))))
 
 (defun ru-decree-for-year (year)
+  "Plist for the decree block keyed by YEAR, or NIL if none was issued that year.
+   Cross-year transfers (e.g. 1993-12-31 ← 1994-01-04) still apply via
+   RU-TRANSFERS-FOR-YEAR / RU-WORKING-DAYS-FOR-YEAR."
   (cdr (assoc year (ru-transfer-decrees))))
+
+(defun %transfer-touches-year-p (tr year)
+  (or (let ((to (calendar-transfer-to tr)))
+        (and to (= (date-year to) year)))
+      (let ((from (calendar-transfer-from tr)))
+        (and from (= (date-year from) year)))))
+
+(defun ru-transfers-for-year (year)
+  "All decree transfers whose FROM or TO falls in YEAR (any decree block)."
+  (loop for (_year . plist) in (ru-transfer-decrees)
+        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
+                             (getf plist :transfers))))
+
+(defun ru-working-days-for-year (year)
+  "Compensatory working days (FROM dates) that fall in YEAR."
+  (loop for tr in (ru-transfers-for-year year)
+        for from = (calendar-transfer-from tr)
+        when (and from (= (date-year from) year))
+        collect (make-calendar-working-day
+                 :date from
+                 :authority (calendar-transfer-authority tr))))
 
 ;;;; --- USSR (late Soviet non-working holidays; settlement-oriented) --------
 ;;;; List follows common post-1965 / 1977-Constitution practice. Earlier
@@ -136,11 +160,10 @@ Each FROM weekend is also recorded as a compensatory WORKING day."
   (make-instance 'ussr-holidays-calendar))
 
 (defun russian-holidays-calendar (&key year transfers working-days)
-  "RF holiday calendar. When YEAR is given, attach that year's Government
-decree transfers (FROM weekend → working; TO → extra day off)."
-  (let* ((decree (when year (ru-decree-for-year year)))
-         (tr (or transfers (getf decree :transfers)))
-         (wd (or working-days (getf decree :working))))
+  "RF holiday calendar. When YEAR is given, attach every decree transfer
+whose FROM or TO falls in that year (FROM → working; TO → extra day off)."
+  (let ((tr (or transfers (when year (ru-transfers-for-year year))))
+        (wd (or working-days (when year (ru-working-days-for-year year)))))
     (make-instance 'russian-holidays-calendar
                    :transfers tr
                    :working-days wd)))

@@ -36,7 +36,7 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `RU` | [ТК РФ ст. 112](http://www.consultant.ru/document/cons_doc_LAW_34683/) | Non-working holidays + automatic weekend transfer (except 1–8 Jan) |
 | `RU` | ФЗ от 29.12.2004 № 201-ФЗ | NY 1–5 Jan, Unity Day 4 Nov; drop 7 Nov & 12 Dec (from 2005) |
 | `RU` | ФЗ от 23.04.2012 № 35-ФЗ | NY block adds 6 and 8 Jan |
-| `RU` | Annual постановления Правительства «О переносе выходных дней» | Decree transfers in `data/ru/transfers.sexp` (**2015–2026**; pre-2015 same pattern under ТК ст. 112) |
+| `RU` | Discretionary перенос acts (ПП / ФЗ) | Full corpus in `data/ru/transfers.sexp` (**1991–2026**); gaps 1998 & 2004 = no discretionary act (TK-only). 2000 = ФЗ-217 |
 | `USSR` | КЗоТ СССР / Указы Президиума ВС | Late-Soviet non-working days (see starter-russian.lisp) |
 | `JP` | [国民の祝日に関する法律](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html) | 祝日 list; Art. 3(2) 振替; Art. 3(3) 国民の休日 |
 | `JP` | 春分日/秋分日 | Astronomical equinox civil date at Tokyo (`+tokyo+`) |
