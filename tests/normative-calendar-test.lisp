@@ -29,6 +29,48 @@
     (ok (business-day-p cal (make-date 2026 2 14))) ; 上班
     (ng (weekend-day-p cal (make-date 2026 2 14)))))
 
+(deftest china-tiaoxiu-corpus-span
+  "国办调休 notices encoded 1999–2026."
+  (ok (cn-notice-for-year 1999))
+  (ok (cn-notice-for-year 2008))            ; first 清明/端午/中秋 year
+  (ok (cn-notice-for-year 2015))            ; 抗战胜利日国发明电
+  (ok (cn-notice-for-year 2025))
+  (ok (cn-notice-for-year 2026))
+  (ok (>= (length (cn-transfer-notices)) 28)))
+
+(deftest china-tiaoxiu-2008-qingming
+  "国办发明电〔2007〕52号: 清明 4/4–6."
+  (let ((cal (china-holidays-calendar :year 2008)))
+    (ok (holiday-p cal (make-date 2008 4 4)))
+    (ok (holiday-p cal (make-date 2008 4 5)))
+    (ok (holiday-p cal (make-date 2008 4 6)))
+    (ok (business-day-p cal (make-date 2008 2 2)))
+    (ok (holiday-p cal (make-date 2008 2 6))))) ; 除夕 in window
+
+(deftest china-tiaoxiu-2015-victory-day
+  "国发明电〔2015〕1号: 9/3–5 off, 9/6 上班."
+  (let ((cal (china-holidays-calendar :year 2015)))
+    (ok (holiday-p cal (make-date 2015 9 3)))
+    (ok (holiday-p cal (make-date 2015 9 4)))
+    (ok (holiday-p cal (make-date 2015 9 5)))
+    (ok (business-day-p cal (make-date 2015 9 6)))))
+
+(deftest china-tiaoxiu-cross-year-2019-ny
+  "2019元旦 window spans 2018-12-30..2019-01-01; 2018-12-29 上班."
+  (let ((cal-18 (china-holidays-calendar :year 2018))
+        (cal-19 (china-holidays-calendar :year 2019)))
+    (ok (holiday-p cal-18 (make-date 2018 12 30)))
+    (ok (business-day-p cal-18 (make-date 2018 12 29)))
+    (ok (holiday-p cal-19 (make-date 2019 1 1)))))
+
+(deftest china-tiaoxiu-2020-may-golden
+  "国办发明电〔2019〕16号: 劳动节 5/1–5, 4/26+5/9 上班."
+  (let ((cal (china-holidays-calendar :year 2020)))
+    (ok (holiday-p cal (make-date 2020 5 1)))
+    (ok (holiday-p cal (make-date 2020 5 5)))
+    (ok (business-day-p cal (make-date 2020 4 26)))
+    (ok (business-day-p cal (make-date 2020 5 9)))))
+
 (deftest india-national-three
   (let ((cal (india-holidays-calendar)))
     (ok (holiday-p cal (make-date 2026 1 26)))

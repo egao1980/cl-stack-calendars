@@ -49,7 +49,27 @@
       (setf *cn-transfer-notices* (load-cn-transfer-notices))))
 
 (defun cn-notice-for-year (year)
+  "Plist for the notice block keyed by YEAR, or NIL."
   (cdr (assoc year (cn-transfer-notices))))
+
+(defun %cn-transfer-touches-year-p (tr year)
+  (or (let ((to (calendar-transfer-to tr)))
+        (and to (= (date-year to) year)))
+      (let ((from (calendar-transfer-from tr)))
+        (and from (= (date-year from) year)))))
+
+(defun cn-transfers-for-year (year)
+  "All 调休 TO days whose date falls in YEAR (any notice block)."
+  (loop for (_y . plist) in (cn-transfer-notices)
+        nconc (remove-if-not (lambda (tr) (%cn-transfer-touches-year-p tr year))
+                             (getf plist :transfers))))
+
+(defun cn-working-days-for-year (year)
+  "上班 days that fall in YEAR (any notice block)."
+  (loop for (_y . plist) in (cn-transfer-notices)
+        nconc (loop for wd in (getf plist :working)
+                    when (= (date-year (calendar-working-day-date wd)) year)
+                    collect wd)))
 
 (define-calendar china-holidays-calendar (:register "CN")
   (:fixed "元旦" 1 1 :from 1949
@@ -91,10 +111,10 @@
    :authority "全国年节及纪念日放假办法（国庆节）"))
 
 (defun china-holidays-calendar (&key year transfers working-days)
-  "PRC holiday calendar. YEAR attaches that year's 国办调休 notice."
-  (let* ((notice (when year (cn-notice-for-year year)))
-         (tr (or transfers (getf notice :transfers)))
-         (wd (or working-days (getf notice :working))))
+  "PRC holiday calendar. YEAR attaches every 国办调休 TO/上班 day that
+falls in that year (cross-year NY blocks included)."
+  (let ((tr (or transfers (when year (cn-transfers-for-year year))))
+        (wd (or working-days (when year (cn-working-days-for-year year)))))
     (make-instance 'china-holidays-calendar
                    :transfers tr
                    :working-days wd)))

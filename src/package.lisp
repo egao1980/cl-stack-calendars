@@ -127,6 +127,10 @@
    #:japan-holidays-calendar
    #:china-holidays-calendar
    #:load-cn-transfer-notices
+   #:cn-transfer-notices
+   #:cn-notice-for-year
+   #:cn-transfers-for-year
+   #:cn-working-days-for-year
    #:cn-notice-for-year
    #:india-holidays-calendar
    #:germany-holidays-calendar

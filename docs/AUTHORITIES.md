@@ -41,7 +41,7 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `JP` | [国民の祝日に関する法律](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html) | 祝日 list; Art. 3(2) 振替; Art. 3(3) 国民の休日 |
 | `JP` | 春分日/秋分日 | Astronomical equinox civil date at Tokyo (`+tokyo+`) |
 | `CN` | 《全国年节及纪念日放假办法》 | Statutory festivals; lunar dates via Beijing astronomy |
-| `CN` | Annual 国办发明电 调休 | Transfers + 上班 in `data/cn/transfers.sexp` |
+| `CN` | Annual 国办发明电 / 国发明电 调休 | Full corpus in `data/cn/transfers.sexp` (**1999–2026**; 澳门回归 + Y2K元旦 through current). Cross-year NY blocks via FROM/TO year touch |
 | `IN` | Negotiable Instruments Act 1881 / DoPT | Three national + common gazetted (GF, Christmas) |
 | `ID` `PK` `NG` `BR` `BD` `MX` `ET` `PH` `EG` `VN` `CD` `TR` `IR` `TH` `KR` `…` | National statutes (see `starter-asia/americas/africa/mena.lisp`) | Research window `[max(1900,formation), now]` with `:from`/`:to` eras |
 | `DE` | Feiertagsgesetze / Einigungsvertrag Art. 2 | Bundeseinheitliche Feiertage |
