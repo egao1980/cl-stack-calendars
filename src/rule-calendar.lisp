@@ -8,15 +8,26 @@
    (sandwich-holidays-p :initarg :sandwich-holidays-p :initform nil
                         :accessor calendar-sandwich-holidays-p)
    (sandwich-authority :initarg :sandwich-authority :initform nil
-                       :accessor calendar-sandwich-authority))
+                       :accessor calendar-sandwich-authority)
+   ;; Decree transfers: TO dates become holidays (перенос выходных).
+   (transfers :initarg :transfers :initform nil :accessor calendar-transfers)
+   ;; Compensatory working Saturdays/Sundays (override weekend-day-p).
+   (working-days :initarg :working-days :initform nil :accessor calendar-working-days))
   (:documentation "A HOLIDAY-CALENDAR driven by a declarative list of holiday
 RULES — normally built via DEFINE-CALENDAR. Observance policies on rules must
-cite their normative authority (:AUTHORITY)."))
+cite their normative authority (:AUTHORITY). TRANSFERS encode annual Government
+decree weekend moves; WORKING-DAYS encode compensatory work weekends."))
+
+(defmethod weekend-day-p ((calendar rule-calendar) date)
+  (and (member (date-day-of-week date) (calendar-weekend-days calendar))
+       (not (find date (calendar-working-days calendar)
+                  :key #'calendar-working-day-date :test #'=))
+       t))
 
 (defun %rule-calendar-year-map (calendar year)
   "Hash-table RD → holiday name for all RULE occurrences in YEAR, applying
-exclusive observance so later rules skip dates claimed by earlier ones.
-When CALENDAR-SANDWICH-HOLIDAYS-P, also apply 祝日法-style sandwiched days."
+exclusive observance, optional sandwich days, and decree TRANSFERS whose
+TO date falls in YEAR (or adjacent for Dec 31 ↔ Jan moves)."
   (let ((weekend-days (calendar-weekend-days calendar))
         (claimed '())
         (pairs '()))
@@ -27,6 +38,11 @@ When CALENDAR-SANDWICH-HOLIDAYS-P, also apply 祝日法-style sandwiched days."
           (push d claimed))))
     (when (calendar-sandwich-holidays-p calendar)
       (setf pairs (apply-sandwich-holidays pairs)))
+    (dolist (tr (calendar-transfers calendar))
+      (let ((to (calendar-transfer-to tr)))
+        (when (and to (<= (1- year) (date-year to) (1+ year)))
+          (push (cons to (or (calendar-transfer-name tr) "перенос выходного")) pairs)
+          (push to claimed))))
     (let ((map (make-hash-table :test #'eql)))
       (dolist (pair pairs)
         (setf (gethash (date-rd (car pair)) map) (cdr pair)))
@@ -100,6 +116,7 @@ Statute-named OBSERVED (prefer these):
   :US-FEDERAL-IN-LIEU          5 U.S.C. § 6103(b) + EO 11582 § 3(a)
   :UK-PROCLAMATION-SUBSTITUTE  BFDA 1971 + Royal Proclamations / gov.uk
   :JP-FURIKAE                  祝日法第3条第2項 (Sunday only)
+  :RU-TK-112-TRANSFER          ТК РФ ст. 112 ч. 2 (except Jan 1–8)
 
 Mechanical primitives (:NEAREST-WEEKDAY, :NEXT-WEEKDAY, …) are implementation
 atoms — do not use them in starters without an AUTHORITY that implies them.
@@ -107,7 +124,10 @@ atoms — do not use them in starters without an AUTHORITY that implies them.
 :BRIDGE :ADJACENT is not a general legal default; only with AUTHORITY.
 
 :SANDWICH-HOLIDAYS-P with :SANDWICH-AUTHORITY enables 祝日法第3条第3項-style
-weekdays sandwiched between two holidays."
+weekdays sandwiched between two holidays.
+
+Annual Government decree transfers are attached at instance time via
+CALENDAR-TRANSFERS / MAKE-RUSSIAN-HOLIDAYS-CALENDAR — not in this macro."
   `(progn
      (defclass ,name (rule-calendar) ()
        (:default-initargs

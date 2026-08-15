@@ -10,13 +10,15 @@
                (:file "conditions")
                (:file "protocol")
                (:file "rules")
+               (:file "transfer")
                (:file "rule-calendar")
                (:file "data-calendar")
                (:file "composite-calendar")
                (:file "versioned-calendar")
                (:file "trading-session")
                (:file "registry")
-               (:file "starter-calendars"))
+               (:file "starter-calendars")
+               (:file "starter-russian"))
   :in-order-to ((test-op (test-op "cl-stack-calendars/tests"))))
 
 (defsystem "cl-stack-calendars/tests"
@@ -25,6 +27,7 @@
   :serial t
   :components ((:file "package")
                (:file "business-day-test")
+               (:file "russian-calendar-test")
                (:file "trading-session-test"))
   :perform (test-op (o c)
              (unless (symbol-call :rove :run c)

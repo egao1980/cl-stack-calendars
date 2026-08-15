@@ -34,7 +34,11 @@
     (:jp-kokumin-no-kyujitsu
      :implements (:sandwich)
      :authority ("国民の祝日に関する法律第3条第3項 — その前日及び翌日が国民の祝日である日は休日とする")
-     :uri ("https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html")))
+     :uri ("https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html"))
+    (:ru-tk-112-transfer
+     :implements (:ru-tk-112-transfer)
+     :authority ("Трудовой кодекс РФ ст. 112 ч. 2 — при совпадении выходного и нерабочего праздничного дня выходной переносится на следующий рабочий день, за исключением праздников 1–8 января (их переносит Правительство РФ)")
+     :uri ("http://www.consultant.ru/document/cons_doc_LAW_34683/")))
   "Normative observance policies. Prefer these over mechanical primitives in
 starter calendars; primitives exist only as implementation atoms.")
 
@@ -173,11 +177,18 @@ EO 11582 § 3(a) for a Monday–Friday basic workweek)."
           return d))
 
 (defun canonicalize-observed (observed)
-  "Map statute-named policies onto mechanical atoms (or leave JP-FURIKAE)."
+  "Map statute-named policies onto mechanical atoms (or leave specialty policies)."
   (case observed
     (:us-federal-in-lieu :nearest-weekday)
     (:uk-proclamation-substitute :next-weekday)
     (otherwise observed)))
+
+(defun ru-new-year-holiday-block-p (date)
+  "ТК РФ ст. 112: нерабочие праздничные дни 1–8 января исключены из
+автоматического переноса выходного на следующий рабочий день —
+их переносит Правительство РФ отдельным постановлением."
+  (and (= (date-month date) 1)
+       (<= 1 (date-day date) 8)))
 
 (defun apply-move-observed (date observed weekend-days claimed)
   "Single moved observance date for move-style policies."
@@ -215,18 +226,25 @@ CLAIMED makes exclusive next-weekday substitutes skip collisions (UK Christmas
             ((:nearest-weekday :next-weekday :previous-weekday :monday)
              (list (apply-move-observed nominal policy weekend-days claimed)))
             (:substitute-next
-             ;; Mechanical: any weekend day → also next free weekday.
-             ;; Prefer :JP-FURIKAE when encoding Japanese law (Sunday only).
              (if (weekendp nominal weekend-days)
                  (list nominal
                        (shift-forward-past-weekend-and-claimed nominal weekend-days claimed))
                  (list nominal)))
             (:jp-furikae
-             ;; 祝日法第3条第2項: Sunday only; Saturday does not transfer.
              (if (sundayp nominal)
                  (list nominal
                        (shift-forward-past-weekend-and-claimed nominal weekend-days claimed))
-                 (list nominal)))))
+                 (list nominal)))
+            (:ru-tk-112-transfer
+             ;; ТК РФ ст. 112 ч. 2: weekend∩holiday → next workday,
+             ;; except Jan 1–8 (Government decree transfers those).
+             (cond ((not (weekendp nominal weekend-days))
+                    (list nominal))
+                   ((ru-new-year-holiday-block-p nominal)
+                    (list nominal))
+                   (t (list nominal
+                            (shift-forward-past-weekend-and-claimed
+                             nominal weekend-days claimed)))))))
          (bridged (apply-bridge-days base weekend-days bridge)))
     (remove-if (lambda (d) (member d claimed :test #'=)) bridged)))
 

@@ -49,6 +49,19 @@
    #:holiday-rule-from
    #:holiday-rule-to
 
+   ;; decree transfers / compensatory working days
+   #:calendar-transfer
+   #:make-calendar-transfer
+   #:calendar-transfer-from
+   #:calendar-transfer-to
+   #:calendar-transfer-name
+   #:calendar-transfer-authority
+   #:calendar-working-day
+   #:make-calendar-working-day
+   #:calendar-working-day-date
+   #:calendar-transfers
+   #:calendar-working-days
+
    ;; data-calendar
    #:data-calendar
    #:calendar-holidays-table
@@ -101,6 +114,11 @@
    #:weekend-only-calendar
    #:target-calendar
    #:us-federal-holidays-calendar
-   #:uk-bank-holidays-calendar))
+   #:uk-bank-holidays-calendar
+   #:ussr-holidays-calendar
+   #:russian-holidays-calendar
+   #:make-russian-holidays-calendar
+   #:load-ru-transfer-decrees
+   #:ru-decree-for-year))
 
 (in-package #:cl-stack-calendars)
