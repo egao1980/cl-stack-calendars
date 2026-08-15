@@ -35,6 +35,38 @@
     (ok (holiday-p cal (make-date 2021 6 19)))
     (ok (holiday-p cal (make-date 2022 6 19)))))
 
+(deftest uk-christmas-boxing-exclusive-next
+  "Sat+Sun Christmas pair → Mon Christmas + Tue Boxing (not both Monday)."
+  (let ((cal (uk-bank-holidays-calendar)))
+    ;; 2021-12-25 Saturday, 2021-12-26 Sunday
+    (ok (holiday-p cal (make-date 2021 12 27))) ; Mon — Christmas
+    (ok (holiday-p cal (make-date 2021 12 28))) ; Tue — Boxing
+    (ng (business-day-p cal (make-date 2021 12 27)))
+    (ng (business-day-p cal (make-date 2021 12 28)))))
+
+(deftest substitute-next-keeps-weekend-and-weekday
+  (let ((cal (make-instance 'rule-calendar
+               :name "jp-style"
+               :rules (list (make-fixed-holiday-rule
+                             :name "X"
+                             :month 1 :day 1
+                             :observed :substitute-next)))))
+    ;; 2023-01-01 Sunday → substitute Monday 2023-01-02
+    (ok (holiday-p cal (make-date 2023 1 1)))
+    (ok (holiday-p cal (make-date 2023 1 2)))
+    (ng (holiday-p cal (make-date 2023 1 3)))))
+
+(deftest bridge-adjacent-long-weekend
+  (let ((cal (make-instance 'rule-calendar
+               :name "puente"
+               :rules (list (make-fixed-holiday-rule
+                             :name "National Day"
+                             :month 5 :day 2   ; 2023-05-02 was Tuesday
+                             :bridge :adjacent)))))
+    (ok (holiday-p cal (make-date 2023 5 2)))  ; Tue
+    (ok (holiday-p cal (make-date 2023 5 1)))  ; Mon bridge
+    (ng (holiday-p cal (make-date 2023 5 3)))))
+
 (deftest target-good-friday
   (let ((cal (target-calendar)))
     (ok (holiday-p cal (make-date 2024 3 29)))

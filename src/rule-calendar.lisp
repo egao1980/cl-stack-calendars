@@ -8,19 +8,27 @@
 RULES (fixed dates, nth-weekday-of-month, Easter offsets) — normally built via
 DEFINE-CALENDAR."))
 
-(defmethod holiday-p ((calendar rule-calendar) date)
-  (let ((year (date-year date))
-        (weekend-days (calendar-weekend-days calendar)))
+(defun %rule-calendar-year-map (calendar year)
+  "Hash-table RD → holiday name for all RULE occurrences in YEAR, applying
+exclusive observance so later rules skip dates claimed by earlier ones."
+  (let ((weekend-days (calendar-weekend-days calendar))
+        (claimed '())
+        (map (make-hash-table :test #'eql)))
     (dolist (rule (calendar-rules calendar))
-      ;; An :OBSERVED shift (or, in principle, an Easter offset near a year
-      ;; boundary) can move a rule's occurrence into the adjacent year, so a
-      ;; rule "for" year Y-1 or Y+1 may still land on a date in year Y — most
-      ;; famously New Year's Day (Jan 1) shifting back to Dec 31 of the prior
-      ;; year when Jan 1 is a Saturday.
-      (dolist (y (list (1- year) year (1+ year)))
-        (let ((occurrence (rule-occurrence rule y weekend-days)))
-          (when (and occurrence (= occurrence date))
-            (return-from holiday-p (values t (holiday-rule-name rule)))))))
+      (let ((dates (rule-occurrences rule year weekend-days claimed)))
+        (dolist (d dates)
+          (setf (gethash (date-rd d) map) (or (holiday-rule-name rule) t))
+          (push d claimed))))
+    map))
+
+(defmethod holiday-p ((calendar rule-calendar) date)
+  (let ((year (date-year date)))
+    ;; Observance / bridge / exclusive-next can move a rule's dates into an
+    ;; adjacent year (NYD Sat→prior Fri; Christmas+Boxing into early January).
+    (dolist (y (list (1- year) year (1+ year)))
+      (let ((name (gethash (date-rd date) (%rule-calendar-year-map calendar y))))
+        (when name
+          (return-from holiday-p (values t (unless (eq name t) name))))))
     (values nil nil)))
 
 ;;; --- DEFINE-CALENDAR DSL -----------------------------------------------
@@ -40,55 +48,53 @@ matching holiday-rule struct."
     (destructuring-bind (kind &rest args) clause
       (ecase kind
         (:fixed
-         (destructuring-bind (name month day &key observed from to) args
+         (destructuring-bind (name month day &key observed bridge from to) args
            `(make-fixed-holiday-rule :name ,name :month ,month :day ,day
-                                      :observed ,observed
+                                      :observed ,observed :bridge ,bridge
                                       :from ,(%bound-form from)
                                       :to ,(%bound-form to))))
         (:nth-weekday
-         (destructuring-bind (name month weekday nth &key from to) args
+         (destructuring-bind (name month weekday nth &key observed bridge from to) args
            `(make-nth-weekday-holiday-rule :name ,name :month ,month
                                             :weekday (normalize-weekday ,weekday)
                                             :nth ,nth
+                                            :observed ,observed :bridge ,bridge
                                             :from ,(%bound-form from)
                                             :to ,(%bound-form to))))
         (:easter
-         (destructuring-bind (name offset &key orthodox from to) args
+         (destructuring-bind (name offset &key orthodox observed bridge from to) args
            `(make-easter-holiday-rule :name ,name :offset ,offset :orthodox ,orthodox
+                                       :observed ,observed :bridge ,bridge
                                        :from ,(%bound-form from)
                                        :to ,(%bound-form to))))))))
 
 (defmacro define-calendar (name (&key register (weekend-days ''(6 7))) &body rules)
   "Define NAME as a RULE-CALENDAR subclass built from RULES clauses:
 
-  (:fixed NAME MONTH DAY &key OBSERVED FROM TO)
-    A fixed month/day holiday (e.g. Christmas). OBSERVED is NIL (default),
-    :NEAREST-WEEKDAY (US-style: Saturday->Friday, Sunday->Monday),
-    :NEXT-WEEKDAY (UK-style: shift forward past the weekend), or
-    :PREVIOUS-WEEKDAY (shift backward past the weekend).
+  (:fixed NAME MONTH DAY &key OBSERVED BRIDGE FROM TO)
+  (:nth-weekday NAME MONTH WEEKDAY NTH &key OBSERVED BRIDGE FROM TO)
+  (:easter NAME OFFSET &key ORTHODOX OBSERVED BRIDGE FROM TO)
 
-  (:nth-weekday NAME MONTH WEEKDAY NTH &key FROM TO)
-    The NTH (1-5, or -1 for last) WEEKDAY (1-7, or a keyword like :MONDAY)
-    of MONTH — e.g. (:nth-weekday \"Memorial Day\" 5 :monday -1).
+OBSERVED rearranges a holiday that coincides with a weekend:
 
-  (:easter NAME OFFSET &key ORTHODOX FROM TO)
-    OFFSET days from Western (or, if ORTHODOX, Orthodox) Easter Sunday —
-    e.g. (:easter \"Good Friday\" -2).
+  NIL                 celebrate the nominal date only
+  :NEAREST-WEEKDAY    US federal move (Sat→Fri, Sun→Mon)
+  :NEXT-WEEKDAY       move to the next free weekday (exclusive vs earlier rules)
+  :PREVIOUS-WEEKDAY   move to the previous weekday
+  :MONDAY             Commonwealth Mondayise (Sat/Sun → following free Monday)
+  :SUBSTITUTE-NEXT    keep the nominal date and add the next free weekday
+                      (Japan 振替休日 style)
 
-FROM/TO are the civil validity window for the rule (when the holiday
-existed), independent of versioned calendar-as-of snapshots:
+BRIDGE grows a continuous holiday season around an observed weekday:
 
-  - year integer — inclusive Gregorian year bound
-  - (YEAR MONTH DAY) — inclusive calendar-date bound
-  - NIL — open-ended
+  :ADJACENT           Tuesday → also Monday; Thursday → also Friday (puente)
 
-Example: Juneteenth (:fixed \"Juneteenth\" 6 19 :observed :nearest-weekday
-:from (2021 6 19)). WEEKEND-DAYS is a form evaluating to a list of ISO
-weekday numbers (1=Monday..7=Sunday); default '(6 7). When :REGISTER is
-given (a string), an instance is also REGISTER-CALENDAR'd under that name.
+FROM/TO are the civil validity window (year integer, (Y M D), or NIL).
+Rules are applied in order; :NEXT-WEEKDAY/:MONDAY/:SUBSTITUTE-NEXT skip
+dates already claimed so Christmas+Boxing don't collapse onto one Monday.
 
-Expands to a DEFCLASS of NAME (a subclass of RULE-CALENDAR); (MAKE-INSTANCE
-'NAME) builds a working calendar."
+WEEKEND-DAYS defaults to '(6 7). :REGISTER (string) also REGISTER-CALENDAR's
+an instance."
   `(progn
      (defclass ,name (rule-calendar) ()
        (:default-initargs

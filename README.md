@@ -6,6 +6,18 @@ Depends on [`datetime-protocol`](https://github.com/egao1980/datetime-protocol) 
 
 Holiday rules carry civil `:from`/`:to` validity windows (year or `(y m d)` date) — when the holiday *existed*, sourced from statute / central-bank calendars. That is separate from versioned `calendar-as-of` snapshots (what was *known* at booking time).
 
+Weekend coincidence and long-weekend shaping use `:observed` / `:bridge`:
+
+| Policy | Effect |
+|--------|--------|
+| `:nearest-weekday` | US federal move (Sat→Fri, Sun→Mon) |
+| `:next-weekday` | move to next free weekday (exclusive vs earlier rules — UK Christmas+Boxing) |
+| `:monday` | Commonwealth Mondayise |
+| `:substitute-next` | keep nominal + add next weekday (Japan 振替) |
+| `:bridge :adjacent` | Tue→also Mon, Thu→also Fri (puente) |
+
+Proclamation-only rearrangements (Russia/China “work Saturdays”) stay in `data-calendar` snapshots.
+
 ```lisp
 (asdf:load-system "cl-stack-calendars")
 (use-package :stack-calendars)

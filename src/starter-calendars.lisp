@@ -45,6 +45,8 @@
 
 ;;;; England & Wales bank holidays (Banking and Financial Dealings Act 1971
 ;;;; and later proclamations). Early May bank holiday from 1978.
+;;;; Christmas+Boxing use exclusive :NEXT-WEEKDAY so a weekend pair becomes
+;;;; Mon+Tue rather than both landing on Monday.
 ;;;; https://www.gov.uk/bank-holidays
 (define-calendar uk-bank-holidays-calendar (:register "GBLO")
   (:fixed "New Year's Day" 1 1 :observed :next-weekday :from 1974)
