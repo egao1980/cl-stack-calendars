@@ -4,19 +4,17 @@ Holiday and trading calendars for [cl-stack](https://github.com/egao1980/cl-stac
 
 Depends on [`datetime-protocol`](https://github.com/egao1980/datetime-protocol) (+ `/calendars`). Trading-session tests need [`cl-stack-tzdata`](https://github.com/egao1980/cl-stack-tzdata).
 
-Holiday rules carry civil `:from`/`:to` validity windows (year or `(y m d)` date) — when the holiday *existed*, sourced from statute / central-bank calendars. That is separate from versioned `calendar-as-of` snapshots (what was *known* at booking time).
+Holiday rules cite normative **`:authority`** (statute / EO / ECB decision / proclamation) for civil `:from`/`:to` and for observance. See [`docs/AUTHORITIES.md`](docs/AUTHORITIES.md).
 
-Weekend coincidence and long-weekend shaping use `:observed` / `:bridge`:
+Statute-named `:observed` (prefer these):
 
-| Policy | Effect |
-|--------|--------|
-| `:nearest-weekday` | US federal move (Sat→Fri, Sun→Mon) |
-| `:next-weekday` | move to next free weekday (exclusive vs earlier rules — UK Christmas+Boxing) |
-| `:monday` | Commonwealth Mondayise |
-| `:substitute-next` | keep nominal + add next weekday (Japan 振替) |
-| `:bridge :adjacent` | Tue→also Mon, Thu→also Fri (puente) |
+| Policy | Law |
+|--------|-----|
+| `:us-federal-in-lieu` | 5 U.S.C. § 6103(b) + EO 11582 § 3(a) |
+| `:uk-proclamation-substitute` | BFDA 1971 + Royal Proclamations / [gov.uk](https://www.gov.uk/bank-holidays) |
+| `:jp-furikae` | 祝日法 Art. 3(2) — **Sunday only** |
 
-Proclamation-only rearrangements (Russia/China “work Saturdays”) stay in `data-calendar` snapshots.
+`:bridge :adjacent` and Russia/China “work Saturday” rearrangements are not silent defaults — only with cited authority, or as `data-calendar` proclamations.
 
 ```lisp
 (asdf:load-system "cl-stack-calendars")
