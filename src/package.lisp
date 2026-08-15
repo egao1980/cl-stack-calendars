@@ -148,6 +148,24 @@
    #:austria-holidays-calendar
    #:poland-holidays-calendar
    #:sweden-holidays-calendar
+   #:romania-holidays-calendar
+   #:czechia-holidays-calendar
+   #:greece-holidays-calendar
+   #:portugal-holidays-calendar
+   #:hungary-holidays-calendar
+   #:bulgaria-holidays-calendar
+   #:denmark-holidays-calendar
+   #:finland-holidays-calendar
+   #:slovakia-holidays-calendar
+   #:ireland-holidays-calendar
+   #:croatia-holidays-calendar
+   #:lithuania-holidays-calendar
+   #:slovenia-holidays-calendar
+   #:latvia-holidays-calendar
+   #:estonia-holidays-calendar
+   #:cyprus-holidays-calendar
+   #:luxembourg-holidays-calendar
+   #:malta-holidays-calendar
    #:indonesia-holidays-calendar
    #:load-id-cuti-bersama
    #:id-cuti-bersama

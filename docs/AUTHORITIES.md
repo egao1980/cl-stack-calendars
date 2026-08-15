@@ -47,9 +47,19 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `KR` | 관공서의 공휴일에 관한 규정 — 임시공휴일 | National temporary holidays in `data/kr/temporary-holidays.sexp` (historical + modern 2015–2025). `(south-korea-holidays-calendar :year N)` |
 | `IN` | Negotiable Instruments Act 1881 / DoPT | Three national + common gazetted (GF, Christmas) |
 | `ID` `PK` `NG` `BR` `BD` `MX` `ET` `PH` `EG` `VN` `CD` `TR` `IR` `TH` `KR` `…` | National statutes (see `starter-asia/americas/africa/mena.lisp`) | Research window `[max(1900,formation), now]` with `:from`/`:to` eras |
-| `DE` | Feiertagsgesetze / Einigungsvertrag Art. 2 | Bundeseinheitliche Feiertage |
-| `FR` | Code du travail L.3133-1 | Jours fériés légaux |
-| `IT` `ES` `NL` `BE` `AT` `PL` `SE` | National statutes (see starter-eu.lisp) | Federal/national common sets |
+| `DE` | Feiertagsgesetze / Einigungsvertrag Art. 2 | Bundeseinheitliche Feiertage (Unity Day from 1990) |
+| `FR` | Code du travail L.3133-1 | Jours fériés; Victoire 8 mai 1953–58 then from 1982 |
+| `IT` | L. 260/1949 e succ. | Epifania abolished 1977 / restored 1985 |
+| `ES` | Estatuto / BOE fiestas nacionales | Constitución 1978; Fiesta Nacional Ley 18/1987 |
+| `NL` | Algemeen erkende feestdagen | Koninginnedag→Koningsdag 2014 |
+| `BE` `AT` `SE` | National statutes (starter-eu.lisp) | Federal/national common sets |
+| `PL` | Ustawa o dniach wolnych od pracy | Epiphany 2011; Wigilia from 2025 |
+| `PT` | Código do Trabalho art. 234.º / Lei 8/2016 | Four holidays suspended 2013–2015, restored 2016 |
+| `RO` `GR` `BG` `CY` | National statutes; Orthodox Easter | See starter-eu.lisp (:orthodox t) |
+| `CZ` `SK` | Zákon o státních/štátnych sviatkoch | CZ Velký pátek 2016; SK Deň Ústavy to 2023 |
+| `HU` | Munkaszüneti napok | Nagypéntek from 2017 |
+| `DK` | Danske helligdage | Store bededag abolished from 2024 |
+| `FI` `IE` `HR` `LT` `SI` `LV` `EE` `LU` `MT` | National statutes (starter-eu.lisp) | Eras for Brigid 2023, HR 2020 reform, LT Vėlinės 2020, LU Europe Day 2019 |
 | `country-calendar` | [date-holidays](https://github.com/commenthol/date-holidays) CC BY-SA 3.0 | 206 jurisdictions + stubs; years 2000–2040 public/bank |
 
 Hand-maintained starters beat `country-calendar` when both exist (prefer `japan-holidays-calendar` / `china-holidays-calendar` / `russian-holidays-calendar` / `us-federal-holidays-calendar` over corpus `"JP"` / `"CN"` / `"RU"` / `"US"`).

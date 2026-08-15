@@ -183,10 +183,50 @@
       (ok (not (typep cal 'country-holiday-calendar))
           (format nil "~a normative" code)))))
 
+(deftest eu27-all-normative
+  "All EU-27 ISO codes have hand-maintained starters."
+  (dolist (code '("AT" "BE" "BG" "CY" "CZ" "DE" "DK" "EE" "ES" "FI"
+                  "FR" "GR" "HR" "HU" "IE" "IT" "LT" "LU" "LV" "MT"
+                  "NL" "PL" "PT" "RO" "SE" "SI" "SK"))
+    (let ((cal (find-calendar code :errorp nil)))
+      (ok cal (format nil "~a registered" code))
+      (ok (not (typep cal 'country-holiday-calendar))
+          (format nil "~a normative" code)))))
+
+(deftest eu-era-samples
+  (let ((pl (poland-holidays-calendar))
+        (pt (portugal-holidays-calendar))
+        (fr (france-holidays-calendar))
+        (dk (denmark-holidays-calendar))
+        (hu (hungary-holidays-calendar))
+        (hr (croatia-holidays-calendar))
+        (nl (netherlands-holidays-calendar))
+        (ie (ireland-holidays-calendar)))
+    (ng (holiday-p pl (make-date 2010 1 6)))
+    (ok (holiday-p pl (make-date 2011 1 6)))
+    (ok (holiday-p pl (make-date 2025 12 24)))
+    (ng (holiday-p pl (make-date 2024 12 24)))
+    (ng (holiday-p pt (make-date 2014 10 5)))
+    (ok (holiday-p pt (make-date 2016 10 5)))
+    (ng (holiday-p fr (make-date 1970 5 8)))
+    (ok (holiday-p fr (make-date 1982 5 8)))
+    (ok (holiday-p dk (make-date 2023 5 5))) ; Store bededag 2023 = Easter+26
+    (ng (holiday-p dk (make-date 2024 4 26))) ; abolished
+    (ng (holiday-p hu (make-date 2016 3 25)))
+    (ok (holiday-p hu (make-date 2017 4 14)))
+    (ok (holiday-p hr (make-date 2018 6 25)))
+    (ng (holiday-p hr (make-date 2020 6 25)))
+    (ok (holiday-p hr (make-date 2020 5 30)))
+    (ok (holiday-p nl (make-date 2013 4 30)))
+    (ok (holiday-p nl (make-date 2014 4 26))) ; Sunday → Sat
+    (ok (holiday-p ie (make-date 2023 2 6))))) ; Brigid Monday
+
 (deftest next-gaps-skips-filled
   (let* ((gaps (next-normative-gaps 5))
          (codes (mapcar #'car gaps)))
     (ok (not (member "ID" codes :test #'string=)))
     (ok (not (member "BR" codes :test #'string=)))
+    (ok (not (member "DE" codes :test #'string=)))
+    (ok (not (member "RO" codes :test #'string=)))
     (ok (>= (civil-research-from-year "NG") 1960))
     (ok (= (civil-research-from-year "US") 1900))))
