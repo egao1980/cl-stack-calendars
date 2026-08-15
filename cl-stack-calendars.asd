@@ -23,6 +23,11 @@
                (:file "starter-china")
                (:file "starter-india")
                (:file "starter-eu")
+               (:file "starter-asia")
+               (:file "starter-americas")
+               (:file "starter-africa")
+               (:file "starter-mena")
+               (:file "coverage")
                (:file "country-calendar"))
   :in-order-to ((test-op (test-op "cl-stack-calendars/tests"))))
 

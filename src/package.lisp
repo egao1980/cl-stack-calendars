@@ -135,6 +135,46 @@
    #:austria-holidays-calendar
    #:poland-holidays-calendar
    #:sweden-holidays-calendar
+   #:indonesia-holidays-calendar
+   #:bangladesh-holidays-calendar
+   #:philippines-holidays-calendar
+   #:vietnam-holidays-calendar
+   #:thailand-holidays-calendar
+   #:south-korea-holidays-calendar
+   #:myanmar-holidays-calendar
+   #:malaysia-holidays-calendar
+   #:taiwan-holidays-calendar
+   #:brazil-holidays-calendar
+   #:mexico-holidays-calendar
+   #:colombia-holidays-calendar
+   #:argentina-holidays-calendar
+   #:canada-holidays-calendar
+   #:peru-holidays-calendar
+   #:australia-holidays-calendar
+   #:nigeria-holidays-calendar
+   #:ethiopia-holidays-calendar
+   #:dr-congo-holidays-calendar
+   #:tanzania-holidays-calendar
+   #:south-africa-holidays-calendar
+   #:kenya-holidays-calendar
+   #:uganda-holidays-calendar
+   #:ghana-holidays-calendar
+   #:pakistan-holidays-calendar
+   #:egypt-holidays-calendar
+   #:turkey-holidays-calendar
+   #:iran-holidays-calendar
+   #:saudi-arabia-holidays-calendar
+   #:algeria-holidays-calendar
+   #:morocco-holidays-calendar
+   #:ukraine-holidays-calendar
+   #:population-order
+   #:formation-years
+   #:country-formation-year
+   #:civil-research-from-year
+   #:civil-from-year
+   #:normative-coverage-by-population
+   #:next-normative-gaps
+   #:normative-calendar-codes
 
    ;; country / territory corpus (date-holidays)
    #:country-holiday-calendar

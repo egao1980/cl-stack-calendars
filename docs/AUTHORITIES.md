@@ -3,6 +3,25 @@
 Holiday **existence** (`:from` / `:to`) and **observance** (`:observed`, sandwich)
 are keyed to legal / official acts — not customary summaries.
 
+### Civil validity window (normative starters)
+
+When filling a country calendar, **research public holidays from
+`max(1900, formation/independence)` to the present** (`data/formation-years.sexp`).
+That window is the scope for what belongs in the starter — not only the current
+gazetted list.
+
+For each holiday found in that span:
+
+1. `:from` = year (or `(y m d)`) it became a statutory / gazetted public holiday.
+2. `:to` = when it was abolished, replaced, or renamed away (split eras).
+3. Commemorations of pre-1900 events still enter the calendar only from 1900
+   (or formation, if later), unless a dedicated pre-modern calendar is modelled.
+4. Colonial / predecessor states use separate calendars or `:to`-bounded eras
+   (e.g. USSR vs RF) — do not silently extend the successor state's code backwards.
+
+Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
+`:from 1962` on 12 June — both eras fall inside the research window.
+
 | Calendar | Instrument | Role |
 |----------|------------|------|
 | `USFED` | [5 U.S.C. § 6103](https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title5-section6103) | Legal public holidays (a); Saturday in-lieu (b) |
@@ -24,6 +43,7 @@ are keyed to legal / official acts — not customary summaries.
 | `CN` | 《全国年节及纪念日放假办法》 | Statutory festivals; lunar dates via Beijing astronomy |
 | `CN` | Annual 国办发明电 调休 | Transfers + 上班 in `data/cn/transfers.sexp` |
 | `IN` | Negotiable Instruments Act 1881 / DoPT | Three national + common gazetted (GF, Christmas) |
+| `ID` `PK` `NG` `BR` `BD` `MX` `ET` `PH` `EG` `VN` `CD` `TR` `IR` `TH` `KR` `…` | National statutes (see `starter-asia/americas/africa/mena.lisp`) | Research window `[max(1900,formation), now]` with `:from`/`:to` eras |
 | `DE` | Feiertagsgesetze / Einigungsvertrag Art. 2 | Bundeseinheitliche Feiertage |
 | `FR` | Code du travail L.3133-1 | Jours fériés légaux |
 | `IT` `ES` `NL` `BE` `AT` `PL` `SE` | National statutes (see starter-eu.lisp) | Federal/national common sets |

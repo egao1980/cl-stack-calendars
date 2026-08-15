@@ -33,36 +33,38 @@
 ;;;; Exec. Order No. 11582 § 3(a) (Sun→Mon). Uniform Monday Holiday Act
 ;;;; (Pub. L. 90-363) effective 1971-01-01.
 (define-calendar us-federal-holidays-calendar (:register "USFED")
-  (:fixed "New Year's Day" 1 1
+  (:fixed "New Year's Day" 1 1 :from 1900
    :observed :us-federal-in-lieu
    :authority ("5 U.S.C. § 6103(a)–(b)" "Exec. Order No. 11582 § 3(a)"))
   (:nth-weekday "Martin Luther King Jr. Day" 1 :monday 3 :from 1986
    :authority "Pub. L. 98-144; 5 U.S.C. § 6103(a) (effective first Jan 1 after two years from 1983-11-02 → 1986)")
-  (:fixed "Washington's Birthday" 2 22 :observed :us-federal-in-lieu :to 1970
+  (:fixed "Washington's Birthday" 2 22 :observed :us-federal-in-lieu :from 1900 :to 1970
    :authority "5 U.S.C. § 6103(a) (pre–Uniform Monday Holiday Act)")
   (:nth-weekday "Washington's Birthday" 2 :monday 3 :from 1971
    :authority "Pub. L. 90-363; 5 U.S.C. § 6103(a) (effective 1971-01-01)")
-  (:fixed "Memorial Day" 5 30 :observed :us-federal-in-lieu :to 1970
+  (:fixed "Memorial Day" 5 30 :observed :us-federal-in-lieu :from 1900 :to 1970
    :authority "5 U.S.C. § 6103(a) (pre–Uniform Monday Holiday Act)")
   (:nth-weekday "Memorial Day" 5 :monday -1 :from 1971
    :authority "Pub. L. 90-363; 5 U.S.C. § 6103(a) (effective 1971-01-01)")
   (:fixed "Juneteenth" 6 19 :observed :us-federal-in-lieu :from (2021 6 18)
    :authority "Pub. L. 117-17 (2021-06-17); 5 U.S.C. § 6103(a)–(b)")
-  (:fixed "Independence Day" 7 4 :observed :us-federal-in-lieu
+  (:fixed "Independence Day" 7 4 :from 1900
+   :observed :us-federal-in-lieu
    :authority ("5 U.S.C. § 6103(a)–(b)" "Exec. Order No. 11582 § 3(a)"))
   (:nth-weekday "Labor Day" 9 :monday 1 :from 1894
-   :authority "5 U.S.C. § 6103(a) (Labor Day federal holiday)")
+   :authority "5 U.S.C. § 6103(a) (Labor Day federal holiday) — research window from 1900")
   (:nth-weekday "Columbus Day" 10 :monday 2 :from 1971
    :authority "Pub. L. 90-363; 5 U.S.C. § 6103(a) (effective 1971-01-01)")
-  (:fixed "Veterans Day" 11 11 :observed :us-federal-in-lieu :to 1970
-   :authority "5 U.S.C. § 6103(a) (pre–Uniform Monday Holiday Act)")
+  (:fixed "Veterans Day" 11 11 :observed :us-federal-in-lieu :from 1900 :to 1970
+   :authority "5 U.S.C. § 6103(a) (pre–Uniform Monday Holiday Act; Armistice/Veterans)")
   (:nth-weekday "Veterans Day" 10 :monday 4 :from 1971 :to 1977
    :authority "Pub. L. 90-363; Pub. L. 94-97 returns Nov 11 effective 1978")
   (:fixed "Veterans Day" 11 11 :observed :us-federal-in-lieu :from 1978
    :authority ("Pub. L. 94-97" "5 U.S.C. § 6103(a)–(b)" "Exec. Order No. 11582 § 3(a)"))
   (:nth-weekday "Thanksgiving Day" 11 :thursday 4 :from 1941
-   :authority "5 U.S.C. § 6103(a) (fourth Thursday in November)")
-  (:fixed "Christmas Day" 12 25 :observed :us-federal-in-lieu
+   :authority "5 U.S.C. § 6103(a) (fourth Thursday in November; FDR 1941 statute)")
+  (:fixed "Christmas Day" 12 25 :from 1900
+   :observed :us-federal-in-lieu
    :authority ("5 U.S.C. § 6103(a)–(b)" "Exec. Order No. 11582 § 3(a)")))
 
 ;;;; England & Wales bank holidays — Banking and Financial Dealings Act 1971
@@ -101,3 +103,7 @@
 (defun target-calendar () (make-instance 'target-calendar))
 (defun us-federal-holidays-calendar () (make-instance 'us-federal-holidays-calendar))
 (defun uk-bank-holidays-calendar () (make-instance 'uk-bank-holidays-calendar))
+
+;; ISO aliases for population-order / country-code lookup
+(register-calendar "US" (us-federal-holidays-calendar))
+(register-calendar "GB" (uk-bank-holidays-calendar))
