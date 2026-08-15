@@ -1,0 +1,52 @@
+(in-package #:cl-stack-calendars)
+
+(defclass data-calendar (holiday-calendar)
+  ((name :initarg :name :initform nil :accessor calendar-name)
+   (weekend-days :initarg :weekend-days :initform '(6 7) :accessor calendar-weekend-days)
+   (holidays :initarg :holidays :initform (make-hash-table :test #'eql)
+             :accessor calendar-holidays-table
+             :documentation "Hash-table RD-integer → holiday name (or T)."))
+  (:documentation "HOLIDAY-CALENDAR backed by an explicit set of holiday dates."))
+
+(defun make-data-calendar (&key name (weekend-days '(6 7)) holidays)
+  (let ((cal (make-instance 'data-calendar :name name :weekend-days weekend-days)))
+    (dolist (h holidays)
+      (if (consp h)
+          (add-data-calendar-holiday cal (car h) (cdr h))
+          (add-data-calendar-holiday cal h)))
+    cal))
+
+(defun add-data-calendar-holiday (calendar date &optional name)
+  (setf (gethash (date-rd date) (calendar-holidays-table calendar)) (or name t))
+  date)
+
+(defmethod holiday-p ((calendar data-calendar) date)
+  (let ((v (gethash (date-rd date) (calendar-holidays-table calendar))))
+    (if v (values t (unless (eq v t) v)) (values nil nil))))
+
+(defun load-data-calendar (path &key name (weekend-days '(6 7)))
+  "Load a sexp file ((year month day [name]) ...) into a DATA-CALENDAR."
+  (with-open-file (in path)
+    (let ((form (read in))
+          (cal (make-data-calendar :name name :weekend-days weekend-days)))
+      (unless (listp form)
+        (error 'invalid-holiday-rule :message "data-calendar file must be a list"))
+      (dolist (entry form)
+        (destructuring-bind (y m d &optional hname) entry
+          (add-data-calendar-holiday cal (make-date y m d) hname)))
+      cal)))
+
+(defun write-data-calendar-file (calendar path)
+  (with-open-file (out path :direction :output :if-exists :supersede)
+    (format out ";; data-calendar holidays~%(~%")
+    (let ((rows '()))
+      (maphash (lambda (rd name)
+                 (let ((d (date-from-rd rd)))
+                   (push (list (date-year d) (date-month d) (date-day d)
+                               (unless (eq name t) name))
+                         rows)))
+               (calendar-holidays-table calendar))
+      (dolist (row (sort rows #'< :key (lambda (r)
+                                         (date-rd (make-date (first r) (second r) (third r))))))
+        (format out " ~s~%" (remove nil row))))
+    (format out ")~%")))
