@@ -62,6 +62,8 @@
    #:calendar-working-day-date
    #:calendar-transfers
    #:calendar-working-days
+   #:calendar-suppressed-dates
+   #:make-extra-day-transfer
 
    ;; data-calendar
    #:data-calendar
@@ -116,6 +118,11 @@
    #:target-calendar
    #:us-federal-holidays-calendar
    #:uk-bank-holidays-calendar
+   #:load-gb-proclamations
+   #:gb-proclamations
+   #:gb-proclamation-for-year
+   #:gb-transfers-for-year
+   #:gb-suppressed-for-year
    #:ussr-holidays-calendar
    #:russian-holidays-calendar
    #:make-russian-holidays-calendar
@@ -131,7 +138,6 @@
    #:cn-notice-for-year
    #:cn-transfers-for-year
    #:cn-working-days-for-year
-   #:cn-notice-for-year
    #:india-holidays-calendar
    #:germany-holidays-calendar
    #:france-holidays-calendar
@@ -143,11 +149,19 @@
    #:poland-holidays-calendar
    #:sweden-holidays-calendar
    #:indonesia-holidays-calendar
+   #:load-id-cuti-bersama
+   #:id-cuti-bersama
+   #:id-notice-for-year
+   #:id-transfers-for-year
    #:bangladesh-holidays-calendar
    #:philippines-holidays-calendar
    #:vietnam-holidays-calendar
    #:thailand-holidays-calendar
    #:south-korea-holidays-calendar
+   #:load-kr-temporary-holidays
+   #:kr-temporary-holidays
+   #:kr-notice-for-year
+   #:kr-transfers-for-year
    #:myanmar-holidays-calendar
    #:malaysia-holidays-calendar
    #:taiwan-holidays-calendar

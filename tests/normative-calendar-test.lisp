@@ -122,6 +122,58 @@
     (ok (holiday-p cal (make-date 2017 6 1)))
     (ok (holiday-p cal (make-date 1946 8 17)))))
 
+(deftest indonesia-cuti-bersama-corpus
+  "SKB cuti bersama encoded 2002–2026."
+  (ok (id-notice-for-year 2002))
+  (ok (id-notice-for-year 2014))
+  (ok (id-notice-for-year 2025))
+  (ok (id-notice-for-year 2026))
+  (ok (>= (length (id-cuti-bersama)) 25)))
+
+(deftest indonesia-cuti-bersama-2025
+  (let ((cal (indonesia-holidays-calendar :year 2025))
+        (bare (indonesia-holidays-calendar)))
+    (ok (holiday-p cal (make-date 2025 1 28)))
+    (ok (holiday-p cal (make-date 2025 4 7)))
+    (ng (holiday-p bare (make-date 2025 1 28)))))
+
+(deftest korea-temporary-holidays-corpus
+  (ok (kr-notice-for-year 2015))
+  (ok (kr-notice-for-year 2024))
+  (ok (kr-notice-for-year 2025))
+  (ok (>= (length (kr-temporary-holidays)) 20)))
+
+(deftest korea-temporary-holiday-2024-armed-forces
+  "2024-10-01 임시공휴일 (국군의 날)."
+  (let ((cal (south-korea-holidays-calendar :year 2024))
+        (bare (south-korea-holidays-calendar)))
+    (ok (holiday-p cal (make-date 2024 10 1)))
+    (ng (holiday-p bare (make-date 2024 10 1)))
+    (ok (holiday-p cal (make-date 2024 10 3))))) ; 개천절 still
+
+(deftest gb-proclamations-corpus
+  (ok (gb-proclamation-for-year 1995))
+  (ok (gb-proclamation-for-year 2011))
+  (ok (gb-proclamation-for-year 2022))
+  (ok (gb-proclamation-for-year 2023))
+  (ok (= (length (gb-proclamations)) 7)))
+
+(deftest gb-platinum-jubilee-2022
+  "Spring BH relocated May 30 → Jun 2; extra Jun 3."
+  (let ((cal (uk-bank-holidays-calendar :year 2022))
+        (bare (uk-bank-holidays-calendar)))
+    (ng (holiday-p cal (make-date 2022 5 30)))
+    (ok (holiday-p bare (make-date 2022 5 30)))
+    (ok (holiday-p cal (make-date 2022 6 2)))
+    (ok (holiday-p cal (make-date 2022 6 3)))
+    (ng (holiday-p bare (make-date 2022 6 3)))))
+
+(deftest gb-ve-day-2020-relocation
+  "Early May BH May 4 → May 8 (VE Day 75)."
+  (let ((cal (uk-bank-holidays-calendar :year 2020)))
+    (ng (holiday-p cal (make-date 2020 5 4)))
+    (ok (holiday-p cal (make-date 2020 5 8)))))
+
 (deftest population-coverage-top-codes-normative
   "Largest countries should resolve to hand starters, not corpus."
   (dolist (code '("ID" "PK" "NG" "BR" "BD" "MX" "ET" "PH" "EG" "VN"

@@ -12,17 +12,25 @@
    ;; Decree transfers: TO dates become holidays (перенос выходных).
    (transfers :initarg :transfers :initform nil :accessor calendar-transfers)
    ;; Compensatory working Saturdays/Sundays (override weekend-day-p).
-   (working-days :initarg :working-days :initform nil :accessor calendar-working-days))
+   (working-days :initarg :working-days :initform nil :accessor calendar-working-days)
+   ;; Dates that rules would mark as holidays but a proclamation/decree
+   ;; suppressed or moved (e.g. UK Spring BH relocated for a Jubilee).
+   (suppressed-dates :initarg :suppressed-dates :initform nil
+                     :accessor calendar-suppressed-dates))
   (:documentation "A HOLIDAY-CALENDAR driven by a declarative list of holiday
 RULES — normally built via DEFINE-CALENDAR. Observance policies on rules must
 cite their normative authority (:AUTHORITY). TRANSFERS encode annual Government
-decree weekend moves; WORKING-DAYS encode compensatory work weekends."))
+decree weekend moves; WORKING-DAYS encode compensatory work weekends;
+SUPPRESSED-DATES remove rule holidays relocated by proclamation."))
 
 (defmethod weekend-day-p ((calendar rule-calendar) date)
   (and (member (date-day-of-week date) (calendar-weekend-days calendar))
        (not (find date (calendar-working-days calendar)
                   :key #'calendar-working-day-date :test #'=))
        t))
+
+(defun %suppressed-date-p (calendar date)
+  (find date (calendar-suppressed-dates calendar) :test #'=))
 
 (defun %rule-calendar-year-map (calendar year)
   "Hash-table RD → holiday name for all RULE occurrences in YEAR, applying
@@ -34,13 +42,16 @@ TO date falls in YEAR (or adjacent for Dec 31 ↔ Jan moves)."
     (dolist (rule (calendar-rules calendar))
       (let ((dates (rule-occurrences rule year weekend-days claimed)))
         (dolist (d dates)
-          (push (cons d (or (holiday-rule-name rule) t)) pairs)
-          (push d claimed))))
+          (unless (%suppressed-date-p calendar d)
+            (push (cons d (or (holiday-rule-name rule) t)) pairs)
+            (push d claimed)))))
     (when (calendar-sandwich-holidays-p calendar)
       (setf pairs (apply-sandwich-holidays pairs)))
     (dolist (tr (calendar-transfers calendar))
       (let ((to (calendar-transfer-to tr)))
-        (when (and to (<= (1- year) (date-year to) (1+ year)))
+        (when (and to
+                   (<= (1- year) (date-year to) (1+ year))
+                   (not (%suppressed-date-p calendar to)))
           (push (cons to (or (calendar-transfer-name tr) "перенос выходного")) pairs)
           (push to claimed))))
     (let ((map (make-hash-table :test #'eql)))
@@ -49,6 +60,8 @@ TO date falls in YEAR (or adjacent for Dec 31 ↔ Jan moves)."
       map)))
 
 (defmethod holiday-p ((calendar rule-calendar) date)
+  (when (%suppressed-date-p calendar date)
+    (return-from holiday-p (values nil nil)))
   (let ((year (date-year date)))
     (dolist (y (list (1- year) year (1+ year)))
       (let ((name (gethash (date-rd date) (%rule-calendar-year-map calendar y))))

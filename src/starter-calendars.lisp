@@ -72,6 +72,62 @@
 ;;;; Day, Early May, Good Friday (common law), Christmas Day, and weekend
 ;;;; substitutes published at https://www.gov.uk/bank-holidays.
 ;;;; Christmas+Boxing use :UK-PROCLAMATION-SUBSTITUTE (exclusive next weekday).
+;;;; Special one-off / relocated bank holidays: data/gb/proclamations.sexp.
+
+(defparameter *gb-proclamations-path*
+  (merge-pathnames "data/gb/proclamations.sexp"
+                   (asdf:system-source-directory "cl-stack-calendars"))
+  "Sexp index of special Royal Proclamations (extras + relocated BH).")
+
+(defun load-gb-proclamations (&optional (path *gb-proclamations-path*))
+  "Return alist YEAR → (:authority A :transfers … :suppressed … :uri …)."
+  (with-open-file (in path)
+    (let ((form (read in)))
+      (mapcar
+       (lambda (block)
+         (let* ((year (getf block :year))
+                (auth (getf block :authority))
+                (extras (mapcar (lambda (e)
+                                  (make-extra-day-transfer e auth))
+                                (getf block :extra)))
+                (moved (getf block :moved))
+                (suppressed '())
+                (relocated '()))
+           (dolist (entry moved)
+             (destructuring-bind (from to &optional name) entry
+               (push (normalize-rule-bound from) suppressed)
+               (push (make-calendar-transfer :from nil :to to :name name
+                                             :authority auth)
+                     relocated)))
+           (cons year (list :authority auth
+                            :transfers (append extras (nreverse relocated))
+                            :suppressed (nreverse suppressed)
+                            :uri (getf block :uri)))))
+       form))))
+
+(defvar *gb-proclamations* nil)
+
+(defun gb-proclamations ()
+  (or *gb-proclamations*
+      (setf *gb-proclamations* (load-gb-proclamations))))
+
+(defun gb-proclamation-for-year (year)
+  "Plist for the proclamation block keyed by YEAR, or NIL."
+  (cdr (assoc year (gb-proclamations))))
+
+(defun gb-transfers-for-year (year)
+  "Extra/relocated BH TO days whose date falls in YEAR."
+  (loop for (_y . plist) in (gb-proclamations)
+        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
+                             (getf plist :transfers))))
+
+(defun gb-suppressed-for-year (year)
+  "Statutory rule dates suppressed (relocated) that fall in YEAR."
+  (loop for (_y . plist) in (gb-proclamations)
+        nconc (loop for d in (getf plist :suppressed)
+                    when (= (date-year d) year)
+                    collect d)))
+
 (define-calendar uk-bank-holidays-calendar (:register "GBLO")
   (:fixed "New Year's Day" 1 1
    :observed :uk-proclamation-substitute :from 1974
@@ -102,7 +158,15 @@
 (defun weekend-only-calendar () (make-instance 'weekend-only-calendar))
 (defun target-calendar () (make-instance 'target-calendar))
 (defun us-federal-holidays-calendar () (make-instance 'us-federal-holidays-calendar))
-(defun uk-bank-holidays-calendar () (make-instance 'uk-bank-holidays-calendar))
+
+(defun uk-bank-holidays-calendar (&key year transfers suppressed-dates)
+  "England & Wales bank holidays. YEAR attaches special proclamations
+(extra BH + relocated Spring/Early May with suppressed original dates)."
+  (let ((tr (or transfers (when year (gb-transfers-for-year year))))
+        (sup (or suppressed-dates (when year (gb-suppressed-for-year year)))))
+    (make-instance 'uk-bank-holidays-calendar
+                   :transfers tr
+                   :suppressed-dates sup)))
 
 ;; ISO aliases for population-order / country-code lookup
 (register-calendar "US" (us-federal-holidays-calendar))

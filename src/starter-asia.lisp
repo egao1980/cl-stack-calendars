@@ -3,6 +3,45 @@
 ;;;; Normative starters — Asia (population order), civil :FROM =
 ;;;; max(1900, formation) or later statute introduction.
 
+;;; --- Indonesia cuti bersama (SKB 3 Menteri / Keppres) ---------------
+
+(defparameter *id-cuti-bersama-path*
+  (merge-pathnames "data/id/cuti-bersama.sexp"
+                   (asdf:system-source-directory "cl-stack-calendars"))
+  "Sexp index of verified cuti bersama years (2002–2026).")
+
+(defun load-id-cuti-bersama (&optional (path *id-cuti-bersama-path*))
+  "Return alist YEAR → (:authority A :transfers … :uri …)."
+  (with-open-file (in path)
+    (let ((form (read in)))
+      (mapcar
+       (lambda (block)
+         (let* ((year (getf block :year))
+                (auth (getf block :authority))
+                (transfers (mapcar (lambda (e)
+                                     (make-extra-day-transfer e auth))
+                                   (getf block :holidays))))
+           (cons year (list :authority auth
+                            :transfers transfers
+                            :uri (getf block :uri)))))
+       form))))
+
+(defvar *id-cuti-bersama* nil)
+
+(defun id-cuti-bersama ()
+  (or *id-cuti-bersama*
+      (setf *id-cuti-bersama* (load-id-cuti-bersama))))
+
+(defun id-notice-for-year (year)
+  "Plist for the cuti bersama block keyed by YEAR, or NIL."
+  (cdr (assoc year (id-cuti-bersama))))
+
+(defun id-transfers-for-year (year)
+  "Cuti bersama TO days whose date falls in YEAR."
+  (loop for (_y . plist) in (id-cuti-bersama)
+        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
+                             (getf plist :transfers))))
+
 ;;; Indonesia (formation 1945)
 (define-calendar indonesia-holidays-calendar (:register "ID")
   (:fixed "Tahun Baru Masehi" 1 1 :from 1946
@@ -134,6 +173,46 @@
    :authority "Public holiday")
   (:fixed "Constitution Day" 12 10 :from 1932
    :authority "Constitution Day — public holiday"))
+
+;;; --- Korea 임시공휴일 (관공서의 공휴일에 관한 규정) -----------------
+
+(defparameter *kr-temporary-holidays-path*
+  (merge-pathnames "data/kr/temporary-holidays.sexp"
+                   (asdf:system-source-directory "cl-stack-calendars"))
+  "Sexp index of national 임시공휴일 designations.")
+
+(defun load-kr-temporary-holidays (&optional (path *kr-temporary-holidays-path*))
+  "Return alist YEAR → (:authority A :transfers … :uri …)."
+  (with-open-file (in path)
+    (let ((form (read in)))
+      (mapcar
+       (lambda (block)
+         (let* ((year (getf block :year))
+                (auth (getf block :authority))
+                (transfers (mapcar (lambda (e)
+                                     (make-extra-day-transfer e auth))
+                                   (getf block :holidays))))
+           (cons year (list :authority auth
+                            :transfers transfers
+                            :uri (getf block :uri)))))
+       form))))
+
+(defvar *kr-temporary-holidays* nil)
+
+(defun kr-temporary-holidays ()
+  (or *kr-temporary-holidays*
+      (setf *kr-temporary-holidays* (load-kr-temporary-holidays))))
+
+(defun kr-notice-for-year (year)
+  "Plist for the 임시공휴일 block keyed by YEAR, or NIL."
+  (cdr (assoc year (kr-temporary-holidays))))
+
+(defun kr-transfers-for-year (year)
+  "임시공휴일 TO days whose date falls in YEAR."
+  (loop for (_y . plist) in (kr-temporary-holidays)
+        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
+                             (getf plist :transfers))))
+
 (define-calendar south-korea-holidays-calendar (:register "KR")
   (:fixed "신정" 1 1 :from 1948
    :authority "관공서의 공휴일에 관한 규정 — New Year")
@@ -244,12 +323,21 @@
   (:fixed "國慶日" 10 10 :from 1945
    :authority "國慶日 — Double Tenth"))
 
-(defun indonesia-holidays-calendar () (make-instance 'indonesia-holidays-calendar))
+(defun indonesia-holidays-calendar (&key year transfers)
+  "Indonesian national holidays. YEAR attaches cuti bersama TO days for that year."
+  (let ((tr (or transfers (when year (id-transfers-for-year year)))))
+    (make-instance 'indonesia-holidays-calendar :transfers tr)))
+
 (defun bangladesh-holidays-calendar () (make-instance 'bangladesh-holidays-calendar))
 (defun philippines-holidays-calendar () (make-instance 'philippines-holidays-calendar))
 (defun vietnam-holidays-calendar () (make-instance 'vietnam-holidays-calendar))
 (defun thailand-holidays-calendar () (make-instance 'thailand-holidays-calendar))
-(defun south-korea-holidays-calendar () (make-instance 'south-korea-holidays-calendar))
+
+(defun south-korea-holidays-calendar (&key year transfers)
+  "ROK public holidays. YEAR attaches national 임시공휴일 for that year."
+  (let ((tr (or transfers (when year (kr-transfers-for-year year)))))
+    (make-instance 'south-korea-holidays-calendar :transfers tr)))
+
 (defun myanmar-holidays-calendar () (make-instance 'myanmar-holidays-calendar))
 (defun malaysia-holidays-calendar () (make-instance 'malaysia-holidays-calendar))
 (defun taiwan-holidays-calendar () (make-instance 'taiwan-holidays-calendar))
