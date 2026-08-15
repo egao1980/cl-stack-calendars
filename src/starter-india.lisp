@@ -1,27 +1,34 @@
 (in-package #:cl-stack-calendars)
 
-;;;; India — three mandatory national holidays (Republic Day, Independence
-;;;; Day, Gandhi Jayanti) under the Negotiable Instruments Act 1881 /
-;;;; central-government practice, plus commonly gazetted all-India holidays
-;;;; (Good Friday, Christmas). Remaining festivals (Holi, Diwali, Eid, …)
-;;;; are announced annually in DoPT OMs and often depend on sunrise at a
-;;;; reference locus (+DELHI+ / +UJJAIN+) — attach via DATA-CALENDAR or
-;;;; year-specific rules; not hard-coded here without a gazetted list.
+;;;; India — Negotiable Instruments Act 1881 three national holidays +
+;;;; DoPT compulsory/common gazetted set. Hindu lunar festivals (Holi,
+;;;; Diwali, Dussehra, …) are announced annually in DoPT OMs and need a
+;;;; Hindu calendar locus — attach via DATA-CALENDAR / year rules.
+;;;; Research window: max(1900, 1947).
 
 (define-calendar india-holidays-calendar (:register "IN")
-  (:fixed "Republic Day" 1 26
+  (:fixed "Republic Day" 1 26 :from 1950
    :authority ("Negotiable Instruments Act 1881 — national holiday"
-               "Government of India / DoPT gazetted holidays"))
-  (:easter "Good Friday" -2
-   :authority "DoPT annual gazetted holidays (Good Friday — all-India)")
-  (:fixed "Independence Day" 8 15
+               "Constitution of India — Republic Day from 1950"))
+  (:fixed "Independence Day" 8 15 :from 1947
    :authority ("Negotiable Instruments Act 1881 — national holiday"
-               "Government of India / DoPT gazetted holidays"))
-  (:fixed "Mahatma Gandhi's Birthday" 10 2
-   :authority ("Negotiable Instruments Act 1881 — national holiday (Gandhi Jayanti)"
-               "Government of India / DoPT gazetted holidays"))
-  (:fixed "Christmas Day" 12 25
-   :authority "DoPT annual gazetted holidays (Christmas — all-India)"))
+               "Independence 15 August 1947"))
+  (:fixed "Mahatma Gandhi's Birthday" 10 2 :from 1948
+   :authority ("Negotiable Instruments Act 1881 — national holiday (Gandhi Jayanti)"))
+  (:easter "Good Friday" -2 :from 1947
+   :authority "DoPT gazetted holidays — Good Friday (compulsory outside optional pool)")
+  (:fixed "Christmas Day" 12 25 :from 1947
+   :authority "DoPT gazetted holidays — Christmas Day")
+  (:computed "Id-ul-Fitr" #'eid-al-fitr :from 1947
+   :authority "DoPT gazetted — Id-ul-Fitr (tabular Hijri; sighting ±1)")
+  (:computed "Id-ul-Zuha (Bakrid)" #'eid-al-adha :from 1947
+   :authority "DoPT gazetted — Id-ul-Zuha (tabular Hijri)")
+  (:computed "Muharram"
+   (lambda (y) (islamic-date-in-gregorian-year y 1 10))
+   :from 1947
+   :authority "DoPT gazetted — Muharram / Ashura (10 Muharram, tabular)")
+  (:computed "Id-e-Milad" #'mawlid-date :from 1947
+   :authority "DoPT gazetted — Prophet Mohammad's Birthday (tabular)"))
 
 (defun india-holidays-calendar ()
   (make-instance 'india-holidays-calendar))

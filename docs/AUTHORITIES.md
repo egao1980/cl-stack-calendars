@@ -45,7 +45,10 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `CN` | Annual 国办发明电 / 国发明电 调休 | Full corpus in `data/cn/transfers.sexp` (**1999–2026**; 澳门回归 + Y2K元旦 through current). Cross-year NY blocks via FROM/TO year touch |
 | `ID` | SKB 3 Menteri / Keppres cuti bersama | Extra leave days in `data/id/cuti-bersama.sexp` (**2002–2026**). Facultative for private employers; ASN via Keppres. `(indonesia-holidays-calendar :year N)` |
 | `KR` | 관공서의 공휴일에 관한 규정 — 임시공휴일 | National temporary holidays in `data/kr/temporary-holidays.sexp` (historical + modern 2015–2025). `(south-korea-holidays-calendar :year N)` |
-| `IN` | Negotiable Instruments Act 1881 / DoPT | Three national + common gazetted (GF, Christmas) |
+| `IN` | Negotiable Instruments Act 1881 / DoPT | Three national + common gazetted (GF, Christmas, Id-ul-Fitr/Zuha, Muharram, Milad). Hindu lunar festivals via annual DoPT OM / DATA-CALENDAR |
+| `VN` | Bộ luật Lao động | Hung Kings from 2007; Quốc khánh 2 days from 2021; Ngày Văn hóa from 2026 |
+| `PH` | RA / proclamations | Ninoy Aquino Day 2004; EDSA 1986; Independence 4 Jul→12 Jun |
+| `ET` | Public Holidays Proclamation | Fasika (orthodox); Timkat/Enkutatash/Meskel leap-day shift; Eid/Mawlid |
 | `ID` `PK` `NG` `BR` `BD` `MX` `ET` `PH` `EG` `VN` `CD` `TR` `IR` `TH` `KR` `…` | National statutes (see `starter-asia/americas/africa/mena.lisp`) | Research window `[max(1900,formation), now]` with `:from`/`:to` eras |
 | `DE` | Feiertagsgesetze / Einigungsvertrag Art. 2 | Bundeseinheitliche Feiertage (Unity Day from 1990) |
 | `FR` | Code du travail L.3133-1 | Jours fériés; Victoire 8 mai 1953–58 then from 1982 |

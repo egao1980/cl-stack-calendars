@@ -21,25 +21,48 @@
    (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
    :from 1960 :authority "Eid al-Fitr Day 2")
   (:computed "Eid al-Adha" #'eid-al-adha :from 1960
+   :authority "Public holiday (tabular Hijri)")
+  (:computed "Eid al-Adha"
+   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 1))))
+   :from 1960 :authority "Eid al-Adha Day 2")
+  (:computed "Maulid" #'mawlid-date :from 1960
    :authority "Public holiday (tabular Hijri)"))
 
 (define-calendar ethiopia-holidays-calendar (:register "ET")
-  ;; Gregorian-published dates for Ethiopian/Eritrean Christian festivals often
-  ;; use Julian+13; national civil holidays below are Gregorian-fixed.
+  ;; Ethiopian Orthodox festivals: Timkat/Enkutatash/Meskel shift +1 in
+  ;; Gregorian leap years. Fasika uses Eastern/Julian paschalion (:orthodox t).
   (:fixed "Christmas (Genna)" 1 7 :from 1900
    :authority "Ethiopian Orthodox Christmas — public holiday")
-  (:fixed "Epiphany (Timkat)" 1 19 :from 1900
-   :authority "Timkat — public holiday")
+  (:computed "Epiphany (Timkat)"
+   (lambda (y) (make-date y 1 (if (date-leap-year-p (make-date y 1 1)) 20 19)))
+   :from 1900
+   :authority "Timkat — 19 Jan (20 Jan in Gregorian leap years)")
   (:fixed "Adwa Victory Day" 3 2 :from 1900
    :authority "Adwa (1896) — public holiday")
+  (:easter "Good Friday (Siklet)" -2 :orthodox t :from 1900
+   :authority "Ethiopian Orthodox Good Friday — public holiday")
+  (:easter "Easter (Fasika)" 0 :orthodox t :from 1900
+   :authority "Ethiopian Orthodox Easter (Fasika)")
   (:fixed "Labour Day" 5 1 :from 1975
    :authority "International Labour Day")
+  (:fixed "Patriots' Victory Day" 5 5 :from 1941
+   :authority "Ethiopian Patriots' Victory Day (5 May)")
   (:fixed "Downfall of the Derg" 5 28 :from 1992
    :authority "National holiday (1991 Derg fall; observed from early EPRDF era)")
-  (:fixed "Ethiopian New Year (Enkutatash)" 9 11 :from 1900
-   :authority "Enkutatash — 11 Sep (12 Sep in Gregorian leap years closely)")
-  (:fixed "Finding of the True Cross (Meskel)" 9 27 :from 1900
-   :authority "Meskel — public holiday"))
+  (:computed "Ethiopian New Year (Enkutatash)"
+   (lambda (y) (make-date y 9 (if (date-leap-year-p (make-date y 1 1)) 12 11)))
+   :from 1900
+   :authority "Enkutatash — 11 Sep (12 Sep in Gregorian leap years)")
+  (:computed "Finding of the True Cross (Meskel)"
+   (lambda (y) (make-date y 9 (if (date-leap-year-p (make-date y 1 1)) 28 27)))
+   :from 1900
+   :authority "Meskel — 27 Sep (28 Sep in Gregorian leap years)")
+  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1900
+   :authority "Public holiday (tabular Hijri; sighting ±1)")
+  (:computed "Eid al-Adha" #'eid-al-adha :from 1900
+   :authority "Public holiday (tabular Hijri)")
+  (:computed "Mawlid" #'mawlid-date :from 1900
+   :authority "Prophet's Birthday — public holiday (tabular)"))
 
 (define-calendar dr-congo-holidays-calendar (:register "CD")
   (:fixed "Jour de l'an" 1 1 :from 1960 :authority "Fête légale")
@@ -72,7 +95,8 @@
   (:fixed "Christmas Day" 12 25 :from 1961 :authority "Public holiday")
   (:fixed "Boxing Day" 12 26 :from 1961 :authority "Public holiday")
   (:computed "Eid al-Fitr" #'eid-al-fitr :from 1961 :authority "Public holiday (tabular)")
-  (:computed "Eid al-Adha" #'eid-al-adha :from 1961 :authority "Public holiday (tabular)"))
+  (:computed "Eid al-Adha" #'eid-al-adha :from 1961 :authority "Public holiday (tabular)")
+  (:computed "Maulid" #'mawlid-date :from 1961 :authority "Public holiday (tabular)"))
 
 (define-calendar south-africa-holidays-calendar (:register "ZA")
   (:fixed "New Year's Day" 1 1 :from 1995
@@ -117,7 +141,8 @@
    :authority "Independence / Republic Day 12 December")
   (:fixed "Christmas Day" 12 25 :from 1963 :authority "Public holiday")
   (:fixed "Boxing Day" 12 26 :from 1963 :authority "Public holiday")
-  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1963 :authority "Public holiday (tabular)"))
+  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1963 :authority "Public holiday (tabular)")
+  (:computed "Eid al-Adha" #'eid-al-adha :from 1963 :authority "Public holiday (tabular)"))
 
 (define-calendar uganda-holidays-calendar (:register "UG")
   (:fixed "New Year's Day" 1 1 :from 1962 :authority "Public holiday")

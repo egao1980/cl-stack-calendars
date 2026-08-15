@@ -96,13 +96,33 @@
   (:computed "Eid ul-Fitr"
    (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
    :from 1972 :authority "Eid ul-Fitr (2nd day)")
+  (:computed "Eid ul-Fitr"
+   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 2))))
+   :from 1972 :authority "Eid ul-Fitr (3rd day)")
   (:computed "Eid ul-Adha" #'eid-al-adha :from 1972
-   :authority "Islamic foundation holidays (tabular Hijri)"))
+   :authority "Islamic foundation holidays (tabular Hijri)")
+  (:computed "Eid ul-Adha"
+   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 1))))
+   :from 1972 :authority "Eid ul-Adha (2nd day)")
+  (:computed "Eid ul-Adha"
+   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 2))))
+   :from 1972 :authority "Eid ul-Adha (3rd day)")
+  (:computed "Ashura"
+   (lambda (y) (islamic-date-in-gregorian-year y 1 10))
+   :from 1972 :authority "10 Muharram (tabular)")
+  (:computed "Eid-e-Milad-un-Nabi" #'mawlid-date :from 1972
+   :authority "Prophet's birthday (tabular)"))
 
 ;;; Philippines (1946)
 (define-calendar philippines-holidays-calendar (:register "PH")
   (:fixed "New Year's Day" 1 1 :from 1946
    :authority "Republic Act / Proclamation — regular holiday")
+  (:fixed "EDSA People Power Revolution Anniversary" 2 25 :from 1986
+   :authority "Special non-working holiday — EDSA 1986")
+  (:computed "Chinese New Year"
+   (lambda (y) (chinese-new-year-date y :location +beijing+))
+   :from 2012
+   :authority "Special non-working day by proclamation (often; Beijing tabular CNY)")
   (:easter "Maundy Thursday" -3 :from 1946
    :authority "Regular holiday (Holy Week)")
   (:easter "Good Friday" -2 :from 1946
@@ -115,8 +135,12 @@
    :authority "Independence Day moved to 12 June (Diosdado Macapagal, 1962); was 4 July 1946–1961")
   (:fixed "Independence Day" 7 4 :from 1946 :to 1961
    :authority "Philippine Independence Day (4 July) until 1961")
+  (:fixed "Ninoy Aquino Day" 8 21 :from 2004
+   :authority "RA 9256 — Ninoy Aquino Day (special non-working)")
   (:nth-weekday "National Heroes Day" 8 :monday -1 :from 2007
    :authority "RA 9492 — National Heroes Day last Monday of August")
+  (:fixed "All Saints' Day" 11 1 :from 1946
+   :authority "Special non-working holiday")
   (:fixed "Bonifacio Day" 11 30 :from 1946
    :authority "Regular holiday (Andrés Bonifacio)")
   (:fixed "Christmas Day" 12 25 :from 1946
@@ -128,6 +152,10 @@
 (define-calendar vietnam-holidays-calendar (:register "VN")
   (:fixed "Tết Dương lịch" 1 1 :from 1945
    :authority "Ngày nghỉ lễ — New Year")
+  (:computed "Giao thừa / Tết"
+   (lambda (y) (chinese-new-year-eve-date y :location +beijing+))
+   :from 1945
+   :authority "Giao thừa — ngày cuối năm Âm lịch (Beijing tabular; VN may ±0–1)")
   (:computed "Tết Nguyên Đán"
    (lambda (y) (chinese-new-year-date y :location +beijing+))
    :from 1945
@@ -138,17 +166,29 @@
   (:computed "Tết"
    (lambda (y) (+ (chinese-new-year-date y :location +beijing+) 2))
    :from 1945 :authority "Tết mùng 3")
+  (:computed "Giỗ Tổ Hùng Vương"
+   (lambda (y) (chinese-lunar-date y 3 10 :location +beijing+))
+   :from 2007
+   :authority "Bộ luật Lao động 2007 — Giỗ Tổ Hùng Vương (âm lịch 10/3)")
   (:fixed "Ngày thống nhất đất nước" 4 30 :from 1976
    :authority "Liberation / Reunification Day")
   (:fixed "Ngày Quốc tế Lao động" 5 1 :from 1945
    :authority "International Labour Day")
   (:fixed "Quốc khánh" 9 2 :from 1945
-   :authority "National Day — Declaration of Independence 2 Sep 1945"))
+   :authority "National Day — Declaration of Independence 2 Sep 1945")
+  (:fixed "Quốc khánh" 9 3 :from 2021
+   :authority "Bộ luật Lao động — Quốc khánh nghỉ 2 ngày (2–3/9) từ 2021")
+  (:fixed "Ngày Văn hóa" 11 24 :from 2026
+   :authority "Ngày Văn hóa các dân tộc Việt Nam — nghỉ lễ từ 2026"))
 
 ;;; Thailand (floor 1900)
 (define-calendar thailand-holidays-calendar (:register "TH")
   (:fixed "New Year's Day" 1 1 :from 1900
    :authority "Public holiday (Gregorian New Year)")
+  (:computed "Makha Bucha"
+   (lambda (y) (chinese-lunar-date y 3 15 :location +beijing+))
+   :from 1900
+   :authority "Makha Bucha — lunar 3/15 (Beijing tabular ≈ Thai lunar)")
   (:fixed "Chakri Memorial Day" 4 6 :from 1920
    :authority "Chakri Dynasty memorial — public holiday")
   (:fixed "Songkran" 4 13 :from 1900
@@ -159,10 +199,18 @@
    :authority "Coronation of Rama IX (5 May) — public holiday until era change")
   (:fixed "Coronation Day" 5 4 :from 2019
    :authority "Coronation of Rama X (4 May 2019) — public holiday")
+  (:computed "Visakha Bucha"
+   (lambda (y) (chinese-lunar-date y 6 15 :location +beijing+))
+   :from 1900
+   :authority "Visakha Bucha — lunar 6/15 (Beijing tabular ≈ Thai lunar)")
   (:fixed "Queen Suthida's Birthday" 6 3 :from 2019
    :authority "Public holiday (Queen's birthday)")
   (:fixed "Birthday of King Rama X" 7 28 :from 2017
    :authority "Public holiday (King's birthday)")
+  (:computed "Asalha Bucha"
+   (lambda (y) (chinese-lunar-date y 8 15 :location +beijing+))
+   :from 1900
+   :authority "Asalha Bucha — lunar 8/15 (Beijing tabular ≈ Thai lunar)")
   (:fixed "Queen Sirikit's Birthday / Mother's Day" 8 12 :from 1976
    :authority "Public holiday")
   (:fixed "Anniversary of the Death of King Bhumibol" 10 13 :from 2017
@@ -260,6 +308,13 @@
    :authority "Peasants' Day")
   (:fixed "Armed Forces Day" 3 27 :from 1948
    :authority "Tatmadaw Day / Armed Forces Day")
+  ;; Thingyan / Myanmar New Year — civil Gregorian band commonly gazetted.
+  (:fixed "Thingyan" 4 13 :from 1948 :authority "Thingyan water festival")
+  (:fixed "Thingyan" 4 14 :from 1948 :authority "Thingyan")
+  (:fixed "Thingyan" 4 15 :from 1948 :authority "Thingyan")
+  (:fixed "Thingyan" 4 16 :from 1948 :authority "Thingyan")
+  (:fixed "Myanmar New Year" 4 17 :from 1948
+   :authority "Myanmar New Year Day (after Thingyan)")
   (:fixed "Labour Day" 5 1 :from 1948
    :authority "May Day")
   (:fixed "Martyrs' Day" 7 19 :from 1948
@@ -269,6 +324,8 @@
   (:fixed "Christmas Day" 12 25 :from 1948
    :authority "Public holiday (Christmas)")
   (:computed "Eid al-Adha" #'eid-al-adha :from 1948
+   :authority "Islamic holiday (tabular)")
+  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1948
    :authority "Islamic holiday (tabular)"))
 
 ;;; Malaysia (1957 / 1963)

@@ -76,7 +76,40 @@
     (ok (holiday-p cal (make-date 2026 1 26)))
     (ok (holiday-p cal (make-date 2026 8 15)))
     (ok (holiday-p cal (make-date 2026 10 2)))
-    (ok (holiday-p cal (make-date 2026 12 25)))))
+    (ok (holiday-p cal (make-date 2026 12 25)))
+    (ng (holiday-p cal (make-date 1948 1 26))) ; Republic Day from 1950
+    (ok (holiday-p cal (make-date 1950 1 26)))
+    (ok (holiday-p cal (eid-al-fitr 2026)))))
+
+(deftest fifty-million-plus-all-normative
+  "Every ≥50M population code has a hand starter (not corpus)."
+  (dolist (row (normative-coverage-by-population))
+    (destructuring-bind (code pop name &key status) row
+      (declare (ignore name))
+      (when (>= pop 50)
+        (ok (eq status :normative) (format nil "~a (≥~aM) normative" code pop))))))
+
+(deftest vietnam-hung-kings-and-national-day-era
+  (let* ((cal (vietnam-holidays-calendar))
+         (hk-06 (chinese-lunar-date 2006 3 10 :location +beijing+))
+         (hk-07 (chinese-lunar-date 2007 3 10 :location +beijing+)))
+    (ng (holiday-p cal hk-06))
+    (ok (holiday-p cal hk-07))
+    (ng (holiday-p cal (make-date 2020 9 3)))
+    (ok (holiday-p cal (make-date 2021 9 3)))))
+
+(deftest philippines-ninoy-and-edsa
+  (let ((cal (philippines-holidays-calendar)))
+    (ng (holiday-p cal (make-date 2003 8 21)))
+    (ok (holiday-p cal (make-date 2004 8 21)))
+    (ok (holiday-p cal (make-date 1986 2 25)))))
+
+(deftest ethiopia-fasika-patriots-enkutatash
+  (let ((cal (ethiopia-holidays-calendar)))
+    (ok (holiday-p cal (make-date 2024 5 5)))   ; Fasika 2024 = Patriots' Day too
+    (ok (holiday-p cal (make-date 2024 9 12)))  ; Enkutatash in Gregorian leap year
+    (ok (holiday-p cal (make-date 2023 9 11)))  ; Enkutatash non-leap
+    (ok (holiday-p cal (make-date 2024 3 2))))) ; Adwa
 
 (deftest germany-federal-common
   (let ((cal (germany-holidays-calendar)))
