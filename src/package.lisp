@@ -139,6 +139,9 @@
    #:cn-transfers-for-year
    #:cn-working-days-for-year
    #:india-holidays-calendar
+   #:in-dopt-holidays
+   #:in-dopt-for-year
+   #:in-dopt-transfers-for-year
    #:germany-holidays-calendar
    #:france-holidays-calendar
    #:italy-holidays-calendar
@@ -173,8 +176,14 @@
    #:id-transfers-for-year
    #:bangladesh-holidays-calendar
    #:philippines-holidays-calendar
+   #:ph-proclamations
+   #:ph-notice-for-year
+   #:ph-transfers-for-year
    #:vietnam-holidays-calendar
    #:thailand-holidays-calendar
+   #:th-transfers
+   #:th-notice-for-year
+   #:th-transfers-for-year
    #:south-korea-holidays-calendar
    #:load-kr-temporary-holidays
    #:kr-temporary-holidays
@@ -182,14 +191,31 @@
    #:kr-transfers-for-year
    #:myanmar-holidays-calendar
    #:malaysia-holidays-calendar
+   #:my-transfers
+   #:my-notice-for-year
+   #:my-transfers-for-year
    #:taiwan-holidays-calendar
+   #:north-korea-holidays-calendar
+   #:nepal-holidays-calendar
+   #:sri-lanka-holidays-calendar
+   #:kazakhstan-holidays-calendar
+   #:uzbekistan-holidays-calendar
    #:brazil-holidays-calendar
    #:mexico-holidays-calendar
    #:colombia-holidays-calendar
+   #:co-emiliani-monday
+   #:co-transfers
+   #:co-notice-for-year
+   #:co-transfers-for-year
    #:argentina-holidays-calendar
    #:canada-holidays-calendar
    #:peru-holidays-calendar
    #:australia-holidays-calendar
+   #:venezuela-holidays-calendar
+   #:chile-holidays-calendar
+   #:cl-transfers
+   #:cl-notice-for-year
+   #:cl-transfers-for-year
    #:nigeria-holidays-calendar
    #:ethiopia-holidays-calendar
    #:dr-congo-holidays-calendar
@@ -210,7 +236,17 @@
    #:iraq-holidays-calendar
    #:afghanistan-holidays-calendar
    #:angola-holidays-calendar
-   #:uzbekistan-holidays-calendar
+   #:mozambique-holidays-calendar
+   #:madagascar-holidays-calendar
+   #:cameroon-holidays-calendar
+   #:cote-divoire-holidays-calendar
+   #:niger-holidays-calendar
+   #:burkina-faso-holidays-calendar
+   #:mali-holidays-calendar
+   #:malawi-holidays-calendar
+   #:zambia-holidays-calendar
+   #:yemen-holidays-calendar
+   #:syria-holidays-calendar
    #:population-order
    #:formation-years
    #:country-formation-year

@@ -2,6 +2,48 @@
 
 ;;;; Americas — research window max(1900, formation) → present, with eras.
 
+(defun co-emiliani-monday (year month day)
+  "Ley 51/1983: move fixed holiday to the following Monday unless already Monday."
+  (let* ((nom (make-date year month day))
+         (dow (date-day-of-week nom)))
+    (if (= dow 1) nom (+ nom (mod (- 8 dow) 7)))))
+
+;;; --- Colombia decree transfers (puentes / Ley Emiliani TO days) ---------
+
+(defparameter *co-transfers-path*
+  (merge-pathnames "data/co/transfers.sexp"
+                   (asdf:system-source-directory "cl-stack-calendars")))
+
+(defun load-co-transfers (&optional (path *co-transfers-path*))
+  "Return alist YEAR → (:authority A :transfers … :uri …)."
+  (with-open-file (in path)
+    (let ((form (read in)))
+      (mapcar
+       (lambda (block)
+         (let* ((year (getf block :year))
+                (auth (getf block :authority))
+                (transfers (mapcar (lambda (e)
+                                     (make-extra-day-transfer e auth))
+                                   (getf block :holidays))))
+           (cons year (list :authority auth
+                            :transfers transfers
+                            :uri (getf block :uri)))))
+       form))))
+
+(defvar *co-transfers* nil)
+
+(defun co-transfers ()
+  (or *co-transfers*
+      (setf *co-transfers* (load-co-transfers))))
+
+(defun co-notice-for-year (year)
+  (cdr (assoc year (co-transfers))))
+
+(defun co-transfers-for-year (year)
+  (loop for (_y . plist) in (co-transfers)
+        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
+                             (getf plist :transfers))))
+
 ;;; Brazil (floor 1900; Lei 662/1949 consolidates many)
 (define-calendar brazil-holidays-calendar (:register "BR")
   (:fixed "Confraternização Universal" 1 1 :from 1900
@@ -50,27 +92,48 @@
   (:fixed "Navidad" 12 25 :from 1900
    :authority "LFT — 25 de diciembre"))
 
-;;; Colombia (floor 1900; Ley 51/1983 emolumentos / Law 35 etc.)
+;;; Colombia (floor 1900; Ley 51/1983 Emiliani Monday + decree puentes)
 (define-calendar colombia-holidays-calendar (:register "CO")
   (:fixed "Año Nuevo" 1 1 :from 1900 :authority "Festivo nacional")
-  (:fixed "Día de los Reyes Magos" 1 6 :from 1900
-   :authority "Festivo — Epifanía (often moved to Monday under Ley 51/1983)")
-  (:fixed "Día de San José" 3 19 :from 1900 :authority "Festivo")
+  (:computed "Día de los Reyes Magos"
+   (lambda (y) (co-emiliani-monday y 1 6)) :from 1984
+   :authority "Ley 51/1983 — Epifanía al lunes siguiente")
+  (:fixed "Día de los Reyes Magos" 1 6 :from 1900 :to 1983
+   :authority "Festivo — Epifanía (pre-Ley Emiliani)")
+  (:computed "Día de San José"
+   (lambda (y) (co-emiliani-monday y 3 19)) :from 1984
+   :authority "Ley 51/1983 — San José al lunes siguiente")
+  (:fixed "Día de San José" 3 19 :from 1900 :to 1983 :authority "Festivo")
   (:easter "Jueves Santo" -3 :from 1900 :authority "Semana Santa")
   (:easter "Viernes Santo" -2 :from 1900 :authority "Semana Santa")
   (:fixed "Día del Trabajo" 5 1 :from 1900 :authority "Festivo")
-  (:easter "Ascensión" 39 :from 1900 :authority "Festivo (often Monday)")
+  (:easter "Ascensión" 39 :from 1900 :authority "Festivo (Ley Emiliani Monday)")
   (:easter "Corpus Christi" 60 :from 1900 :authority "Festivo")
   (:easter "Sagrado Corazón" 68 :from 1900 :authority "Festivo")
-  (:fixed "San Pedro y San Pablo" 6 29 :from 1900 :authority "Festivo")
+  (:computed "San Pedro y San Pablo"
+   (lambda (y) (co-emiliani-monday y 6 29)) :from 1984
+   :authority "Ley 51/1983 — 29 junio al lunes siguiente")
+  (:fixed "San Pedro y San Pablo" 6 29 :from 1900 :to 1983 :authority "Festivo")
   (:fixed "Día de la Independencia" 7 20 :from 1900
    :authority "Independencia 20 Jul 1810 — festivo")
   (:fixed "Batalla de Boyacá" 8 7 :from 1900 :authority "Festivo")
-  (:fixed "Asunción" 8 15 :from 1900 :authority "Festivo")
-  (:fixed "Día de la Raza" 10 12 :from 1900 :authority "Festivo")
-  (:fixed "Todos los Santos" 11 1 :from 1900 :authority "Festivo")
+  (:computed "Asunción"
+   (lambda (y) (co-emiliani-monday y 8 15)) :from 1984
+   :authority "Ley 51/1983 — Asunción al lunes siguiente")
+  (:fixed "Asunción" 8 15 :from 1900 :to 1983 :authority "Festivo")
+  (:computed "Día de la Raza"
+   (lambda (y) (co-emiliani-monday y 10 12)) :from 1984
+   :authority "Ley 51/1983 — 12 octubre al lunes siguiente")
+  (:fixed "Día de la Raza" 10 12 :from 1900 :to 1983 :authority "Festivo")
+  (:computed "Todos los Santos"
+   (lambda (y) (co-emiliani-monday y 11 1)) :from 1984
+   :authority "Ley 51/1983 — 1 noviembre al lunes siguiente")
+  (:fixed "Todos los Santos" 11 1 :from 1900 :to 1983 :authority "Festivo")
   (:fixed "Independencia de Cartagena" 11 11 :from 1900 :authority "Festivo")
-  (:fixed "Inmaculada Concepción" 12 8 :from 1900 :authority "Festivo")
+  (:computed "Inmaculada Concepción"
+   (lambda (y) (co-emiliani-monday y 12 8)) :from 1984
+   :authority "Ley 51/1983 — 8 diciembre al lunes siguiente")
+  (:fixed "Inmaculada Concepción" 12 8 :from 1900 :to 1983 :authority "Festivo")
   (:fixed "Navidad" 12 25 :from 1900 :authority "Festivo"))
 
 ;;; Argentina (floor 1900)
@@ -91,8 +154,10 @@
    :authority "Flag Day — feriado")
   (:fixed "Día de la Independencia" 7 9 :from 1900
    :authority "Independencia 1816 — feriado")
-  (:fixed "Paso a la Inmortalidad del Gral. San Martín" 8 17 :from 1900
-   :authority "Feriado (often third Monday August under bridge laws)")
+  (:fixed "Paso a la Inmortalidad del Gral. San Martín" 8 17 :from 1900 :to 2010
+   :authority "Feriado 17 de agosto hasta reforma puente")
+  (:nth-weekday "Paso a la Inmortalidad del Gral. San Martín" 8 :monday 3 :from 2011
+   :authority "Ley 26.676/2011 — tercer lunes de agosto")
   (:fixed "Día del Respeto a la Diversidad Cultural" 10 12 :from 2010
    :authority "Ley 26.977 — ex Día de la Raza")
   (:fixed "Día de la Raza" 10 12 :from 1900 :to 2009
@@ -162,10 +227,101 @@
   (:fixed "Christmas Day" 12 25 :from 1901 :authority "Nationwide")
   (:fixed "Boxing Day" 12 26 :from 1901 :authority "Nationwide (most jurisdictions)"))
 
+;;; Venezuela (floor 1900)
+(define-calendar venezuela-holidays-calendar (:register "VE")
+  (:fixed "Año Nuevo" 1 1 :from 1900 :authority "Feriado nacional")
+  (:easter "Carnaval" -48 :from 1900 :authority "Carnaval — Lunes (Easter−48)")
+  (:easter "Carnaval" -47 :from 1900 :authority "Carnaval — Martes (Easter−47)")
+  (:fixed "Declaración de la Independencia" 4 19 :from 1900
+   :authority "19 de abril de 1810")
+  (:easter "Jueves Santo" -3 :from 1900 :authority "Semana Santa")
+  (:easter "Viernes Santo" -2 :from 1900 :authority "Semana Santa")
+  (:fixed "Día del Trabajador" 5 1 :from 1900 :authority "Feriado")
+  (:fixed "Batalla de Carabobo" 6 24 :from 1900 :authority "Feriado nacional")
+  (:fixed "Día de la Independencia" 7 5 :from 1900
+   :authority "Independencia 5 de julio de 1811")
+  (:fixed "Natalicio de Simón Bolívar" 7 24 :from 1900 :authority "Feriado")
+  (:fixed "Día de la Resistencia Indígena" 10 12 :from 2002
+   :authority "Ley — ex Día de la Raza; feriado desde 2002")
+  (:fixed "Día de la Raza" 10 12 :from 1900 :to 2001
+   :authority "Día de la Raza hasta 2001")
+  (:fixed "Nochebuena" 12 24 :from 1900 :authority "Feriado nacional")
+  (:fixed "Navidad" 12 25 :from 1900 :authority "Feriado")
+  (:fixed "Fin de Año" 12 31 :from 1900 :authority "Feriado nacional"))
+
+;;; Chile bridge-day decrees (Law 19.668 / annual D.O.)
+(defparameter *cl-transfers-path*
+  (merge-pathnames "data/cl/transfers.sexp"
+                   (asdf:system-source-directory "cl-stack-calendars")))
+
+(defun load-cl-transfers (&optional (path *cl-transfers-path*))
+  (with-open-file (in path)
+    (let ((form (read in)))
+      (mapcar
+       (lambda (block)
+         (let* ((year (getf block :year))
+                (auth (getf block :authority))
+                (transfers (mapcar (lambda (e)
+                                     (make-extra-day-transfer e auth))
+                                   (getf block :holidays))))
+           (cons year (list :authority auth
+                            :transfers transfers
+                            :uri (getf block :uri)))))
+       form))))
+
+(defvar *cl-transfers* nil)
+
+(defun cl-transfers ()
+  (or *cl-transfers*
+      (setf *cl-transfers* (load-cl-transfers))))
+
+(defun cl-notice-for-year (year)
+  (cdr (assoc year (cl-transfers))))
+
+(defun cl-transfers-for-year (year)
+  (loop for (_y . plist) in (cl-transfers)
+        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
+                             (getf plist :transfers))))
+
+;;; Chile (floor 1900; Ley 19.973/2004 Monday moves + bridge decrees)
+(define-calendar chile-holidays-calendar (:register "CL")
+  (:fixed "Año Nuevo" 1 1 :from 1900 :authority "Feriado legal")
+  (:easter "Viernes Santo" -2 :from 1900 :authority "Feriado legal")
+  (:fixed "Día del Trabajador" 5 1 :from 1900 :authority "Feriado legal")
+  (:fixed "Día de las Glorias Navales" 5 21 :from 1900 :authority "Feriado legal")
+  (:computed "San Pedro y San Pablo"
+   (lambda (y) (co-emiliani-monday y 6 29)) :from 2005
+   :authority "Ley 19.973/2004 — 29 junio al lunes siguiente")
+  (:fixed "San Pedro y San Pablo" 6 29 :from 1900 :to 2004 :authority "Feriado legal")
+  (:fixed "Virgen del Carmen" 7 16 :from 1900 :authority "Feriado legal")
+  (:fixed "Asunción de la Virgen" 8 15 :from 1900 :authority "Feriado legal")
+  (:fixed "Fiestas Patrias" 9 18 :from 1900 :authority "Feriado legal")
+  (:fixed "Día de las Glorias del Ejército" 9 19 :from 1900 :authority "Feriado legal")
+  (:computed "Encuentro de Dos Mundos"
+   (lambda (y) (co-emiliani-monday y 10 12)) :from 2005
+   :authority "Ley 19.973/2004 — 12 octubre al lunes siguiente")
+  (:fixed "Encuentro de Dos Mundos" 10 12 :from 1900 :to 2004 :authority "Feriado legal")
+  (:fixed "Día Nacional de las Iglesias Evangélicas y Protestantes" 10 31 :from 2008
+   :authority "Ley 20.148/2007 — feriado 31 octubre")
+  (:fixed "Todos los Santos" 11 1 :from 1900 :authority "Feriado legal")
+  (:fixed "Inmaculada Concepción" 12 8 :from 1900 :authority "Feriado legal")
+  (:fixed "Navidad" 12 25 :from 1900 :authority "Feriado legal")
+  (:fixed "Día de los Pueblos Indígenas" 6 21 :from 2021
+   :authority "Ley 21.369/2021 — Día Nacional de los Pueblos Indígenas"))
+
 (defun brazil-holidays-calendar () (make-instance 'brazil-holidays-calendar))
 (defun mexico-holidays-calendar () (make-instance 'mexico-holidays-calendar))
-(defun colombia-holidays-calendar () (make-instance 'colombia-holidays-calendar))
+(defun colombia-holidays-calendar (&key year transfers)
+  "Colombian national holidays. YEAR attaches decree puente / extra days."
+  (let ((tr (or transfers (when year (co-transfers-for-year year)))))
+    (make-instance 'colombia-holidays-calendar :transfers tr)))
+
 (defun argentina-holidays-calendar () (make-instance 'argentina-holidays-calendar))
 (defun canada-holidays-calendar () (make-instance 'canada-holidays-calendar))
 (defun peru-holidays-calendar () (make-instance 'peru-holidays-calendar))
 (defun australia-holidays-calendar () (make-instance 'australia-holidays-calendar))
+(defun venezuela-holidays-calendar () (make-instance 'venezuela-holidays-calendar))
+(defun chile-holidays-calendar (&key year transfers)
+  "Chilean public holidays. YEAR attaches bridge-day decree extras."
+  (let ((tr (or transfers (when year (cl-transfers-for-year year)))))
+    (make-instance 'chile-holidays-calendar :transfers tr)))

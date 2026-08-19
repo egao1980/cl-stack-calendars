@@ -81,6 +81,78 @@
     (ok (holiday-p cal (make-date 1950 1 26)))
     (ok (holiday-p cal (eid-al-fitr 2026)))))
 
+(deftest india-dopt-hindu-corpus
+  (ok (in-dopt-for-year 2020))
+  (ok (in-dopt-for-year 2024))
+  (ok (in-dopt-for-year 2026))
+  (ok (>= (length (in-dopt-holidays)) 7)))
+
+(deftest india-dopt-diwali-2024
+  (let ((cal (india-holidays-calendar :year 2024))
+        (bare (india-holidays-calendar)))
+    (ok (holiday-p cal (make-date 2024 11 1)))
+    (ok (holiday-p cal (make-date 2024 3 25))) ; Holi
+    (ng (holiday-p bare (make-date 2024 11 1)))))
+
+(deftest twenty-million-plus-all-normative
+  "Every ≥20M population code has a hand starter (not corpus)."
+  (dolist (row (normative-coverage-by-population))
+    (destructuring-bind (code pop name &key status) row
+      (declare (ignore name))
+      (when (>= pop 20)
+        (ok (eq status :normative) (format nil "~a (≥~aM) normative" code pop))))))
+
+(deftest twenty-million-samples
+  (let ((mz (mozambique-holidays-calendar))
+        (cl (chile-holidays-calendar))
+        (kp (north-korea-holidays-calendar))
+        (kz (kazakhstan-holidays-calendar)))
+    (ok (holiday-p mz (make-date 1975 6 25)))
+    (ok (holiday-p cl (make-date 2021 6 21))) ; Pueblos Indígenas
+    (ng (holiday-p cl (make-date 2020 6 21)))
+    (ok (holiday-p kp (make-date 1948 9 9)))
+    (ok (holiday-p kz (make-date 1991 12 16)))))
+
+(deftest colombia-emiliani-2025
+  (let ((cal (colombia-holidays-calendar)))
+    ;; Reyes 2025: Jan 6 is Monday → stays Jan 6
+    (ok (holiday-p cal (make-date 2025 1 6)))
+    ;; 2025 Jul 20 Sunday → Emiliani Monday Jul 21 is in puente corpus
+    (ok (holiday-p (colombia-holidays-calendar :year 2025) (make-date 2025 7 21)))))
+
+(deftest chile-bridge-2024
+  (let ((cal (chile-holidays-calendar :year 2024))
+        (bare (chile-holidays-calendar)))
+    (ok (holiday-p cal (make-date 2024 9 20)))
+    (ng (holiday-p bare (make-date 2024 9 20)))))
+
+(deftest philippines-proclamation-2025
+  (let ((cal (philippines-holidays-calendar :year 2025))
+        (bare (philippines-holidays-calendar)))
+    (ok (holiday-p cal (make-date 2025 4 11))) ; Holy Week bridge
+    (ng (holiday-p bare (make-date 2025 4 11)))
+    (ok (holiday-p cal (make-date 2025 12 26))) ; Rizal bridge
+    (ng (holiday-p bare (make-date 2025 12 26)))))
+
+(deftest thailand-songkran-2025
+  (let ((cal (thailand-holidays-calendar :year 2025)))
+    (ok (holiday-p cal (make-date 2025 4 12)))
+    (ok (holiday-p cal (make-date 2025 4 16)))
+    (ok (holiday-p cal (make-date 2025 4 13)))))
+
+(deftest malaysia-bridge-2025
+  (let ((cal (malaysia-holidays-calendar :year 2025)))
+    (ok (holiday-p cal (make-date 2025 2 11)))
+    (ok (holiday-p cal (make-date 2025 12 26)))))
+
+(deftest next-gaps-skips-twenty-million
+  (let* ((gaps (next-normative-gaps 5))
+         (codes (mapcar #'car gaps)))
+    (ok (not (member "MZ" codes :test #'string=)))
+    (ok (not (member "CL" codes :test #'string=)))
+    (ok (not (member "NP" codes :test #'string=))
+        "≥20M tier filled — next gaps below 20M")))
+
 (deftest fifty-million-plus-all-normative
   "Every ≥50M population code has a hand starter (not corpus)."
   (dolist (row (normative-coverage-by-population))

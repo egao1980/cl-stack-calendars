@@ -214,3 +214,165 @@
   (:fixed "Natal" 12 25 :from 1975 :authority "Feriado nacional"))
 
 (defun angola-holidays-calendar () (make-instance 'angola-holidays-calendar))
+
+;;; --- ≥20M population tier (Africa) ------------------------------------
+
+(define-calendar mozambique-holidays-calendar (:register "MZ")
+  (:fixed "Dia da Fraternidade Universal" 1 1 :from 1975 :authority "Feriado nacional")
+  (:fixed "Dia dos Heróis Moçambicanos" 2 3 :from 1975
+   :authority "Dia dos heróis moçambicanos — feriado nacional")
+  (:fixed "Dia da Mulher Moçambicana" 4 7 :from 1975 :authority "Feriado nacional")
+  (:fixed "Dia Internacional dos Trabalhadores" 5 1 :from 1975 :authority "Feriado nacional")
+  (:fixed "Dia da Independência Nacional" 6 25 :from 1975
+   :authority "Independência 25 de junho de 1975")
+  (:fixed "Dia da Vitória" 9 7 :from 1975 :authority "Feriado nacional")
+  (:fixed "Dia das Forças Armadas de Libertação Nacional" 9 25 :from 1975
+   :authority "Feriado nacional")
+  (:fixed "Dia da Paz e Reconciliação" 10 4 :from 1995
+   :authority "Acordo Geral de Paz — feriado desde 1995")
+  (:fixed "Dia da Família" 12 25 :from 1975 :authority "Feriado nacional"))
+
+(define-calendar madagascar-holidays-calendar (:register "MG")
+  (:fixed "Taom-baovao" 1 1 :from 1960 :authority "Fetim-panjakana")
+  (:fixed "Andro iraisam-pirenena ho an'ny vehivavy" 3 8 :from 1960 :authority "Fetim-panjakana")
+  (:fixed "Martioran'ny tolona tamin'ny 1947" 3 29 :from 1960
+   :authority "Martyrs du 29 mars 1947")
+  (:easter "Alatsinain'ny Paska" 1 :from 1960 :authority "Fetim-panjakana")
+  (:fixed "Fetin'ny asa" 5 1 :from 1960 :authority "Fetim-panjakana")
+  (:fixed "Andron'i Afrika" 5 25 :from 1960 :authority "Fetim-panjakana")
+  (:fixed "Andro niakarana" 6 26 :from 1960
+   :authority "Independence 26 June 1960")
+  (:fixed "Asompsiona" 8 15 :from 1960 :authority "Fetim-panjakana")
+  (:fixed "Fetin'ny olo-masina" 11 1 :from 1960 :authority "Fetim-panjakana")
+  (:fixed "Krismasy" 12 25 :from 1960 :authority "Fetim-panjakana")
+  (:computed "Aïd el-Fitr" #'eid-al-fitr :from 1960 :authority "Fête légale (tabular)")
+  (:computed "Aïd el-Adha" #'eid-al-adha :from 1960 :authority "Fête légale (tabular)"))
+
+(define-calendar cameroon-holidays-calendar (:register "CM")
+  (:fixed "Nouvel An" 1 1 :from 1960 :authority "Jour férié légal")
+  (:fixed "Fête de la Jeunesse" 2 11 :from 1960 :authority "Jour férié légal")
+  (:easter "Vendredi saint" -2 :from 1960 :authority "Jour férié légal")
+  (:fixed "Fête du Travail" 5 1 :from 1960 :authority "Jour férié légal")
+  (:fixed "Fête Nationale / de l'Unité" 5 20 :from 1972
+   :authority "Unité nationale — 20 mai (1972 referendum)")
+  (:easter "Ascension" 39 :from 1960 :authority "Jour férié légal")
+  (:fixed "Assomption" 8 15 :from 1960 :authority "Jour férié légal")
+  (:fixed "Noël" 12 25 :from 1960 :authority "Jour férié légal")
+  (:computed "Aïd el-Fitr" #'eid-al-fitr :from 1960 :authority "Jour férié (tabular)")
+  (:computed "Aïd el-Adha" #'eid-al-adha :from 1960 :authority "Jour férié (tabular)"))
+
+(define-calendar cote-divoire-holidays-calendar (:register "CI")
+  (:fixed "Nouvel An" 1 1 :from 1960 :authority "Jour férié")
+  (:easter "Lundi de Pâques" 1 :from 1960 :authority "Jour férié")
+  (:fixed "Fête du Travail" 5 1 :from 1960 :authority "Jour férié")
+  (:easter "Ascension" 39 :from 1960 :authority "Jour férié")
+  (:easter "Lundi de Pentecôte" 50 :from 1960 :authority "Jour férié")
+  (:fixed "Fête de l'Indépendance" 8 7 :from 1960
+   :authority "Indépendance 7 août 1960")
+  (:fixed "Assomption" 8 15 :from 1960 :authority "Jour férié")
+  (:fixed "Toussaint" 11 1 :from 1960 :authority "Jour férié")
+  (:fixed "Journée Nationale de la Paix" 11 15 :from 1996
+   :authority "Fête de la paix — jour férié depuis 1996")
+  (:fixed "Noël" 12 25 :from 1960 :authority "Jour férié")
+  (:computed "Aïd el-Fitr" #'eid-al-fitr :from 1960 :authority "Jour férié (tabular)")
+  (:computed "Aïd el-Adha" #'eid-al-adha :from 1960 :authority "Jour férié (tabular)")
+  (:computed "Mawlid" #'mawlid-date :from 1960 :authority "Jour férié (tabular)"))
+
+(define-calendar niger-holidays-calendar (:register "NE")
+  (:fixed "Nouvel An" 1 1 :from 1960 :authority "Jour férié")
+  (:fixed "Journée Nationale de la Concorde" 4 24 :from 1995
+   :authority "Concord Day — 24 avril (1995)")
+  (:fixed "Fête du Travail" 5 1 :from 1960 :authority "Jour férié")
+  (:fixed "Proclamation de l'Indépendance" 8 3 :from 1960
+   :authority "Indépendance 3 août 1960")
+  (:fixed "Proclamation de la République" 12 18 :from 1958
+   :authority "République du Niger — 18 décembre 1958")
+  (:fixed "Noël" 12 25 :from 1960 :authority "Jour férié")
+  (:computed "Aïd el-Fitr" #'eid-al-fitr :from 1960 :authority "Jour férié (tabular)")
+  (:computed "Aïd el-Adha" #'eid-al-adha :from 1960 :authority "Jour férié (tabular)")
+  (:computed "Mawlid" #'mawlid-date :from 1960 :authority "Jour férié (tabular)")
+  (:computed "Nouvel An islamique" #'islamic-new-year-date :from 1960
+   :authority "1 Muharram (tabular)"))
+
+(define-calendar burkina-faso-holidays-calendar (:register "BF")
+  (:fixed "Nouvel An" 1 1 :from 1960 :authority "Jour férié")
+  (:fixed "Soulèvement populaire" 1 3 :from 1966
+   :authority "Anniversaire du 3 janvier 1966")
+  (:fixed "Journée internationale des femmes" 3 8 :from 1960 :authority "Jour férié")
+  (:easter "Lundi de Pâques" 1 :from 1960 :authority "Jour férié")
+  (:fixed "Fête du Travail" 5 1 :from 1960 :authority "Jour férié")
+  (:easter "Ascension" 39 :from 1960 :authority "Jour férié")
+  (:fixed "Jour de l'Indépendance" 8 5 :from 1960
+   :authority "Indépendance 5 août 1960")
+  (:fixed "Assomption" 8 15 :from 1960 :authority "Jour férié")
+  (:fixed "Toussaint" 11 1 :from 1960 :authority "Jour férié")
+  (:fixed "Fête nationale" 12 11 :from 1958
+   :authority "Proclamation de la République — 11 décembre 1958")
+  (:fixed "Noël" 12 25 :from 1960 :authority "Jour férié")
+  (:computed "Aïd el-Fitr" #'eid-al-fitr :from 1960 :authority "Jour férié (tabular)")
+  (:computed "Aïd el-Adha" #'eid-al-adha :from 1960 :authority "Jour férié (tabular)")
+  (:computed "Mawlid" #'mawlid-date :from 1960 :authority "Jour férié (tabular)"))
+
+(define-calendar mali-holidays-calendar (:register "ML")
+  (:fixed "Nouvel An" 1 1 :from 1960 :authority "Jour férié")
+  (:fixed "Fête de l'Armée" 1 20 :from 1960 :authority "Jour férié")
+  (:fixed "Journée des Martyrs" 3 26 :from 1960 :authority "Jour férié")
+  (:easter "Lundi de Pâques" 1 :from 1960 :authority "Jour férié")
+  (:fixed "Fête du Travail" 5 1 :from 1960 :authority "Jour férié")
+  (:fixed "Jour de l'Afrique" 5 25 :from 1960 :authority "Jour férié")
+  (:fixed "Fête nationale de l'Indépendance" 9 22 :from 1960
+   :authority "Indépendance 22 septembre 1960")
+  (:fixed "Noël" 12 25 :from 1960 :authority "Jour férié")
+  (:computed "Aïd el-Fitr" #'eid-al-fitr :from 1960 :authority "Jour férié (tabular)")
+  (:computed "Aïd el-Adha" #'eid-al-adha :from 1960 :authority "Jour férié (tabular)")
+  (:computed "Mawlid" #'mawlid-date :from 1960 :authority "Jour férié (tabular)"))
+
+(define-calendar malawi-holidays-calendar (:register "MW")
+  (:fixed "New Year's Day" 1 1 :from 1964 :authority "Public holiday")
+  (:fixed "John Chilembwe Day" 1 15 :from 1995
+   :authority "Public holiday — John Chilembwe Day")
+  (:fixed "Martyrs' Day" 3 3 :from 1964 :authority "Public holiday")
+  (:easter "Good Friday" -2 :from 1964 :authority "Public holiday")
+  (:easter "Easter Monday" 1 :from 1964 :authority "Public holiday")
+  (:fixed "Labour Day" 5 1 :from 1964 :authority "Public holiday")
+  (:fixed "Kamuzu Day" 5 14 :from 1964 :to 2008
+   :authority "Kamuzu Day — 14 May until move to May Monday")
+  (:nth-weekday "Kamuzu Day" 5 :monday 3 :from 2009
+   :authority "Kamuzu Day — third Monday in May (2009 reform)")
+  (:fixed "Independence Day" 7 6 :from 1964
+   :authority "Independence 6 July 1964")
+  (:nth-weekday "Mother's Day" 10 :monday 2 :from 1964
+   :authority "Mother's Day — second Monday in October")
+  (:fixed "Christmas Day" 12 25 :from 1964 :authority "Public holiday")
+  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1964 :authority "Public holiday (tabular)")
+  (:computed "Eid al-Adha" #'eid-al-adha :from 1964 :authority "Public holiday (tabular)"))
+
+(define-calendar zambia-holidays-calendar (:register "ZM")
+  (:fixed "New Year's Day" 1 1 :from 1964 :authority "Public holiday")
+  (:fixed "International Women's Day" 3 8 :from 1964 :authority "Public holiday")
+  (:fixed "Youth Day" 3 12 :from 1964 :authority "Public holiday")
+  (:easter "Good Friday" -2 :from 1964 :authority "Public holiday")
+  (:easter "Easter Monday" 1 :from 1964 :authority "Public holiday")
+  (:fixed "Labour Day" 5 1 :from 1964 :authority "Public holiday")
+  (:fixed "African Freedom Day" 5 25 :from 1964 :authority "Public holiday")
+  (:nth-weekday "Heroes' Day" 7 :monday 1 :from 1964
+   :authority "Heroes' Day — first Monday in July")
+  (:computed "Unity Day"
+   (lambda (y) (+ (nth-weekday-of-month y 7 1 1) 1))
+   :from 1964
+   :authority "Unity Day — day after Heroes' Day")
+  (:nth-weekday "Farmers' Day" 8 :monday 1 :from 1964
+   :authority "Farmers' Day — first Monday in August")
+  (:fixed "Independence Day" 10 24 :from 1964
+   :authority "Independence 24 October 1964")
+  (:fixed "Christmas Day" 12 25 :from 1964 :authority "Public holiday"))
+
+(defun mozambique-holidays-calendar () (make-instance 'mozambique-holidays-calendar))
+(defun madagascar-holidays-calendar () (make-instance 'madagascar-holidays-calendar))
+(defun cameroon-holidays-calendar () (make-instance 'cameroon-holidays-calendar))
+(defun cote-divoire-holidays-calendar () (make-instance 'cote-divoire-holidays-calendar))
+(defun niger-holidays-calendar () (make-instance 'niger-holidays-calendar))
+(defun burkina-faso-holidays-calendar () (make-instance 'burkina-faso-holidays-calendar))
+(defun mali-holidays-calendar () (make-instance 'mali-holidays-calendar))
+(defun malawi-holidays-calendar () (make-instance 'malawi-holidays-calendar))
+(defun zambia-holidays-calendar () (make-instance 'zambia-holidays-calendar))

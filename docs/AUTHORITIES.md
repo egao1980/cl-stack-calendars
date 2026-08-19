@@ -45,11 +45,15 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `CN` | Annual 国办发明电 / 国发明电 调休 | Full corpus in `data/cn/transfers.sexp` (**1999–2026**; 澳门回归 + Y2K元旦 through current). Cross-year NY blocks via FROM/TO year touch |
 | `ID` | SKB 3 Menteri / Keppres cuti bersama | Extra leave days in `data/id/cuti-bersama.sexp` (**2002–2026**). Facultative for private employers; ASN via Keppres. `(indonesia-holidays-calendar :year N)` |
 | `KR` | 관공서의 공휴일에 관한 규정 — 임시공휴일 | National temporary holidays in `data/kr/temporary-holidays.sexp` (historical + modern 2015–2025). `(south-korea-holidays-calendar :year N)` |
-| `IN` | Negotiable Instruments Act 1881 / DoPT | Three national + common gazetted (GF, Christmas, Id-ul-Fitr/Zuha, Muharram, Milad). Hindu lunar festivals via annual DoPT OM / DATA-CALENDAR |
+| `IN` | Negotiable Instruments Act 1881 / DoPT | Three national + common gazetted (GF, Christmas, Id-ul-Fitr/Zuha, Muharram, Milad). Hindu lunar festivals in `data/in/dopt-holidays.sexp` (**2020–2026**). `(india-holidays-calendar :year N)` |
 | `VN` | Bộ luật Lao động | Hung Kings from 2007; Quốc khánh 2 days from 2021; Ngày Văn hóa from 2026 |
-| `PH` | RA / proclamations | Ninoy Aquino Day 2004; EDSA 1986; Independence 4 Jul→12 Jun |
+| `PH` | RA / proclamations | Ninoy Aquino Day 2004; EDSA 1986; Independence 4 Jul→12 Jun. Bridge days in `data/ph/proclamations.sexp` (**2024–2026**). `(philippines-holidays-calendar :year N)` |
+| `TH` | Royal Gazette / Cabinet | Statutory list + substitute days in `data/th/transfers.sexp` (**2024–2026**). `(thailand-holidays-calendar :year N)` |
+| `MY` | JPM / PMO cuti persekutuan | Federal set + extras in `data/my/transfers.sexp` (**2024–2026**). `(malaysia-holidays-calendar :year N)` |
+| `CO` | Ley 51/1983 Emiliani + Decreto puente | Monday moves via `co-emiliani-monday`; puentes in `data/co/transfers.sexp` (**2024–2026**). `(colombia-holidays-calendar :year N)` |
+| `CL` | Ley 19.973/2004 + D.O. puentes | Monday moves + bridge extras in `data/cl/transfers.sexp` (**2024–2026**). `(chile-holidays-calendar :year N)` |
 | `SD` `IQ` `AF` `AO` `UZ` | National statutes (starter-mena/africa/asia.lisp) | ≥35M fill: Sudan Coptic+Islamic; Iraq National Day/Victory/Ghadir; AF Independence + Nowruz to 2020; AO Liberation/Peace eras; UZ Navro'z/Independence |
-| `ID` `PK` `NG` `BR` `BD` `MX` `ET` `PH` `EG` `VN` `CD` `TR` `IR` `TH` `KR` `…` | National statutes (see `starter-asia/americas/africa/mena.lisp`) | Research window `[max(1900,formation), now]` with `:from`/`:to` eras |
+| `MZ` `MG` `CM` `CI` `NE` `BF` `ML` `MW` `ZM` `YE` `SY` `KP` `NP` `LK` `VE` `CL` `KZ` | National statutes (starter-africa/mena/asia/americas.lisp) | ≥20M normative fill with `:from`/`:to` eras |
 | `DE` | Feiertagsgesetze / Einigungsvertrag Art. 2 | Bundeseinheitliche Feiertage (Unity Day from 1990) |
 | `FR` | Code du travail L.3133-1 | Jours fériés; Victoire 8 mai 1953–58 then from 1982 |
 | `IT` | L. 260/1949 e succ. | Epifania abolished 1977 / restored 1985 |

@@ -2,9 +2,46 @@
 
 ;;;; India — Negotiable Instruments Act 1881 three national holidays +
 ;;;; DoPT compulsory/common gazetted set. Hindu lunar festivals (Holi,
-;;;; Diwali, Dussehra, …) are announced annually in DoPT OMs and need a
-;;;; Hindu calendar locus — attach via DATA-CALENDAR / year rules.
+;;;; Diwali, Dussehra, …) are announced annually in DoPT OMs — corpus in
+;;;; data/in/dopt-holidays.sexp; attach via (india-holidays-calendar :year N).
 ;;;; Research window: max(1900, 1947).
+
+(defparameter *in-dopt-holidays-path*
+  (merge-pathnames "data/in/dopt-holidays.sexp"
+                   (asdf:system-source-directory "cl-stack-calendars"))
+  "DoPT OM gazetted Hindu/Buddhist/Jain/Sikh festival dates by year.")
+
+(defun load-in-dopt-holidays (&optional (path *in-dopt-holidays-path*))
+  "Return alist YEAR → (:authority A :transfers … :uri …)."
+  (with-open-file (in path)
+    (let ((form (read in)))
+      (mapcar
+       (lambda (block)
+         (let* ((year (getf block :year))
+                (auth (getf block :authority))
+                (transfers (mapcar (lambda (e)
+                                     (make-extra-day-transfer e auth))
+                                   (getf block :holidays))))
+           (cons year (list :authority auth
+                            :transfers transfers
+                            :uri (getf block :uri)))))
+       form))))
+
+(defvar *in-dopt-holidays* nil)
+
+(defun in-dopt-holidays ()
+  (or *in-dopt-holidays*
+      (setf *in-dopt-holidays* (load-in-dopt-holidays))))
+
+(defun in-dopt-for-year (year)
+  "Plist for the DoPT OM block keyed by YEAR, or NIL."
+  (cdr (assoc year (in-dopt-holidays))))
+
+(defun in-dopt-transfers-for-year (year)
+  "DoPT gazetted festival TO days in YEAR."
+  (loop for (_y . plist) in (in-dopt-holidays)
+        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
+                             (getf plist :transfers))))
 
 (define-calendar india-holidays-calendar (:register "IN")
   (:fixed "Republic Day" 1 26 :from 1950
@@ -30,5 +67,8 @@
   (:computed "Id-e-Milad" #'mawlid-date :from 1947
    :authority "DoPT gazetted — Prophet Mohammad's Birthday (tabular)"))
 
-(defun india-holidays-calendar ()
-  (make-instance 'india-holidays-calendar))
+(defun india-holidays-calendar (&key year transfers)
+  "Indian public holidays. YEAR attaches DoPT OM gazetted Hindu/lunar set."
+  (let ((tr (or transfers
+                (when year (in-dopt-transfers-for-year year)))))
+    (make-instance 'india-holidays-calendar :transfers tr)))

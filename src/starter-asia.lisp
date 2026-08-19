@@ -261,6 +261,111 @@
         nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
                              (getf plist :transfers))))
 
+;;; --- Philippines Malacañang proclamations (bridge / special days) -----
+
+(defparameter *ph-proclamations-path*
+  (merge-pathnames "data/ph/proclamations.sexp"
+                   (asdf:system-source-directory "cl-stack-calendars")))
+
+(defun load-ph-proclamations (&optional (path *ph-proclamations-path*))
+  (with-open-file (in path)
+    (let ((form (read in)))
+      (mapcar
+       (lambda (block)
+         (let* ((year (getf block :year))
+                (auth (getf block :authority))
+                (transfers (mapcar (lambda (e)
+                                     (make-extra-day-transfer e auth))
+                                   (getf block :holidays))))
+           (cons year (list :authority auth
+                            :transfers transfers
+                            :uri (getf block :uri)))))
+       form))))
+
+(defvar *ph-proclamations* nil)
+
+(defun ph-proclamations ()
+  (or *ph-proclamations*
+      (setf *ph-proclamations* (load-ph-proclamations))))
+
+(defun ph-notice-for-year (year)
+  (cdr (assoc year (ph-proclamations))))
+
+(defun ph-transfers-for-year (year)
+  (loop for (_y . plist) in (ph-proclamations)
+        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
+                             (getf plist :transfers))))
+
+;;; --- Thailand Royal Gazette substitute / bridge days ------------------
+
+(defparameter *th-transfers-path*
+  (merge-pathnames "data/th/transfers.sexp"
+                   (asdf:system-source-directory "cl-stack-calendars")))
+
+(defun load-th-transfers (&optional (path *th-transfers-path*))
+  (with-open-file (in path)
+    (let ((form (read in)))
+      (mapcar
+       (lambda (block)
+         (let* ((year (getf block :year))
+                (auth (getf block :authority))
+                (transfers (mapcar (lambda (e)
+                                     (make-extra-day-transfer e auth))
+                                   (getf block :holidays))))
+           (cons year (list :authority auth
+                            :transfers transfers
+                            :uri (getf block :uri)))))
+       form))))
+
+(defvar *th-transfers* nil)
+
+(defun th-transfers ()
+  (or *th-transfers*
+      (setf *th-transfers* (load-th-transfers))))
+
+(defun th-notice-for-year (year)
+  (cdr (assoc year (th-transfers))))
+
+(defun th-transfers-for-year (year)
+  (loop for (_y . plist) in (th-transfers)
+        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
+                             (getf plist :transfers))))
+
+;;; --- Malaysia JPM / PMO additional public holidays --------------------
+
+(defparameter *my-transfers-path*
+  (merge-pathnames "data/my/transfers.sexp"
+                   (asdf:system-source-directory "cl-stack-calendars")))
+
+(defun load-my-transfers (&optional (path *my-transfers-path*))
+  (with-open-file (in path)
+    (let ((form (read in)))
+      (mapcar
+       (lambda (block)
+         (let* ((year (getf block :year))
+                (auth (getf block :authority))
+                (transfers (mapcar (lambda (e)
+                                     (make-extra-day-transfer e auth))
+                                   (getf block :holidays))))
+           (cons year (list :authority auth
+                            :transfers transfers
+                            :uri (getf block :uri)))))
+       form))))
+
+(defvar *my-transfers* nil)
+
+(defun my-transfers ()
+  (or *my-transfers*
+      (setf *my-transfers* (load-my-transfers))))
+
+(defun my-notice-for-year (year)
+  (cdr (assoc year (my-transfers))))
+
+(defun my-transfers-for-year (year)
+  (loop for (_y . plist) in (my-transfers)
+        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
+                             (getf plist :transfers))))
+
 (define-calendar south-korea-holidays-calendar (:register "KR")
   (:fixed "신정" 1 1 :from 1948
    :authority "관공서의 공휴일에 관한 규정 — New Year")
@@ -350,7 +455,18 @@
    (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
    :from 1957 :authority "Hari Raya Puasa Day 2")
   (:computed "Hari Raya Haji" #'eid-al-adha :from 1957
-   :authority "Federal holiday (tabular Hijri)"))
+   :authority "Federal holiday (tabular Hijri)")
+  (:computed "Hari Raya Haji"
+   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 1))))
+   :from 1957 :authority "Hari Raya Haji Day 2")
+  (:computed "Wesak Day"
+   (lambda (y) (chinese-lunar-date y 4 15 :location +beijing+))
+   :from 1962
+   :authority "Federal holiday — Vesak (Beijing tabular ≈ MY gazette)")
+  (:computed "Deepavali"
+   (lambda (y) (chinese-lunar-date y 8 1 :location +beijing+))
+   :from 1972
+   :authority "Federal holiday — Deepavali (Beijing tabular ≈ gazette)"))
 
 ;;; Taiwan (ROC post-1945) — national holidays under ROC calendar law
 (define-calendar taiwan-holidays-calendar (:register "TW")
@@ -370,6 +486,8 @@
    :from 1945 :authority "春節")
   (:fixed "和平紀念日" 2 28 :from 1997
    :authority "二二八和平紀念日 — public holiday from 1997")
+  (:fixed "行憲紀念日" 12 25 :from 1945 :to 2000
+   :authority "Constitution Day on 25 Dec until abolished as holiday 2001")
   (:computed "清明節" (lambda (y) (qingming-date y :location +beijing+))
    :from 1945 :authority "清明節")
   (:fixed "勞動節" 5 1 :from 1945 :authority "勞動節（勞工）")
@@ -409,9 +527,18 @@
     (make-instance 'indonesia-holidays-calendar :transfers tr)))
 
 (defun bangladesh-holidays-calendar () (make-instance 'bangladesh-holidays-calendar))
-(defun philippines-holidays-calendar () (make-instance 'philippines-holidays-calendar))
+
+(defun philippines-holidays-calendar (&key year transfers)
+  "Philippine holidays. YEAR attaches Malacañang proclamation bridge days."
+  (let ((tr (or transfers (when year (ph-transfers-for-year year)))))
+    (make-instance 'philippines-holidays-calendar :transfers tr)))
+
 (defun vietnam-holidays-calendar () (make-instance 'vietnam-holidays-calendar))
-(defun thailand-holidays-calendar () (make-instance 'thailand-holidays-calendar))
+
+(defun thailand-holidays-calendar (&key year transfers)
+  "Thai public holidays. YEAR attaches Royal Gazette substitute/bridge days."
+  (let ((tr (or transfers (when year (th-transfers-for-year year)))))
+    (make-instance 'thailand-holidays-calendar :transfers tr)))
 
 (defun south-korea-holidays-calendar (&key year transfers)
   "ROK public holidays. YEAR attaches national 임시공휴일 for that year."
@@ -419,6 +546,93 @@
     (make-instance 'south-korea-holidays-calendar :transfers tr)))
 
 (defun myanmar-holidays-calendar () (make-instance 'myanmar-holidays-calendar))
-(defun malaysia-holidays-calendar () (make-instance 'malaysia-holidays-calendar))
+
+(defun malaysia-holidays-calendar (&key year transfers)
+  "Malaysian federal holidays. YEAR attaches JPM/PMO additional days."
+  (let ((tr (or transfers (when year (my-transfers-for-year year)))))
+    (make-instance 'malaysia-holidays-calendar :transfers tr)))
 (defun taiwan-holidays-calendar () (make-instance 'taiwan-holidays-calendar))
 (defun uzbekistan-holidays-calendar () (make-instance 'uzbekistan-holidays-calendar))
+
+;;; --- Korea / South Asia / Central Asia (≥20M) -------------------------
+
+(define-calendar north-korea-holidays-calendar (:register "KP")
+  (:fixed "New Year's Day" 1 1 :from 1948 :authority "공휴일")
+  (:fixed "Day of the Shining Star" 2 16 :from 1982
+   :authority "Kim Jong-il birthday — public holiday from 1982")
+  (:fixed "Day of the Sun" 4 15 :from 1968
+   :authority "Kim Il-sung birthday — public holiday")
+  (:fixed "May Day" 5 1 :from 1948 :authority "공휴일")
+  (:fixed "Victory Day" 7 27 :from 1953
+   :authority "Korean War armistice — 27 July")
+  (:fixed "Liberation Day" 8 15 :from 1948
+   :authority "Liberation from Japanese rule — 15 August")
+  (:fixed "Day of the Foundation of the Republic" 9 9 :from 1948
+   :authority "DPRK foundation — 9 September 1948")
+  (:fixed "Party Foundation Day" 10 10 :from 1949 :authority "공휴일")
+  (:fixed "Constitution Day" 12 27 :from 1972
+   :authority "Socialist Constitution promulgated 1972"))
+
+(define-calendar nepal-holidays-calendar (:register "NP")
+  (:fixed "New Year's Day" 1 1 :from 1900 :authority "Public holiday")
+  (:fixed "Prithvi Jayanti" 1 11 :from 1900 :to 2007
+   :authority "King Prithvi Narayan Shah birthday — abolished 2008")
+  (:fixed "Martyrs' Day" 1 30 :from 1900 :authority "Public holiday")
+  (:fixed "International Women's Day" 3 8 :from 1900 :authority "Public holiday")
+  (:fixed "Labour Day" 5 1 :from 1900 :authority "Public holiday")
+  (:fixed "Republic Day" 5 28 :from 2008
+   :authority "Federal Democratic Republic — 28 May 2008")
+  (:fixed "Democracy Day" 2 19 :from 1951
+   :authority "Democracy Day — Falgun 7 / 19 February civil date")
+  (:fixed "Constitution Day" 9 20 :from 2015
+   :authority "Constitution promulgated 20 September 2015")
+  (:fixed "Dashain" 10 3 :from 1900
+   :authority "Vijaya Dashami — gazetted civil date varies; attach via DATA-CALENDAR")
+  (:fixed "Tihar" 10 28 :from 1900
+   :authority "Laxmi Puja — gazetted civil date varies; attach via DATA-CALENDAR")
+  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1900 :authority "Public holiday (tabular)")
+  (:computed "Eid al-Adha" #'eid-al-adha :from 1900 :authority "Public holiday (tabular)"))
+
+(define-calendar sri-lanka-holidays-calendar (:register "LK")
+  (:fixed "New Year's Day" 1 1 :from 1948 :authority "Public holiday")
+  (:fixed "Tamil Thai Pongal Day" 1 15 :from 1948 :authority "Public holiday")
+  (:fixed "National Day" 2 4 :from 1948
+   :authority "Independence 4 February 1948")
+  (:fixed "Labour Day" 5 1 :from 1948 :authority "Public holiday")
+  (:fixed "Sinhala and Tamil New Year Eve" 4 13 :from 1948 :authority "Public holiday")
+  (:fixed "Sinhala and Tamil New Year" 4 14 :from 1948 :authority "Public holiday")
+  (:easter "Good Friday" -2 :from 1948 :authority "Public holiday")
+  (:fixed "Day following Vesak Full Moon Poya" 5 2 :from 1948
+   :authority "Vesak — civil gazette date; full Poya set via DATA-CALENDAR")
+  (:fixed "Christmas Day" 12 25 :from 1948 :authority "Public holiday")
+  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1948 :authority "Public holiday (tabular)")
+  (:computed "Eid al-Adha" #'eid-al-adha :from 1948 :authority "Public holiday (tabular)")
+  (:computed "Milad-un-Nabi" #'mawlid-date :from 1948 :authority "Public holiday (tabular)"))
+
+(define-calendar kazakhstan-holidays-calendar (:register "KZ")
+  (:fixed "Жаңа жыл" 1 1 :from 1991 :authority "Мемлекеттік мереке")
+  (:fixed "Жаңа жыл" 1 2 :from 2006
+   :authority "Жаңа жыл — 2 күн (2006 ж. реформа)")
+  (:fixed "Рождество Христово" 1 7 :from 2007
+   :authority "Рождество — мереке 7 қаңтар (2007)")
+  (:fixed "Халықаралық әйелдер күні" 3 8 :from 1991 :authority "Мереке")
+  (:fixed "Наурыз мейрамы" 3 21 :from 1991 :authority "Наурыз")
+  (:fixed "Наурыз мейрамы" 3 22 :from 1991 :authority "Наурыз")
+  (:fixed "Наурыз мейрамы" 3 23 :from 1991 :authority "Наурыз")
+  (:fixed "Қазақстан халқының бірлігі күні" 5 1 :from 1995
+   :authority "1 мамыр — Бірлік күні (1995)")
+  (:fixed "Жеңіс күні" 5 9 :from 1991 :authority "Мереке")
+  (:fixed "Астана күні" 7 6 :from 1997
+   :authority "Астана — 6 шілде (1997)")
+  (:fixed "Конституция күні" 8 30 :from 1995 :authority "Мереке")
+  (:fixed "Республика күні" 10 25 :from 1995
+   :authority "Республика күні — 25 қазан (1995)")
+  (:fixed "Тәуелсіздік күні" 12 16 :from 1991
+   :authority "Тәуелсіздік — 16 желтоқсан 1991")
+  (:computed "Ораза айт" #'eid-al-fitr :from 1991 :authority "Дini мереке (tabular)")
+  (:computed "Құрban айт" #'eid-al-adha :from 1991 :authority "Дini мереке (tabular)"))
+
+(defun north-korea-holidays-calendar () (make-instance 'north-korea-holidays-calendar))
+(defun nepal-holidays-calendar () (make-instance 'nepal-holidays-calendar))
+(defun sri-lanka-holidays-calendar () (make-instance 'sri-lanka-holidays-calendar))
+(defun kazakhstan-holidays-calendar () (make-instance 'kazakhstan-holidays-calendar))

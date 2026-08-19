@@ -143,6 +143,8 @@
   (:fixed "Yennayer" 1 12 :from 2018
    :authority "Amazigh New Year — public holiday from 2018")
   (:fixed "Jour de l'an" 1 1 :from 1962 :authority "Fête nationale / légale")
+  (:easter "Vendredi saint" -2 :from 1962 :authority "Fête légale")
+  (:easter "Lundi de Pâques" 1 :from 1962 :authority "Fête légale")
   (:fixed "Fête de la Révolution" 11 1 :from 1962
    :authority "1er novembre 1954 — fête nationale")
   (:fixed "Fête de l'Indépendance" 7 5 :from 1962
@@ -319,3 +321,43 @@
 (defun sudan-holidays-calendar () (make-instance 'sudan-holidays-calendar))
 (defun iraq-holidays-calendar () (make-instance 'iraq-holidays-calendar))
 (defun afghanistan-holidays-calendar () (make-instance 'afghanistan-holidays-calendar))
+
+;;; --- ≥20M tier (MENA / Asia overlap) ----------------------------------
+
+(define-calendar yemen-holidays-calendar (:register "YE")
+  (:fixed "Labour Day" 5 1 :from 1990 :authority "Public holiday")
+  (:fixed "Unity Day" 5 22 :from 1990
+   :authority "Yemeni unification — 22 May 1990")
+  (:fixed "Revolution Day" 9 26 :from 1962
+   :authority "26 September Revolution (YAR)")
+  (:fixed "Independence Day" 11 30 :from 1967
+   :authority "Independence of South Yemen — 30 November 1967")
+  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1990 :authority "Public holiday (tabular)")
+  (:computed "Eid al-Fitr"
+   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
+   :from 1990 :authority "Eid al-Fitr Day 2")
+  (:computed "Eid al-Adha" #'eid-al-adha :from 1990 :authority "Public holiday (tabular)")
+  (:computed "Eid al-Adha"
+   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 1))))
+   :from 1990 :authority "Eid al-Adha Day 2")
+  (:computed "Islamic New Year" #'islamic-new-year-date :from 1990
+   :authority "1 Muharram (tabular)")
+  (:computed "Mawlid" #'mawlid-date :from 1990 :authority "Public holiday (tabular)"))
+
+(define-calendar syria-holidays-calendar (:register "SY")
+  (:fixed "Revolution Day" 3 8 :from 1963
+   :authority "8 March Revolution / Ba'ath — public holiday")
+  (:fixed "Evacuation Day" 4 17 :from 1946
+   :authority "Evacuation of French forces — Independence Day")
+  (:fixed "Labour Day" 5 1 :from 1946 :authority "Public holiday")
+  (:fixed "Martyrs' Day" 5 6 :from 1946 :authority "Public holiday")
+  (:fixed "October Liberation War Day" 10 6 :from 1973
+   :authority "October War / Yom Kippur War anniversary")
+  (:fixed "Christmas Day" 12 25 :from 1946
+   :authority "Public holiday (Christmas)")
+  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1946 :authority "Public holiday (tabular)")
+  (:computed "Eid al-Adha" #'eid-al-adha :from 1946 :authority "Public holiday (tabular)")
+  (:computed "Mawlid" #'mawlid-date :from 1946 :authority "Public holiday (tabular)"))
+
+(defun yemen-holidays-calendar () (make-instance 'yemen-holidays-calendar))
+(defun syria-holidays-calendar () (make-instance 'syria-holidays-calendar))

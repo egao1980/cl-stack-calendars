@@ -96,6 +96,8 @@
   (:fixed "Asunción de la Virgen" 8 15 :from 1900 :authority "BOE fiestas laborales nacionales")
   (:fixed "Fiesta Nacional de España" 10 12 :from 1987
    :authority "Ley 18/1987 — Fiesta Nacional (12 de octubre)")
+  (:fixed "Día de la Hispanidad" 10 12 :from 1900 :to 1986
+   :authority "Fiesta de la Raza / Hispanidad until Ley 18/1987 rename")
   (:fixed "Todos los Santos" 11 1 :from 1900 :authority "BOE fiestas laborales nacionales")
   (:fixed "Día de la Constitución" 12 6 :from 1978
    :authority "Constitución 1978 — fiesta nacional")
