@@ -9,6 +9,9 @@
                         :accessor calendar-sandwich-holidays-p)
    (sandwich-authority :initarg :sandwich-authority :initform nil
                        :accessor calendar-sandwich-authority)
+   ;; Year/date from which sandwich applies (e.g. JP Art. 3(3) from 1985).
+   (sandwich-from :initarg :sandwich-from :initform nil
+                  :accessor calendar-sandwich-from)
    ;; Decree transfers: TO dates become holidays (перенос выходных).
    (transfers :initarg :transfers :initform nil :accessor calendar-transfers)
    ;; Compensatory working Saturdays/Sundays (override weekend-day-p).
@@ -45,7 +48,11 @@ TO date falls in YEAR (or adjacent for Dec 31 ↔ Jan moves)."
           (unless (%suppressed-date-p calendar d)
             (push (cons d (or (holiday-rule-name rule) t)) pairs)
             (push d claimed)))))
-    (when (calendar-sandwich-holidays-p calendar)
+    (when (and (calendar-sandwich-holidays-p calendar)
+               (let ((sf (calendar-sandwich-from calendar)))
+                 (cond ((null sf) t)
+                       ((integerp sf) (>= year sf))
+                       (t t))))
       (setf pairs (apply-sandwich-holidays pairs)))
     (dolist (tr (calendar-transfers calendar))
       (let ((to (calendar-transfer-to tr)))
@@ -87,47 +94,56 @@ rearrangements in starter calendars (normative source of truth)."
     (destructuring-bind (kind &rest args) clause
       (ecase kind
         (:fixed
-         (destructuring-bind (name month day &key observed bridge from to authority) args
+         (destructuring-bind (name month day &key observed observed-from bridge from to authority) args
            `(make-fixed-holiday-rule :name ,name :month ,month :day ,day
-                                      :observed ,observed :bridge ,bridge
+                                      :observed ,observed
+                                      :observed-from ,(%bound-form observed-from)
+                                      :bridge ,bridge
                                       :authority ',authority
                                       :from ,(%bound-form from)
                                       :to ,(%bound-form to))))
         (:nth-weekday
-         (destructuring-bind (name month weekday nth &key observed bridge from to authority) args
+         (destructuring-bind (name month weekday nth &key observed observed-from bridge from to authority) args
            `(make-nth-weekday-holiday-rule :name ,name :month ,month
                                             :weekday (normalize-weekday ,weekday)
                                             :nth ,nth
-                                            :observed ,observed :bridge ,bridge
+                                            :observed ,observed
+                                            :observed-from ,(%bound-form observed-from)
+                                            :bridge ,bridge
                                             :authority ',authority
                                             :from ,(%bound-form from)
                                             :to ,(%bound-form to))))
         (:easter
-         (destructuring-bind (name offset &key orthodox observed bridge from to authority) args
+         (destructuring-bind (name offset &key orthodox observed observed-from bridge from to authority) args
            `(make-easter-holiday-rule :name ,name :offset ,offset :orthodox ,orthodox
-                                       :observed ,observed :bridge ,bridge
+                                       :observed ,observed
+                                       :observed-from ,(%bound-form observed-from)
+                                       :bridge ,bridge
                                        :authority ',authority
                                        :from ,(%bound-form from)
                                        :to ,(%bound-form to))))
         (:computed
-         (destructuring-bind (name compute &key observed bridge from to authority) args
+         (destructuring-bind (name compute &key observed observed-from bridge from to authority) args
            `(make-computed-holiday-rule :name ,name :compute ,compute
-                                         :observed ,observed :bridge ,bridge
+                                         :observed ,observed
+                                         :observed-from ,(%bound-form observed-from)
+                                         :bridge ,bridge
                                          :authority ',authority
                                          :from ,(%bound-form from)
                                          :to ,(%bound-form to))))))))
 
 (defmacro define-calendar (name (&key register (weekend-days ''(6 7))
-                                   sandwich-holidays-p sandwich-authority)
+                                   sandwich-holidays-p sandwich-authority
+                                   sandwich-from)
                            &body rules)
   "Define NAME as a RULE-CALENDAR subclass from RULES.
 
 Each clause:
 
-  (:fixed NAME MONTH DAY &key OBSERVED BRIDGE FROM TO AUTHORITY)
-  (:nth-weekday NAME MONTH WEEKDAY NTH &key OBSERVED BRIDGE FROM TO AUTHORITY)
-  (:easter NAME OFFSET &key ORTHODOX OBSERVED BRIDGE FROM TO AUTHORITY)
-  (:computed NAME COMPUTE &key OBSERVED BRIDGE FROM TO AUTHORITY)
+  (:fixed NAME MONTH DAY &key OBSERVED OBSERVED-FROM BRIDGE FROM TO AUTHORITY)
+  (:nth-weekday NAME MONTH WEEKDAY NTH &key OBSERVED OBSERVED-FROM BRIDGE FROM TO AUTHORITY)
+  (:easter NAME OFFSET &key ORTHODOX OBSERVED OBSERVED-FROM BRIDGE FROM TO AUTHORITY)
+  (:computed NAME COMPUTE &key OBSERVED OBSERVED-FROM BRIDGE FROM TO AUTHORITY)
     ;; COMPUTE is a form evaluating to (YEAR) → DATE (equinoxes, Chinese lunar, …)
 
 AUTHORITY is the normative citation (statute, EO, ECB decision, proclamation).
@@ -140,13 +156,16 @@ Statute-named OBSERVED (prefer these):
   :JP-FURIKAE                  祝日法第3条第2項 (Sunday only)
   :RU-TK-112-TRANSFER          ТК РФ ст. 112 ч. 2 (except Jan 1–8)
 
+:OBSERVED-FROM limits when OBSERVED applies (year or date) — e.g. JP 振替 from 1973.
+
 Mechanical primitives (:NEAREST-WEEKDAY, :NEXT-WEEKDAY, …) are implementation
 atoms — do not use them in starters without an AUTHORITY that implies them.
 
 :BRIDGE :ADJACENT is not a general legal default; only with AUTHORITY.
 
 :SANDWICH-HOLIDAYS-P with :SANDWICH-AUTHORITY enables 祝日法第3条第3項-style
-weekdays sandwiched between two holidays.
+weekdays sandwiched between two holidays. :SANDWICH-FROM (year) bounds when
+sandwich applies (JP Art. 3(3) from 1985).
 
 Annual Government decree transfers are attached at instance time via
 CALENDAR-TRANSFERS / MAKE-RUSSIAN-HOLIDAYS-CALENDAR — not in this macro."
@@ -157,6 +176,7 @@ CALENDAR-TRANSFERS / MAKE-RUSSIAN-HOLIDAYS-CALENDAR — not in this macro."
         :weekend-days ,weekend-days
         :sandwich-holidays-p ,sandwich-holidays-p
         :sandwich-authority ',sandwich-authority
+        :sandwich-from ,(%bound-form sandwich-from)
         :rules (list ,@(mapcar #'%holiday-rule-constructor-form rules))))
      ,@(when register
          `((register-calendar ,register (make-instance ',name))))

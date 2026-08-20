@@ -255,6 +255,8 @@
    #:normative-coverage-by-population
    #:next-normative-gaps
    #:normative-calendar-codes
+   #:calendar-earliest-from-year
+   #:major-history-gaps
 
    ;; country / territory corpus (date-holidays)
    #:country-holiday-calendar

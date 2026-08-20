@@ -11,6 +11,102 @@
     (ok (holiday-p cal (make-date 2023 1 1)))
     (ok (holiday-p cal (make-date 2023 1 2)))))
 
+(deftest japan-imperial-era-1900-1947
+  "休日ニ関スル件 — research window from 1900; day-precise 年号 bounds."
+  (let ((cal (japan-holidays-calendar)))
+    (ok (holiday-p cal (make-date 1900 2 11)))  ; 紀元節
+    (ok (holiday-p cal (make-date 1900 11 3)))  ; 天長節 Meiji
+    (ok (holiday-p cal (make-date 1915 8 31)))  ; 天長節 Taisho
+    (ok (holiday-p cal (make-date 1915 10 31))) ; 天長節祝日
+    (ok (holiday-p cal (make-date 1930 4 29)))  ; 天長節 Showa
+    (ok (holiday-p cal (make-date 1930 11 3)))  ; 明治節
+    (ok (holiday-p cal (make-date 1948 2 11)))  ; still 紀元節 (law from Jul 20)
+    (ng (holiday-p cal (make-date 1948 1 1)))   ; 元日 only from 1949
+    (ok (holiday-p cal (make-date 1949 1 1)))
+    (ng (holiday-p cal (make-date 1949 2 11)))  ; 紀元節 gone; 建国 from 1967
+    (ok (holiday-p cal (make-date 1967 2 11)))
+    (ng (holiday-p cal (make-date 1912 11 3)))  ; Meiji 天長節 ends Jul 29 1912
+    (ok (holiday-p cal (make-date 1912 8 31))))) ; Taisho 天長節
+
+(deftest japan-reiwa-accession-2019
+  "天皇の即位の日等を定める法律 — 2019 GW + 即位礼."
+  (let ((cal (japan-holidays-calendar)))
+    (ok (holiday-p cal (make-date 2019 4 29))) ; 昭和の日
+    (ok (holiday-p cal (make-date 2019 4 30))) ; 国民の休日 (sandwich)
+    (ok (holiday-p cal (make-date 2019 5 1)))  ; 即位の日
+    (ok (holiday-p cal (make-date 2019 5 2)))  ; 国民の休日 (sandwich)
+    (ok (holiday-p cal (make-date 2019 5 3)))
+    (ok (holiday-p cal (make-date 2019 5 4)))
+    (ok (holiday-p cal (make-date 2019 5 5)))
+    (ok (holiday-p cal (make-date 2019 5 6)))  ; 振替 (こども Sunday)
+    (ok (holiday-p cal (make-date 2019 10 22)))
+    (ng (holiday-p cal (make-date 2019 12 23))) ; no 天皇誕生日 in 2019
+    (ng (holiday-p cal (make-date 2019 2 23)))))
+
+(deftest japan-olympic-special-2020-2021
+  (let ((cal (japan-holidays-calendar)))
+    (ok (holiday-p cal (make-date 2020 7 23))) ; 海の日
+    (ok (holiday-p cal (make-date 2020 7 24))) ; スポーツの日
+    (ok (holiday-p cal (make-date 2020 8 10))) ; 山の日
+    (ng (holiday-p cal (make-date 2020 7 20))) ; not 3rd Mon Jul 2020 (=20)
+    (ok (holiday-p cal (make-date 2021 7 22)))
+    (ok (holiday-p cal (make-date 2021 7 23)))
+    (ok (holiday-p cal (make-date 2021 8 8)))
+    (ok (holiday-p cal (make-date 2021 8 9)))  ; 振替
+    (ok (holiday-p cal (make-date 2022 7 18))))) ; back to 3rd Mon
+
+(deftest japan-furikae-from-1973
+  "振替休日 Art. 3(2) from 昭和48年改正."
+  (let ((cal (japan-holidays-calendar)))
+    ;; 1972-01-01 Saturday — no 振替 yet
+    (ok (holiday-p cal (make-date 1972 1 1)))
+    (ng (holiday-p cal (make-date 1972 1 2)))
+    ;; 1978-01-01 Sunday → 振替 1/2
+    (ok (holiday-p cal (make-date 1978 1 1)))
+    (ok (holiday-p cal (make-date 1978 1 2)))))
+
+(deftest japan-sandwich-from-1985
+  "国民の休日 Art. 3(3) from 昭和60年改正."
+  (let ((cal (japan-holidays-calendar)))
+    ;; 1984: 5/3 Thu + 5/5 Sat — mid 5/4 Fri is not yet 国民の休日
+    (ok (holiday-p cal (make-date 1984 5 3)))
+    (ng (holiday-p cal (make-date 1984 5 4)))
+    ;; 1988: 5/3 Tue + 5/5 Thu → sandwich 5/4 Wed
+    (ok (holiday-p cal (make-date 1988 5 3)))
+    (ok (holiday-p cal (make-date 1988 5 4)))
+    (ok (holiday-p cal (make-date 1988 5 5)))))
+
+(deftest gb-bank-holidays-act-1871-eras
+  "Bank Holidays Act 1871 → BFDA 1971 stagger."
+  (let ((cal (uk-bank-holidays-calendar)))
+    (ok (holiday-p cal (make-date 1950 4 10))) ; Easter Monday 1950
+    (ok (holiday-p cal (make-date 1960 6 6)))  ; Whit Monday 1960 (Easter+50)
+    (ng (holiday-p cal (make-date 1965 6 7)))  ; Whit gone; Spring BH instead
+    (ok (holiday-p cal (make-date 1960 8 1)))  ; first Monday Aug 1960
+    (ng (holiday-p cal (make-date 1965 8 2)))  ; first Mon Aug gone
+    (ok (holiday-p cal (make-date 1965 8 30))) ; last Mon Aug 1965
+    (ok (holiday-p cal (make-date 1900 12 25)))
+    (ng (holiday-p cal (make-date 1970 1 1)))  ; NY from 1974
+    (ok (holiday-p cal (make-date 1974 1 1)))))
+
+(deftest germany-unity-day-eras
+  (let ((cal (germany-holidays-calendar)))
+    (ok (holiday-p cal (make-date 1980 6 17)))
+    (ng (holiday-p cal (make-date 1980 10 3)))
+    (ok (holiday-p cal (make-date 1990 10 3)))
+    (ng (holiday-p cal (make-date 1991 6 17)))))
+
+(deftest france-labour-armistice-eras
+  (let ((cal (france-holidays-calendar)))
+    (ng (holiday-p cal (make-date 1910 5 1)))
+    (ok (holiday-p cal (make-date 1919 5 1)))
+    (ng (holiday-p cal (make-date 1920 11 11)))
+    (ok (holiday-p cal (make-date 1922 11 11)))))
+
+(deftest fifty-million-plus-history-to-floor
+  "≥50M normative starters reach civil research floor (no >5y earliest-:from gap)."
+  (ok (null (major-history-gaps 50))))
+
 (deftest japan-sandwich-keiro-equinox-2015
   "国民の休日 between 敬老の日 and 秋分の日 (Art. 3(3))."
   (let ((cal (japan-holidays-calendar)))

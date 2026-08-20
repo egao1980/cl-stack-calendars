@@ -53,6 +53,8 @@
    :authority ("5 U.S.C. § 6103(a)–(b)" "Exec. Order No. 11582 § 3(a)"))
   (:nth-weekday "Labor Day" 9 :monday 1 :from 1894
    :authority "5 U.S.C. § 6103(a) (Labor Day federal holiday) — research window from 1900")
+  (:fixed "Columbus Day" 10 12 :observed :us-federal-in-lieu :from 1937 :to 1970
+   :authority "FDR proclamation / 5 U.S.C. § 6103(a) — fixed Oct 12 until Uniform Monday Holiday Act")
   (:nth-weekday "Columbus Day" 10 :monday 2 :from 1971
    :authority "Pub. L. 90-363; 5 U.S.C. § 6103(a) (effective 1971-01-01)")
   (:fixed "Veterans Day" 11 11 :observed :us-federal-in-lieu :from 1900 :to 1970
@@ -129,30 +131,41 @@
                     collect d)))
 
 (define-calendar uk-bank-holidays-calendar (:register "GBLO")
+  ;; Common-law / customary (not in Bank Holidays Act 1871; observed as rest days).
+  (:easter "Good Friday" -2 :from 1900
+   :authority ("Common law Good Friday; Banking and Financial Dealings Act 1971"
+               "https://www.gov.uk/bank-holidays"))
+  (:fixed "Christmas Day" 12 25
+   :observed :uk-proclamation-substitute :from 1900
+   :authority ("Common law Christmas Day; BFDA 1971 s.1 proclamations for substitutes"
+               "https://www.gov.uk/bank-holidays"))
+  ;; Bank Holidays Act 1871 (England & Wales) — research window from 1900.
+  (:easter "Easter Monday" 1 :from 1900
+   :authority ("Bank Holidays Act 1871"
+               "Banking and Financial Dealings Act 1971 Sch.1 para.1"))
+  (:easter "Whit Monday" 50 :from 1900 :to 1964
+   :authority "Bank Holidays Act 1871 — Whit Monday (replaced by Spring BH trial 1965)")
+  (:nth-weekday "August Bank Holiday" 8 :monday 1 :from 1900 :to 1964
+   :authority "Bank Holidays Act 1871 — first Monday in August (to 1964)")
+  (:fixed "Boxing Day" 12 26
+   :observed :uk-proclamation-substitute :from 1900
+   :authority ("Bank Holidays Act 1871 (26 Dec if weekday); Holidays Extension Act 1875;"
+               "BFDA 1971 Sch.1; proclamations for Saturday substitutes"
+               "https://www.legislation.gov.uk/ukpga/1971/80/schedule/1"))
+  ;; 1965–1970 experimental stagger (White Paper); made permanent by BFDA 1971.
+  (:nth-weekday "Spring Bank Holiday" 5 :monday -1 :from 1965
+   :authority ("Experimental last Monday in May from 1965; BFDA 1971 Sch.1"
+               "https://www.gov.uk/bank-holidays"))
+  (:nth-weekday "Summer Bank Holiday" 8 :monday -1 :from 1965
+   :authority ("Experimental last Monday in August from 1965; BFDA 1971 Sch.1"
+               "https://www.gov.uk/bank-holidays"))
+  ;; Post-1971 additions by proclamation / statute practice.
   (:fixed "New Year's Day" 1 1
    :observed :uk-proclamation-substitute :from 1974
-   :authority ("Banking and Financial Dealings Act 1971 s.1 (proclamation)"
+   :authority ("Banking and Financial Dealings Act 1971 s.1 (proclamation from 1974)"
                "https://www.gov.uk/bank-holidays"))
-  (:easter "Good Friday" -2 :from 1971
-   :authority ("Common law Good Friday; Royal Proclamations"
-               "https://www.gov.uk/bank-holidays"))
-  (:easter "Easter Monday" 1 :from 1971
-   :authority "Banking and Financial Dealings Act 1971 Sch.1 para.1")
   (:nth-weekday "Early May Bank Holiday" 5 :monday 1 :from 1978
    :authority ("Banking and Financial Dealings Act 1971 s.1 (proclamation, from 1978)"
-               "https://www.gov.uk/bank-holidays"))
-  (:nth-weekday "Spring Bank Holiday" 5 :monday -1 :from 1971
-   :authority "Banking and Financial Dealings Act 1971 Sch.1 para.1 (last Monday in May)")
-  (:nth-weekday "Summer Bank Holiday" 8 :monday -1 :from 1971
-   :authority "Banking and Financial Dealings Act 1971 Sch.1 para.1 (last Monday in August)")
-  (:fixed "Christmas Day" 12 25
-   :observed :uk-proclamation-substitute :from 1971
-   :authority ("Common law Christmas Day; Banking and Financial Dealings Act 1971 s.1 proclamations for substitutes"
-               "https://www.gov.uk/bank-holidays"))
-  (:fixed "Boxing Day" 12 26
-   :observed :uk-proclamation-substitute :from 1971
-   :authority ("Banking and Financial Dealings Act 1971 Sch.1 para.1 (26 Dec if not Sunday; 27 Dec if 25 or 26 is Sunday); proclamations for Saturday substitutes"
-               "https://www.legislation.gov.uk/ukpga/1971/80/schedule/1"
                "https://www.gov.uk/bank-holidays")))
 
 (defun weekend-only-calendar () (make-instance 'weekend-only-calendar))

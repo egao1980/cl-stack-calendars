@@ -31,6 +31,7 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `USFED` | Pub. L. 94-97 | Veterans Day back to Nov 11 (eff. 1978) |
 | `USFED` | Pub. L. 117-17 | Juneteenth (signed 2021-06-17) |
 | `GBLO` | [Banking and Financial Dealings Act 1971](https://www.legislation.gov.uk/ukpga/1971/80) s.1 & Sch.1 | Statutory bank holidays + proclamation power |
+| `GBLO` | [Bank Holidays Act 1871](https://en.wikipedia.org/wiki/Bank_Holidays_Act_1871) | England & Wales: Easter Mon, Whit Mon, first Mon Aug, Boxing Day (research window from 1900); Whit/Aug replaced experimentally 1965, permanently BFDA 1971 |
 | `GBLO` | [gov.uk/bank-holidays](https://www.gov.uk/bank-holidays) | Published proclamation substitute dates |
 | `GBLO` | Special Royal Proclamations (s.1(2)–(3)) | Extras + relocated BH in `data/gb/proclamations.sexp` (VE 1995/2020, Jubilees 2002/2012/2022, Wedding 2011, Coronation 2023). Use `(uk-bank-holidays-calendar :year N)` |
 | `TARGET` | [ECB GC decision 14 Dec 2000](https://www.ecb.europa.eu/press/pr/date/2000/html/pr001214_4.en.html) | Long-term TARGET closing days (no weekend in-lieu) |
@@ -39,7 +40,10 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `RU` | ФЗ от 23.04.2012 № 35-ФЗ | NY block adds 6 and 8 Jan |
 | `RU` | Discretionary перенос acts (ПП / ФЗ) | Full corpus in `data/ru/transfers.sexp` (**1991–2026**); gaps 1998 & 2004 = no discretionary act (TK-only). 2000 = ФЗ-217 |
 | `USSR` | КЗоТ СССР / Указы Президиума ВС | Late-Soviet non-working days (see starter-russian.lisp) |
-| `JP` | [国民の祝日に関する法律](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html) | 祝日 list; Art. 3(2) 振替; Art. 3(3) 国民の休日 |
+| `JP` | [国民の祝日に関する法律](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html) | 祝日 list; Art. 3(2) 振替 from 1973 (`:observed-from`); Art. 3(3) 国民の休日 from 1985 (`:sandwich-from`) |
+| `JP` | 休日ニ関スル件（大正元年勅令19号 / 昭和2年勅令25号） | Imperial 祝祭日 1900–1948-07-19; day-precise 年号 (天長節 Meiji/Taisho/Showa, 先帝祭) |
+| `JP` | 天皇の即位の日等を定める法律（平成30年法律第83号） | 2019-05-01 即位・10-22 即位礼; sandwich GW |
+| `JP` | 五輪特別措置法 | 2020–2021 moves: 海の日 / スポーツの日 / 山の日 |
 | `JP` | 春分日/秋分日 | Astronomical equinox civil date at Tokyo (`+tokyo+`) |
 | `CN` | 《全国年节及纪念日放假办法》 | Statutory festivals; lunar dates via Beijing astronomy |
 | `CN` | Annual 国办发明电 / 国发明电 调休 | Full corpus in `data/cn/transfers.sexp` (**1999–2026**; 澳门回归 + Y2K元旦 through current). Cross-year NY blocks via FROM/TO year touch |
@@ -54,8 +58,8 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `CL` | Ley 19.973/2004 + D.O. puentes | Monday moves + bridge extras in `data/cl/transfers.sexp` (**2024–2026**). `(chile-holidays-calendar :year N)` |
 | `SD` `IQ` `AF` `AO` `UZ` | National statutes (starter-mena/africa/asia.lisp) | ≥35M fill: Sudan Coptic+Islamic; Iraq National Day/Victory/Ghadir; AF Independence + Nowruz to 2020; AO Liberation/Peace eras; UZ Navro'z/Independence |
 | `MZ` `MG` `CM` `CI` `NE` `BF` `ML` `MW` `ZM` `YE` `SY` `KP` `NP` `LK` `VE` `CL` `KZ` | National statutes (starter-africa/mena/asia/americas.lisp) | ≥20M normative fill with `:from`/`:to` eras |
-| `DE` | Feiertagsgesetze / Einigungsvertrag Art. 2 | Bundeseinheitliche Feiertage (Unity Day from 1990) |
-| `FR` | Code du travail L.3133-1 | Jours fériés; Victoire 8 mai 1953–58 then from 1982 |
+| `DE` | Feiertagsgesetze / Einigungsvertrag Art. 2 | Bundeseinheitliche Feiertage; 17. Juni Einheit 1954–1990, then 3. Oktober from 1990 |
+| `FR` | Code du travail L.3133-1 | Jours fériés; 1er mai from 1919; Armistice from 1922; Victoire 8 mai 1953–58 then from 1982 |
 | `IT` | L. 260/1949 e succ. | Epifania abolished 1977 / restored 1985 |
 | `ES` | Estatuto / BOE fiestas nacionales | Constitución 1978; Fiesta Nacional Ley 18/1987 |
 | `NL` | Algemeen erkende feestdagen | Koninginnedag→Koningsdag 2014 |

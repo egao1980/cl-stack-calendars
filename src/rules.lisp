@@ -48,6 +48,8 @@ rearranged via a statute-backed OBSERVED policy when it falls on a weekend."
   (month 1 :type (integer 1 12))
   (day 1 :type (integer 1 31))
   (observed nil)
+  ;; When set, OBSERVED applies only on/after this year or date (e.g. JP 振替 from 1973).
+  (observed-from nil :type (or null integer date))
   (bridge nil :type (member nil :adjacent)))
 
 (defstruct (nth-weekday-holiday-rule (:include holiday-rule))
@@ -57,6 +59,7 @@ rearranged via a statute-backed OBSERVED policy when it falls on a weekend."
   (weekday 1 :type (integer 1 7))
   (nth 1 :type integer)
   (observed nil)
+  (observed-from nil :type (or null integer date))
   (bridge nil :type (member nil :adjacent)))
 
 (defstruct (easter-holiday-rule (:include holiday-rule))
@@ -65,6 +68,7 @@ Sunday every year (e.g. Good Friday is offset -2)."
   (offset 0 :type integer)
   (orthodox nil)
   (observed nil)
+  (observed-from nil :type (or null integer date))
   (bridge nil :type (member nil :adjacent)))
 
 (defstruct (computed-holiday-rule (:include holiday-rule))
@@ -76,8 +80,8 @@ solar day boundaries — see datetime-protocol:+TOKYO+, +BEIJING+, +DELHI+,
 +JERUSALEM+."
   (compute nil :type (or function symbol))
   (observed nil)
+  (observed-from nil :type (or null integer date))
   (bridge nil :type (member nil :adjacent)))
-
 (defun normalize-rule-bound (bound)
   "Accept NIL, a Gregorian year integer, a DATE, or a (YEAR MONTH DAY) list."
   (cond ((null bound) nil)
@@ -301,6 +305,19 @@ both holidays becomes a holiday (国民の休日). DATE-NAME-ALIST is a list of
   (:method ((rule easter-holiday-rule)) (easter-holiday-rule-observed rule))
   (:method ((rule computed-holiday-rule)) (computed-holiday-rule-observed rule)))
 
+(defgeneric rule-observed-from (rule)
+  (:method ((rule holiday-rule)) nil)
+  (:method ((rule fixed-holiday-rule)) (fixed-holiday-rule-observed-from rule))
+  (:method ((rule nth-weekday-holiday-rule)) (nth-weekday-holiday-rule-observed-from rule))
+  (:method ((rule easter-holiday-rule)) (easter-holiday-rule-observed-from rule))
+  (:method ((rule computed-holiday-rule)) (computed-holiday-rule-observed-from rule)))
+
+(defun %observed-applies-at-p (observed-from date)
+  "True when OBSERVED-FROM is NIL or DATE is on/after that bound."
+  (cond ((null observed-from) t)
+        ((integerp observed-from) (>= (date-year date) observed-from))
+        (t (>= date observed-from))))
+
 (defgeneric rule-bridge (rule)
   (:method ((rule fixed-holiday-rule)) (fixed-holiday-rule-bridge rule))
   (:method ((rule nth-weekday-holiday-rule)) (nth-weekday-holiday-rule-bridge rule))
@@ -319,8 +336,10 @@ window. See HOLIDAY-RULE-AUTHORITY for the normative citation."))
 (defmethod rule-occurrences ((rule holiday-rule) year weekend-days &optional claimed)
   (let ((nominal (rule-nominal-date rule year)))
     (when (and nominal (rule-valid-at-p rule nominal))
-      (observe-dates nominal (rule-observed rule) (rule-bridge rule)
-                     weekend-days claimed))))
+      (let ((observed (when (%observed-applies-at-p (rule-observed-from rule) nominal)
+                        (rule-observed rule))))
+        (observe-dates nominal observed (rule-bridge rule)
+                       weekend-days claimed)))))
 
 ;;; Compatibility: single primary occurrence (first of RULE-OCCURRENCES).
 (defun rule-occurrence (rule year weekend-days &optional claimed)

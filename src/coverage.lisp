@@ -76,3 +76,34 @@ research window start; otherwise CIVIL-RESEARCH-FROM-YEAR."
         (when (>= (length out) n)
           (return))))
     (nreverse out)))
+
+(defun %holiday-rule-from-year (rule)
+  "Year component of a rule's :FROM bound, or NIL."
+  (let ((from (holiday-rule-from rule)))
+    (cond ((null from) nil)
+          ((integerp from) from)
+          ((typep from 'date) (date-year from))
+          (t nil))))
+
+(defun calendar-earliest-from-year (calendar)
+  "Earliest :FROM year among RULE-CALENDAR rules, or NIL."
+  (when (typep calendar 'rule-calendar)
+    (let ((years (remove nil (mapcar #'%holiday-rule-from-year
+                                     (calendar-rules calendar)))))
+      (when years (reduce #'min years)))))
+
+(defun major-history-gaps (&optional (min-population 50))
+  "Population-ordered ≥MIN-POPULATION normative codes whose earliest rule
+:FROM is more than 5 years after CIVIL-RESEARCH-FROM-YEAR (history hole)."
+  (let ((out '()))
+    (dolist (row (normative-coverage-by-population))
+      (destructuring-bind (code pop name &key status) row
+        (when (and (>= pop min-population) (eq status :normative))
+          (let* ((cal (find-calendar code :errorp nil))
+                 (floor (civil-research-from-year code))
+                 (earliest (calendar-earliest-from-year cal)))
+            (when (and earliest (> (- earliest floor) 5))
+              (push (list code pop name :floor floor :earliest earliest
+                          :gap (- earliest floor))
+                    out))))))
+    (nreverse out)))

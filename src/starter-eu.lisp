@@ -34,21 +34,23 @@
    :authority "Feiertagsgesetze der Länder (Christi Himmelfahrt)")
   (:easter "Pfingstmontag" 50 :from 1949
    :authority "Feiertagsgesetze der Länder (Pfingstmontag)")
+  (:fixed "Tag der Deutschen Einheit" 6 17 :from 1954 :to 1990
+   :authority "17. Juni — Tag der deutschen Einheit (BRD, Aufstand 1953; bis Wiedervereinigung)")
   (:fixed "Tag der Deutschen Einheit" 10 3 :from 1990
-   :authority "Einigungsvertrag Art. 2 Abs. 2; Tag der Deutschen Einheit")
+   :authority "Einigungsvertrag Art. 2 Abs. 2; Tag der Deutschen Einheit (3. Oktober)")
   (:fixed "1. Weihnachtstag" 12 25 :from 1949
    :authority "Feiertagsgesetze der Länder")
   (:fixed "2. Weihnachtstag" 12 26 :from 1949
    :authority "Feiertagsgesetze der Länder"))
 
-;;; France — Code du travail L.3133-1.
+;;; France — Code du travail L.3133-1; research window from 1900 with statute eras.
 (define-calendar france-holidays-calendar (:register "FR")
   (:fixed "Jour de l'an" 1 1 :from 1900
    :authority "Code du travail L.3133-1")
   (:easter "Lundi de Pâques" 1 :from 1900
    :authority "Code du travail L.3133-1")
-  (:fixed "Fête du Travail" 5 1 :from 1900
-   :authority "Code du travail L.3133-1")
+  (:fixed "Fête du Travail" 5 1 :from 1919
+   :authority "Loi du 23 avril 1919 — 1er mai chômé; Code du travail L.3133-1")
   (:fixed "Victoire 1945" 5 8 :from 1953 :to 1958
    :authority "Loi 1953 — Victoire; abrogée 1959–1981")
   (:fixed "Victoire 1945" 5 8 :from 1982
@@ -58,13 +60,13 @@
   (:easter "Lundi de Pentecôte" 50 :from 1900
    :authority "Code du travail L.3133-1")
   (:fixed "Fête nationale" 7 14 :from 1900
-   :authority "Code du travail L.3133-1")
+   :authority "Loi du 6 juillet 1880 — Fête nationale; Code du travail L.3133-1")
   (:fixed "Assomption" 8 15 :from 1900
    :authority "Code du travail L.3133-1")
   (:fixed "Toussaint" 11 1 :from 1900
    :authority "Code du travail L.3133-1")
-  (:fixed "Armistice 1918" 11 11 :from 1900
-   :authority "Code du travail L.3133-1")
+  (:fixed "Armistice 1918" 11 11 :from 1922
+   :authority "Loi du 24 octobre 1922 — Armistice; Code du travail L.3133-1")
   (:fixed "Noël" 12 25 :from 1900
    :authority "Code du travail L.3133-1"))
 
