@@ -249,6 +249,25 @@
     (ok (not (member "NP" codes :test #'string=))
         "≥20M tier filled — next gaps below 20M")))
 
+(deftest population-order-all-normative
+  "Every code in population-order.sexp has a hand starter (not corpus)."
+  (dolist (row (normative-coverage-by-population))
+    (destructuring-bind (code pop name &key status) row
+      (declare (ignore pop name))
+      (ok (eq status :normative) (format nil "~a normative" code)))))
+
+(deftest small-country-samples
+  (let ((gt (guatemala-holidays-calendar))
+        (sn (senegal-holidays-calendar))
+        (il (israel-holidays-calendar))
+        (ch (switzerland-holidays-calendar))
+        (hk (hong-kong-holidays-calendar)))
+    (ok (holiday-p gt (make-date 2000 9 15)))
+    (ok (holiday-p sn (make-date 1960 4 4)))
+    (ok (holiday-p il (make-date 2024 4 23))) ; Passover 2024
+    (ok (holiday-p ch (make-date 2000 8 1)))
+    (ok (holiday-p hk (make-date 1997 7 1)))))
+
 (deftest fifty-million-plus-all-normative
   "Every ≥50M population code has a hand starter (not corpus)."
   (dolist (row (normative-coverage-by-population))
@@ -458,5 +477,7 @@
     (ok (not (member "BR" codes :test #'string=)))
     (ok (not (member "DE" codes :test #'string=)))
     (ok (not (member "RO" codes :test #'string=)))
+    (ok (not (member "GT" codes :test #'string=)))
+    (ok (not (member "IL" codes :test #'string=)))
     (ok (>= (civil-research-from-year "NG") 1960))
     (ok (= (civil-research-from-year "US") 1900))))

@@ -27,6 +27,7 @@
                (:file "starter-americas")
                (:file "starter-africa")
                (:file "starter-mena")
+               (:file "starter-small")
                (:file "coverage")
                (:file "country-calendar"))
   :in-order-to ((test-op (test-op "cl-stack-calendars/tests"))))

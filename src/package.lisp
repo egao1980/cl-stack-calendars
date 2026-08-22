@@ -247,6 +247,49 @@
    #:zambia-holidays-calendar
    #:yemen-holidays-calendar
    #:syria-holidays-calendar
+   #:guatemala-holidays-calendar
+   #:ecuador-holidays-calendar
+   #:bolivia-holidays-calendar
+   #:haiti-holidays-calendar
+   #:cuba-holidays-calendar
+   #:dominican-republic-holidays-calendar
+   #:nicaragua-holidays-calendar
+   #:el-salvador-holidays-calendar
+   #:costa-rica-holidays-calendar
+   #:panama-holidays-calendar
+   #:uruguay-holidays-calendar
+   #:new-zealand-holidays-calendar
+   #:senegal-holidays-calendar
+   #:chad-holidays-calendar
+   #:somalia-holidays-calendar
+   #:zimbabwe-holidays-calendar
+   #:guinea-holidays-calendar
+   #:rwanda-holidays-calendar
+   #:benin-holidays-calendar
+   #:togo-holidays-calendar
+   #:sierra-leone-holidays-calendar
+   #:south-sudan-holidays-calendar
+   #:cambodia-holidays-calendar
+   #:laos-holidays-calendar
+   #:tajikistan-holidays-calendar
+   #:papua-new-guinea-holidays-calendar
+   #:hong-kong-holidays-calendar
+   #:kyrgyzstan-holidays-calendar
+   #:singapore-holidays-calendar
+   #:switzerland-holidays-calendar
+   #:norway-holidays-calendar
+   #:belarus-holidays-calendar
+   #:serbia-holidays-calendar
+   #:georgia-holidays-calendar
+   #:tunisia-holidays-calendar
+   #:jordan-holidays-calendar
+   #:united-arab-emirates-holidays-calendar
+   #:azerbaijan-holidays-calendar
+   #:libya-holidays-calendar
+   #:lebanon-holidays-calendar
+   #:oman-holidays-calendar
+   #:kuwait-holidays-calendar
+   #:israel-holidays-calendar
    #:population-order
    #:formation-years
    #:country-formation-year
