@@ -11,6 +11,7 @@
                (:file "protocol")
                (:file "rules")
                (:file "transfer")
+               (:file "gazette")
                (:file "rule-calendar")
                (:file "data-calendar")
                (:file "composite-calendar")
@@ -29,7 +30,10 @@
                (:file "starter-mena")
                (:file "starter-small")
                (:file "coverage")
-               (:file "country-calendar"))
+               (:file "country-calendar")
+               (:file "corpus-inference")
+               (:file "starter-territories")
+               (:file "starter-subnational"))
   :in-order-to ((test-op (test-op "cl-stack-calendars/tests"))))
 
 (defsystem "cl-stack-calendars/tests"

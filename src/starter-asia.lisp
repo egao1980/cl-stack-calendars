@@ -366,6 +366,41 @@
         nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
                              (getf plist :transfers))))
 
+;;; --- Gazette corpora (Dashain, Poya, Vesak/Deepavali, …) --------------
+
+(defparameter *np-gazette-path*
+  (merge-pathnames "data/np/gazette-holidays.sexp"
+                   (asdf:system-source-directory "cl-stack-calendars")))
+
+(defparameter *lk-poya-path*
+  (merge-pathnames "data/lk/poya-days.sexp"
+                   (asdf:system-source-directory "cl-stack-calendars")))
+
+(defparameter *sg-gazette-path*
+  (merge-pathnames "data/sg/gazette-holidays.sexp"
+                   (asdf:system-source-directory "cl-stack-calendars")))
+
+(defvar *np-gazette* nil)
+(defvar *lk-poya* nil)
+(defvar *sg-gazette* nil)
+
+(defun np-gazette () (or *np-gazette* (setf *np-gazette* (load-gazette-corpus *np-gazette-path*))))
+(defun lk-poya () (or *lk-poya* (setf *lk-poya* (load-gazette-corpus *lk-poya-path*))))
+(defun sg-gazette () (or *sg-gazette* (setf *sg-gazette* (load-gazette-corpus *sg-gazette-path*))))
+
+(defun np-gazette-for-year (year) (gazette-corpus-for-year (np-gazette) year))
+(defun lk-poya-for-year (year) (gazette-corpus-for-year (lk-poya) year))
+(defun sg-gazette-for-year (year) (gazette-corpus-for-year (sg-gazette) year))
+
+(defun np-gazette-transfers-for-year (year)
+  (gazette-transfers-for-year (np-gazette) year))
+
+(defun lk-poya-transfers-for-year (year)
+  (gazette-transfers-for-year (lk-poya) year))
+
+(defun sg-gazette-transfers-for-year (year)
+  (gazette-transfers-for-year (sg-gazette) year))
+
 (define-calendar south-korea-holidays-calendar (:register "KR")
   (:fixed "신정" 1 1 :from 1948
    :authority "관공서의 공휴일에 관한 규정 — New Year")
@@ -586,10 +621,6 @@
    :authority "Democracy Day — Falgun 7 / 19 February civil date")
   (:fixed "Constitution Day" 9 20 :from 2015
    :authority "Constitution promulgated 20 September 2015")
-  (:fixed "Dashain" 10 3 :from 1900
-   :authority "Vijaya Dashami — gazetted civil date varies; attach via DATA-CALENDAR")
-  (:fixed "Tihar" 10 28 :from 1900
-   :authority "Laxmi Puja — gazetted civil date varies; attach via DATA-CALENDAR")
   (:computed "Eid al-Fitr" #'eid-al-fitr :from 1900 :authority "Public holiday (tabular)")
   (:computed "Eid al-Adha" #'eid-al-adha :from 1900 :authority "Public holiday (tabular)"))
 
@@ -602,8 +633,6 @@
   (:fixed "Sinhala and Tamil New Year Eve" 4 13 :from 1948 :authority "Public holiday")
   (:fixed "Sinhala and Tamil New Year" 4 14 :from 1948 :authority "Public holiday")
   (:easter "Good Friday" -2 :from 1948 :authority "Public holiday")
-  (:fixed "Day following Vesak Full Moon Poya" 5 2 :from 1948
-   :authority "Vesak — civil gazette date; full Poya set via DATA-CALENDAR")
   (:fixed "Christmas Day" 12 25 :from 1948 :authority "Public holiday")
   (:computed "Eid al-Fitr" #'eid-al-fitr :from 1948 :authority "Public holiday (tabular)")
   (:computed "Eid al-Adha" #'eid-al-adha :from 1948 :authority "Public holiday (tabular)")
@@ -633,6 +662,15 @@
   (:computed "Құрban айт" #'eid-al-adha :from 1991 :authority "Дini мереке (tabular)"))
 
 (defun north-korea-holidays-calendar () (make-instance 'north-korea-holidays-calendar))
-(defun nepal-holidays-calendar () (make-instance 'nepal-holidays-calendar))
-(defun sri-lanka-holidays-calendar () (make-instance 'sri-lanka-holidays-calendar))
+
+(defun nepal-holidays-calendar (&key year transfers)
+  "Nepal public holidays. YEAR attaches MoHA gazetted Dashain/Tihar block."
+  (let ((tr (or transfers (when year (np-gazette-transfers-for-year year)))))
+    (make-instance 'nepal-holidays-calendar :transfers tr)))
+
+(defun sri-lanka-holidays-calendar (&key year transfers)
+  "Sri Lanka public holidays. YEAR attaches gazetted Poya/Vesak/Deepavali set."
+  (let ((tr (or transfers (when year (lk-poya-transfers-for-year year)))))
+    (make-instance 'sri-lanka-holidays-calendar :transfers tr)))
+
 (defun kazakhstan-holidays-calendar () (make-instance 'kazakhstan-holidays-calendar))

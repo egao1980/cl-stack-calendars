@@ -178,10 +178,11 @@
     (ok (holiday-p cal (eid-al-fitr 2026)))))
 
 (deftest india-dopt-hindu-corpus
+  (ok (in-dopt-for-year 2010))
   (ok (in-dopt-for-year 2020))
   (ok (in-dopt-for-year 2024))
   (ok (in-dopt-for-year 2026))
-  (ok (>= (length (in-dopt-holidays)) 7)))
+  (ok (>= (length (in-dopt-holidays)) 17)))
 
 (deftest india-dopt-diwali-2024
   (let ((cal (india-holidays-calendar :year 2024))
@@ -481,3 +482,85 @@
     (ok (not (member "IL" codes :test #'string=)))
     (ok (>= (civil-research-from-year "NG") 1960))
     (ok (= (civil-research-from-year "US") 1900))))
+
+(deftest np-dashain-gazette-2025
+  (ok (np-gazette-for-year 2025))
+  (let ((cal (nepal-holidays-calendar :year 2025)))
+    (ok (holiday-p cal (make-date 2025 10 2))) ; Vijaya Dashami
+    (ng (holiday-p (nepal-holidays-calendar) (make-date 2025 10 2)))))
+
+(deftest lk-poya-gazette-2024
+  (ok (lk-poya-for-year 2024))
+  (let ((cal (sri-lanka-holidays-calendar :year 2024)))
+    (ok (holiday-p cal (make-date 2024 5 1))) ; Vesak Poya
+    (ng (holiday-p (sri-lanka-holidays-calendar) (make-date 2024 5 1)))))
+
+(deftest kh-gazette-vesak-2024
+  (ok (kh-gazette-for-year 2024))
+  (let ((cal (cambodia-holidays-calendar :year 2024)))
+    (ok (holiday-p cal (make-date 2024 5 22))) ; Visak Bochea
+    (ng (holiday-p (cambodia-holidays-calendar) (make-date 2024 5 22)))))
+
+(deftest sg-gazette-vesak-deepavali-2025
+  (ok (sg-gazette-for-year 2025))
+  (let ((cal (singapore-holidays-calendar :year 2025))
+        (bare (singapore-holidays-calendar)))
+    (ok (holiday-p cal (make-date 2025 5 12))) ; Vesak
+    (ok (holiday-p cal (make-date 2025 10 20))) ; Deepavali
+    (ng (holiday-p bare (make-date 2025 5 12)))
+    (ng (holiday-p bare (make-date 2025 10 20)))))
+
+(deftest india-dopt-backfill-2015
+  (ok (in-dopt-for-year 2015))
+  (let ((cal (india-holidays-calendar :year 2015))
+        (bare (india-holidays-calendar)))
+    (ok (holiday-p cal (make-date 2015 11 11))) ; Diwali
+    (ng (holiday-p bare (make-date 2015 11 11)))))
+
+(deftest chile-bridge-backfill-2013
+  (let ((cal (chile-holidays-calendar :year 2013)))
+    (ok (holiday-p cal (make-date 2013 9 20))))) ; Feriado Adicional
+
+(deftest corpus-inferred-territory-starters
+  "Corpus-only codes (outside population-order) get normative RULE-CALENDAR starters."
+  (dolist (code '("AD" "AG" "AI" "AW"))
+    (let ((cal (find-calendar code :errorp nil)))
+      (ok cal (format nil "~a registered" code))
+      (ok (typep cal 'rule-calendar) (format nil "~a rule-calendar" code))
+      (ng (typep cal 'country-holiday-calendar) (format nil "~a not corpus class" code)))))
+  (ok (null (find-calendar "PS" :errorp nil)) "empty stub PS not registered"))
+
+(deftest subnational-composites
+  (let ((ca (find-calendar "US-CA"))
+        (by (find-calendar "DE-BY"))
+        (ct (find-calendar "ES-CT")))
+    (ok (typep ca 'composite-calendar))
+    (ok (typep by 'composite-calendar))
+    (ok (typep ct 'composite-calendar))
+    (ok (holiday-p ca (make-date 2026 1 1))) ; US federal NY
+    (ok (holiday-p ca (make-date 2026 3 31))) ; César Chávez
+    (ok (holiday-p by (make-date 2026 1 6))) ; Heilige Drei Könige
+    (ok (holiday-p by (make-date 2026 10 3))) ; German Unity
+    (ok (holiday-p ct (make-date 2026 9 11))) ; Diada Catalunya
+    (ok (holiday-p ct (make-date 2026 12 25))))) ; Spanish Navidad
+
+(deftest turkey-labour-day-from-2009
+  (let ((cal (turkey-holidays-calendar)))
+    (ng (holiday-p cal (make-date 2008 5 1)))
+    (ok (holiday-p cal (make-date 2009 5 1)))))
+
+(deftest spain-fiesta-nacional-era
+  (let ((cal (spain-holidays-calendar)))
+    (ok (holiday-p cal (make-date 1980 10 12))) ; Hispanidad
+    (ok (holiday-p cal (make-date 1990 10 12))) ; Fiesta Nacional rename 1987
+    (ok (holiday-p cal (make-date 1980 12 6))) ; Constitution from 1978
+    (ok (holiday-p cal (make-date 1980 12 8)))))
+
+(deftest mexico-lft-monday-reform-2006
+  (let ((cal (mexico-holidays-calendar)))
+    (ok (holiday-p cal (make-date 2005 2 5))) ; Constitución fixed
+    (ng (holiday-p cal (make-date 2006 2 5)))
+    (ok (holiday-p cal (make-date 2006 2 6))) ; first Monday Feb 2006
+    (ok (holiday-p cal (make-date 2005 11 20))) ; Revolución fixed
+    (ng (holiday-p cal (make-date 2007 11 20))) ; fixed abolished; 2006-11-20 coincides with 3rd Mon
+    (ok (holiday-p cal (make-date 2007 11 19))))) ; third Monday Nov 2007

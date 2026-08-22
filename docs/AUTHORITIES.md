@@ -49,13 +49,17 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `CN` | Annual 国办发明电 / 国发明电 调休 | Full corpus in `data/cn/transfers.sexp` (**1999–2026**; 澳门回归 + Y2K元旦 through current). Cross-year NY blocks via FROM/TO year touch |
 | `ID` | SKB 3 Menteri / Keppres cuti bersama | Extra leave days in `data/id/cuti-bersama.sexp` (**2002–2026**). Facultative for private employers; ASN via Keppres. `(indonesia-holidays-calendar :year N)` |
 | `KR` | 관공서의 공휴일에 관한 규정 — 임시공휴일 | National temporary holidays in `data/kr/temporary-holidays.sexp` (historical + modern 2015–2025). `(south-korea-holidays-calendar :year N)` |
-| `IN` | Negotiable Instruments Act 1881 / DoPT | Three national + common gazetted (GF, Christmas, Id-ul-Fitr/Zuha, Muharram, Milad). Hindu lunar festivals in `data/in/dopt-holidays.sexp` (**2020–2026**). `(india-holidays-calendar :year N)` |
+| `IN` | Negotiable Instruments Act 1881 / DoPT | Three national + common gazetted (GF, Christmas, Id-ul-Fitr/Zuha, Muharram, Milad). Hindu lunar festivals in `data/in/dopt-holidays.sexp` (**2010–2026**). `(india-holidays-calendar :year N)` |
+| `NP` | MoHA Nepal Gazette | Dashain/Tihar block in `data/np/gazette-holidays.sexp` (**2020–2026**). `(nepal-holidays-calendar :year N)` |
+| `LK` | Gazette / MOE circulars | Poya/Vesak/Deepavali in `data/lk/poya-days.sexp` (corpus 2000–2040). `(sri-lanka-holidays-calendar :year N)` |
+| `KH` | Royal government gazette | Buddhist holidays in `data/kh/gazette-holidays.sexp` (**2020–2026**). `(cambodia-holidays-calendar :year N)` |
+| `SG` | MOM gazetted list | Vesak/Deepavali/Hari Raya in `data/sg/gazette-holidays.sexp` (corpus 2000–2040). `(singapore-holidays-calendar :year N)` |
 | `VN` | Bộ luật Lao động | Hung Kings from 2007; Quốc khánh 2 days from 2021; Ngày Văn hóa from 2026 |
 | `PH` | RA / proclamations | Ninoy Aquino Day 2004; EDSA 1986; Independence 4 Jul→12 Jun. Bridge days in `data/ph/proclamations.sexp` (**2024–2026**). `(philippines-holidays-calendar :year N)` |
 | `TH` | Royal Gazette / Cabinet | Statutory list + substitute days in `data/th/transfers.sexp` (**2024–2026**). `(thailand-holidays-calendar :year N)` |
 | `MY` | JPM / PMO cuti persekutuan | Federal set + extras in `data/my/transfers.sexp` (**2024–2026**). `(malaysia-holidays-calendar :year N)` |
 | `CO` | Ley 51/1983 Emiliani + Decreto puente | Monday moves via `co-emiliani-monday`; puentes in `data/co/transfers.sexp` (**2024–2026**). `(colombia-holidays-calendar :year N)` |
-| `CL` | Ley 19.973/2004 + D.O. puentes | Monday moves + bridge extras in `data/cl/transfers.sexp` (**2024–2026**). `(chile-holidays-calendar :year N)` |
+| `CL` | Ley 19.973/2004 + D.O. puentes | Monday moves + bridge extras in `data/cl/transfers.sexp` (**2010–2026**; 2010–2023 corpus backfill). `(chile-holidays-calendar :year N)` |
 | `SD` `IQ` `AF` `AO` `UZ` | National statutes (starter-mena/africa/asia.lisp) | ≥35M fill: Sudan Coptic+Islamic; Iraq National Day/Victory/Ghadir; AF Independence + Nowruz to 2020; AO Liberation/Peace eras; UZ Navro'z/Independence |
 | `MZ` `MG` `CM` `CI` `NE` `BF` `ML` `MW` `ZM` `YE` `SY` `KP` `NP` `LK` `VE` `CL` `KZ` | National statutes (starter-africa/mena/asia/americas.lisp) | ≥20M normative fill with `:from`/`:to` eras |
 | `DE` | Feiertagsgesetze / Einigungsvertrag Art. 2 | Bundeseinheitliche Feiertage; 17. Juni Einheit 1954–1990, then 3. Oktober from 1990 |
@@ -74,6 +78,20 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `country-calendar` | [date-holidays](https://github.com/commenthol/date-holidays) CC BY-SA 3.0 | 206 jurisdictions + stubs; years 2000–2040 public/bank |
 
 Hand-maintained starters beat `country-calendar` when both exist (prefer `japan-holidays-calendar` / `china-holidays-calendar` / `russian-holidays-calendar` / `us-federal-holidays-calendar` over corpus `"JP"` / `"CN"` / `"RU"` / `"US"`).
+
+### Subnational composites
+
+| Code | Base | Regional | Notes |
+|------|------|----------|-------|
+| `US-CA` | `USFED` | California state days | César Chávez + day after Thanksgiving |
+| `DE-BY` | `DE` | Bavaria (`Bayern`) | Heilige Drei Könige, Fronleichnam, Mariä Himmelfahrt, Allerheiligen |
+| `ES-CT` | `ES` | Catalonia | Sant Jordi, Diada, La Mercè |
+
+Registered via `register-subnational-calendars` as `COMPOSITE-CALENDAR` union mode.
+
+### Corpus-inferred territory starters
+
+Codes in `data/countries/` without hand starters (e.g. `ABH`, `NCY`, `OST`, `PMR`, `PS`, `SOL`) get normative `RULE-CALENDAR` starters at load via `register-corpus-inferred-territory-starters` — fixed + Easter rules inferred from corpus recurrence.
 
 ## Sunrise / sunset–bound rules (lat/lon)
 

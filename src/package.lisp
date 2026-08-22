@@ -301,6 +301,34 @@
    #:calendar-earliest-from-year
    #:major-history-gaps
 
+   ;; gazette corpora
+   #:load-gazette-corpus
+   #:gazette-corpus-for-year
+   #:gazette-transfers-for-year
+   #:np-gazette
+   #:np-gazette-for-year
+   #:np-gazette-transfers-for-year
+   #:lk-poya
+   #:lk-poya-for-year
+   #:lk-poya-transfers-for-year
+   #:kh-gazette
+   #:kh-gazette-for-year
+   #:kh-gazette-transfers-for-year
+   #:sg-gazette
+   #:sg-gazette-for-year
+   #:sg-gazette-transfers-for-year
+
+   ;; corpus-inferred territory starters
+   #:infer-rules-from-corpus
+   #:make-corpus-inferred-calendar
+   #:register-corpus-inferred-territory-starters
+
+   ;; subnational composites
+   #:california-state-holidays-calendar
+   #:bavaria-state-holidays-calendar
+   #:catalonia-regional-holidays-calendar
+   #:register-subnational-calendars
+
    ;; country / territory corpus (date-holidays)
    #:country-holiday-calendar
    #:country-calendar

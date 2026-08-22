@@ -351,6 +351,22 @@
   (:fixed "Christmas Day" 12 25 :from 2011 :authority "Public holiday")
   (:fixed "Boxing Day" 12 26 :from 2011 :authority "Public holiday"))
 
+;;; --- Gazette corpora (KH Buddhist holidays) -------------------------------
+
+(defparameter *kh-gazette-path*
+  (merge-pathnames "data/kh/gazette-holidays.sexp"
+                   (asdf:system-source-directory "cl-stack-calendars")))
+
+(defvar *kh-gazette* nil)
+
+(defun kh-gazette ()
+  (or *kh-gazette* (setf *kh-gazette* (load-gazette-corpus *kh-gazette-path*))))
+
+(defun kh-gazette-for-year (year) (gazette-corpus-for-year (kh-gazette) year))
+
+(defun kh-gazette-transfers-for-year (year)
+  (gazette-transfers-for-year (kh-gazette) year))
+
 ;;; --- Asia / Pacific -------------------------------------------------------
 
 (define-calendar cambodia-holidays-calendar (:register "KH")
@@ -449,9 +465,7 @@
   (:fixed "Labour Day" 5 1 :from 1965 :authority "Public holiday")
   (:fixed "National Day" 8 9 :from 1965
    :authority "Independence 9 August 1965")
-  (:fixed "Christmas Day" 12 25 :from 1965 :authority "Public holiday")
-  (:computed "Hari Raya Puasa" #'eid-al-fitr :from 1965 :authority "Eid al-Fitr (tabular)")
-  (:computed "Hari Raya Haji" #'eid-al-adha :from 1965 :authority "Eid al-Adha (tabular)"))
+  (:fixed "Christmas Day" 12 25 :from 1965 :authority "Public holiday"))
 
 ;;; --- Europe (non-EU-27 in population-order) -------------------------------
 
@@ -737,14 +751,20 @@
 (defun togo-holidays-calendar () (make-instance 'togo-holidays-calendar))
 (defun sierra-leone-holidays-calendar () (make-instance 'sierra-leone-holidays-calendar))
 (defun south-sudan-holidays-calendar () (make-instance 'south-sudan-holidays-calendar))
-(defun cambodia-holidays-calendar () (make-instance 'cambodia-holidays-calendar))
+(defun cambodia-holidays-calendar (&key year transfers)
+  "Cambodia public holidays. YEAR attaches gazetted Buddhist holiday block."
+  (let ((tr (or transfers (when year (kh-gazette-transfers-for-year year)))))
+    (make-instance 'cambodia-holidays-calendar :transfers tr)))
 (defun laos-holidays-calendar () (make-instance 'laos-holidays-calendar))
 (defun tajikistan-holidays-calendar () (make-instance 'tajikistan-holidays-calendar))
 (defun papua-new-guinea-holidays-calendar ()
   (make-instance 'papua-new-guinea-holidays-calendar))
 (defun hong-kong-holidays-calendar () (make-instance 'hong-kong-holidays-calendar))
 (defun kyrgyzstan-holidays-calendar () (make-instance 'kyrgyzstan-holidays-calendar))
-(defun singapore-holidays-calendar () (make-instance 'singapore-holidays-calendar))
+(defun singapore-holidays-calendar (&key year transfers)
+  "Singapore public holidays. YEAR attaches MOM gazetted Vesak/Deepavali/Hari Raya."
+  (let ((tr (or transfers (when year (sg-gazette-transfers-for-year year)))))
+    (make-instance 'singapore-holidays-calendar :transfers tr)))
 (defun switzerland-holidays-calendar () (make-instance 'switzerland-holidays-calendar))
 (defun norway-holidays-calendar () (make-instance 'norway-holidays-calendar))
 (defun belarus-holidays-calendar () (make-instance 'belarus-holidays-calendar))
