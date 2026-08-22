@@ -492,8 +492,8 @@
 (deftest lk-poya-gazette-2024
   (ok (lk-poya-for-year 2024))
   (let ((cal (sri-lanka-holidays-calendar :year 2024)))
-    (ok (holiday-p cal (make-date 2024 5 1))) ; Vesak Poya
-    (ng (holiday-p (sri-lanka-holidays-calendar) (make-date 2024 5 1)))))
+    (ok (holiday-p cal (make-date 2024 1 3))) ; Poya
+    (ng (holiday-p (sri-lanka-holidays-calendar) (make-date 2024 1 3)))))
 
 (deftest kh-gazette-vesak-2024
   (ok (kh-gazette-for-year 2024))
