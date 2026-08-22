@@ -26,7 +26,7 @@
  (lambda ()
    (cl-repo:ensure-system-dependencies "cl-stack-calendars"
      :also-tests t
-     :with '("cl-stack-tzdata")
+     :with '("datetime-protocol/calendars" "cl-stack-tzdata")
      :sources '(("rove" :ql)))))
 
 (format t "~&; ci: install phase done~%")

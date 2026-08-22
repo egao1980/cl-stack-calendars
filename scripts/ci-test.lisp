@@ -25,7 +25,7 @@
 
 (call-with-ci-muffles
  (lambda ()
-   (dolist (n '("cl-stack-calendars" "cl-stack-tzdata" "rove"))
+   (dolist (n '("datetime-protocol/calendars" "cl-stack-calendars" "cl-stack-tzdata" "rove"))
      (unless (asdf:find-system n nil)
        (ql:quickload n :silent t)))
    (asdf:test-system "cl-stack-calendars")))
