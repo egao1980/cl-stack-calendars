@@ -527,7 +527,7 @@
     (let ((cal (find-calendar code :errorp nil)))
       (ok cal (format nil "~a registered" code))
       (ok (typep cal 'rule-calendar) (format nil "~a rule-calendar" code))
-      (ng (typep cal 'country-holiday-calendar) (format nil "~a not corpus class" code)))))
+      (ng (typep cal 'country-holiday-calendar) (format nil "~a not corpus class" code))))
   (ok (null (find-calendar "PS" :errorp nil)) "empty stub PS not registered"))
 
 (deftest subnational-composites
