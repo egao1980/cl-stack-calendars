@@ -264,9 +264,9 @@ CLAIMED makes exclusive next-weekday substitutes skip collisions (UK Christmas
     (remove-if (lambda (d) (member d claimed :test #'=)) bridged)))
 
 (defun apply-sandwich-holidays (date-name-alist)
-  "祝日法第3条第3項: a non-holiday weekday whose previous and next days are
-both holidays becomes a holiday (国民の休日). DATE-NAME-ALIST is a list of
-(DATE . NAME); returns an extended alist."
+  "祝日法第3条第3項: a day whose previous and next days are both holidays
+becomes a holiday (国民の休日), including Saturday. DATE-NAME-ALIST is a
+list of (DATE . NAME); returns an extended alist."
   (let* ((dates (sort (mapcar #'car date-name-alist) #'<))
          (set dates)
          (extra '()))
@@ -274,9 +274,40 @@ both holidays becomes a holiday (国民の休日). DATE-NAME-ALIST is a list of
       (let ((mid (+ d 1)))
         (when (and (not (member mid set :test #'=))
                    (member (+ mid 1) set :test #'=)
-                   (not (weekendp mid '(6 7))))
+                   (/= (date-day-of-week mid) 7))
+          ;; Sunday is already 休日; treating it as 国民の休日 would 振替 the next day.
+          ;; Saturday 国民の休日 is listed in the 内閣府 CSV from the 1990s.
           (push (cons mid "国民の休日") extra)
           (push mid set))))
+    (append date-name-alist (nreverse extra))))
+
+(defun apply-jp-furikae-chain (date-name-alist &optional from chain-from)
+  "祝日法第3条第2項 振替休日.
+
+   昭和48年法律第10号 (FROM, 1973-04-12): a Sunday 祝日 observes on the next
+   calendar day. If that day is already a 祝日, no extra day is inserted
+   (1987/1992/1998 Golden Week: Sun 5/3 → Mon 5/4 みどりの日, no Tue 5/6).
+
+   平成19年法律第5号 (CHAIN-FROM, 2007-01-01): observe on the next day that
+   is not already a 国民の祝日 (chains over consecutive 祝日 — 2008/2020-05-06).
+   NIL CHAIN-FROM keeps the post-2007 wording. Does not walk past a 振替 that
+   per-rule observance already inserted."
+  (let* ((dates (sort (remove-duplicates (mapcar #'car date-name-alist) :test #'=) #'<))
+         (original dates)
+         (extra '()))
+    (flet ((insert-obs (obs)
+             (unless (or (member obs original :test #'=)
+                         (member obs dates :test #'=))
+               (push (cons obs "振替休日") extra))))
+      (dolist (d dates)
+        (when (and (sundayp d)
+                   (or (null from) (>= d from)))
+          (if (or (null chain-from) (>= d chain-from))
+              (loop for n = (+ d 1) then (+ n 1)
+                    unless (member n original :test #'=)
+                      do (insert-obs n)
+                         (return))
+              (insert-obs (+ d 1))))))
     (append date-name-alist (nreverse extra))))
 
 ;;; --- RULE-OCCURRENCES -------------------------------------------------

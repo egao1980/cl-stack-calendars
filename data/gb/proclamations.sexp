@@ -16,10 +16,13 @@
            ))
 
  (:year 2022
-  :authority "Royal Proclamation — Platinum Jubilee (BFDA 1971 s.1(2)–(3))"
-  :uri "https://en.wikipedia.org/wiki/Public_holidays_in_the_United_Kingdom"
+  :authority ("Royal Proclamation — Platinum Jubilee (BFDA 1971 s.1(2)–(3))"
+              "Royal Proclamation 10 Sep 2022 — State Funeral (BFDA 1971 s.1(3))")
+  :uri ("https://www.gov.uk/bank-holidays"
+        "https://www.thegazette.co.uk/notice/4158896")
   :extra (
            ((2022 6 3) "Platinum Jubilee bank holiday")
+           ((2022 9 19) "Bank Holiday for the State Funeral of Queen Elizabeth II")
            )
   :moved (
            ((2022 5 30) (2022 6 2) "Spring Bank Holiday relocated for Platinum Jubilee")
