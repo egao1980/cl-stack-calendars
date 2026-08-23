@@ -16,3 +16,5 @@ vacanza/holidays has no CL client; those blocks stay as a frozen dump in the sex
 | [vacanza/holidays](https://github.com/vacanza/holidays) 0.82 | Computational (MIT) | Independent of date-holidays. Asserted: USFED (weekdays), TARGET, DE, FR, JP. GBLO is locked by gov.uk (vacanza keeps weekend Christmas). |
 
 `data/countries/` is date-holidays — **not** used as an external check.
+
+Computed festival dates (HKO / Easter / Hebrew / tabular Eid) live in `calc-gold.sexp` — see that file's header. Refresh: `uv run scripts/generate_calc_gold.py`.
