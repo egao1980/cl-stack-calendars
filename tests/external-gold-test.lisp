@@ -4,12 +4,8 @@
 ;;;; (data/tests/external-gold.sexp — official gov.uk / 内閣府 + vacanza/holidays).
 ;;;; Not date-holidays: that corpus is already ingested as country-calendar.
 
-(defparameter *external-gold-path*
-  (merge-pathnames "data/tests/external-gold.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
-(defun load-external-gold (&optional (path *external-gold-path*))
-  (with-open-file (in path) (read in)))
+(defun load-external-gold (&optional (path (data-path "tests/external-gold.sexp")))
+  (read-data-form path))
 
 (defparameter *external-gold* (load-external-gold))
 

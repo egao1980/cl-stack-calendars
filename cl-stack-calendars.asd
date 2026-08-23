@@ -1,13 +1,14 @@
 (defsystem "cl-stack-calendars"
-  :version "0.3.1"
+  :version "0.4.0"
   :description "Holiday and trading calendars for cl-stack (business days, sessions, versioned as-of)"
   :author "egao1980"
   :license "MIT"
-  :depends-on ("datetime-protocol" "datetime-protocol/calendars")
+  :depends-on ("datetime-protocol" "datetime-protocol/calendars" "cl-stack-pathlib")
   :serial t
   :pathname "src"
   :components ((:file "package")
                (:file "conditions")
+               (:file "data")
                (:file "protocol")
                (:file "rules")
                (:file "transfer")
@@ -50,7 +51,8 @@
                (:file "external-gold-test")
                (:file "calc-gold-test")
                (:file "trading-session-test")
-               (:file "exchange-hours-test"))
+               (:file "exchange-hours-test")
+               (:file "data-root-test"))
   :perform (test-op (o c)
              (unless (symbol-call :rove :run c)
                (error "tests failed for ~A" (component-name c)))))

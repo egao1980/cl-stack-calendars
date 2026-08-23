@@ -7,40 +7,34 @@
 ;;;; Observance: :RU-TK-112-TRANSFER (ТК РФ ст. 112 ч. 2) except Jan 1–8,
 ;;;; which are rearranged only by постановление Правительства.
 
-(defparameter *ru-transfers-path*
-  (merge-pathnames "data/ru/transfers.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars"))
-  "Sexp index of verified RF Government weekend-transfer decrees.")
-
 (defun %parse-transfer-entry (entry)
   "ENTRY is ((Y M D) (Y M D) [name]) → CALENDAR-TRANSFER."
   (destructuring-bind (from to &optional name) entry
     (make-calendar-transfer :from from :to to :name name)))
 
-(defun load-ru-transfer-decrees (&optional (path *ru-transfers-path*))
+(defun load-ru-transfer-decrees (&optional (path (data-path "ru/transfers.sexp")))
   "Return alist YEAR → (:authority A :transfers (transfer…) :working (working-day…)).
 Each FROM weekend is also recorded as a compensatory WORKING day."
-  (with-open-file (in path)
-    (let ((form (read in)))
-      (mapcar
-       (lambda (block)
-         (let* ((year (getf block :year))
-                (auth (getf block :authority))
-                (transfers (mapcar (lambda (e)
-                                     (let ((tr (%parse-transfer-entry e)))
-                                       (setf (calendar-transfer-authority tr) auth)
-                                       tr))
-                                   (getf block :transfers)))
-                (working (mapcar (lambda (tr)
-                                   (make-calendar-working-day
-                                    :date (calendar-transfer-from tr)
-                                    :authority auth))
-                                 (remove nil transfers :key #'calendar-transfer-from))))
-           (cons year (list :authority auth
-                            :transfers transfers
-                            :working working
-                            :uri (getf block :uri)))))
-       form))))
+  (let ((form (read-data-form path)))
+    (mapcar
+     (lambda (block)
+       (let* ((year (getf block :year))
+              (auth (getf block :authority))
+              (transfers (mapcar (lambda (e)
+                                   (let ((tr (%parse-transfer-entry e)))
+                                     (setf (calendar-transfer-authority tr) auth)
+                                     tr))
+                                 (getf block :transfers)))
+              (working (mapcar (lambda (tr)
+                                 (make-calendar-working-day
+                                  :date (calendar-transfer-from tr)
+                                  :authority auth))
+                               (remove nil transfers :key #'calendar-transfer-from))))
+         (cons year (list :authority auth
+                          :transfers transfers
+                          :working working
+                          :uri (getf block :uri)))))
+     form)))
 
 (defvar *ru-transfer-decrees* nil
   "Cached result of LOAD-RU-TRANSFER-DECREES.")

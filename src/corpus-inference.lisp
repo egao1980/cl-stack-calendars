@@ -5,7 +5,7 @@
 
 (defun %corpus-days (code)
   (let ((path (%country-data-path code)))
-    (when (probe-file path)
+    (when (data-file-exists-p path)
       (let ((plist (%load-country-plist code)))
         (getf plist :days)))))
 
@@ -75,7 +75,7 @@
          (floor (civil-research-from-year cc))
          (infer-from (max 2000 floor))
          (rules (when days (infer-rules-from-corpus cc :from-year infer-from)))
-         (plist (when (probe-file (%country-data-path cc))
+         (plist (when (data-file-exists-p (%country-data-path cc))
                   (%load-country-plist cc))))
     (when rules
       (dolist (rule rules)

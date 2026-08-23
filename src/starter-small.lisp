@@ -363,14 +363,10 @@
 
 ;;; --- Gazette corpora (KH Buddhist holidays) -------------------------------
 
-(defparameter *kh-gazette-path*
-  (merge-pathnames "data/kh/gazette-holidays.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
 (defvar *kh-gazette* nil)
 
 (defun kh-gazette ()
-  (or *kh-gazette* (setf *kh-gazette* (load-gazette-corpus *kh-gazette-path*))))
+  (or *kh-gazette* (setf *kh-gazette* (load-gazette-corpus (data-path "kh/gazette-holidays.sexp")))))
 
 (defun kh-gazette-for-year (year) (gazette-corpus-for-year (kh-gazette) year))
 

@@ -26,15 +26,14 @@
 
 (defun load-data-calendar (path &key name (weekend-days '(6 7)))
   "Load a sexp file ((year month day [name]) ...) into a DATA-CALENDAR."
-  (with-open-file (in path)
-    (let ((form (read in))
-          (cal (make-data-calendar :name name :weekend-days weekend-days)))
-      (unless (listp form)
-        (error 'invalid-holiday-rule :message "data-calendar file must be a list"))
-      (dolist (entry form)
-        (destructuring-bind (y m d &optional hname) entry
-          (add-data-calendar-holiday cal (make-date y m d) hname)))
-      cal)))
+  (let ((form (read-data-form path))
+        (cal (make-data-calendar :name name :weekend-days weekend-days)))
+    (unless (listp form)
+      (error 'invalid-holiday-rule :message "data-calendar file must be a list"))
+    (dolist (entry form)
+      (destructuring-bind (y m d &optional hname) entry
+        (add-data-calendar-holiday cal (make-date y m d) hname)))
+    cal))
 
 (defun write-data-calendar-file (calendar path)
   (with-open-file (out path :direction :output :if-exists :supersede)

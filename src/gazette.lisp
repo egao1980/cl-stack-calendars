@@ -5,8 +5,7 @@
 
 (defun load-gazette-corpus (&optional path)
   "Return alist YEAR → (:authority A :transfers … :uri …)."
-  (with-open-file (in path)
-    (let ((form (read in)))
+  (let ((form (read-data-form path)))
       (mapcar
        (lambda (block)
          (let* ((year (getf block :year))
@@ -14,10 +13,10 @@
                 (transfers (mapcar (lambda (e)
                                      (make-extra-day-transfer e auth))
                                    (getf block :holidays))))
-           (cons year (list :authority auth
+            (cons year (list :authority auth
                             :transfers transfers
                             :uri (getf block :uri)))))
-       form))))
+       form)))
 
 (defun gazette-corpus-for-year (corpus year)
   (cdr (assoc year corpus)))

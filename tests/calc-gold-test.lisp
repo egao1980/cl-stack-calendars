@@ -3,12 +3,8 @@
 ;;;; Computed holiday dates vs data/tests/calc-gold.sexp (HKO, dateutil,
 ;;;; pyluach, Kuwaiti JDN). Official gazettes stay in external-gold-test.
 
-(defparameter *calc-gold-path*
-  (merge-pathnames "data/tests/calc-gold.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
-(defun load-calc-gold (&optional (path *calc-gold-path*))
-  (with-open-file (in path) (read in)))
+(defun load-calc-gold (&optional (path (data-path "tests/calc-gold.sexp")))
+  (read-data-form path))
 
 (defparameter *calc-gold* (load-calc-gold))
 

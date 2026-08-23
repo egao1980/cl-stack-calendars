@@ -6,12 +6,8 @@
 ;;;; This file is the sweep: gold table, protocol invariants, every registered
 ;;;; calendar, country corpus, starter↔corpus agreement, exchange attachments.
 
-(defparameter *holiday-gold-path*
-  (merge-pathnames "data/tests/holiday-gold.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
-(defun load-holiday-gold (&optional (path *holiday-gold-path*))
-  (with-open-file (in path) (read in)))
+(defun load-holiday-gold (&optional (path (data-path "tests/holiday-gold.sexp")))
+  (read-data-form path))
 
 (defparameter *holiday-gold-rows* (load-holiday-gold))
 

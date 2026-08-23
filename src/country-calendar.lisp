@@ -8,10 +8,6 @@
 ;;;; Hand-maintained starters (USFED, GBLO, RU, TARGET, …) remain the
 ;;;; normative source when both exist; COUNTRY-CALENDAR is the broad corpus.
 
-(defparameter *countries-data-directory*
-  (merge-pathnames "data/countries/"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
 (defvar *country-index* nil
   "Cached list of (CODE NAME DAY-COUNT) from index.sexp.")
 
@@ -33,17 +29,16 @@
 territory code. Provenance is COUNTRY-CALENDAR-SOURCE / LICENSE."))
 
 (defun %countries-index-path ()
-  (merge-pathnames "index.sexp" *countries-data-directory*))
+  (sp:join (countries-data-directory) "index.sexp"))
 
 (defun %country-data-path (code)
-  (merge-pathnames (format nil "~a.sexp" (string-upcase code))
-                   *countries-data-directory*))
+  (sp:join (countries-data-directory)
+           (format nil "~a.sexp" (string-upcase code))))
 
 (defun list-country-calendars (&optional (force nil))
   "Return list of (CODE NAME DAY-COUNT) for every shipped country/territory."
   (when (or force (null *country-index*))
-    (with-open-file (in (%countries-index-path))
-      (setf *country-index* (read in))))
+    (setf *country-index* (read-data-form (%countries-index-path))))
   *country-index*)
 
 (defun country-calendar-codes ()
@@ -54,10 +49,9 @@ territory code. Provenance is COUNTRY-CALENDAR-SOURCE / LICENSE."))
 
 (defun %load-country-plist (code)
   (let ((path (%country-data-path code)))
-    (unless (probe-file path)
+    (unless (data-file-exists-p path)
       (error 'calendar-not-found :calendar-name (string-upcase code)))
-    (with-open-file (in path)
-      (read in))))
+    (read-data-form path)))
 
 (defun %ingest-country-days (table days)
   (dolist (entry days)

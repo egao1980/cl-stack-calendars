@@ -58,6 +58,19 @@ Starter calendars: `weekend-only-calendar`, `target-calendar`, `us-federal-holid
 
 Holiday verification: `data/tests/holiday-gold.sexp` + `tests/holiday-suite-test.lisp` (gold vectors, year-sweep invariants, corpus load, starter↔corpus core dates, exchange calendar attachments). External lock: `data/tests/external-gold.sexp` (gov.uk + 内閣府 CSV + frozen vacanza dump; refresh `ros -l scripts/fetch-external-gold.lisp -q`). Computed festivals: `data/tests/calc-gold.sexp` (HKO lunar, dateutil Easter, pyluach Hebrew, Kuwaiti Eid; refresh `uv run scripts/generate_calc_gold.py`).
 
+## Data path / client zip
+
+~300 `.sexp` files live under `data/`. Point the tree at another directory, a zip of that tree, or a `zip://` URI — the usual client-app ship format is one `data.zip` next to the executable.
+
+```lisp
+(set-data-root "/opt/app/data/")              ; unpacked
+(set-data-root "/opt/app/data.zip")           ; → zip:///opt/app/data.zip!/
+(set-data-root "zip:///opt/app/data.zip!/")   ; explicit
+(write-data-zip "/opt/app/data.zip")          ; pack the current tree
+```
+
+`$CL_STACK_CALENDARS_DATA` is the default when `*data-root*` is unset. `*countries-data-directory*` / `*exchanges-data-directory*` still override those subtrees.
+
 ## License
 
 MIT
