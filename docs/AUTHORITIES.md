@@ -33,16 +33,17 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `GBLO` | [Banking and Financial Dealings Act 1971](https://www.legislation.gov.uk/ukpga/1971/80) s.1 & Sch.1 | Statutory bank holidays + proclamation power |
 | `GBLO` | [Bank Holidays Act 1871](https://en.wikipedia.org/wiki/Bank_Holidays_Act_1871) | England & Wales: Easter Mon, Whit Mon, first Mon Aug, Boxing Day (research window from 1900); Whit/Aug replaced experimentally 1965, permanently BFDA 1971 |
 | `GBLO` | [gov.uk/bank-holidays](https://www.gov.uk/bank-holidays) | Published proclamation substitute dates |
-| `GBLO` | Special Royal Proclamations (s.1(2)–(3)) | Extras + relocated BH in `data/gb/proclamations.sexp` (VE 1995/2020, Jubilees 2002/2012/2022, Wedding 2011, Coronation 2023). Use `(uk-bank-holidays-calendar :year N)` |
+| `GBLO` | Special Royal Proclamations (s.1(2)–(3)) | Extras + relocated BH in `data/gb/proclamations.sexp` (VE 1995/2020, Jubilees 2002/2012/2022, Wedding 2011, State Funeral 2022-09-19, Coronation 2023). Use `(uk-bank-holidays-calendar :year N)` |
 | `TARGET` | [ECB GC decision 14 Dec 2000](https://www.ecb.europa.eu/press/pr/date/2000/html/pr001214_4.en.html) | Long-term TARGET closing days (no weekend in-lieu) |
 | `RU` | [ТК РФ ст. 112](http://www.consultant.ru/document/cons_doc_LAW_34683/) | Non-working holidays + automatic weekend transfer (except 1–8 Jan) |
 | `RU` | ФЗ от 29.12.2004 № 201-ФЗ | NY 1–5 Jan, Unity Day 4 Nov; drop 7 Nov & 12 Dec (from 2005) |
 | `RU` | ФЗ от 23.04.2012 № 35-ФЗ | NY block adds 6 and 8 Jan |
 | `RU` | Discretionary перенос acts (ПП / ФЗ) | Full corpus in `data/ru/transfers.sexp` (**1991–2026**); gaps 1998 & 2004 = no discretionary act (TK-only). 2000 = ФЗ-217 |
 | `USSR` | КЗоТ СССР / Указы Президиума ВС | Late-Soviet non-working days (see starter-russian.lisp) |
-| `JP` | [国民の祝日に関する法律](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html) | 祝日 list; Art. 3(2) 振替 from 1973 (`:observed-from`); Art. 3(3) 国民の休日 from 1985 (`:sandwich-from`) |
+| `JP` | [国民の祝日に関する法律](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html) | 祝日 list; Art. 3(2) 振替 from **1973-04-12** (昭和48年法律第10号) + 振替 chain; Art. 3(3) 国民の休日 from 1985 (Saturday included). Checked against [内閣府 CSV](https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv) 1955–2027 |
 | `JP` | 休日ニ関スル件（大正元年勅令19号 / 昭和2年勅令25号） | Imperial 祝祭日 1900–1948-07-19; day-precise 年号 (天長節 Meiji/Taisho/Showa, 先帝祭) |
 | `JP` | 天皇の即位の日等を定める法律（平成30年法律第83号） | 2019-05-01 即位・10-22 即位礼; sandwich GW |
+| `JP` | 皇室儀礼 (one-off) | 1959-04-10 結婚の儀; 1989-02-24 大喪の礼; 1990-11-12 即位礼; 1993-06-09 結婚の儀 |
 | `JP` | 五輪特別措置法 | 2020–2021 moves: 海の日 / スポーツの日 / 山の日 |
 | `JP` | 春分日/秋分日 | Astronomical equinox civil date at Tokyo (`+tokyo+`) |
 | `CN` | 《全国年节及纪念日放假办法》 | Statutory festivals; lunar dates via Beijing astronomy |
@@ -112,7 +113,7 @@ Reference loci: `+jerusalem+`, `+mecca+`, `+tokyo+`, `+beijing+`, `+delhi+`, `+u
 |---------|-----|--------|
 | `:us-federal-in-lieu` | 5 U.S.C. § 6103(b) + EO 11582 § 3(a) | Sat→Fri, Sun→Mon (Mon–Fri workweek) |
 | `:uk-proclamation-substitute` | BFDA 1971 + Royal Proclamations | next free weekday; exclusive across rules |
-| `:jp-furikae` | [祝日法](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html) Art. 3(2) | **Sunday only** → next non-holiday weekday |
+| `:jp-furikae` | [祝日法](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html) Art. 3(2) | **Sunday only** → 翌日 from 1973-04-12; chain over consecutive 祝日 from 2007-01-01 (平成19年法律第5号) |
 | `:ru-tk-112-transfer` | ТК РФ ст. 112 ч. 2 | weekend∩holiday → next workday; **not** for 1–8 Jan |
 
 Calendar flag `:sandwich-holidays-p` + `:sandwich-authority` implements 祝日法 Art. 3(3) (国民の休日).

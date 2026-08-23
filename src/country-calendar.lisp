@@ -2,8 +2,9 @@
 
 ;;;; Country / territory holiday calendars.
 ;;;;
-;;;; Corpus: data/countries/<CC>.sexp generated from commenthol/date-holidays
-;;;; (CC BY-SA 3.0) — see data/countries/ATTRIBUTION.md.
+;;;; Corpus: data/countries/<CC>.sexp — frozen dump of commenthol/date-holidays
+;;;; (CC BY-SA 3.0). Rebuild index: scripts/generate-country-holidays.lisp.
+;;;; See data/countries/ATTRIBUTION.md.
 ;;;; Hand-maintained starters (USFED, GBLO, RU, TARGET, …) remain the
 ;;;; normative source when both exist; COUNTRY-CALENDAR is the broad corpus.
 

@@ -43,6 +43,19 @@
     (ng (holiday-p cal (make-date 2019 12 23))) ; no 天皇誕生日 in 2019
     (ng (holiday-p cal (make-date 2019 2 23)))))
 
+(deftest japan-imperial-ceremonies-and-furikae-chain
+  "内閣府 CSV: 皇室儀礼 + Sunday 祝日 whose next day is also a 祝日."
+  (let ((cal (japan-holidays-calendar)))
+    (ok (holiday-p cal (make-date 1959 4 10)))
+    (ok (holiday-p cal (make-date 1989 2 24)))
+    (ok (holiday-p cal (make-date 1990 11 12)))
+    (ok (holiday-p cal (make-date 1993 6 9)))
+    (ok (holiday-p cal (make-date 1991 5 4))) ; Saturday 国民の休日
+    (ng (holiday-p cal (make-date 1987 5 6))) ; pre-平成19: Sun 5/3 振替 is 5/4 (already みどり)
+    (ok (holiday-p cal (make-date 1987 5 4)))
+    (ok (holiday-p cal (make-date 2008 5 6))) ; みどりの日 Sun → skip こどもの日
+    (ok (holiday-p cal (make-date 2020 5 6))))) ; 憲法記念日 Sun → skip みどり/こども
+
 (deftest japan-olympic-special-2020-2021
   (let ((cal (japan-holidays-calendar)))
     (ok (holiday-p cal (make-date 2020 7 23))) ; 海の日
@@ -56,21 +69,28 @@
     (ok (holiday-p cal (make-date 2022 7 18))))) ; back to 3rd Mon
 
 (deftest japan-furikae-from-1973
-  "振替休日 Art. 3(2) from 昭和48年改正."
+  "振替休日 Art. 3(2) from 昭和48年法律第10号 (施行 1973-04-12)."
   (let ((cal (japan-holidays-calendar)))
     ;; 1972-01-01 Saturday — no 振替 yet
     (ok (holiday-p cal (make-date 1972 1 1)))
     (ng (holiday-p cal (make-date 1972 1 2)))
+    ;; 1973-02-11 Sunday 建国 — amendment not yet in force
+    (ok (holiday-p cal (make-date 1973 2 11)))
+    (ng (holiday-p cal (make-date 1973 2 12)))
+    ;; 1973-04-29 Sunday 天皇誕生日 → 振替 4/30
+    (ok (holiday-p cal (make-date 1973 4 29)))
+    (ok (holiday-p cal (make-date 1973 4 30)))
     ;; 1978-01-01 Sunday → 振替 1/2
     (ok (holiday-p cal (make-date 1978 1 1)))
     (ok (holiday-p cal (make-date 1978 1 2)))))
 
 (deftest japan-sandwich-from-1985
-  "国民の休日 Art. 3(3) from 昭和60年改正."
+  "国民の休日 Art. 3(3) — 昭和60年法律第103号, in force 1985-12-27 (first GW 1986)."
   (let ((cal (japan-holidays-calendar)))
     ;; 1984: 5/3 Thu + 5/5 Sat — mid 5/4 Fri is not yet 国民の休日
     (ok (holiday-p cal (make-date 1984 5 3)))
     (ng (holiday-p cal (make-date 1984 5 4)))
+    (ng (holiday-p cal (make-date 1985 5 4)))
     ;; 1988: 5/3 Tue + 5/5 Thu → sandwich 5/4 Wed
     (ok (holiday-p cal (make-date 1988 5 3)))
     (ok (holiday-p cal (make-date 1988 5 4)))

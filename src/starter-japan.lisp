@@ -6,8 +6,9 @@
 ;;;; abolished 1948-07-20 when 国民の祝日に関する法律 took effect.
 ;;;;
 ;;;; Observance eras:
-;;;;   Art. 3(2) 振替休日 — from 1973 (昭和48年改正) via :observed-from 1973
-;;;;   Art. 3(3) 国民の休日 — from 1985 (昭和60年改正) via :sandwich-from 1985
+;;;;   Art. 3(2) 振替休日 — from 1973-04-12 (昭和48年法律第10号): Sunday → 翌日.
+;;;;   Chain over consecutive 祝日 from 2007-01-01 (平成19年法律第5号).
+;;;;   Art. 3(3) 国民の休日 — 昭和60年法律第103号 施行 1985-12-27; first GW 1986.
 ;;;;
 ;;;; Emperor / 年号 transitions (天長節・天皇誕生日・先帝祭):
 ;;;;   Meiji → Taisho 1912-07-30; Taisho → Showa 1926-12-25;
@@ -20,8 +21,11 @@
 (define-calendar japan-holidays-calendar
     (:register "JP"
      :sandwich-holidays-p t
-     :sandwich-from 1985
-     :sandwich-authority "国民の祝日に関する法律第3条第3項（国民の休日・昭和60年改正）")
+     :sandwich-from 1986
+     :sandwich-authority "国民の祝日に関する法律第3条第3項（国民の休日・昭和60年法律第103号、施行1985-12-27）"
+  :furikae-chain-p t
+  :furikae-from (1973 4 12)
+  :furikae-chain-from (2007 1 1))
 
   ;;; ========== Imperial 祝祭日 (to 1948-07-19) ==========
 
@@ -66,36 +70,36 @@
    :authority "休日ニ関スル件 — 新嘗祭（11月23日）")
 
   ;;; ========== 国民の祝日に関する法律 (from 1948-07-20) ==========
-  ;;; 振替休日 Art. 3(2): :observed-from 1973
+  ;;; 振替休日 Art. 3(2): :observed-from (1973 4 12)
 
   (:fixed "元日" 1 1 :from 1949
-   :observed :jp-furikae :observed-from 1973
+   :observed :jp-furikae :observed-from (1973 4 12)
    :authority "国民の祝日に関する法律第2条（元日）；施行1948-07-20 → 初回1949")
   (:fixed "成人の日" 1 15 :from 1949 :to 1999
-   :observed :jp-furikae :observed-from 1973
+   :observed :jp-furikae :observed-from (1973 4 12)
    :authority "国民の祝日に関する法律第2条（成人の日・1月15日）")
   (:nth-weekday "成人の日" 1 :monday 2 :from 2000
    :authority "平成10年改正・ハッピーマンデー（成人の日・1月第2月曜日）")
 
   (:fixed "建国記念の日" 2 11 :from 1967
-   :observed :jp-furikae :observed-from 1973
+   :observed :jp-furikae :observed-from (1973 4 12)
    :authority ("国民の祝日に関する法律第2条（建国記念の日）"
                "政令で定める日＝2月11日；旧紀元節"))
 
   ;; 天皇誕生日 — Showa / Heisei / Reiwa (2019 had none).
   (:fixed "天皇誕生日" 4 29 :from 1949 :to 1988
-   :observed :jp-furikae :observed-from 1973
+   :observed :jp-furikae :observed-from (1973 4 12)
    :authority "国民の祝日に関する法律第2条（天皇誕生日・昭和）；旧天長節")
   (:fixed "天皇誕生日" 12 23 :from 1989 :to 2018
-   :observed :jp-furikae :observed-from 1973
+   :observed :jp-furikae :observed-from (1973 4 12)
    :authority "国民の祝日に関する法律第2条（天皇誕生日・平成）")
   (:fixed "天皇誕生日" 2 23 :from 2020
-   :observed :jp-furikae :observed-from 1973
+   :observed :jp-furikae :observed-from (1973 4 12)
    :authority "国民の祝日に関する法律第2条（天皇誕生日・令和・2月23日）")
 
   (:computed "春分の日"
    (lambda (y) (spring-equinox-date y :location +tokyo+))
-   :from 1949 :observed :jp-furikae :observed-from 1973
+   :from 1949 :observed :jp-furikae :observed-from (1973 4 12)
    :authority "国民の祝日に関する法律第2条（春分の日）；国立天文台算定・閣議決定")
 
   (:fixed "みどりの日" 4 29 :from 1989 :to 2006
@@ -106,14 +110,14 @@
    :authority "国民の祝日に関する法律第2条（昭和の日）")
 
   (:fixed "憲法記念日" 5 3 :from 1949
-   :observed :jp-furikae :observed-from 1973
+   :observed :jp-furikae :observed-from (1973 4 12)
    :authority "国民の祝日に関する法律第2条（憲法記念日）")
   ;; 5/4: 国民の休日 via sandwich 1985–2006; statutory みどりの日 from 2007.
   (:fixed "みどりの日" 5 4 :from 2007
    :observed :jp-furikae
    :authority "国民の祝日に関する法律第2条（みどりの日・5月4日）")
   (:fixed "こどもの日" 5 5 :from 1949
-   :observed :jp-furikae :observed-from 1973
+   :observed :jp-furikae :observed-from (1973 4 12)
    :authority "国民の祝日に関する法律第2条（こどもの日）")
 
   ;; 2019 年号変更 — 天皇の即位の日等を定める法律（平成30年法律第83号）
@@ -121,6 +125,15 @@
    :authority "天皇の即位の日等を定める法律 — 2019-05-01（即位）；GW中の国民の休日は Art.3(3)")
   (:fixed "即位礼正殿の儀の行われる日" 10 22 :from 2019 :to 2019
    :authority "天皇の即位の日等を定める法律 — 2019-10-22")
+  ;; One-off 皇室儀礼 (内閣府 CSV names 結婚の儀 / 大喪の礼 / 即位礼正殿の儀)
+  (:fixed "結婚の儀" 4 10 :from 1959 :to 1959
+   :authority "皇太子明仁親王の結婚の儀 — 1959-04-10")
+  (:fixed "大喪の礼" 2 24 :from 1989 :to 1989
+   :authority "大喪の礼 — 1989-02-24（昭和天皇）")
+  (:fixed "即位礼正殿の儀の行われる日" 11 12 :from 1990 :to 1990
+   :authority "即位礼正殿の儀 — 1990-11-12（平成）")
+  (:fixed "結婚の儀" 6 9 :from 1993 :to 1993
+   :authority "皇太子徳仁親王の結婚の儀 — 1993-06-09")
 
   ;; 海の日 — Happy Monday; Olympic specials 2020–2021
   (:fixed "海の日" 7 20 :from 1996 :to 2002
@@ -149,19 +162,19 @@
    :authority "国民の祝日に関する法律第2条（山の日）")
 
   (:fixed "敬老の日" 9 15 :from 1966 :to 2002
-   :observed :jp-furikae :observed-from 1973
+   :observed :jp-furikae :observed-from (1973 4 12)
    :authority "国民の祝日に関する法律第2条（敬老の日・9月15日）")
   (:nth-weekday "敬老の日" 9 :monday 3 :from 2003
    :authority "ハッピーマンデー（敬老の日・9月第3月曜日）")
 
   (:computed "秋分の日"
    (lambda (y) (autumn-equinox-date y :location +tokyo+))
-   :from (1948 7 20) :observed :jp-furikae :observed-from 1973
+   :from (1948 7 20) :observed :jp-furikae :observed-from (1973 4 12)
    :authority "国民の祝日に関する法律第2条（秋分の日）；国立天文台算定・閣議決定")
 
   ;; 体育の日 / スポーツの日 — Happy Monday; Olympic specials 2020–2021
   (:fixed "体育の日" 10 10 :from 1966 :to 1999
-   :observed :jp-furikae :observed-from 1973
+   :observed :jp-furikae :observed-from (1973 4 12)
    :authority "国民の祝日に関する法律第2条（体育の日・10月10日）")
   (:nth-weekday "体育の日" 10 :monday 2 :from 2000 :to 2019
    :authority "ハッピーマンデー（体育の日・10月第2月曜日）")
@@ -173,10 +186,10 @@
    :authority "国民の祝日に関する法律第2条（スポーツの日・10月第2月曜日）")
 
   (:fixed "文化の日" 11 3 :from (1948 7 20)
-   :observed :jp-furikae :observed-from 1973
+   :observed :jp-furikae :observed-from (1973 4 12)
    :authority "国民の祝日に関する法律第2条（文化の日）；旧明治節")
   (:fixed "勤労感謝の日" 11 23 :from (1948 7 20)
-   :observed :jp-furikae :observed-from 1973
+   :observed :jp-furikae :observed-from (1973 4 12)
    :authority "国民の祝日に関する法律第2条（勤労感謝の日）；旧新嘗祭"))
 
 (defun japan-holidays-calendar ()

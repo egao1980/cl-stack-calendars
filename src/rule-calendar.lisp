@@ -12,6 +12,14 @@
    ;; Year/date from which sandwich applies (e.g. JP Art. 3(3) from 1985).
    (sandwich-from :initarg :sandwich-from :initform nil
                   :accessor calendar-sandwich-from)
+   ;; 祝日法第3条第2項: Sunday 祝日 → 翌日 (from 1973-04-12); chain over
+   ;; consecutive 祝日 only from FURIKAE-CHAIN-FROM (平成19年, 2007-01-01).
+   (furikae-chain-p :initarg :furikae-chain-p :initform nil
+                    :accessor calendar-furikae-chain-p)
+   (furikae-from :initarg :furikae-from :initform nil
+                 :accessor calendar-furikae-from)
+   (furikae-chain-from :initarg :furikae-chain-from :initform nil
+                       :accessor calendar-furikae-chain-from)
    ;; Decree transfers: TO dates become holidays (перенос выходных).
    (transfers :initarg :transfers :initform nil :accessor calendar-transfers)
    ;; Compensatory working Saturdays/Sundays (override weekend-day-p).
@@ -43,7 +51,12 @@ TO date falls in YEAR (or adjacent for Dec 31 ↔ Jan moves)."
         (claimed '())
         (pairs '()))
     (dolist (rule (calendar-rules calendar))
-      (let ((dates (rule-occurrences rule year weekend-days claimed)))
+      (let ((dates (if (calendar-furikae-chain-p calendar)
+                       ;; Nominals only — Art. 3(2) chain runs after sandwich.
+                       (let ((nom (rule-nominal-date rule year)))
+                         (when (and nom (rule-valid-at-p rule nom))
+                           (list nom)))
+                       (rule-occurrences rule year weekend-days claimed))))
         (dolist (d dates)
           (unless (%suppressed-date-p calendar d)
             (push (cons d (or (holiday-rule-name rule) t)) pairs)
@@ -54,6 +67,15 @@ TO date falls in YEAR (or adjacent for Dec 31 ↔ Jan moves)."
                        ((integerp sf) (>= year sf))
                        (t t))))
       (setf pairs (apply-sandwich-holidays pairs)))
+    (when (calendar-furikae-chain-p calendar)
+      (flet ((%as-date (bound)
+               (cond ((null bound) nil)
+                     ((integerp bound) (make-date bound 1 1))
+                     (t bound))))
+        (setf pairs (apply-jp-furikae-chain
+                     pairs
+                     (%as-date (calendar-furikae-from calendar))
+                     (%as-date (calendar-furikae-chain-from calendar))))))
     (dolist (tr (calendar-transfers calendar))
       (let ((to (calendar-transfer-to tr)))
         (when (and to
@@ -134,7 +156,9 @@ rearrangements in starter calendars (normative source of truth)."
 
 (defmacro define-calendar (name (&key register (weekend-days ''(6 7))
                                    sandwich-holidays-p sandwich-authority
-                                   sandwich-from)
+                                   sandwich-from
+                                   furikae-chain-p furikae-from
+                                   furikae-chain-from)
                            &body rules)
   "Define NAME as a RULE-CALENDAR subclass from RULES.
 
@@ -165,7 +189,11 @@ atoms — do not use them in starters without an AUTHORITY that implies them.
 
 :SANDWICH-HOLIDAYS-P with :SANDWICH-AUTHORITY enables 祝日法第3条第3項-style
 weekdays sandwiched between two holidays. :SANDWICH-FROM (year) bounds when
-sandwich applies (JP Art. 3(3) from 1985).
+sandwich applies (JP Art. 3(3) first GW 1986).
+
+:FURIKAE-CHAIN-P applies Art. 3(2) after sandwich: 翌日 from :FURIKAE-FROM
+(1973-04-12); chain over consecutive 祝日 only from :FURIKAE-CHAIN-FROM
+(平成19年法律第5号, 2007-01-01).
 
 Annual Government decree transfers are attached at instance time via
 CALENDAR-TRANSFERS / MAKE-RUSSIAN-HOLIDAYS-CALENDAR — not in this macro."
@@ -177,6 +205,9 @@ CALENDAR-TRANSFERS / MAKE-RUSSIAN-HOLIDAYS-CALENDAR — not in this macro."
         :sandwich-holidays-p ,sandwich-holidays-p
         :sandwich-authority ',sandwich-authority
         :sandwich-from ,(%bound-form sandwich-from)
+        :furikae-chain-p ,furikae-chain-p
+        :furikae-from ,(%bound-form furikae-from)
+        :furikae-chain-from ,(%bound-form furikae-chain-from)
         :rules (list ,@(mapcar #'%holiday-rule-constructor-form rules))))
      ,@(when register
          `((register-calendar ,register (make-instance ',name))))
