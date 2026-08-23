@@ -5,26 +5,20 @@
 
 ;;; --- Indonesia cuti bersama (SKB 3 Menteri / Keppres) ---------------
 
-(defparameter *id-cuti-bersama-path*
-  (merge-pathnames "data/id/cuti-bersama.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars"))
-  "Sexp index of verified cuti bersama years (2002–2026).")
-
-(defun load-id-cuti-bersama (&optional (path *id-cuti-bersama-path*))
+(defun load-id-cuti-bersama (&optional (path (data-path "id/cuti-bersama.sexp")))
   "Return alist YEAR → (:authority A :transfers … :uri …)."
-  (with-open-file (in path)
-    (let ((form (read in)))
-      (mapcar
-       (lambda (block)
-         (let* ((year (getf block :year))
-                (auth (getf block :authority))
-                (transfers (mapcar (lambda (e)
-                                     (make-extra-day-transfer e auth))
-                                   (getf block :holidays))))
-           (cons year (list :authority auth
-                            :transfers transfers
-                            :uri (getf block :uri)))))
-       form))))
+  (let ((form (read-data-form path)))
+    (mapcar
+     (lambda (block)
+       (let* ((year (getf block :year))
+              (auth (getf block :authority))
+              (transfers (mapcar (lambda (e)
+                                   (make-extra-day-transfer e auth))
+                                 (getf block :holidays))))
+         (cons year (list :authority auth
+                          :transfers transfers
+                          :uri (getf block :uri)))))
+     form)))
 
 (defvar *id-cuti-bersama* nil)
 
@@ -224,26 +218,20 @@
 
 ;;; --- Korea 임시공휴일 (관공서의 공휴일에 관한 규정) -----------------
 
-(defparameter *kr-temporary-holidays-path*
-  (merge-pathnames "data/kr/temporary-holidays.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars"))
-  "Sexp index of national 임시공휴일 designations.")
-
-(defun load-kr-temporary-holidays (&optional (path *kr-temporary-holidays-path*))
+(defun load-kr-temporary-holidays (&optional (path (data-path "kr/temporary-holidays.sexp")))
   "Return alist YEAR → (:authority A :transfers … :uri …)."
-  (with-open-file (in path)
-    (let ((form (read in)))
-      (mapcar
-       (lambda (block)
-         (let* ((year (getf block :year))
-                (auth (getf block :authority))
-                (transfers (mapcar (lambda (e)
-                                     (make-extra-day-transfer e auth))
-                                   (getf block :holidays))))
-           (cons year (list :authority auth
-                            :transfers transfers
-                            :uri (getf block :uri)))))
-       form))))
+  (let ((form (read-data-form path)))
+    (mapcar
+     (lambda (block)
+       (let* ((year (getf block :year))
+              (auth (getf block :authority))
+              (transfers (mapcar (lambda (e)
+                                   (make-extra-day-transfer e auth))
+                                 (getf block :holidays))))
+         (cons year (list :authority auth
+                          :transfers transfers
+                          :uri (getf block :uri)))))
+     form)))
 
 (defvar *kr-temporary-holidays* nil)
 
@@ -263,24 +251,19 @@
 
 ;;; --- Philippines Malacañang proclamations (bridge / special days) -----
 
-(defparameter *ph-proclamations-path*
-  (merge-pathnames "data/ph/proclamations.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
-(defun load-ph-proclamations (&optional (path *ph-proclamations-path*))
-  (with-open-file (in path)
-    (let ((form (read in)))
-      (mapcar
-       (lambda (block)
-         (let* ((year (getf block :year))
-                (auth (getf block :authority))
-                (transfers (mapcar (lambda (e)
-                                     (make-extra-day-transfer e auth))
-                                   (getf block :holidays))))
-           (cons year (list :authority auth
-                            :transfers transfers
-                            :uri (getf block :uri)))))
-       form))))
+(defun load-ph-proclamations (&optional (path (data-path "ph/proclamations.sexp")))
+  (let ((form (read-data-form path)))
+    (mapcar
+     (lambda (block)
+       (let* ((year (getf block :year))
+              (auth (getf block :authority))
+              (transfers (mapcar (lambda (e)
+                                   (make-extra-day-transfer e auth))
+                                 (getf block :holidays))))
+         (cons year (list :authority auth
+                          :transfers transfers
+                          :uri (getf block :uri)))))
+     form)))
 
 (defvar *ph-proclamations* nil)
 
@@ -298,24 +281,19 @@
 
 ;;; --- Thailand Royal Gazette substitute / bridge days ------------------
 
-(defparameter *th-transfers-path*
-  (merge-pathnames "data/th/transfers.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
-(defun load-th-transfers (&optional (path *th-transfers-path*))
-  (with-open-file (in path)
-    (let ((form (read in)))
-      (mapcar
-       (lambda (block)
-         (let* ((year (getf block :year))
-                (auth (getf block :authority))
-                (transfers (mapcar (lambda (e)
-                                     (make-extra-day-transfer e auth))
-                                   (getf block :holidays))))
-           (cons year (list :authority auth
-                            :transfers transfers
-                            :uri (getf block :uri)))))
-       form))))
+(defun load-th-transfers (&optional (path (data-path "th/transfers.sexp")))
+  (let ((form (read-data-form path)))
+    (mapcar
+     (lambda (block)
+       (let* ((year (getf block :year))
+              (auth (getf block :authority))
+              (transfers (mapcar (lambda (e)
+                                   (make-extra-day-transfer e auth))
+                                 (getf block :holidays))))
+         (cons year (list :authority auth
+                          :transfers transfers
+                          :uri (getf block :uri)))))
+     form)))
 
 (defvar *th-transfers* nil)
 
@@ -333,24 +311,19 @@
 
 ;;; --- Malaysia JPM / PMO additional public holidays --------------------
 
-(defparameter *my-transfers-path*
-  (merge-pathnames "data/my/transfers.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
-(defun load-my-transfers (&optional (path *my-transfers-path*))
-  (with-open-file (in path)
-    (let ((form (read in)))
-      (mapcar
-       (lambda (block)
-         (let* ((year (getf block :year))
-                (auth (getf block :authority))
-                (transfers (mapcar (lambda (e)
-                                     (make-extra-day-transfer e auth))
-                                   (getf block :holidays))))
-           (cons year (list :authority auth
-                            :transfers transfers
-                            :uri (getf block :uri)))))
-       form))))
+(defun load-my-transfers (&optional (path (data-path "my/transfers.sexp")))
+  (let ((form (read-data-form path)))
+    (mapcar
+     (lambda (block)
+       (let* ((year (getf block :year))
+              (auth (getf block :authority))
+              (transfers (mapcar (lambda (e)
+                                   (make-extra-day-transfer e auth))
+                                 (getf block :holidays))))
+         (cons year (list :authority auth
+                          :transfers transfers
+                          :uri (getf block :uri)))))
+     form)))
 
 (defvar *my-transfers* nil)
 
@@ -368,25 +341,13 @@
 
 ;;; --- Gazette corpora (Dashain, Poya, Vesak/Deepavali, …) --------------
 
-(defparameter *np-gazette-path*
-  (merge-pathnames "data/np/gazette-holidays.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
-(defparameter *lk-poya-path*
-  (merge-pathnames "data/lk/poya-days.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
-(defparameter *sg-gazette-path*
-  (merge-pathnames "data/sg/gazette-holidays.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
 (defvar *np-gazette* nil)
 (defvar *lk-poya* nil)
 (defvar *sg-gazette* nil)
 
-(defun np-gazette () (or *np-gazette* (setf *np-gazette* (load-gazette-corpus *np-gazette-path*))))
-(defun lk-poya () (or *lk-poya* (setf *lk-poya* (load-gazette-corpus *lk-poya-path*))))
-(defun sg-gazette () (or *sg-gazette* (setf *sg-gazette* (load-gazette-corpus *sg-gazette-path*))))
+(defun np-gazette () (or *np-gazette* (setf *np-gazette* (load-gazette-corpus (data-path "np/gazette-holidays.sexp")))))
+(defun lk-poya () (or *lk-poya* (setf *lk-poya* (load-gazette-corpus (data-path "lk/poya-days.sexp")))))
+(defun sg-gazette () (or *sg-gazette* (setf *sg-gazette* (load-gazette-corpus (data-path "sg/gazette-holidays.sexp")))))
 
 (defun np-gazette-for-year (year) (gazette-corpus-for-year (np-gazette) year))
 (defun lk-poya-for-year (year) (gazette-corpus-for-year (lk-poya) year))

@@ -2,21 +2,12 @@
 
 ;;;; Population-ordered normative coverage index.
 
-(defparameter *formation-years-path*
-  (merge-pathnames "data/formation-years.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
-(defparameter *population-order-path*
-  (merge-pathnames "data/population-order.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
-(defun load-formation-years (&optional (path *formation-years-path*))
+(defun load-formation-years (&optional (path (data-path "formation-years.sexp")))
   "Alist CODE → (YEAR . NOTE)."
-  (with-open-file (in path)
-    (mapcar (lambda (row)
-              (destructuring-bind (code year note) row
-                (cons code (cons year note))))
-            (read in))))
+  (mapcar (lambda (row)
+            (destructuring-bind (code year note) row
+              (cons code (cons year note))))
+          (read-data-form path)))
 
 (defvar *formation-years* nil)
 
@@ -38,9 +29,9 @@ research window start; otherwise CIVIL-RESEARCH-FROM-YEAR."
   (let ((floor (civil-research-from-year code)))
     (if introduced-year (max floor introduced-year) floor)))
 
-(defun load-population-order (&optional (path *population-order-path*))
+(defun load-population-order (&optional (path (data-path "population-order.sexp")))
   "List of (CODE POPULATION-MILLIONS NAME) in descending population order."
-  (with-open-file (in path) (read in)))
+  (read-data-form path))
 
 (defvar *population-order* nil)
 

@@ -76,15 +76,9 @@
 ;;;; Christmas+Boxing use :UK-PROCLAMATION-SUBSTITUTE (exclusive next weekday).
 ;;;; Special one-off / relocated bank holidays: data/gb/proclamations.sexp.
 
-(defparameter *gb-proclamations-path*
-  (merge-pathnames "data/gb/proclamations.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars"))
-  "Sexp index of special Royal Proclamations (extras + relocated BH).")
-
-(defun load-gb-proclamations (&optional (path *gb-proclamations-path*))
+(defun load-gb-proclamations (&optional (path (data-path "gb/proclamations.sexp")))
   "Return alist YEAR → (:authority A :transfers … :suppressed … :uri …)."
-  (with-open-file (in path)
-    (let ((form (read in)))
+  (let ((form (read-data-form path)))
       (mapcar
        (lambda (block)
          (let* ((year (getf block :year))
@@ -105,7 +99,7 @@
                             :transfers (append extras (nreverse relocated))
                             :suppressed (nreverse suppressed)
                             :uri (getf block :uri)))))
-       form))))
+       form)))
 
 (defvar *gb-proclamations* nil)
 

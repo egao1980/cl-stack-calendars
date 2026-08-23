@@ -10,25 +10,20 @@
 
 ;;; --- Colombia decree transfers (puentes / Ley Emiliani TO days) ---------
 
-(defparameter *co-transfers-path*
-  (merge-pathnames "data/co/transfers.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
-(defun load-co-transfers (&optional (path *co-transfers-path*))
+(defun load-co-transfers (&optional (path (data-path "co/transfers.sexp")))
   "Return alist YEAR → (:authority A :transfers … :uri …)."
-  (with-open-file (in path)
-    (let ((form (read in)))
-      (mapcar
-       (lambda (block)
-         (let* ((year (getf block :year))
-                (auth (getf block :authority))
-                (transfers (mapcar (lambda (e)
-                                     (make-extra-day-transfer e auth))
-                                   (getf block :holidays))))
-           (cons year (list :authority auth
-                            :transfers transfers
-                            :uri (getf block :uri)))))
-       form))))
+  (let ((form (read-data-form path)))
+    (mapcar
+     (lambda (block)
+       (let* ((year (getf block :year))
+              (auth (getf block :authority))
+              (transfers (mapcar (lambda (e)
+                                   (make-extra-day-transfer e auth))
+                                 (getf block :holidays))))
+         (cons year (list :authority auth
+                          :transfers transfers
+                          :uri (getf block :uri)))))
+     form)))
 
 (defvar *co-transfers* nil)
 
@@ -250,24 +245,19 @@
   (:fixed "Fin de Año" 12 31 :from 1900 :authority "Feriado nacional"))
 
 ;;; Chile bridge-day decrees (Law 19.668 / annual D.O.)
-(defparameter *cl-transfers-path*
-  (merge-pathnames "data/cl/transfers.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
-(defun load-cl-transfers (&optional (path *cl-transfers-path*))
-  (with-open-file (in path)
-    (let ((form (read in)))
-      (mapcar
-       (lambda (block)
-         (let* ((year (getf block :year))
-                (auth (getf block :authority))
-                (transfers (mapcar (lambda (e)
-                                     (make-extra-day-transfer e auth))
-                                   (getf block :holidays))))
-           (cons year (list :authority auth
-                            :transfers transfers
-                            :uri (getf block :uri)))))
-       form))))
+(defun load-cl-transfers (&optional (path (data-path "cl/transfers.sexp")))
+  (let ((form (read-data-form path)))
+    (mapcar
+     (lambda (block)
+       (let* ((year (getf block :year))
+              (auth (getf block :authority))
+              (transfers (mapcar (lambda (e)
+                                   (make-extra-day-transfer e auth))
+                                 (getf block :holidays))))
+         (cons year (list :authority auth
+                          :transfers transfers
+                          :uri (getf block :uri)))))
+     form)))
 
 (defvar *cl-transfers* nil)
 

@@ -16,10 +16,6 @@
 ;;;; boundary via TRADING-SESSION). Early closes override the last segment.
 ;;;; Overnight segments use TRADING-SESSION :OVERNIGHT / :LABELED-BY.
 
-(defparameter *exchanges-data-directory*
-  (merge-pathnames "data/exchanges/"
-                   (asdf:system-source-directory "cl-stack-calendars")))
-
 (defvar *exchange-hours-cache* (make-hash-table :test #'equal)
   "MIC → EXCHANGE-HOURS.")
 
@@ -99,15 +95,15 @@
    :source (getf plist :source)))
 
 (defun load-exchange-hours-file (path)
-  (with-open-file (in path)
-    (load-exchange-hours-plist (read in))))
+  (load-exchange-hours-plist (read-data-form path)))
 
 (defun %exchange-data-path (mic)
-  (merge-pathnames (format nil "~a.sexp" (string-upcase mic))
-                   *exchanges-data-directory*))
+  (sp:join (exchanges-data-directory)
+           (format nil "~a.sexp" (string-upcase mic))))
 
 (defun list-exchange-hours-files ()
-  (directory (merge-pathnames "*.sexp" *exchanges-data-directory*)))
+  (remove-if-not (lambda (p) (string-equal (sp:extension p) "sexp"))
+                 (sp:iterdir (exchanges-data-directory))))
 
 (defun load-all-exchange-hours (&optional (force nil))
   "Load every data/exchanges/*.sexp into *EXCHANGE-HOURS-CACHE*."

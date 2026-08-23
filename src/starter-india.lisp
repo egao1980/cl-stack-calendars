@@ -6,26 +6,20 @@
 ;;;; data/in/dopt-holidays.sexp; attach via (india-holidays-calendar :year N).
 ;;;; Research window: max(1900, 1947).
 
-(defparameter *in-dopt-holidays-path*
-  (merge-pathnames "data/in/dopt-holidays.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars"))
-  "DoPT OM gazetted Hindu/Buddhist/Jain/Sikh festival dates by year.")
-
-(defun load-in-dopt-holidays (&optional (path *in-dopt-holidays-path*))
+(defun load-in-dopt-holidays (&optional (path (data-path "in/dopt-holidays.sexp")))
   "Return alist YEAR → (:authority A :transfers … :uri …)."
-  (with-open-file (in path)
-    (let ((form (read in)))
-      (mapcar
-       (lambda (block)
-         (let* ((year (getf block :year))
-                (auth (getf block :authority))
-                (transfers (mapcar (lambda (e)
-                                     (make-extra-day-transfer e auth))
-                                   (getf block :holidays))))
-           (cons year (list :authority auth
-                            :transfers transfers
-                            :uri (getf block :uri)))))
-       form))))
+  (let ((form (read-data-form path)))
+    (mapcar
+     (lambda (block)
+       (let* ((year (getf block :year))
+              (auth (getf block :authority))
+              (transfers (mapcar (lambda (e)
+                                   (make-extra-day-transfer e auth))
+                                 (getf block :holidays))))
+         (cons year (list :authority auth
+                          :transfers transfers
+                          :uri (getf block :uri)))))
+     form)))
 
 (defvar *in-dopt-holidays* nil)
 

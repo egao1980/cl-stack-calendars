@@ -7,40 +7,34 @@
 ;;;;
 ;;;; 2024-11 revision (国务院令): 春节 includes 除夕; 劳动节 May 1–2; etc.
 
-(defparameter *cn-transfers-path*
-  (merge-pathnames "data/cn/transfers.sexp"
-                   (asdf:system-source-directory "cl-stack-calendars"))
-  "Sexp index of verified 国办发明电 调休 notices.")
-
 (defun %parse-cn-transfer-entry (entry)
   (destructuring-bind (from to &optional name) entry
     (make-calendar-transfer :from from :to to :name name)))
 
-(defun load-cn-transfer-notices (&optional (path *cn-transfers-path*))
+(defun load-cn-transfer-notices (&optional (path (data-path "cn/transfers.sexp")))
   "Return alist YEAR → (:authority A :transfers … :working …)."
-  (with-open-file (in path)
-    (let ((form (read in)))
-      (mapcar
-       (lambda (block)
-         (let* ((year (getf block :year))
-                (auth (getf block :authority))
-                (transfers (mapcar (lambda (e)
-                                     (let ((tr (%parse-cn-transfer-entry e)))
-                                       (setf (calendar-transfer-authority tr) auth)
-                                       tr))
-                                   (getf block :transfers)))
-                (working (mapcar (lambda (d)
-                                   (make-calendar-working-day
-                                    :date (if (and (listp d) (not (typep d 'date)))
-                                              (apply #'make-date d)
-                                              d)
-                                    :authority auth))
-                                 (getf block :working))))
-           (cons year (list :authority auth
-                            :transfers transfers
-                            :working working
-                            :uri (getf block :uri)))))
-       form))))
+  (let ((form (read-data-form path)))
+    (mapcar
+     (lambda (block)
+       (let* ((year (getf block :year))
+              (auth (getf block :authority))
+              (transfers (mapcar (lambda (e)
+                                   (let ((tr (%parse-cn-transfer-entry e)))
+                                     (setf (calendar-transfer-authority tr) auth)
+                                     tr))
+                                 (getf block :transfers)))
+              (working (mapcar (lambda (d)
+                                 (make-calendar-working-day
+                                  :date (if (and (listp d) (not (typep d 'date)))
+                                            (apply #'make-date d)
+                                            d)
+                                  :authority auth))
+                               (getf block :working))))
+         (cons year (list :authority auth
+                          :transfers transfers
+                          :working working
+                          :uri (getf block :uri)))))
+     form)))
 
 (defvar *cn-transfer-notices* nil)
 

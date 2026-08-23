@@ -1,6 +1,7 @@
 (defpackage #:cl-stack-calendars
   (:nicknames #:stack-calendars)
   (:use #:cl #:datetime-protocol)
+  (:local-nicknames (#:sp #:cl-stack-pathlib))
   (:shadowing-import-from #:datetime-protocol
    #:+ #:- #:< #:<= #:> #:>= #:= #:/= #:min #:max)
   (:export
@@ -375,6 +376,23 @@
    #:country-calendar-license
    #:country-calendar-note
    #:country-calendar-year-range
-   #:clear-country-calendar-cache))
+   #:clear-country-calendar-cache
+
+   ;; data root (directory / .zip / zip:// — client-app distribution)
+   #:*data-root*
+   #:*countries-data-directory*
+   #:*exchanges-data-directory*
+   #:data-root
+   #:default-data-root
+   #:set-data-root
+   #:with-data-root
+   #:data-path
+   #:read-data-form
+   #:data-file-exists-p
+   #:countries-data-directory
+   #:exchanges-data-directory
+   #:clear-data-caches
+   #:resolve-data-root
+   #:write-data-zip))
 
 (in-package #:cl-stack-calendars)
