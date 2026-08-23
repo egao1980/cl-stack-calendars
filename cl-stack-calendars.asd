@@ -1,5 +1,5 @@
 (defsystem "cl-stack-calendars"
-  :version "0.3.0"
+  :version "0.3.1"
   :description "Holiday and trading calendars for cl-stack (business days, sessions, versioned as-of)"
   :author "egao1980"
   :license "MIT"
