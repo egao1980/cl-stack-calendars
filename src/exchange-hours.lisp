@@ -4,13 +4,17 @@
 ;;;;
 ;;;; Data: data/exchanges/<MIC>.sexp
 ;;;;   (:mic "XNYS" :name "…" :zone "America/New_York" :calendar "USFED"
-;;;;    :eras ((:from (Y M D) :to (Y M D) :sessions ((:open (H M) :close (H M)) …)
-;;;;            :saturday ((:open … :close …)) :weekend (7) :authority "…") …)
+;;;;    :kind :equity   ; or :commodities
+;;;;    :weekend (6 7)  ; ISO dow; Fri–Sat markets use (5 6)
+;;;;    :eras ((:from (Y M D) :to (Y M D)
+;;;;            :sessions ((:open (H M) :close (H M) :overnight t :labeled-by :close) …)
+;;;;            :friday (…) :saturday (…) :weekend (7) :authority "…") …)
 ;;;;    :early-close-rules ((:kind :black-friday :from … :close (13 0) :authority "…") …)
 ;;;;    :early-closes (((Y M D) (H M) "note") …))
 ;;;;
 ;;;; Regular hours are exchange-rule eras (not TZ — TZ is resolved per
 ;;;; boundary via TRADING-SESSION). Early closes override the last segment.
+;;;; Overnight segments use TRADING-SESSION :OVERNIGHT / :LABELED-BY.
 
 (defparameter *exchanges-data-directory*
   (merge-pathnames "data/exchanges/"
@@ -21,16 +25,18 @@
 
 (defstruct (exchange-session-spec (:constructor %make-exchange-session-spec))
   (open nil :type time-of-day)
-  (close nil :type time-of-day))
+  (close nil :type time-of-day)
+  (overnight nil)
+  (labeled-by :open))
 
 (defstruct (exchange-era (:constructor %make-exchange-era))
-  from to sessions saturday weekend authority)
+  from to sessions friday saturday weekend authority)
 
 (defstruct (exchange-early-close-rule (:constructor %make-exchange-early-close-rule))
   kind from to close authority)
 
 (defstruct (exchange-hours (:constructor %make-exchange-hours))
-  mic name zone calendar-name weekend eras early-close-rules early-closes
+  mic name zone calendar-name kind weekend eras early-close-rules early-closes
   source)
 
 (defun %ymd->date (ymd)
@@ -47,7 +53,10 @@
   (mapcar (lambda (s)
             (%make-exchange-session-spec
              :open (%tod-list (getf s :open))
-             :close (%tod-list (getf s :close))))
+             :close (%tod-list (getf s :close))
+             :overnight (getf s :overnight)
+             :labeled-by (or (getf s :labeled-by)
+                             (if (getf s :overnight) :close :open))))
           sessions))
 
 (defun %parse-era (plist)
@@ -55,6 +64,8 @@
    :from (%ymd->date (getf plist :from))
    :to (%ymd->date (getf plist :to))
    :sessions (%parse-session-specs (getf plist :sessions))
+   :friday (let ((fri (getf plist :friday)))
+             (when fri (%parse-session-specs fri)))
    :saturday (let ((sat (getf plist :saturday)))
                (when sat (%parse-session-specs sat)))
    :weekend (getf plist :weekend)
@@ -80,6 +91,7 @@
    :name (getf plist :name)
    :zone (getf plist :zone)
    :calendar-name (getf plist :calendar)
+   :kind (or (getf plist :kind) :equity)
    :weekend (or (getf plist :weekend) '(6 7))
    :eras (mapcar #'%parse-era (getf plist :eras))
    :early-close-rules (mapcar #'%parse-early-rule (getf plist :early-close-rules))
@@ -205,20 +217,34 @@ Adhoc rows are (DATE TOD NOTE); TOD is the close, not the note."
           return (values tod (exchange-early-close-rule-authority rule))))
 
 (defun %apply-early-close (sessions early)
-  "Drop/shorten segments so the last remaining close is EARLY."
+  "Drop/shorten same-day segments so the last remaining close is EARLY.
+Overnight legs (open wall-clock after close) are kept; their close TOD is
+shortened when EARLY is before that close on the label date."
   (if (null early)
       sessions
       (let ((out '()))
         (dolist (seg sessions)
-          (cond ((< (exchange-session-spec-close seg) early)
-                 (push seg out))
-                ((< (exchange-session-spec-open seg) early)
-                 (push (%make-exchange-session-spec
+          (cond
+            ((exchange-session-spec-overnight seg)
+             (push (if (< early (exchange-session-spec-close seg))
+                       (%make-exchange-session-spec
                         :open (exchange-session-spec-open seg)
-                        :close early)
-                       out)
-                 (return))
-                (t (return))))
+                        :close early
+                        :overnight t
+                        :labeled-by (exchange-session-spec-labeled-by seg))
+                       seg)
+                   out))
+            ((< (exchange-session-spec-close seg) early)
+             (push seg out))
+            ((< (exchange-session-spec-open seg) early)
+             (push (%make-exchange-session-spec
+                    :open (exchange-session-spec-open seg)
+                    :close early
+                    :overnight nil
+                    :labeled-by (exchange-session-spec-labeled-by seg))
+                   out)
+             (return))
+            (t (return))))
         (or (nreverse out)
             (error 'calendar-error
                    :message (format nil "early close ~a precedes all session opens"
@@ -230,8 +256,11 @@ Adhoc rows are (DATE TOD NOTE); TOD is the close, not the note."
          (dow (date-day-of-week date))
          (weekend (or (exchange-era-weekend era)
                       (exchange-hours-weekend exchange)))
+         (friday (exchange-era-friday era))
          (saturday (exchange-era-saturday era)))
     (cond
+      ((and (= dow 5) friday)
+       (%apply-early-close friday (exchange-early-close exchange date)))
       ((and (= dow 6) saturday)
        (%apply-early-close saturday (exchange-early-close exchange date)))
       ((member dow weekend)
@@ -259,13 +288,17 @@ segment-accurate queries."
                    (error 'calendar-error
                           :message (format nil "~a is not a trading day for ~a"
                                            d (exchange-hours-mic ex))))))
-    (make-trading-session
-     :name (format nil "~a-~a" (exchange-hours-mic ex) d)
-     :zone (exchange-hours-zone ex)
-     :open (exchange-session-spec-open (first segs))
-     :close (exchange-session-spec-close (car (last segs)))
-     :overnight nil
-     :calendar (or calendar (exchange-calendar ex)))))
+    (let ((first (first segs))
+          (last (car (last segs))))
+      (make-trading-session
+       :name (format nil "~a-~a" (exchange-hours-mic ex) d)
+       :zone (exchange-hours-zone ex)
+       :open (exchange-session-spec-open first)
+       :close (exchange-session-spec-close last)
+       :overnight (or (exchange-session-spec-overnight first)
+                      (exchange-session-spec-overnight last))
+       :labeled-by (exchange-session-spec-labeled-by first)
+       :calendar (or calendar (exchange-calendar ex))))))
 
 (defun exchange-session-bounds (mic date)
   "Return (values FIRST-OPEN LAST-CLOSE) instants for MIC on DATE.
@@ -278,11 +311,11 @@ third value."
       (error 'calendar-error
              :message (format nil "~a is not a trading day for ~a"
                               date (exchange-hours-mic ex))))
-    (when (and cal (not (business-day-p cal date))
-               (not (and (= (date-day-of-week date) 6)
-                         (exchange-era-saturday (exchange-era-for-date ex date)))))
+    ;; Hours encode the trading week (incl. Sun–Thu / historical Saturday).
+    ;; The civil calendar overlay only blocks holidays, not weekend-day-p.
+    (when (and cal (holiday-p cal date))
       (error 'calendar-error
-             :message (format nil "~a is not a business day for ~a calendar"
+             :message (format nil "~a is a holiday for ~a calendar"
                               date (exchange-hours-calendar-name ex))))
     (let ((pairs
            (mapcar (lambda (seg)
@@ -291,28 +324,37 @@ third value."
                                :zone (exchange-hours-zone ex)
                                :open (exchange-session-spec-open seg)
                                :close (exchange-session-spec-close seg)
-                               :overnight nil)))
+                               :overnight (exchange-session-spec-overnight seg)
+                               :labeled-by (exchange-session-spec-labeled-by seg))))
                        (multiple-value-list (session-bounds s date))))
                    segs)))
       (values (first (first pairs))
               (second (car (last pairs)))
               pairs))))
 
+(defun %open-on-date-p (mic instant date)
+  (handler-case
+      (multiple-value-bind (_ __ pairs) (exchange-session-bounds mic date)
+        (declare (ignore _ __))
+        (some (lambda (pair)
+                (destructuring-bind (open close) pair
+                  (and (<= open instant) (< instant close))))
+              pairs))
+    (calendar-error () nil)))
+
 (defun exchange-open-p (mic instant &key (date nil datep))
-  "True if INSTANT falls in any cash-session segment of MIC."
-  (let* ((ex (find-exchange mic))
-         (d (if datep date
-                (zoned-moment-date (instant-in-zone instant
-                                                    (resolve-zone-id
-                                                     (exchange-hours-zone ex)))))))
-    (handler-case
-        (multiple-value-bind (_ __ pairs) (exchange-session-bounds mic d)
-          (declare (ignore _ __))
-          (some (lambda (pair)
-                  (destructuring-bind (open close) pair
-                    (and (<= open instant) (< instant close))))
-                pairs))
-      (calendar-error () nil))))
+  "True if INSTANT falls in any session segment of MIC.
+Without :DATE, search local-date ± 1 so overnight Globex/SHFE legs
+that start on the previous calendar day still match."
+  (if datep
+      (%open-on-date-p mic instant date)
+      (let* ((ex (find-exchange mic))
+             (local (zoned-moment-date
+                     (instant-in-zone instant
+                                      (resolve-zone-id (exchange-hours-zone ex))))))
+        (or (%open-on-date-p mic instant local)
+            (%open-on-date-p mic instant (- local 1))
+            (%open-on-date-p mic instant (+ local 1))))))
 
 (defun exchange-session-duration (mic date)
   "Absolute duration of all cash-session segments on DATE (lunch excluded)."

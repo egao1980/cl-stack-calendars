@@ -39,6 +39,34 @@ Those libraries are Apache-2.0; we independently encode published dates.
 | BVMF | B3 cash 10:00–17:00 |
 | XKRX | Lunch abolished 2000; [close 15:30 from 2016-08-01](https://www.koreaherald.com/article/1038609) |
 | XSES | CAT 2011-08-01; [lunch restored 2017-11-13](https://www.businesstimes.com.sg/companies-markets/sgx-reintroduce-lunch-break-widen-bid-spreads-nov-13) |
+| XAMS XBRU XLIS XMIL XMAD | Euronext / BME cash 09:00–17:30 + eve 14:00 |
+| XDUB | Euronext Dublin 08:00–16:30 local (not CET 17:30) |
+| XSWX | [SIX shares](https://www.six-group.com/en/products-services/the-swiss-stock-exchange/trading/trading-provisions/trading-hours.html) 09:00–17:30 |
+| XSTO XCSE XHEL XICE | [Nasdaq Nordic Market Model](https://www.nasdaq.com/european-market-activity/trading-hours) — Stockholm 09:00–17:30, Copenhagen 09:00–17:00, Helsinki 10:00–18:30, Iceland 09:30–15:30 |
+| XOSL | Oslo Børs 09:00–16:20 |
+| XWBO XWAR XBUD XPRA XATH | Vienna 09:00–17:30; GPW 09:00–16:50; Budapest 09:00–17:00; Prague 09:00–16:20; ATHEX 10:15–17:20 |
+| XTAI | [TWSE timeline](https://www.twse.com.tw/en/about/company/history.html) 2001-01-02: 09:00–13:30 (was 09:00–12:00) |
+| XBKK | [SET 22/2024](https://www.set.or.th/en/market/news-and-alert/newsdetails?id=86864800&symbol=SET) afternoon from 14:00 on 2024-03-25 |
+| XIDX | [Jakarta Post 2012-11-02](https://www.thejakartapost.com/news/2012/11/02/idx-will-start-trading-day-earlier-january.html) open 09:00 from 2013-01-02; Friday shorter morning |
+| XKLS | [Bursa sessions](https://www.bursamalaysia.com/trade/trading_resources/equities/trading_sessions) 09:00–12:30 / 14:30–17:00 |
+| XPHS | PSE 2011-10-03 to 13:00; [2012-01-02](https://business.inquirer.net/21697/stock-trading-hours-extended-starting-oct-3) 09:30–12:00 / 13:30–15:30 |
+| XSTC | HOSE 09:15–11:30 / 13:00–14:45 |
+| XBOM | Same SEBI hour changes as XNSE |
+| XIST | BIST continuous 10:00–18:00 (lunch removed) |
+| XSAU | Tadawul 10:00–15:00; weekend Thu–Fri → Fri–Sat **2013-06-29** |
+| XTAE | TASE Sun–Thu ~10:00–17:15 |
+| XCME XNYM XCEC | [CME Globex](https://www.cftc.gov/filings/orgrules/rule021422cmedcm007.pdf) 17:00–16:00 CT, labeled by close |
+| XCBT | CBOT grains night 19:00–07:45 + day 08:30–13:20 CT |
+| IFEU | [ICE Brent](https://www.ice.com/products/219/Brent-Crude-Futures) 01:00–23:00 London |
+| XLME | [LMEselect](https://www.lme.com/trading/systems/lmeselect) 01:00–19:00 |
+| XSGE XDCE XZCE XINE | SHFE/DCE/CZCE day breaks; SHFE night previous 21:00; INE SC night to 02:30 |
+| XIMC | MCX non-agri 09:00–23:30 IST |
+| XOSE | JPX/OSE day 08:45–15:45 + night 16:30–06:00 (`:labeled-by :open`) |
+| XEUR XEEE XMAT | Eurex 08:00–22:00; EEX 08:00–18:00; Euronext agri 10:45–18:30 |
+
+Overnight legs use `:overnight t` and `:labeled-by :close` (Globex/SHFE night belongs
+to the next civil date) or `:open` (JPX night follows the same calendar day).
+Fri–Sat weekend markets set `:weekend (5 6)`. IDX Friday hours live in `:friday`.
 
 To add or correct an era: edit `<MIC>.sexp`, cite the notice, add a Rove test on the
 boundary dates. Reload with `(load-all-exchange-hours t)`.

@@ -13,7 +13,11 @@
   (let ((mics (list-exchanges)))
     (ok (equal mics (sort (copy-list mics) #'string<)))
     (dolist (mic '("XNYS" "XNAS" "XLON" "XTKS" "XHKG" "XSHG" "XSHE"
-                   "XETR" "XPAR" "XASX" "XTSE" "XNSE" "BVMF" "XKRX" "XSES"))
+                   "XETR" "XPAR" "XASX" "XTSE" "XNSE" "BVMF" "XKRX" "XSES"
+                   "XAMS" "XBRU" "XLIS" "XMIL" "XMAD" "XDUB" "XSWX" "XSTO"
+                   "XCSE" "XHEL" "XOSL" "XWBO" "XWAR" "XTAI" "XBKK" "XIDX"
+                   "XKLS" "XPHS" "XSTC" "XBOM" "XIST" "XSAU" "XTAE"
+                   "XCME" "XNYM" "XCEC" "XCBT" "IFEU" "XLME" "XSGE" "XIMC"))
       (ok (find mic mics :test #'string=) mic))
     (let ((ex (find-exchange "xnys")))
       (ok (string= (exchange-hours-mic ex) "XNYS"))
@@ -126,3 +130,60 @@
     (ok (< open close))
     (ok (= (duration-seconds (exchange-session-duration "XNYS" (make-date 1950 6 3)))
            7200))))
+
+(deftest eu-and-asia-hour-eras
+  (ok (equal (%session-hms "XAMS" (make-date 2024 6 3)) '(((9 0) (17 30)))))
+  (ok (equal (%session-hms "XDUB" (make-date 2024 6 3)) '(((8 0) (16 30)))))
+  (ok (equal (%session-hms "XOSL" (make-date 2024 6 3)) '(((9 0) (16 20)))))
+  (ok (equal (%session-hms "XHEL" (make-date 2024 6 3)) '(((10 0) (18 30)))))
+  (ok (equal (%session-hms "XTAI" (make-date 2000 12 29)) '(((9 0) (12 0)))))
+  (ok (equal (%session-hms "XTAI" (make-date 2001 1 2)) '(((9 0) (13 30)))))
+  (ok (equal (%session-hms "XBKK" (make-date 2024 3 22))
+             '(((10 0) (12 30)) ((14 30) (16 30)))))
+  (ok (equal (%session-hms "XBKK" (make-date 2024 3 25))
+             '(((10 0) (12 30)) ((14 0) (16 30)))))
+  (ok (equal (%session-hms "XPHS" (make-date 2011 9 30)) '(((9 30) (12 0)))))
+  (ok (equal (%session-hms "XPHS" (make-date 2012 1 2))
+             '(((9 30) (12 0)) ((13 30) (15 30)))))
+  (ok (equal (%session-hms "XIDX" (make-date 2024 6 3))
+             '(((9 0) (12 0)) ((13 30) (15 50)))))
+  (ok (equal (%session-hms "XIDX" (make-date 2024 6 7))
+             '(((9 0) (11 30)) ((14 0) (15 50)))))) ; Friday
+
+(deftest sun-thu-markets
+  (ok (equal (%session-hms "XSAU" (make-date 2013 6 26)) '(((10 0) (15 0))))) ; Wed
+  (ok (null (%session-hms "XSAU" (make-date 2013 6 27)))) ; Thu old weekend
+  (ok (null (%session-hms "XSAU" (make-date 2013 6 29)))) ; transition
+  (ok (equal (%session-hms "XSAU" (make-date 2013 6 30)) '(((10 0) (15 0))))) ; Sun
+  (ok (null (%session-hms "XSAU" (make-date 2024 6 7))))  ; Friday
+  (ok (equal (%session-hms "XTAE" (make-date 2024 6 2)) '(((10 0) (17 15))))) ; Sun
+  (ok (null (%session-hms "XTAE" (make-date 2024 6 7))))) ; Fri
+
+(deftest commodity-overnight-sessions
+  (ok (eq (exchange-hours-kind (find-exchange "XCME")) :commodities))
+  (ok (equal (%session-hms "XCME" (make-date 2024 6 3))
+             '(((17 0) (16 0)))))
+  (ok (null (%session-hms "XCME" (make-date 2024 6 1)))) ; Saturday
+  (ok (= (duration-seconds (exchange-session-duration "XCME" (make-date 2024 6 3)))
+         82800)) ; 17:00 Sun–16:00 Mon = 23h
+  (multiple-value-bind (open close)
+      (exchange-session-bounds "XCME" (make-date 2024 6 3))
+    (let* ((zone (resolve-zone-id "America/Chicago"))
+           (open-z (instant-in-zone open zone))
+           (close-z (instant-in-zone close zone)))
+      (ok (= (zoned-moment-date open-z) (make-date 2024 6 2)))
+      (ok (= (zoned-moment-date close-z) (make-date 2024 6 3)))
+      (ok (exchange-open-p "XCME" open))
+      (ng (exchange-open-p "XCME" close))))
+  (ok (equal (%session-hms "IFEU" (make-date 2024 6 3)) '(((1 0) (23 0)))))
+  (ok (equal (%session-hms "XLME" (make-date 2024 6 3)) '(((1 0) (19 0)))))
+  (ok (equal (%session-hms "XIMC" (make-date 2024 6 3)) '(((9 0) (23 30)))))
+  (let ((shfe (find-exchange "XSGE"))
+        (d (make-date 2024 6 3)))
+    (ok (exchange-session-spec-overnight
+         (first (exchange-sessions-for-date shfe d))))
+    (ok (= (duration-seconds (exchange-session-duration "XSGE" d))
+           (+ (* 4 3600)   ; 21:00–01:00
+              (* 75 60)    ; 09:00–10:15
+              3600         ; 10:30–11:30
+              (* 90 60)))))) ; 13:30–15:00 = 4h + 1.25h + 1h + 1.5h = 7.75h = 27900s

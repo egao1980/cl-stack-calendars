@@ -114,18 +114,22 @@
    #:exchange-hours-name
    #:exchange-hours-zone
    #:exchange-hours-calendar-name
+   #:exchange-hours-kind
    #:exchange-hours-eras
    #:exchange-era
    #:exchange-era-p
    #:exchange-era-from
    #:exchange-era-to
    #:exchange-era-sessions
+   #:exchange-era-friday
    #:exchange-era-saturday
    #:exchange-era-authority
    #:exchange-session-spec
    #:exchange-session-spec-p
    #:exchange-session-spec-open
    #:exchange-session-spec-close
+   #:exchange-session-spec-overnight
+   #:exchange-session-spec-labeled-by
    #:load-all-exchange-hours
    #:find-exchange
    #:list-exchanges

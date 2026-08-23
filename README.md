@@ -47,7 +47,7 @@ Jewish/Muslim **activity bans until sunset / from fajr** need lat/lon — use `d
   (session-duration session (make-date 2024 3 10))) ; DST: open/close resolved independently
 
 ;; Versioned major-exchange cash hours (data/exchanges/<MIC>.sexp)
-(list-exchanges)                                    ; XNYS XNAS XLON XTKS …
+(list-exchanges)                                    ; XNYS XLON XAMS XTAI XCME …
 (exchange-sessions-for-date (find-exchange "XNYS")
                             (make-date 1985 9 27))  ; 10:00–16:00 era
 (exchange-session-bounds "XTKS" (make-date 2024 11 5)) ; afternoon to 15:30

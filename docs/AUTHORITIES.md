@@ -146,6 +146,21 @@ Hours are exchange notices, not statutes. Full source table:
 | BVMF | 10:00–17:00 | B3 cash |
 | XKRX | 09:00–15:30 | KRX 2016-08-01 |
 | XSES | 09:00–12:00 / 13:00–17:00 | lunch restored 2017-11-13 |
+| XAMS XBRU XLIS XMIL XMAD | 09:00–17:30 | Euronext / BME cash |
+| XDUB | 08:00–16:30 | Euronext Dublin local |
+| XSWX | 09:00–17:30 | SIX shares |
+| XSTO / XCSE / XHEL | 09:00–17:30 / 09:00–17:00 / 10:00–18:30 | Nasdaq Nordic |
+| XOSL / XWAR | 09:00–16:20 / 09:00–16:50 | Oslo / GPW |
+| XTAI | 09:00–13:30 | TWSE 2001-01-02 |
+| XBKK | 10:00–12:30 / 14:00–16:30 | SET 2024-03-25 |
+| XIDX | 09:00–12:00 / 13:30–15:50 | 2013-01-02; Friday shorter |
+| XPHS | 09:30–12:00 / 13:30–15:30 | PSE 2012-01-02 |
+| XSAU | 10:00–15:00 Sun–Thu | weekend flip 2013-06-29 |
+| XCME / XNYM / XCEC | 17:00–16:00 CT overnight | CME Globex |
+| IFEU | 01:00–23:00 London | ICE Brent |
+| XLME | 01:00–19:00 | LMEselect |
+| XSGE | night 21:00–01:00 + day breaks | SHFE metals |
+| XIMC | 09:00–23:30 | MCX non-agri |
 
 `(find-exchange "XNYS")`, `(exchange-sessions-for-date ex date)`,
 `(exchange-session-bounds "XTKS" date)`, `(exchange-open-p "XHKG" instant)`.
