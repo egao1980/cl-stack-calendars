@@ -46,6 +46,7 @@
                (:file "russian-calendar-test")
                (:file "normative-calendar-test")
                (:file "country-calendar-test")
+               (:file "holiday-suite-test")
                (:file "trading-session-test")
                (:file "exchange-hours-test"))
   :perform (test-op (o c)
