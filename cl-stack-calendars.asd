@@ -48,6 +48,7 @@
                (:file "country-calendar-test")
                (:file "holiday-suite-test")
                (:file "external-gold-test")
+               (:file "calc-gold-test")
                (:file "trading-session-test")
                (:file "exchange-hours-test"))
   :perform (test-op (o c)

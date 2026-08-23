@@ -16,12 +16,22 @@
   (islamic-date-in-gregorian-year g-year 7 27))
 
 (defun hebrew-holiday-in-gregorian-year (g-year month day)
-  "Hebrew MONTH/DAY occurring in Gregorian G-YEAR, or NIL."
+  "Hebrew MONTH/DAY (Tishrei=1 numbering) occurring in Gregorian G-YEAR, or NIL."
   (let* ((start (fixed-from-date +gregorian+ g-year 1 1))
          (end (fixed-from-date +gregorian+ g-year 12 31))
          (hy (multiple-value-bind (y) (hebrew-date-from-fixed start) y)))
     (loop for y from (1- hy) to (+ hy 1)
           for rd = (fixed-from-hebrew-date y month day)
+          when (<= start rd end)
+            return (date-from-rd rd))))
+
+(defun hebrew-from-nisan-in-gregorian-year (g-year month-offset day)
+  "Nisan-relative holiday in Gregorian G-YEAR. MONTH-OFFSET 0=Nisan, 1=Iyar, 2=Sivan."
+  (let* ((start (fixed-from-date +gregorian+ g-year 1 1))
+         (end (fixed-from-date +gregorian+ g-year 12 31))
+         (hy (multiple-value-bind (y) (hebrew-date-from-fixed start) y)))
+    (loop for y from (1- hy) to (+ hy 1)
+          for rd = (fixed-from-hebrew-date y (+ (hebrew-nisan-month y) month-offset) day)
           when (<= start rd end)
             return (date-from-rd rd))))
 
@@ -700,30 +710,16 @@
    (lambda (y) (hebrew-holiday-in-gregorian-year y 1 22)) :from 1948
    :authority "שמחת תורה — 22 Tishrei")
   (:computed "Passover"
-   (lambda (y)
-     (let* ((start (fixed-from-date +gregorian+ y 1 1))
-            (end (fixed-from-date +gregorian+ y 12 31))
-            (hy (multiple-value-bind (h) (hebrew-date-from-fixed start) h)))
-       (loop for h from (1- hy) to (+ hy 1)
-             for rd = (fixed-from-hebrew-date h (hebrew-nisan-month h) 15)
-             when (<= start rd end)
-               return (date-from-rd rd))))
+   (lambda (y) (hebrew-from-nisan-in-gregorian-year y 0 15))
    :from 1948 :authority "פסח — 15 Nisan")
   (:computed "Passover Day 7"
-   (lambda (y)
-     (let* ((start (fixed-from-date +gregorian+ y 1 1))
-            (end (fixed-from-date +gregorian+ y 12 31))
-            (hy (multiple-value-bind (h) (hebrew-date-from-fixed start) h)))
-       (loop for h from (1- hy) to (+ hy 1)
-             for rd = (fixed-from-hebrew-date h (hebrew-nisan-month h) 21)
-             when (<= start rd end)
-               return (date-from-rd rd))))
+   (lambda (y) (hebrew-from-nisan-in-gregorian-year y 0 21))
    :from 1948 :authority "פסח — 21 Nisan")
   (:computed "Shavuot"
-   (lambda (y) (hebrew-holiday-in-gregorian-year y 3 6)) :from 1948
+   (lambda (y) (hebrew-from-nisan-in-gregorian-year y 2 6)) :from 1948
    :authority "שבועות — 6 Sivan")
   (:computed "Independence Day"
-   (lambda (y) (hebrew-holiday-in-gregorian-year y 2 5)) :from 1948
+   (lambda (y) (hebrew-from-nisan-in-gregorian-year y 1 5)) :from 1948
    :authority "יום העצמאות — 5 Iyar (Shabbat deferral not modeled)"))
 
 ;;; --- accessors ------------------------------------------------------------
