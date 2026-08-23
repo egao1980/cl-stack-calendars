@@ -38,18 +38,6 @@
 (defparameter *workspace-root*
   (uiop:pathname-parent-directory-pathname *repo-root*))
 
-(defun %ensure-ca-file ()
-  "cl-stack-ssl overlay OpenSSL has no system trust store unless staged.
-   Use SSL_CERT_FILE when already set; else pick a common CA bundle."
-  (unless (or (uiop:getenv "SSL_CERT_FILE") (uiop:getenv "SSL_CERT_DIR"))
-    (dolist (path '("/etc/ssl/cert.pem"
-                    "/etc/ssl/certs/ca-certificates.crt"
-                    "/opt/homebrew/etc/openssl@3/cert.pem"
-                    "/usr/local/etc/openssl@3/cert.pem"))
-      (when (probe-file path)
-        (setf (uiop:getenv "SSL_CERT_FILE") (uiop:native-namestring path))
-        (return)))))
-
 (defun %ql-setup ()
   (unless (find-package :ql)
     (let ((setup (merge-pathnames "quicklisp/setup.lisp" (user-homedir-pathname))))
@@ -62,24 +50,21 @@
                  :test #'equal)))))
 
 (defun %load-http-stack ()
-  "Workspace Quicklisp local-projects, or cl-repo ASDF registry from install-external-gold."
+  "cl-stack-ssl load installs the OS trust store (no SSL_CERT_* probing here)."
   (%ql-setup)
-  (when (asdf:find-system "cl-repository-client" nil)
-    (call-with-ci-muffles (lambda () (asdf:load-system "cl-repository-client")))
-    (let ((cfg (find-symbol "CONFIGURE-ASDF-SOURCE-REGISTRY"
-                           :cl-repository-client/asdf-integration))
-          (init (find-symbol "LOAD-SYSTEM-INIT-FILES"
-                            :cl-repository-client/asdf-integration)))
-      (when (and cfg (fboundp cfg)) (funcall cfg))
-      (when (and init (fboundp init)) (funcall init))))
   (call-with-ci-muffles
    (lambda ()
-     (asdf:load-system "cl-stack-ssl")
-     (asdf:load-system "event-backend-libuv")
-     (asdf:load-system "http-backend-async")
-     (asdf:load-system "cl-stack-http"))))
+     (if (find-package :ql)
+         (funcall (find-symbol "QUICKLOAD" :ql)
+                  '("cl-stack-ssl" "event-backend-libuv"
+                    "http-backend-async" "cl-stack-http")
+                  :silent t)
+         (progn
+           (asdf:load-system "cl-stack-ssl")
+           (asdf:load-system "event-backend-libuv")
+           (asdf:load-system "http-backend-async")
+           (asdf:load-system "cl-stack-http"))))))
 
-(%ensure-ca-file)
 (%load-http-stack)
 
 (setf http-backend-async:*event-backend-maker*
