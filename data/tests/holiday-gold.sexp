@@ -184,10 +184,13 @@
 
  ;; --- China statutory + 调休 ---
  ("CN" 2026 1 1 t "元旦")
+ ("CN" 2026 2 16 t "除夕")
+ ("CN" 2026 2 17 t "春节")
  ("CN" 2026 10 1 t "国庆")
+ ;; year-bound 调休 overlays statutory names on the festival window
  (("CN" 2026) 2026 2 15 t nil)
- (("CN" 2026) 2026 2 16 t "除夕")
- (("CN" 2026) 2026 2 17 t "春节")
+ (("CN" 2026) 2026 2 16 t nil)
+ (("CN" 2026) 2026 2 17 t nil)
  (("CN" 2026) 2026 10 1 t nil)
  (("CN" 2026) 2026 10 7 t nil)
  (("CN" 2008) 2008 4 4 t nil)

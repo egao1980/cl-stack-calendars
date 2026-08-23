@@ -15,17 +15,6 @@
 
 (defparameter *holiday-gold-rows* (load-holiday-gold))
 
-(defun holiday-gold-ids (rows)
-  (mapcar (lambda (row)
-            (destructuring-bind (spec y m d holidayp &optional name) row
-              (declare (ignore holidayp name))
-              (format nil "~a-~4,'0d-~2,'0d-~2,'0d"
-                      (if (consp spec)
-                          (format nil "~a~a" (first spec) (second spec))
-                          spec)
-                      y m d)))
-          rows))
-
 (defun suite-year-calendar (code year)
   (cond
     ((string-equal code "CN") (china-holidays-calendar :year year))
@@ -166,35 +155,36 @@
     "DE" "FR" "IT" "ES" "NL" "BE" "AT" "PL" "SE" "BR" "MX" "CA" "AU"
     "KR" "HK" "TW" "ID" "SG" "CH" "IL" "TR" "ZA" "US-CA" "DE-BY" "ES-CT"))
 
-(defparameter *exchange-calendars-without-starter* '("IS"))
+(defparameter *exchange-calendars-without-starter* '()
+  "MICs whose :calendar code has no starter. Empty now that IS is inferred.")
 
 ;;; --- gold table -------------------------------------------------------
 
-(deftest-parametrize holiday-gold
-    ((spec y m d holidayp name)
-     :ids (holiday-gold-ids *holiday-gold-rows*)
-     :rows *holiday-gold-rows*)
-  (let* ((cal (suite-resolve-calendar spec))
-         (date (suite-ymd y m d)))
-    (ok cal (format nil "resolve ~s" spec))
-    (multiple-value-bind (hp holiday-name) (holiday-p cal date)
-      (if holidayp
-          (ok hp (format nil "~s ~a is a holiday" spec (suite-date-iso date)))
-          (ng hp (format nil "~s ~a is not a holiday" spec (suite-date-iso date))))
-      (when (and holidayp name)
-        (ok (name-has-substring-p holiday-name name)
-            (format nil "~s ~a name ~s contains ~s" spec (suite-date-iso date)
-                    holiday-name name)))
-      (when hp
-        (ng (business-day-p cal date)
-            (format nil "~s ~a holiday ⇒ ¬business-day" spec (suite-date-iso date)))
-        (ok (or (null holiday-name) (stringp holiday-name))
-            (format nil "~s holiday name string or nil" spec)))
-      (unless hp
-        (ok (eq (and (not (weekend-day-p cal date)) t)
-                (and (business-day-p cal date) t))
-            (format nil "~s ~a non-holiday business ≡ ¬weekend"
-                    spec (suite-date-iso date)))))))
+(deftest holiday-gold
+  (ok (>= (length *holiday-gold-rows*) 80) "gold table is populated")
+  (dolist (row *holiday-gold-rows*)
+    (destructuring-bind (spec y m d holidayp &optional name) row
+      (let* ((cal (suite-resolve-calendar spec))
+             (date (suite-ymd y m d)))
+        (ok cal (format nil "resolve ~s" spec))
+        (multiple-value-bind (hp holiday-name) (holiday-p cal date)
+          (if holidayp
+              (ok hp (format nil "~s ~a is a holiday" spec (suite-date-iso date)))
+              (ng hp (format nil "~s ~a is not a holiday" spec (suite-date-iso date))))
+          (when (and holidayp name)
+            (ok (name-has-substring-p holiday-name name)
+                (format nil "~s ~a name ~s contains ~s" spec (suite-date-iso date)
+                        holiday-name name)))
+          (when hp
+            (ng (business-day-p cal date)
+                (format nil "~s ~a holiday ⇒ ¬business-day" spec (suite-date-iso date)))
+            (ok (or (null holiday-name) (stringp holiday-name))
+                (format nil "~s holiday name string or nil" spec)))
+          (unless hp
+            (ok (eq (and (not (weekend-day-p cal date)) t)
+                    (and (business-day-p cal date) t))
+                (format nil "~s ~a non-holiday business ≡ ¬weekend"
+                        spec (suite-date-iso date)))))))))
 
 ;;; --- every registered calendar loads ----------------------------------
 
@@ -392,9 +382,11 @@
           (format nil "~a calendar-name type" mic))
       (when cname
         (let ((cal (find-calendar cname :errorp nil)))
-          (if (member cname *exchange-calendars-without-starter* :test #'string=)
-              (ok (null cal) (format nil "~a uses documented missing ~s" mic cname))
-              (ok cal (format nil "~a calendar ~s registered" mic cname))))))))
+          (cond
+            ((member cname *exchange-calendars-without-starter* :test #'string=)
+             (ok (null cal) (format nil "~a uses documented missing ~s" mic cname)))
+            (t
+             (ok cal (format nil "~a calendar ~s registered" mic cname)))))))))
 
 (deftest exchange-holiday-closes-cash-session
   "Civil holiday overlay is on EXCHANGE-SESSION-BOUNDS, not the raw week mask."
