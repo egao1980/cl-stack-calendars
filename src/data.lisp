@@ -59,10 +59,16 @@
       (setf *data-root* (resolve-data-root (default-data-root)))))
 
 (defun data-path (&rest parts)
-  "Join PARTS onto DATA-ROOT (works for directories and zip://)."
-  (if parts
-      (apply #'sp:join (data-root) parts)
-      (data-root)))
+  "Join PARTS onto DATA-ROOT (works for directories and zip://).
+   A final component ending in `/` is a directory."
+  (if (null parts)
+      (data-root)
+      (let* ((p (apply #'sp:join (data-root) parts))
+             (last (car (last parts))))
+        (if (and (stringp last) (plusp (length last))
+                 (char= (char last (1- (length last))) #\/))
+            (sp:ensure-directory p)
+            p))))
 
 (defun ensure-data-path (designator)
   "Coerce a user path / URI / pathlib path to a PATH."
@@ -99,8 +105,9 @@
   "Drop every cache that was loaded from *DATA-ROOT*."
   (when (fboundp 'clear-country-calendar-cache)
     (clear-country-calendar-cache))
-  (when (boundp '*exchange-hours-cache*)
-    (clrhash *exchange-hours-cache*))
+  (let ((cache (find-symbol "*EXCHANGE-HOURS-CACHE*" :cl-stack-calendars)))
+    (when (and cache (boundp cache) (hash-table-p (symbol-value cache)))
+      (clrhash (symbol-value cache))))
   (dolist (sym '(*formation-years* *population-order*
                  *gb-proclamations* *ru-transfer-decrees*
                  *cn-transfer-notices* *in-dopt-holidays*

@@ -102,7 +102,8 @@
            (format nil "~a.sexp" (string-upcase mic))))
 
 (defun list-exchange-hours-files ()
-  (sp:glob (exchanges-data-directory) "*.sexp"))
+  (remove-if-not (lambda (p) (string-equal (sp:extension p) "sexp"))
+                 (sp:iterdir (exchanges-data-directory))))
 
 (defun load-all-exchange-hours (&optional (force nil))
   "Load every data/exchanges/*.sexp into *EXCHANGE-HOURS-CACHE*."
