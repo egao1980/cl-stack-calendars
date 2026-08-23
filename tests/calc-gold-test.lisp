@@ -87,9 +87,7 @@
     (ok (zerop bad) (format nil "HK Easter mismatches: ~d" bad))))
 
 (deftest calc-gold-hebrew-israel
-  "pyluach RH / YK / Sukkot / Passover vs IL (from 1948).
-Shavuot (6 Sivan) needs datetime-protocol's regular-year Iyar–Elul lengths
-(PR egao1980/datetime-protocol#3) — OCI 0.1.0 still uses the leap table."
+  "pyluach RH / YK / Sukkot / Passover / Shavuot vs IL (from 1948)."
   (let ((rows (getf (calc-block "pyluach" :hebrew-holiday) :rows))
         (il (israel-holidays-calendar))
         (bad 0))
@@ -97,7 +95,7 @@ Shavuot (6 Sivan) needs datetime-protocol's regular-year Iyar–Elul lengths
       (destructuring-bind (hy name y m d) row
         (declare (ignore hy))
         (when (and (<= 1948 y 2050)
-                   (member name '(:rosh-hashanah :yom-kippur :sukkot :passover)))
+                   (member name '(:rosh-hashanah :yom-kippur :sukkot :passover :shavuot)))
           (unless (%date-on-cal-p il y m d)
             (incf bad)
             (when (<= bad 8)
