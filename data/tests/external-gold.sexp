@@ -1,5 +1,5 @@
-;; External holiday gold — regenerate: uv run scripts/fetch-external-gold.py
-;; Official lists beat vacanza; vacanza is independent of date-holidays.
+;; External holiday gold — regenerate: ros -l scripts/fetch-external-gold.lisp -q
+;; Official lists beat vacanza; vacanza blocks are a frozen dump (no CL client).
 (
  :generated "2026-08-23"
  :sources (

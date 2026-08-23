@@ -1,6 +1,13 @@
 # External holiday gold
 
-Pinned snapshot: `external-gold.sexp`. Refresh: `uv run scripts/fetch-external-gold.py`.
+Pinned snapshot: `external-gold.sexp`. Refresh official blocks:
+
+```
+ros -l scripts/install-external-gold.lisp -q   # once — cl-stack-http stack
+ros -l scripts/fetch-external-gold.lisp -q
+```
+
+vacanza/holidays has no CL client; those blocks stay as a frozen dump in the sexp.
 
 | Source | Kind | What we compare |
 |--------|------|-----------------|
