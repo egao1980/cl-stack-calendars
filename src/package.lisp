@@ -107,6 +107,37 @@
    #:next-session-open
    #:session-duration
 
+   ;; major-exchange hours (data/exchanges/<MIC>.sexp)
+   #:exchange-hours
+   #:exchange-hours-p
+   #:exchange-hours-mic
+   #:exchange-hours-name
+   #:exchange-hours-zone
+   #:exchange-hours-calendar-name
+   #:exchange-hours-eras
+   #:exchange-era
+   #:exchange-era-p
+   #:exchange-era-from
+   #:exchange-era-to
+   #:exchange-era-sessions
+   #:exchange-era-saturday
+   #:exchange-era-authority
+   #:exchange-session-spec
+   #:exchange-session-spec-p
+   #:exchange-session-spec-open
+   #:exchange-session-spec-close
+   #:load-all-exchange-hours
+   #:find-exchange
+   #:list-exchanges
+   #:exchange-era-for-date
+   #:exchange-sessions-for-date
+   #:exchange-early-close
+   #:exchange-trading-day-p
+   #:make-exchange-session
+   #:exchange-session-bounds
+   #:exchange-open-p
+   #:exchange-session-duration
+
    ;; named registry
    #:register-calendar
    #:find-calendar

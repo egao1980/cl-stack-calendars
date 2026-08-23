@@ -1,5 +1,5 @@
 (defsystem "cl-stack-calendars"
-  :version "0.1.0"
+  :version "0.2.0"
   :description "Holiday and trading calendars for cl-stack (business days, sessions, versioned as-of)"
   :author "egao1980"
   :license "MIT"
@@ -33,7 +33,8 @@
                (:file "country-calendar")
                (:file "corpus-inference")
                (:file "starter-territories")
-               (:file "starter-subnational"))
+               (:file "starter-subnational")
+               (:file "exchange-hours"))
   :in-order-to ((test-op (test-op "cl-stack-calendars/tests"))))
 
 (defsystem "cl-stack-calendars/tests"
@@ -45,7 +46,8 @@
                (:file "russian-calendar-test")
                (:file "normative-calendar-test")
                (:file "country-calendar-test")
-               (:file "trading-session-test"))
+               (:file "trading-session-test")
+               (:file "exchange-hours-test"))
   :perform (test-op (o c)
              (unless (symbol-call :rove :run c)
                (error "tests failed for ~A" (component-name c)))))

@@ -125,3 +125,28 @@ ID cuti bersama / KR 임시공휴일 / GB special proclamations attach the same 
 
 - `:bridge :adjacent` (Tue→Mon / Thu→Fri “puente”) — only when a rule’s `:authority` cites a bridge statute or binding instrument.
 - Mechanical primitives (`:nearest-weekday`, `:next-weekday`, `:substitute-next`, …) — implementation atoms; starters must use statute-named policies + `:authority`.
+
+## Exchange cash-session hours
+
+Major-exchange RTH live in `data/exchanges/<MIC>.sexp` (eras + early-close rules).
+Hours are exchange notices, not statutes. Full source table:
+[`data/exchanges/ATTRIBUTION.md`](../data/exchanges/ATTRIBUTION.md).
+
+| MIC | Current RTH | Last hour-change |
+|-----|-------------|------------------|
+| XNYS / XNAS | 09:30–16:00 ET | 1985-09-30 open 09:30 (NYSE timeline) |
+| XLON | 08:00–16:30 | SETS 1997-10-20 |
+| XTKS | 09:00–11:30 / 12:30–15:30 | JPX arrowhead 4.0 2024-11-05 |
+| XHKG | 09:30–12:00 / 13:00–16:00 | HKEX phase 2 2012-03-05 |
+| XSHG / XSHE | 09:30–11:30 / 13:00–15:00 | 1990/1991 |
+| XETR / XPAR | 09:00–17:30 | Xetra 1997 / NSC 1990s |
+| XASX | 10:00–16:00 | SEATS 1987-10-19 |
+| XTSE | 09:30–16:00 | NYSE-aligned |
+| XNSE | 09:15–15:30 | SEBI pre-open 2010-10-18 |
+| BVMF | 10:00–17:00 | B3 cash |
+| XKRX | 09:00–15:30 | KRX 2016-08-01 |
+| XSES | 09:00–12:00 / 13:00–17:00 | lunch restored 2017-11-13 |
+
+`(find-exchange "XNYS")`, `(exchange-sessions-for-date ex date)`,
+`(exchange-session-bounds "XTKS" date)`, `(exchange-open-p "XHKG" instant)`.
+Reload after editing sexp: `(load-all-exchange-hours t)`.
