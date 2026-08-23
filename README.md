@@ -63,9 +63,10 @@ Holiday verification: `data/tests/holiday-gold.sexp` + `tests/holiday-suite-test
 ~300 `.sexp` files live under `data/`. Point the tree at another directory, a zip of that tree, or a `zip://` URI — the usual client-app ship format is one `data.zip` next to the executable.
 
 ```lisp
-(set-data-root "/opt/app/data/")              ; unpacked
-(set-data-root "/opt/app/data.zip")           ; → zip:///opt/app/data.zip!/
-(set-data-root "zip:///opt/app/data.zip!/")   ; explicit
+(set-data-root "/opt/app/data/")                 ; unpacked
+(set-data-root "/opt/app/data.zip")              ; → zip:///opt/app/data.zip!/
+(set-data-root "zip:///opt/app/data.zip!/")      ; explicit
+(set-data-root "zip:///C:/app/data.zip!/")       ; Windows — keep the drive
 (write-data-zip "/opt/app/data.zip")          ; pack the current tree
 ```
 

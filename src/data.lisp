@@ -22,8 +22,8 @@
 
 (defun %designator-string (designator)
   (etypecase designator
-    (sp:path (sp:as-posix designator))
-    (pathname (or (uiop:unix-namestring designator) (namestring designator)))
+    (sp:path (namestring (sp:path-pathname designator)))
+    (pathname (namestring designator))
     (string designator)))
 
 (defun resolve-data-root (designator)
@@ -33,19 +33,26 @@
       (if (sp:directory-pathname-p designator)
           designator
           (if (and (not (sp:zip-filesystem-p (sp:path-filesystem designator)))
-                   (%zip-file-p (sp:as-posix designator)))
-              (sp:zip-path (sp:as-posix designator) "/")
+                   (%zip-file-p (or (ignore-errors
+                                      (namestring (sp:path-pathname designator)))
+                                    (sp:as-posix designator))))
+              (sp:zip-path (sp:path-pathname designator) "/")
               designator))))
-  (let ((s (%designator-string designator)))
-    (cond
-      ((sp:uri-scheme s)
-       (sp:ensure-path s))
-      ((%zip-file-p s)
-       (let ((abs (uiop:unix-namestring
-                   (uiop:ensure-absolute-pathname s (uiop:getcwd)))))
-         (sp:zip-path abs "/")))
-      (t
-       (sp:ensure-path s :directory t)))))
+  (cond
+    ((and (stringp designator) (sp:uri-scheme designator))
+     (sp:ensure-path designator))
+    ((%zip-file-p (%designator-string designator))
+     (sp:zip-path
+      (uiop:ensure-absolute-pathname
+       (if (pathnamep designator)
+           designator
+           (uiop:parse-native-namestring (string designator)))
+       (uiop:getcwd))
+      "/"))
+    (t
+     (sp:ensure-path
+      (if (pathnamep designator) designator (%designator-string designator))
+      :directory t))))
 
 (defun default-data-root ()
   "Env CL_STACK_CALENDARS_DATA, else the system's data/ directory."
@@ -78,9 +85,7 @@
      (sp:ensure-path designator))
     (t (sp:ensure-path
         (if (pathnamep designator)
-            (or (uiop:unix-namestring
-                 (uiop:ensure-absolute-pathname designator (uiop:getcwd)))
-                (namestring designator))
+            (uiop:ensure-absolute-pathname designator (uiop:getcwd))
             (string designator))))))
 
 (defun read-data-form (designator)
