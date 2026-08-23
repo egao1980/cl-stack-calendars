@@ -1,6 +1,6 @@
 # cl-stack-calendars
 
-Holiday and trading calendars for [cl-stack](https://github.com/egao1980/cl-stack): business-day arithmetic, rule/data/composite calendars, versioned as-of snapshots, and trading sessions with history-aware zone boundaries.
+Holiday and trading calendars for [cl-stack](https://github.com/egao1980/cl-stack): business-day arithmetic, rule/data/composite calendars, versioned as-of snapshots, trading sessions with history-aware zone boundaries, and versioned major-exchange cash hours (`data/exchanges/`).
 
 Depends on [`datetime-protocol`](https://github.com/egao1980/datetime-protocol) (+ `/calendars`). Trading-session tests need [`cl-stack-tzdata`](https://github.com/egao1980/cl-stack-tzdata).
 
@@ -45,6 +45,13 @@ Jewish/Muslim **activity bans until sunset / from fajr** need lat/lon — use `d
                 :calendar (us-federal-holidays-calendar))))
   (session-bounds session (make-date 2024 6 3))
   (session-duration session (make-date 2024 3 10))) ; DST: open/close resolved independently
+
+;; Versioned major-exchange cash hours (data/exchanges/<MIC>.sexp)
+(list-exchanges)                                    ; XNYS XLON XAMS XTAI XCME …
+(exchange-sessions-for-date (find-exchange "XNYS")
+                            (make-date 1985 9 27))  ; 10:00–16:00 era
+(exchange-session-bounds "XTKS" (make-date 2024 11 5)) ; afternoon to 15:30
+(exchange-open-p "XHKG" instant)                    ; lunch excluded
 ```
 
 Starter calendars: `weekend-only-calendar`, `target-calendar`, `us-federal-holidays-calendar`, `uk-bank-holidays-calendar`, `russian-holidays-calendar`, `ussr-holidays-calendar`, `japan-holidays-calendar`, `china-holidays-calendar`, `india-holidays-calendar`, **EU-27** national starters (`germany-…` … `malta-…`), plus `(country-calendar "XX")` for the world corpus (`data/countries/`, CC BY-SA 3.0 via date-holidays).
