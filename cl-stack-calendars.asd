@@ -4,6 +4,7 @@
   :author "egao1980"
   :license "MIT"
   :depends-on ("datetime-protocol" "datetime-protocol/calendars" "cl-stack-pathlib")
+  :properties (:cl-repo (:ci (:sources (("rove" :ql)))))
   :serial t
   :pathname "src"
   :components ((:file "package")
