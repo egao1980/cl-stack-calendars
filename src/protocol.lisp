@@ -175,3 +175,14 @@ not versioned just return themselves regardless of the arguments."))
 (defmethod calendar-as-of ((calendar holiday-calendar) &key version as-of)
   (declare (ignore version as-of))
   calendar)
+
+;;; --- EVENT-SCHEDULE (datetime-protocol extension) -------------------------
+
+(defmethod event-schedule ((calendar holiday-calendar) (event (eql :holiday)) &key)
+  (predicate-schedule (lambda (date) (holiday-p calendar date))))
+
+(defmethod event-schedule ((calendar holiday-calendar) (event (eql :business-day)) &key)
+  (predicate-schedule (lambda (date) (business-day-p calendar date))))
+
+(defmethod event-schedule ((calendar holiday-calendar) (event (eql :weekend)) &key)
+  (predicate-schedule (lambda (date) (weekend-day-p calendar date))))
