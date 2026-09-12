@@ -123,6 +123,20 @@
     (ok (= (adjust-date cal (make-date 2024 1 6) :preceding)
            (make-date 2024 1 5)))))
 
+(deftest event-schedule-holiday-weekend
+  (let* ((cal (us-federal-holidays-calendar))
+         (hol (event-schedule cal :holiday))
+         (wkd (event-schedule cal :weekend))
+         (biz (event-schedule cal :business-day))
+         (memorial (make-date 2024 5 27)))
+    (ok (occurrence-p hol memorial))
+    (ng (occurrence-p biz memorial))
+    (ok (occurrence-p wkd (make-date 2024 5 25))) ; Saturday
+    (ok (value= memorial
+                (next-occurrence hol (make-date 2024 5 1) :inclusive t)))
+    (ok (value= (make-date 2024 5 28)
+                (next-occurrence biz memorial :inclusive t)))))
+
 (deftest versioned-as-of
   (let* ((v (make-versioned-calendar :name "X"))
          (old (make-data-calendar :name "old"))

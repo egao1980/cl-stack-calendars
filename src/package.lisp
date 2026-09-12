@@ -21,6 +21,7 @@
    #:business-day-p
    #:holiday-p
    #:holidays-between
+   #:event-schedule
    #:next-business-day
    #:previous-business-day
    #:add-business-days

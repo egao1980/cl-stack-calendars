@@ -19,7 +19,7 @@ Russian/USSR: `(russian-holidays-calendar :year 2026)` = ТК eras + decree tran
 
 Normative starters (prefer over `country-calendar` corpus): `japan-holidays-calendar` (祝日法 + Tokyo equinoxes), `(china-holidays-calendar :year 2026)` (放假办法 + Beijing lunar + 调休), `india-holidays-calendar`, `germany-holidays-calendar` / `france-holidays-calendar` / `italy-holidays-calendar` / `spain-holidays-calendar` / `netherlands-holidays-calendar` / `belgium-holidays-calendar` / `austria-holidays-calendar` / `poland-holidays-calendar` / `sweden-holidays-calendar`, plus `target-calendar` (ECB). See [`docs/AUTHORITIES.md`](docs/AUTHORITIES.md).
 
-Jewish/Muslim **activity bans until sunset / from fajr** need lat/lon — use `datetime-protocol` `jewish-melacha-forbidden-p`, `islamic-fasting-p` with `+jerusalem+` / `+mecca+` (not civil midnight holiday calendars).
+`(event-schedule cal :holiday)` / `:business-day` / `:weekend` — same `datetime-protocol` schedule protocol as sunrise/Easter. Ritual **activity bans until sunset / from fajr** still need lat/lon (`jewish-melacha-forbidden-p`, `islamic-fasting-p` on `+jerusalem+` / `+mecca+`), not civil-midnight holiday tables.
 
 `:bridge :adjacent` and China-style rearrangements without a cited decree are not silent defaults.
 
