@@ -18,3 +18,5 @@ vacanza/holidays has no CL client; those blocks stay as a frozen dump in the sex
 `data/countries/` is date-holidays — **not** used as an external check.
 
 Computed festival dates (HKO / Easter / Hebrew / tabular Eid) live in `calc-gold.sexp` — see that file's header. Refresh: `uv run scripts/generate_calc_gold.py`.
+
+NYSE sessions and early closes live in `xnys-gold.sexp` (Python [exchange_calendars](https://github.com/gerrymanoim/exchange_calendars) XNYS, Apache-2.0; dates and close times only). Range 1970–2030: before 1970 exchange_calendars has no regular holidays (pandas holiday rules start in 1970). Refresh: `uv run --no-project --with exchange_calendars python -I scripts/generate_xnys_gold.py`. Asserted by `tests/xnys-gold-test.lisp` for XNYS (1970–2030) and XNAS (1990–2030); no allowed differences.

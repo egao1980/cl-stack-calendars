@@ -1,9 +1,9 @@
-;;;; Nasdaq cash RTH. Tracks NYSE hours from the 1971 launch.
+;;;; Nasdaq cash RTH. Tracks NYSE hours from the 1971 launch; holidays follow the "NYSE" calendar.
 (
  :mic "XNAS"
  :name "Nasdaq"
  :zone "America/New_York"
- :calendar "USFED"
+ :calendar "NYSE"
  :source "Nasdaq/NYSE aligned cash RTH; Nasdaq opened 1971-02-08"
  :eras (
    (:from (1971 2 8) :to (1974 9 30)
@@ -16,8 +16,8 @@
     :sessions ((:open (9 30) :close (16 0)))
     :authority "Open moved to 09:30 with NYSE (1985-09-30)"))
  :early-close-rules (
-   (:kind :black-friday :from (1971 2 8) :to (1992 12 31) :close (14 0)
-    :authority "US cash early close 14:00 through 1992")
+   (:kind :black-friday :from (1992 1 1) :to (1992 12 31) :close (14 0)
+    :authority "US cash early close 14:00 in 1992 (first day-after-Thanksgiving early close)")
    (:kind :black-friday :from (1993 1 1) :close (13 0)
     :authority "US cash early close 13:00 from 1993")
    (:kind :christmas-eve-weekday :from (1971 2 8) :to (1992 12 31) :close (14 0)
@@ -26,6 +26,8 @@
     :authority "Christmas Eve weekday 13:00 from 1993")
    (:kind :july-3-mon-tue-thu :from (1995 1 1) :close (13 0)
     :authority "Jul 3 Mon/Tue/Thu early close from 1995")
+   (:kind :july-3-wednesday :from (2013 1 1) :close (13 0)
+    :authority "NYSE Jul 3 early close also when Wednesday, from 2013 (2013-07-03, 2019-07-03, 2024-07-03 notices)")
    (:kind :july-5-friday :from (1995 1 1) :to (2012 12 31) :close (13 0)
     :authority "Friday-after-Independence-Day early close 1995–2012"))
  :early-closes (

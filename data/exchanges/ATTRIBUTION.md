@@ -13,12 +13,13 @@ Each era and early-close rule cites an `:authority` (exchange notice / official 
 
 - Pre-market / post-market / ToSTNeT / after-hours
 - Opening/closing *auctions* as separate segments (RTH spans first open → last continuous/close)
-- Exchange-only holidays that are not on the attached civil calendar
-  (NYSE Good Friday is the classic case: `USFED` stays open)
+- Exchange-only holidays for MICs whose `:calendar` is a civil one (CME family on
+  `USFED`; most non-US MICs on the national calendar). XNYS / XNAS use the
+  exchange's own `NYSE` calendar (src/starter-nyse.lisp, data/us/nyse-closures.sexp)
 - Late opens, circuit-breaker cuts, weather/disaster adhocs beyond the listed NYSE dates
 
-Civil calendars are a convenience overlay (`exchange-session-bounds` refuses
-non-business days). Hours themselves live in the sexp, not in the holiday rules.
+The holiday calendar closes the session for every exchange query
+(`exchange-trading-day-p`, `exchange-sessions-for-date`, `exchange-session-bounds`). Hours themselves live in the sexp, not in the holiday rules.
 
 ## Sources (dates + citations only)
 

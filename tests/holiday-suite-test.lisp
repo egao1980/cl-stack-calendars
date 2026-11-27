@@ -385,14 +385,22 @@
              (ok cal (format nil "~a calendar ~s registered" mic cname)))))))))
 
 (deftest exchange-holiday-closes-cash-session
-  "Civil holiday overlay is on EXCHANGE-SESSION-BOUNDS, not the raw week mask."
+  "The exchange holiday calendar closes the session for every exchange query
+(EXCHANGE-TRADING-DAY-P, EXCHANGE-SESSIONS-FOR-DATE, EXCHANGE-SESSION-BOUNDS)."
   (load-all-exchange-hours)
-  (ok (exchange-trading-day-p (find-exchange "XNYS") (make-date 2024 7 4))
-      "Jul 4 2024 is a Thursday — hours still have a session")
-  (ok (signals (exchange-session-bounds "XNYS" (make-date 2024 7 4)) 'calendar-error))
-  (ok (exchange-session-bounds "XNYS" (make-date 2024 7 5)))
-  (ok (signals (exchange-session-bounds "XETR" (make-date 2024 10 3)) 'calendar-error))
-  (ok (exchange-session-bounds "XETR" (make-date 2024 10 4))))
+  (dolist (case '(("XNYS" (2024 7 4) (2024 7 5))
+                  ("XETR" (2024 10 3) (2024 10 4))))
+    (destructuring-bind (mic holiday open) case
+      (let ((ex (find-exchange mic))
+            (h (apply #'make-date holiday))
+            (o (apply #'make-date open)))
+        (ng (exchange-trading-day-p ex h) (format nil "~a closed ~a" mic holiday))
+        (ok (null (exchange-sessions-for-date ex h)))
+        (ok (signals (exchange-session-bounds mic h) 'calendar-error))
+        (ng (exchange-open-p mic (exchange-session-bounds mic o) :date h))
+        (ok (exchange-trading-day-p ex o))
+        (ok (exchange-sessions-for-date ex o))
+        (ok (exchange-session-bounds mic o))))))
 
 ;;; --- authority on every starter rule ----------------------------------
 

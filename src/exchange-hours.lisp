@@ -133,12 +133,28 @@
   (and (or (null (exchange-era-from era)) (<= (exchange-era-from era) date))
        (or (null (exchange-era-to era)) (<= date (exchange-era-to era)))))
 
-(defun exchange-era-for-date (exchange date)
+(defun %era-gap-p (exchange date)
+  "True when DATE falls between two hours eras (eras are cut at the last
+trading day, so the weekend or holiday before a change is in no era)."
+  (let ((eras (exchange-hours-eras exchange)))
+    (and (some (lambda (era)
+                 (let ((to (exchange-era-to era)))
+                   (and to (< to date))))
+               eras)
+         (some (lambda (era)
+                 (let ((from (exchange-era-from era)))
+                   (and from (< date from))))
+               eras))))
+
+(defun exchange-era-for-date (exchange date &key (errorp t))
+  "The hours era covering DATE. Outside every era: signal CALENDAR-ERROR,
+or return NIL when ERRORP is NIL."
   (or (find-if (lambda (era) (%era-covers-p era date))
                (exchange-hours-eras exchange))
-      (error 'calendar-error
-             :message (format nil "~a has no hours era covering ~a"
-                              (exchange-hours-mic exchange) date))))
+      (when errorp
+        (error 'calendar-error
+               :message (format nil "~a has no hours era covering ~a"
+                                (exchange-hours-mic exchange) date)))))
 
 (defun %thanksgiving-date (year)
   "US Thanksgiving — fourth Thursday in November."
@@ -185,6 +201,10 @@
       (:july-3-mon-tue-thu
        (when (and (= (date-month date) 7) (= (date-day date) 3)
                   (member (date-day-of-week date) '(1 2 4)))
+         (exchange-early-close-rule-close rule)))
+      (:july-3-wednesday
+       (when (and (= (date-month date) 7) (= (date-day date) 3)
+                  (= (date-day-of-week date) 3))
          (exchange-early-close-rule-close rule)))
       (:july-5-friday
        (when (and (= (date-month date) 7) (= (date-day date) 5)
@@ -246,31 +266,48 @@ shortened when EARLY is before that close on the label date."
                    :message (format nil "early close ~a precedes all session opens"
                                     early))))))
 
+(defun %weekly-sessions-for-date (exchange date)
+  "Session specs from the hours era's trading week alone (no holidays).
+NIL for a day between two eras."
+  (let ((era (exchange-era-for-date exchange date
+                                    :errorp (not (%era-gap-p exchange date)))))
+    (when era
+      (let ((dow (date-day-of-week date))
+            (weekend (or (exchange-era-weekend era)
+                         (exchange-hours-weekend exchange)))
+            (friday (exchange-era-friday era))
+            (saturday (exchange-era-saturday era)))
+        (cond
+          ((and (= dow 5) friday)
+           (%apply-early-close friday (exchange-early-close exchange date)))
+          ((and (= dow 6) saturday)
+           (%apply-early-close saturday (exchange-early-close exchange date)))
+          ((member dow weekend)
+           nil)
+          (t
+           (%apply-early-close (exchange-era-sessions era)
+                               (exchange-early-close exchange date))))))))
+
+(defun exchange-holiday-p (exchange date)
+  "True when DATE is a holiday on EXCHANGE's attached holiday calendar.
+Second value is the holiday name. Only holidays close the Exchange: the
+hours era encodes the trading week (Sun–Thu, historical Saturdays)."
+  (let ((cal (exchange-calendar exchange)))
+    (if cal (holiday-p cal date) (values nil nil))))
+
 (defun exchange-sessions-for-date (exchange date)
-  "List of EXCHANGE-SESSION-SPEC for DATE (after early-close overlay)."
-  (let* ((era (exchange-era-for-date exchange date))
-         (dow (date-day-of-week date))
-         (weekend (or (exchange-era-weekend era)
-                      (exchange-hours-weekend exchange)))
-         (friday (exchange-era-friday era))
-         (saturday (exchange-era-saturday era)))
-    (cond
-      ((and (= dow 5) friday)
-       (%apply-early-close friday (exchange-early-close exchange date)))
-      ((and (= dow 6) saturday)
-       (%apply-early-close saturday (exchange-early-close exchange date)))
-      ((member dow weekend)
-       nil)
-      (t
-       (%apply-early-close (exchange-era-sessions era)
-                           (exchange-early-close exchange date))))))
+  "List of EXCHANGE-SESSION-SPEC for DATE (after early-close overlay).
+NIL on a weekend of the hours era or a holiday of the exchange calendar."
+  (unless (exchange-holiday-p exchange date)
+    (%weekly-sessions-for-date exchange date)))
 
 (defun exchange-calendar (exchange)
   (let ((name (exchange-hours-calendar-name exchange)))
     (when name (find-calendar name :errorp nil))))
 
 (defun exchange-trading-day-p (exchange date)
-  "True if DATE has at least one cash-session segment."
+  "True if DATE has at least one cash-session segment: a trading-week day
+of the hours era that is not a holiday of the exchange calendar."
   (and (exchange-sessions-for-date exchange date) t))
 
 (defun make-exchange-session (mic &key date calendar)
@@ -299,34 +336,32 @@ segment-accurate queries."
 (defun exchange-session-bounds (mic date)
   "Return (values FIRST-OPEN LAST-CLOSE) instants for MIC on DATE.
 Also returns the list of per-segment (open close) instant pairs as the
-third value."
-  (let* ((ex (find-exchange mic))
-         (cal (exchange-calendar ex))
-         (segs (exchange-sessions-for-date ex date)))
-    (unless segs
-      (error 'calendar-error
-             :message (format nil "~a is not a trading day for ~a"
-                              date (exchange-hours-mic ex))))
-    ;; Hours encode the trading week (incl. Sun–Thu / historical Saturday).
-    ;; The civil calendar overlay only blocks holidays, not weekend-day-p.
-    (when (and cal (holiday-p cal date))
+third value. Signals CALENDAR-ERROR when DATE has no session (weekend of
+the hours era or holiday of the exchange calendar)."
+  (let ((ex (find-exchange mic)))
+    (when (exchange-holiday-p ex date)
       (error 'calendar-error
              :message (format nil "~a is a holiday for ~a calendar"
                               date (exchange-hours-calendar-name ex))))
-    (let ((pairs
-           (mapcar (lambda (seg)
-                     (let ((s (make-trading-session
-                               :name (exchange-hours-mic ex)
-                               :zone (exchange-hours-zone ex)
-                               :open (exchange-session-spec-open seg)
-                               :close (exchange-session-spec-close seg)
-                               :overnight (exchange-session-spec-overnight seg)
-                               :labeled-by (exchange-session-spec-labeled-by seg))))
-                       (multiple-value-list (session-bounds s date))))
-                   segs)))
-      (values (first (first pairs))
-              (second (car (last pairs)))
-              pairs))))
+    (let ((segs (exchange-sessions-for-date ex date)))
+      (unless segs
+        (error 'calendar-error
+               :message (format nil "~a is not a trading day for ~a"
+                                date (exchange-hours-mic ex))))
+      (let ((pairs
+              (mapcar (lambda (seg)
+                        (let ((s (make-trading-session
+                                  :name (exchange-hours-mic ex)
+                                  :zone (exchange-hours-zone ex)
+                                  :open (exchange-session-spec-open seg)
+                                  :close (exchange-session-spec-close seg)
+                                  :overnight (exchange-session-spec-overnight seg)
+                                  :labeled-by (exchange-session-spec-labeled-by seg))))
+                          (multiple-value-list (session-bounds s date))))
+                      segs)))
+        (values (first (first pairs))
+                (second (car (last pairs)))
+                pairs)))))
 
 (defun %open-on-date-p (mic instant date)
   (handler-case

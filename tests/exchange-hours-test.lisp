@@ -22,7 +22,7 @@
     (let ((ex (find-exchange "xnys")))
       (ok (string= (exchange-hours-mic ex) "XNYS"))
       (ok (string= (exchange-hours-zone ex) "America/New_York"))
-      (ok (string= (exchange-hours-calendar-name ex) "USFED")))))
+      (ok (string= (exchange-hours-calendar-name ex) "NYSE")))))
 
 (deftest nyse-hour-eras
   (ok (equal (%session-hms "XNYS" (make-date 1950 6 5))
@@ -36,8 +36,9 @@
              '(((10 0) (15 30)))))
   (ok (equal (%session-hms "XNYS" (make-date 1974 10 1))
              '(((10 0) (16 0)))))
-  (ok (equal (%session-hms "XNYS" (make-date 1985 9 27))
+  (ok (equal (%session-hms "XNYS" (make-date 1985 9 26))
              '(((10 0) (16 0)))))
+  (ok (null (%session-hms "XNYS" (make-date 1985 9 27)))) ; Hurricane Gloria closure
   (ok (equal (%session-hms "XNYS" (make-date 1985 9 30))
              '(((9 30) (16 0)))))
   (ok (equal (%session-hms "XNYS" (make-date 2024 6 3))
@@ -50,9 +51,11 @@
     (ok (equal (%session-hms "XNYS" (make-date 2024 11 29))
                '(((9 30) (13 0)))))
     (ok (equal (%hm (exchange-early-close ex (make-date 1992 11 27))) '(14 0)))
+    (ng (exchange-early-close ex (make-date 1991 11 29))) ; Black Friday early close from 1992
     (ok (equal (%hm (exchange-early-close ex (make-date 2024 12 24))) '(13 0)))
     (ok (equal (%hm (exchange-early-close ex (make-date 2025 7 3))) '(13 0)))
-    (ng (exchange-early-close ex (make-date 2024 7 3))) ; Wednesday
+    (ok (equal (%hm (exchange-early-close ex (make-date 2024 7 3))) '(13 0))) ; Wednesday, from 2013
+    (ng (exchange-early-close ex (make-date 2002 7 3)))  ; Wednesday before 2013
     (ok (equal (%hm (exchange-early-close ex (make-date 2002 7 5))) '(13 0)))
     (ng (exchange-early-close ex (make-date 2013 7 5)))
     (ok (equal (%hm (exchange-early-close ex (make-date 2003 12 26))) '(13 0)))
@@ -133,7 +136,7 @@
 
 (deftest eu-and-asia-hour-eras
   (ok (equal (%session-hms "XAMS" (make-date 2024 6 3)) '(((9 0) (17 30)))))
-  (ok (equal (%session-hms "XDUB" (make-date 2024 6 3)) '(((8 0) (16 30)))))
+  (ok (equal (%session-hms "XDUB" (make-date 2024 6 4)) '(((8 0) (16 30))))) ; 06-03 is on the IE calendar
   (ok (equal (%session-hms "XOSL" (make-date 2024 6 3)) '(((9 0) (16 20)))))
   (ok (equal (%session-hms "XHEL" (make-date 2024 6 3)) '(((10 0) (18 30)))))
   (ok (equal (%session-hms "XTAI" (make-date 2000 12 29)) '(((9 0) (12 0)))))
