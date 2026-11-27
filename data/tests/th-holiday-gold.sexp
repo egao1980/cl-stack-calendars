@@ -5,7 +5,7 @@
  :country "TH"
  :generated "2026-11-27"
  :from 2019 :to 2040
- :note "Government-office holidays (วันหยุดราชการ): the Cabinet overview and special days of each year 2019-2026 (Cabinet resolutions, สลค. circulars and their OIC copies), plus the annual holidays that fall on a Saturday or Sunday; regional days (one province or Bangkok) are left out. 2027-2040 are provisional: the annual holidays without the Royal Ploughing Day (set yearly by the Royal Household), Buddhist days from the BOT 2027 list and then the Thai lunar rule, and the substitute rule of มติ ครม. 1 พ.ค. 2544 with no special day."
+ :note "Government-office holidays (วันหยุดราชการ): the Cabinet overview and special days of each year 2019-2026 (Cabinet resolutions, สลค. circulars and their OIC copies), plus the annual holidays that fall on a Saturday or Sunday; regional days (one province or Bangkok) are left out. The Royal Ploughing Days of 2019, 2021, 2022, 2024 and 2026 rest on news reports (TH_PLOUGHING_NEWS: the Royal Gazette หมายกำหนดการ was not reachable); 2020, 2023 and 2025 are in the Cabinet overviews. 2027-2040 are provisional: the annual holidays without the Royal Ploughing Day (set yearly by the Royal Household), Buddhist days from the BOT 2027 list and then the Thai lunar rule, and the substitute rule of มติ ครม. 1 พ.ค. 2544 with no special day."
  :sources
  (
   (:title "J. C. Eade, 'Rules for interpolation in the Thai calendar: Suriyayatra versus the Sasana', Journal of the Siam Society 88 (2000) 195-203" :uri "https://thesiamsociety.org/wp-content/uploads/2000/03/JSS_088_0r_Eade_RulesForInterpolationInThaiCalendar.pdf"
@@ -85,6 +85,7 @@
   (2019 4 15 "วันสงกรานต์")
   (2019 4 16 "วันหยุดชดเชยวันสงกรานต์ (13-14 เม.ย. ตรงกับเสาร์-อาทิตย์; ชดเชยได้ไม่เกิน 1 วัน)")
   (2019 5 6 "วันหยุดราชการเพิ่มเป็นกรณีพิเศษ (พระราชพิธีบรมราชาภิเษก)")
+  (2019 5 9 "วันพระราชพิธีพืชมงคลจรดพระนังคัลแรกนาขวัญ")
   (2019 5 18 "วันวิสาขบูชา")
   (2019 5 20 "วันหยุดชดเชยวันวิสาขบูชา (18 พ.ค. ตรงกับวันเสาร์)")
   (2019 6 3 "วันเฉลิมพระชนมพรรษาสมเด็จพระนางเจ้าฯ พระบรมราชินี")
@@ -156,6 +157,7 @@
   (2022 4 14 "วันสงกรานต์")
   (2022 4 15 "วันสงกรานต์")
   (2022 5 4 "วันฉัตรมงคล")
+  (2022 5 13 "วันพระราชพิธีพืชมงคลจรดพระนังคัลแรกนาขวัญ")
   (2022 5 15 "วันวิสาขบูชา")
   (2022 5 16 "วันหยุดชดเชยวันวิสาขบูชา (15 พ.ค. ตรงกับวันอาทิตย์)")
   (2022 6 3 "วันเฉลิมพระชนมพรรษาสมเด็จพระนางเจ้าฯ พระบรมราชินี")
@@ -212,6 +214,7 @@
   (2024 4 16 "วันหยุดชดเชยวันสงกรานต์ (13-14 เม.ย. ตรงกับเสาร์-อาทิตย์)")
   (2024 5 4 "วันฉัตรมงคล")
   (2024 5 6 "วันหยุดชดเชยวันฉัตรมงคล (4 พ.ค. ตรงกับวันเสาร์)")
+  (2024 5 10 "วันพระราชพิธีพืชมงคลจรดพระนังคัลแรกนาขวัญ")
   (2024 5 22 "วันวิสาขบูชา")
   (2024 6 3 "วันเฉลิมพระชนมพรรษาสมเด็จพระนางเจ้าฯ พระบรมราชินี")
   (2024 7 20 "วันอาสาฬหบูชา")
@@ -260,6 +263,7 @@
   (2026 4 14 "วันสงกรานต์")
   (2026 4 15 "วันสงกรานต์")
   (2026 5 4 "วันฉัตรมงคล")
+  (2026 5 13 "วันพระราชพิธีพืชมงคลจรดพระนังคัลแรกนาขวัญ")
   (2026 5 31 "วันวิสาขบูชา")
   (2026 6 1 "วันหยุดชดเชยวันวิสาขบูชา (31 พ.ค. ตรงกับวันอาทิตย์)")
   (2026 6 3 "วันเฉลิมพระชนมพรรษาสมเด็จพระนางเจ้าฯ พระบรมราชินี")

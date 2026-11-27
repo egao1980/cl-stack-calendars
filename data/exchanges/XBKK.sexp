@@ -1,9 +1,12 @@
 ;;;; SET cash (MIC XBKK).
+;;;; Holidays: TH-BANK. The SET holiday pages 2012-2023 (set.or.th/set/holiday.do,
+;;;; /api/set/holiday/year, Wayback copies) list exactly the Bank of Thailand
+;;;; financial-institution days of 2012-2022 (#40); not the government-office TH.
 (
  :mic "XBKK"
  :name "Stock Exchange of Thailand"
  :zone "Asia/Bangkok"
- :calendar "TH"
+ :calendar "TH-BANK"
  :kind :equity
  :source "SET News 22/2024 — afternoon from 14:00 on 2024-03-25"
  :eras (

@@ -731,6 +731,17 @@ Songkran one only when two of its days fall on the weekend."
   (ok (eq :primary (th-bank-confidence 2000)))
   (ok (eq :provisional (th-bank-confidence 2028))))
 
+(deftest th-xbkk-attaches-th-bank
+  "The SET holiday pages 2012–2022 list exactly the BOT financial-institution
+days, so XBKK closes on TH-BANK: Labour Day yes, the Royal Ploughing Day and
+the Cabinet-only special days no."
+  (let ((ex (find-exchange "XBKK")))
+    (ok (equal "TH-BANK" (exchange-hours-calendar-name ex)))
+    (ok (exchange-holiday-p ex (make-date 2024 5 1)) "Labour Day 2024")
+    (ng (exchange-holiday-p ex (make-date 2025 5 9)) "Royal Ploughing Day 2025")
+    (ng (exchange-holiday-p ex (make-date 2023 7 31)) "Cabinet-only special day 2023")
+    (ok (exchange-holiday-p ex (make-date 2023 12 29)) "BOT: 2 Jan 2024 moved to 29 Dec 2023")))
+
 (deftest th-decree-rows-carry-issued-and-published
   "Bitemporal step 1 (#93): every decree, Cabinet resolution or BOT
 announcement row has :ISSUED and :PUBLISHED, each a date with its citation

@@ -4035,9 +4035,18 @@ TH_LISTED_LUNAR = {
     2027: {'asalha': ('2027-07-18', 'bot (substitute names original date)'), 'khao_phansa': ('2027-07-19', 'derived: day after Asalha (แรม 1 ค่ำ เดือน 8)'), 'makha': ('2027-02-21', 'bot (substitute names original date)'), 'visakha': ('2027-05-20', 'bot')},
 }
 
-# Royal Ploughing Days of 2019-2026 that a primary source dates (the Cabinet
-# overviews leave the day to the Royal Household): ISO date -> source.
-TH_PLOUGHING_VERIFIED: dict[str, str] = {}
+# Royal Ploughing Days of 2019-2026 that no primary source reached from here
+# dates: the Cabinet overviews leave the day to the Royal Household, and its
+# หมายกำหนดการ in the Royal Gazette (ratchakitcha.soc.go.th) is unreachable and
+# not archived. These five rest on news reports and are in the fixture as
+# lower-confidence days (2020, 2023 and 2025 are in the Cabinet overviews).
+TH_PLOUGHING_NEWS = {
+    "2019-05-09": "news reports of the Royal Household schedule (no Gazette copy found)",
+    "2021-05-10": "news: Royal Household set 9-10 May 2564, scaled down (COVID)",
+    "2022-05-13": "https://www.thansettakij.com/royal/524699 (Gazette หมายกำหนดการ of 11 May 2565, per the report)",
+    "2024-05-10": "https://www.thansettakij.com/news/royal/595409",
+    "2026-05-13": "https://www.thairath.co.th/agriculture/agricultural-policy/2931492 (Gazette of 8 May 2569, per the report)",
+}
 
 
 def th_buddhist_days(g: int) -> dict[str, date]:
@@ -4273,7 +4282,7 @@ def _th_cabinet_days(year: int, with_unverified: bool) -> list[tuple[date, str]]
     for d, n, why in block.get("unverified", []):
         if d in regional or "regional" in why:
             continue
-        if with_unverified or d in TH_PLOUGHING_VERIFIED:
+        if with_unverified or d in TH_PLOUGHING_NEWS:
             days.append((date.fromisoformat(d), n))
     days += _th_weekend_nominal(year, False)
     return days
@@ -4356,7 +4365,9 @@ TH_BANK_NOTE = (
 TH_NOTE = (
     "Government-office holidays (วันหยุดราชการ): the Cabinet overview and special days of each year "
     "2019-2026 (Cabinet resolutions, สลค. circulars and their OIC copies), plus the annual holidays that "
-    "fall on a Saturday or Sunday; regional days (one province or Bangkok) are left out. 2027-2040 are "
+    "fall on a Saturday or Sunday; regional days (one province or Bangkok) are left out. The Royal "
+    "Ploughing Days of 2019, 2021, 2022, 2024 and 2026 rest on news reports (TH_PLOUGHING_NEWS: the Royal "
+    "Gazette หมายกำหนดการ was not reachable); 2020, 2023 and 2025 are in the Cabinet overviews. 2027-2040 are "
     "provisional: the annual holidays without the Royal Ploughing Day (set yearly by the Royal Household), "
     "Buddhist days from the BOT 2027 list and then the Thai lunar rule, and the substitute rule of มติ ครม. "
     "1 พ.ค. 2544 with no special day."
