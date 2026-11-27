@@ -544,12 +544,17 @@
     (ok (holiday-p cal (make-date 2013 9 20))))) ; Feriado Adicional
 
 (deftest corpus-inferred-territory-starters
-  "Corpus-only codes (outside population-order) get normative RULE-CALENDAR starters."
+  "Corpus-only codes (outside population-order) are registered, as the
+corpus-inferred rule calendar or as the corpus itself (#33), never as
+normative."
   (dolist (code '("AD" "AG" "AI" "AW"))
     (let ((cal (find-calendar code :errorp nil)))
       (ok cal (format nil "~a registered" code))
-      (ok (typep cal 'rule-calendar) (format nil "~a rule-calendar" code))
-      (ng (typep cal 'country-holiday-calendar) (format nil "~a not corpus class" code))))
+      (ok (member (calendar-provenance cal) '(:corpus :corpus-derived))
+          (format nil "~a corpus or corpus-derived" code))
+      (ok (eq (typep cal 'country-holiday-calendar)
+              (eq (calendar-provenance cal) :corpus))
+          (format nil "~a class matches provenance" code))))
   (ok (null (find-calendar "PS" :errorp nil)) "empty stub PS not registered"))
 
 (deftest subnational-composites

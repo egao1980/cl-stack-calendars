@@ -39,23 +39,33 @@ research window start; otherwise CIVIL-RESEARCH-FROM-YEAR."
   (or *population-order*
       (setf *population-order* (load-population-order))))
 
+(defun %coverage-status (calendar)
+  ":MISSING, :CORPUS, :CORPUS-DERIVED or :NORMATIVE for a registered CALENDAR
+(or NIL), from its CALENDAR-PROVENANCE."
+  (if (null calendar)
+      :missing
+      (case (calendar-provenance calendar)
+        (:corpus :corpus)
+        (:corpus-derived :corpus-derived)
+        (t :normative))))
+
 (defun normative-calendar-codes ()
-  "ISO / registry codes that have hand-maintained DEFINE-CALENDAR starters
-(not the date-holidays corpus)."
+  "Registry codes whose calendar is a hand-maintained starter: neither the
+date-holidays corpus (:CORPUS) nor rules inferred from it (:CORPUS-DERIVED)."
   (remove-if (lambda (c)
-               (typep (find-calendar c :errorp nil) 'country-holiday-calendar))
+               (member (%coverage-status (find-calendar c :errorp nil))
+                       '(:corpus :corpus-derived :missing)))
              (list-registered-calendars)))
 
 (defun normative-coverage-by-population ()
-  "Alist (CODE POP NAME :status :normative|:corpus|:missing) in population order."
+  "Alist (CODE POP NAME :status S) in population order. S is :NORMATIVE (a
+hand starter citing statutes), :CORPUS-DERIVED (rules inferred from the
+corpus), :CORPUS (the corpus table) or :MISSING."
   (mapcar
    (lambda (row)
      (destructuring-bind (code pop name) row
-       (let* ((cal (find-calendar code :errorp nil))
-              (status (cond ((null cal) :missing)
-                            ((typep cal 'country-holiday-calendar) :corpus)
-                            (t :normative))))
-         (list code pop name :status status))))
+       (list code pop name
+             :status (%coverage-status (find-calendar code :errorp nil)))))
    (population-order)))
 
 (defun next-normative-gaps (&optional (n 20))

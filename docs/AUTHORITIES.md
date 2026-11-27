@@ -93,11 +93,21 @@ Hand-maintained starters beat `country-calendar` when both exist (prefer `japan-
 
 Registered via `register-subnational-calendars` as `COMPOSITE-CALENDAR` union mode.
 
-### Corpus-inferred territory starters
+### Corpus-only codes: corpus-derived or corpus
 
-Codes in `data/countries/` that have corpus days but no hand starter (e.g. `AD`, `IS`) get a `RULE-CALENDAR` at load via `register-corpus-inferred-territory-starters`. Its fixed and Easter rules are inferred from recurrence in the corpus. They are **not** normative: each rule's `:authority` says "Corpus-inferred … not checked against a statute". Since 0.10.0 the rules and the calendar's `calendar-coverage` are bounded to the corpus years (2000–2040), and `holiday-p` outside them signals `calendar-out-of-range`.
+There are 93 codes in `data/countries/` that have corpus days but no hand starter (for example `AD`, `BH` and `XK`). `register-corpus-inferred-territory-starters` registers each one, and the calendar is built on first lookup by `corpus-derived-calendar`. Since 0.13.0 (#33), `find-calendar` never returns a calendar that drops corpus days:
 
-The six **stubs** (`ABH`, `NCY`, `OST`, `PMR`, `PS`, `SOL`) have `:days ()`. They get **no** inferred starter, so `(find-calendar "PS" :errorp nil)` is NIL. `(country-calendar "PS")` has `country-calendar-stub-p` true and `calendar-coverage` `:none`, and its `holiday-p` signals `calendar-out-of-range`. `(country-calendar "PS" :strict nil)` answers NIL instead.
+- Fixed and Western-Easter rules are inferred by recurrence in the corpus (`make-corpus-inferred-calendar`). The code gets that `rule-calendar` only when it reproduces the corpus: at least `*corpus-inference-min-agreement*` (99%) of the corpus public days, and 99% precision, over 2000–2040 (`calendar-corpus-agreement`). `calendar-provenance` is then **`:corpus-derived`**. Each rule's `:authority` starts "Corpus-derived, not normative" and also says so when the corpus types the day `:bank` only.
+- Otherwise the code gets the corpus itself, `(country-calendar CODE)`, with `calendar-provenance` **`:corpus`**. Inference finds no Hijri, nth-weekday, Orthodox Easter or substitute days, so most codes land here.
+
+| Provenance | Codes |
+|---|---|
+| `:corpus-derived` (22) | AD AM BL CG CV FO GF GL GP HN LS MF MQ NC PM RE SC SJ SM VU WF YT |
+| `:corpus` (71) | AG AI AL AS AW AX BA BB BH BI BM BN BQ BS BW BZ CC CF CK CW CX DJ DM EH ER FJ GA GD GG GI GM GQ GU GW GY IC IM IS JE JM KM KN KY LC LI LR MC MD ME MK MR MS MU NA NF PF PR PY SH SR ST SX SZ TC TO TT VA VC VG VI XK |
+
+Neither kind is normative. `normative-coverage-by-population` reports them as `:corpus-derived` / `:corpus`, and `normative-calendar-codes` leaves them out. Every `define-calendar` starter reports `calendar-provenance` `:normative`. Either way the days are only as good as date-holidays; #37 compares the corpus with Python `holidays`.
+
+The six **stubs** (`ABH`, `NCY`, `OST`, `PMR`, `PS`, `SOL`) have `:days ()`. They are not registered, so `(find-calendar "PS" :errorp nil)` is NIL. `(country-calendar "PS")` has `country-calendar-stub-p` true and `calendar-coverage` `:none`, and its `holiday-p` signals `calendar-out-of-range`. `(country-calendar "PS" :strict nil)` answers NIL instead.
 
 ## Sunrise / sunset–bound rules (lat/lon)
 

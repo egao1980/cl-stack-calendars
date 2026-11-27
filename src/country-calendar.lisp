@@ -106,6 +106,10 @@ STRICT."
       :none
       (country-calendar-year-range calendar)))
 
+(defmethod calendar-provenance ((calendar country-holiday-calendar))
+  "The date-holidays corpus table: :CORPUS."
+  :corpus)
+
 (defmethod holiday-p ((calendar country-holiday-calendar) date)
   (call-with-coverage
    calendar date (calendar-strict-p calendar)
