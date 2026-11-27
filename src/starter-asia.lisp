@@ -336,47 +336,6 @@ holiday and not a hoán đổi day of CALENDAR."
   (:fixed "Ngày Văn hóa Việt Nam" 11 24 :from (2026 7 1)
    :authority "Nghị quyết 28/2026/QH16 Điều 2(1) (hiệu lực 01/07/2026) — 24/11, người lao động được nghỉ làm việc"))
 
-;;; Thailand (floor 1900)
-(define-calendar thailand-holidays-calendar (:register "TH" :constructor thailand-holidays-calendar)
-  (:fixed "New Year's Day" 1 1 :from 1900
-   :authority "Public holiday (Gregorian New Year)")
-  (:computed "Makha Bucha"
-   (lambda (y) (chinese-lunar-date y 3 15 :location +beijing+))
-   :from 1900
-   :authority "Makha Bucha — lunar 3/15 (Beijing tabular ≈ Thai lunar)")
-  (:fixed "Chakri Memorial Day" 4 6 :from 1920
-   :authority "Chakri Dynasty memorial — public holiday")
-  (:fixed "Songkran" 4 13 :from 1900
-   :authority "Songkran (Thai New Year) — public holiday")
-  (:fixed "Songkran" 4 14 :from 1900 :authority "Songkran")
-  (:fixed "Songkran" 4 15 :from 1900 :authority "Songkran")
-  (:fixed "Coronation Day" 5 5 :from 1950 :to 2018
-   :authority "Coronation of Rama IX (5 May) — public holiday until era change")
-  (:fixed "Coronation Day" 5 4 :from 2019
-   :authority "Coronation of Rama X (4 May 2019) — public holiday")
-  (:computed "Visakha Bucha"
-   (lambda (y) (chinese-lunar-date y 6 15 :location +beijing+))
-   :from 1900
-   :authority "Visakha Bucha — lunar 6/15 (Beijing tabular ≈ Thai lunar)")
-  (:fixed "Queen Suthida's Birthday" 6 3 :from 2019
-   :authority "Public holiday (Queen's birthday)")
-  (:fixed "Birthday of King Rama X" 7 28 :from 2017
-   :authority "Public holiday (King's birthday)")
-  (:computed "Asalha Bucha"
-   (lambda (y) (chinese-lunar-date y 8 15 :location +beijing+))
-   :from 1900
-   :authority "Asalha Bucha — lunar 8/15 (Beijing tabular ≈ Thai lunar)")
-  (:fixed "Queen Sirikit's Birthday / Mother's Day" 8 12 :from 1976
-   :authority "Public holiday")
-  (:fixed "Anniversary of the Death of King Bhumibol" 10 13 :from 2017
-   :authority "Public holiday")
-  (:fixed "Chulalongkorn Day" 10 23 :from 1920
-   :authority "Public holiday (King Rama V)")
-  (:fixed "Birthday of King Bhumibol / Father's Day" 12 5 :from 1960
-   :authority "Public holiday")
-  (:fixed "Constitution Day" 12 10 :from 1932
-   :authority "Constitution Day — public holiday"))
-
 ;;; --- Korea 임시공휴일 (관공서의 공휴일에 관한 규정) -----------------
 
 (defun load-kr-temporary-holidays (&optional (path (data-path "kr/temporary-holidays.sexp")))
@@ -455,34 +414,6 @@ dates the proclamations did not keep."
 days are tabular estimates and, after the last yearly proclamation (2027),
 only the statutory days are in it."
   (> year *ph-last-eid-year*))
-
-;;; --- Thailand Royal Gazette substitute / bridge days ------------------
-
-(defun load-th-transfers (&optional (path (data-path "th/transfers.sexp")))
-  (let ((form (read-data-form path)))
-    (mapcar
-     (lambda (block)
-       (let* ((year (getf block :year))
-              (auth (getf block :authority))
-              (transfers (mapcar (lambda (e)
-                                   (make-extra-day-transfer e auth))
-                                 (getf block :holidays))))
-         (cons year (list :authority auth
-                          :transfers transfers
-                          :uri (getf block :uri)))))
-     form)))
-
-(defvar *th-transfers* nil)
-
-(defun th-transfers ()
-  (or *th-transfers*
-      (setf *th-transfers* (load-th-transfers))))
-
-(defun th-notice-for-year (year)
-  (cdr (assoc year (th-transfers))))
-
-(defun th-transfers-for-year (year)
-  (transfers-touching-year (th-transfers) year))
 
 ;;; --- Malaysia JPM / PMO additional public holidays --------------------
 
@@ -1081,16 +1012,6 @@ provisional (VN-PROVISIONAL-YEAR-P)."
                                        (vn-working-days-for-year year)
                                        (loop for (nil . plist) in (vn-notices)
                                              append (getf plist :working))))))
-
-(defun thailand-holidays-calendar (&key year transfers)
-  "Thai public holidays with the Royal Gazette substitute/bridge days of
-data/th/transfers.sexp. Without YEAR, every year in the file applies (the
-registered \"TH\" calendar); with YEAR, only that year's days."
-  (let ((tr (or transfers
-                (if year
-                    (th-transfers-for-year year)
-                    (all-block-transfers (th-transfers))))))
-    (make-instance 'thailand-holidays-calendar :transfers tr)))
 
 (defun south-korea-holidays-calendar (&key year transfers)
   "ROK 관공서의 공휴일 (관공서의 공휴일에 관한 규정 of each era, its 제3조

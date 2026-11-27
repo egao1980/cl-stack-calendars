@@ -579,3 +579,184 @@ extension 〔2020〕1号, the 2003 SARS amendment and the 2000 国庆 notice."
                      (cn-transfers-for-year 2003))))
     (ok tr)
     (ok (search "低可信度" (princ-to-string (calendar-transfer-authority tr))))))
+
+;;; --- Thailand (#40) --------------------------------------------------------
+
+(defparameter *th-holiday-gold* (load-holiday-gold "TH"))
+
+(defparameter *th-bank-holiday-gold* (load-holiday-gold "TH-BANK"))
+
+(defparameter *th-secondary-holiday-gold*
+  (read-data-form (data-path "tests/th-secondary-holiday-gold.sexp")))
+
+(deftest th-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *th-holiday-gold* "TH" :from 2019))
+
+(deftest th-registered-calendar-matches-gold
+  "find-calendar \"TH\" (government offices) agrees with the Cabinet overview
+and special days of each year 2019–2026 and the substitute rule of มติ ครม.
+1 พ.ค. 2544 / 3 ก.พ. 2547, and with the annual days of the provisional years
+2027–2040 (Thai lunar Buddhist days)."
+  (let ((th (find-calendar "TH")))
+    (%report-holiday-gold "TH" (%holiday-gold-mismatches *th-holiday-gold* (constantly th)))))
+
+(deftest th-year-calendars-match-gold
+  (%report-holiday-gold "TH :year"
+                        (%holiday-gold-mismatches *th-holiday-gold*
+                                                  (lambda (y) (thailand-holidays-calendar :year y)))))
+
+(deftest th-country-calendar-matches-gold
+  "country-calendar \"TH\" defers to the starter: the corpus has no Cabinet
+special days and Chinese-lunar Buddhist days."
+  (let ((th (country-calendar "TH")))
+    (ok (eq :normative (calendar-provenance th)))
+    (%report-holiday-gold "country-calendar TH"
+                          (%holiday-gold-mismatches *th-holiday-gold* (constantly th)))))
+
+(deftest th-secondary-gold-2000-2018-lower-confidence
+  "LOWER CONFIDENCE. 2000–2018 against Cabinet releases mirrored by ryt9.com,
+news reports, the BOT lists' Buddhist days and the substitute rule of each
+era where no document gives the day. Not all Royal Ploughing Days are known."
+  (let ((gold *th-secondary-holiday-gold*))
+    (ok (string= "TH" (getf gold :country)))
+    (ok (eq :secondary (getf gold :confidence)))
+    (ok (= 2000 (getf gold :from)))
+    (ok (= 2018 (getf gold :to)))
+    (%report-holiday-gold "TH 2000-2018 (secondary sources)"
+                          (%holiday-gold-mismatches gold (constantly (find-calendar "TH"))))
+    (%report-holiday-gold "TH :year 2000-2018 (secondary sources)"
+                          (%holiday-gold-mismatches gold (lambda (y) (thailand-holidays-calendar :year y))))))
+
+(deftest th-bank-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *th-bank-holiday-gold* "TH-BANK"))
+
+(deftest th-bank-registered-calendar-matches-gold
+  "find-calendar \"TH-BANK\" agrees with every Bank of Thailand
+financial-institution list 2000–2027 and with the annual days and
+substitutes of the provisional years 2028–2040."
+  (let ((bank (find-calendar "TH-BANK")))
+    (%report-holiday-gold "TH-BANK" (%holiday-gold-mismatches *th-bank-holiday-gold* (constantly bank)))))
+
+(deftest th-bank-year-calendars-match-gold
+  (%report-holiday-gold "TH-BANK :year"
+                        (%holiday-gold-mismatches *th-bank-holiday-gold*
+                                                  (lambda (y) (thailand-bank-holidays-calendar :year y)))))
+
+(deftest th-lunar-rule-reproduces-the-lists
+  "The Thai lunar rule (Suriyayatra athikawan, 19-year athikamat cycle) gives
+every Buddhist day the BOT and Cabinet lists print 2000–2027, and the year
+types Eade (JSS 88, 2000) tabulates for CS 1320–1340."
+  (loop for year from 2000 to 2027
+        do (dolist (kind '(:makha :visakha :asalha :khao-phansa))
+             (ok (= (thai-buddhist-day year kind) (thai-lunar-rule-day year kind))
+                 (format nil "~a ~a" year kind))))
+  (loop for (cs type) on '(1320 :athikamat 1321 :athikawan 1322 :normal 1323 :athikamat
+                           1325 :athikawan 1330 :athikawan 1335 :athikawan 1340 :athikawan)
+        by #'cddr
+        do (ok (eq type (thai-lunar-year-type (+ cs 638))) (format nil "CS ~a" cs)))
+  (ok (eq :athikamat (thai-lunar-year-type 2012)) "2012 athikamat (BOT 2555 note 2/)")
+  (ok (eq :normal (thai-lunar-year-type 2014)) "2014 normal: avoman 137 gives no extra day")
+  (ok (eq :athikawan (thai-lunar-year-type 2005)) "2005 athikawan (BOT 2548-2549 lists)")
+  (ok (eq :normal (thai-lunar-year-type 2006)))
+  (ok (= (make-date 2000 2 19) (thai-buddhist-day 2000 :makha)) "Makha 2000 on a Saturday")
+  (ok (= (make-date 2028 2 10) (thai-buddhist-day 2028 :makha)))
+  (ok (= (make-date 2040 7 23) (thai-buddhist-day 2040 :asalha)))
+  (ok (member 2031 *thai-lunar-uncertain-years*) "2031: tithi 24, as 2012")
+  (ok (member 2030 *thai-lunar-uncertain-years*) "2030: athikawan by the rule, 2032 in other tables"))
+
+(deftest th-buddhist-days-are-not-chinese-lunar
+  "Visakha Bucha 2007 is 31 May (athikamat: 7/15), not the Chinese 4/15."
+  (let ((th (find-calendar "TH")))
+    (ok (holiday-p th (make-date 2007 5 31)))
+    (ng (holiday-p th (make-date 2007 5 1)))
+    (ok (holiday-p th (make-date 2026 7 29)) "Asalha Bucha 2026, 8/8 15")
+    (ok (holiday-p th (make-date 2026 7 30)) "Khao Phansa 2026")))
+
+(deftest th-substitute-rule-eras
+  "No substitute before 26 Dec 1995; one per holiday under ว 274/2538; one
+per weekend from 1 July 2001 (ว 83/2544); BOT: none for the mid-year day,
+Songkran one only when two of its days fall on the weekend."
+  (let ((th (find-calendar "TH"))
+        (bank (find-calendar "TH-BANK")))
+    (flet ((gov (y m d) (holiday-p th (make-date y m d)))
+           (fi (y m d) (holiday-p bank (make-date y m d))))
+      (ok (gov 2000 7 18) "Asalha Sun 16 Jul 2000, Khao Phansa Mon 17: Tue 18 (ว 274)")
+      (ok (gov 2001 4 17) "Songkran Sat 14 + Sun 15 Apr 2001: 16 and 17 (ว 274)")
+      (ng (fi 2001 4 17) "BOT 2544: one day")
+      (ok (gov 2024 7 22) "Asalha Sat + Khao Phansa Sun 2024: one day (ว 83)")
+      (ng (gov 2024 7 23))
+      (ok (gov 2023 4 17) "Songkran Sat 15 Apr 2023")
+      (ng (fi 2023 4 17) "BOT 2566: no Songkran substitute")
+      (ok (fi 2024 4 16) "BOT 2567: Songkran Sat 13 + Sun 14")
+      (ng (fi 2012 7 2) "mid-year day Sun 1 Jul 2012: none (BOT 2555 note 3/)")
+      (ok (fi 2012 7 1))
+      (ng (gov 1990 12 11) "no substitute before 26 Dec 1995"))))
+
+(deftest th-issue-40-days
+  (let ((th (find-calendar "TH"))
+        (bank (find-calendar "TH-BANK")))
+    (flet ((gov (y m d) (holiday-p th (make-date y m d)))
+           (fi (y m d) (holiday-p bank (make-date y m d))))
+      (ng (gov 2020 4 13) "Songkran 2020 postponed (สลค. ว 109/2563)")
+      (ng (fi 2020 4 14))
+      (ok (gov 2020 7 27) "Songkran 2020 replacement")
+      (ok (gov 2020 12 11) "5 Dec 2020 substitute moved from 7 to 11 Dec (สลค. ว 454/2563)")
+      (ng (gov 2020 12 7))
+      (ok (fi 2020 12 7) "BOT 2563 kept 7 Dec")
+      (ok (fi 2023 12 29) "BOT: 2 Jan 2024 moved to 29 Dec 2023")
+      (ng (fi 2024 1 2))
+      (ok (fi 2021 10 22) "BOT 2564: 25 Oct moved to 22 Oct")
+      (ng (fi 2021 10 25))
+      (ok (fi 2004 1 2) "BOT 2547: 31 Dec 2003 moved to 2 Jan 2004")
+      (ng (fi 2003 12 31))
+      (ok (gov 2003 12 31))
+      (ok (fi 2026 5 1) "Labour Day: banks")
+      (ng (gov 2026 5 1) "not government offices")
+      (ok (gov 2025 5 9) "Royal Ploughing Day 2025")
+      (ng (fi 2025 5 9))
+      (ng (fi 2018 7 2) "mid-year day on Sunday 1 Jul 2018: no substitute")
+      (ng (fi 2019 7 1) "mid-year day abolished from 2019")
+      (ok (gov 2026 12 16) "royal cremation 2026")
+      (ok (fi 2027 7 19) "BOT 2570: Asalha Sun 18 Jul 2027"))))
+
+(deftest th-provisional-years-and-confidence
+  (ng (th-provisional-year-p 2026))
+  (ok (th-provisional-year-p 2027))
+  (ng (th-bank-provisional-year-p 2027))
+  (ok (th-bank-provisional-year-p 2028))
+  (ok (eq :primary (th-confidence 2019)))
+  (ok (eq :primary (th-confidence 2026)))
+  (ok (eq :secondary (th-confidence 2010)))
+  (ok (eq :provisional (th-confidence 2027)))
+  (ok (eq :primary (th-bank-confidence 2000)))
+  (ok (eq :provisional (th-bank-confidence 2028))))
+
+(deftest th-xbkk-attaches-th-bank
+  "The SET holiday pages 2012–2022 list exactly the BOT financial-institution
+days, so XBKK closes on TH-BANK: Labour Day yes, the Royal Ploughing Day and
+the Cabinet-only special days no."
+  (let ((ex (find-exchange "XBKK")))
+    (ok (equal "TH-BANK" (exchange-hours-calendar-name ex)))
+    (ok (exchange-holiday-p ex (make-date 2024 5 1)) "Labour Day 2024")
+    (ng (exchange-holiday-p ex (make-date 2025 5 9)) "Royal Ploughing Day 2025")
+    (ng (exchange-holiday-p ex (make-date 2023 7 31)) "Cabinet-only special day 2023")
+    (ok (exchange-holiday-p ex (make-date 2023 12 29)) "BOT: 2 Jan 2024 moved to 29 Dec 2023")))
+
+(deftest th-decree-rows-carry-issued-and-published
+  "Bitemporal step 1 (#93): every decree, Cabinet resolution or BOT
+announcement row has :ISSUED and :PUBLISHED, each a date with its citation
+(:ISSUED-URI, :PUBLISHED-URI) or NIL with a :DATES-NOTE saying why."
+  (let ((rows (th-decree-rows)))
+    (ok (< 20 (length rows)))
+    (dolist (row rows)
+      (let ((label (format nil "~s" (or (getf row :date) (getf row :authority)))))
+        (dolist (key '(:issued :published))
+          (ok (member key row) (format nil "~a has ~s" label key))
+          (if (getf row key)
+              (ok (getf row (if (eq key :issued) :issued-uri :published-uri))
+                  (format nil "~a ~s cited" label key))
+              (ok (getf row :dates-note) (format nil "~a ~s NIL with a note" label key))))))
+    (dolist (era *th-substitute-eras*)
+      (ok (getf era :issued))
+      (ok (getf era :published))
+      (ok (getf era :in-force)))))

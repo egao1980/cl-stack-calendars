@@ -13,6 +13,7 @@
     ("ID" indonesia-holidays-calendar)
     ("PH" philippines-holidays-calendar)
     ("TH" thailand-holidays-calendar)
+    ("TH-BANK" thailand-bank-holidays-calendar)
     ("KR" south-korea-holidays-calendar)
     ("MY" malaysia-holidays-calendar)
     ("NP" nepal-holidays-calendar)

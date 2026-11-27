@@ -133,8 +133,10 @@ against a different data root."
                  *gb-proclamations* *ru-transfer-decrees*
                  *cn-transfer-notices* *in-dopt-holidays*
                  *id-cuti-bersama* *id-skb* *kr-temporary-holidays* *kr-election-base*
-                 *ph-proclamations* *th-transfers* *my-transfers* *tw-adjustments*
+                 *ph-proclamations* *th-government* *my-transfers* *tw-adjustments*
                  *vn-notices*
+                 *th-bank*
+                 *th-lunar*
                  *np-gazette* *lk-poya* *sg-gazette* *kh-gazette*
                  *co-transfers* *cl-transfers* *ar-transfers* *nyse-special-closures*))
     (when (boundp sym)
