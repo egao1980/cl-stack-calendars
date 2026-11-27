@@ -31,6 +31,12 @@
      :authority ("Banking and Financial Dealings Act 1971 s.1 & Sch.1; Royal Proclamations (substitute weekday when a bank holiday falls on a weekend — normally the following Monday; exclusive across Christmas/Boxing)"
                  "https://www.legislation.gov.uk/ukpga/1971/80"
                  "https://www.gov.uk/bank-holidays"))
+    (:au-substitute-day
+     :implements (:substitute-next)
+     :authority ("Fair Work Act 2009 (Cth) s. 115(2)-(3) — a day a State or Territory law substitutes for a listed holiday is the public holiday"
+                 "Every State and Territory public holiday act — New Year's Day and Australia Day on a Saturday or Sunday add the following Monday; Christmas Day and Boxing Day on a weekend add the next free weekdays (PM&C machine-readable data set 2014–2025)")
+     :uri ("https://www.legislation.gov.au/C2009A00028/latest/text"
+           "https://data.gov.au/data/dataset/australian-holidays-machine-readable-dataset"))
     (:jp-furikae
      :implements (:jp-furikae)
      :authority ("国民の祝日に関する法律（昭和23年法律第178号）第3条第2項 — 祝日が日曜日に当たるとき、その日後においてその日に最も近い国民の祝日でない日を休日とする（土曜は振替なし）")
@@ -205,6 +211,7 @@ accounting period (so a Saturday New Year's Day leaves Dec 31 open)."
   (case observed
     (:us-federal-in-lieu :nearest-weekday)
     (:uk-proclamation-substitute :next-weekday)
+    (:au-substitute-day :substitute-next)
     (otherwise observed)))
 
 (defun ru-new-year-holiday-block-p (date)
