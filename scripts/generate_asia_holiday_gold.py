@@ -1333,7 +1333,10 @@ def build(cc: str) -> None:
             for d, name in spec["cuti"](year):
                 lines.append(f"  ({d.year} {d.month} {d.day} {lisp_string(name)})")
         lines.append(" )")
-    lines.append(")")
+    if lines[-1] == " )":
+        lines[-1] = " ))"
+    else:
+        lines.append(")")
     out = ROOT / "data" / "tests" / f"{cc.lower()}-holiday-gold.sexp"
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"{cc}: {len(days)} days -> {out.relative_to(ROOT)}")

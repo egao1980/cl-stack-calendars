@@ -743,5 +743,4 @@
   (2027 5 18 "Cuti Bersama Iduladha 1448 H")
   (2027 5 19 "Cuti Bersama Waisak 2571 BE")
   (2027 12 24 "Cuti Bersama Kelahiran Yesus Kristus (Natal)")
- )
-)
+ ))

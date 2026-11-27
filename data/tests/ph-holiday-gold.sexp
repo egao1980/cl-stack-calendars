@@ -776,5 +776,4 @@
   (2040 12 25 "Christmas Day")
   (2040 12 30 "Rizal Day")
   (2040 12 31 "Last Day of the Year")
- )
-)
+ ))
