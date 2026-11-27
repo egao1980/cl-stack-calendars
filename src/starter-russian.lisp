@@ -4,8 +4,12 @@
 ;;;; Fixed dates from КЗоТ / ТК РФ with :FROM/:TO eras; annual Government
 ;;;; decree transfers loaded from data/ru/transfers.sexp.
 ;;;;
-;;;; Observance: :RU-TK-112-TRANSFER (ТК РФ ст. 112 ч. 2) except Jan 1–8,
-;;;; which are rearranged only by постановление Правительства.
+;;;; Observance: :RU-TK-112-TRANSFER (ТК РФ ст. 112 ч. 2). From 2013
+;;;; (ФЗ от 23.04.2012 № 35-ФЗ) weekends on 1–8 January are rearranged only
+;;;; by постановление Правительства; before 2013 they moved like any other.
+;;;; A decree transfer FROM a weekend holiday or its ч. 2 Monday replaces the
+;;;; automatic transfer (ч. 5). Years after RU-LAST-DECREE-YEAR are
+;;;; provisional (RU-PROVISIONAL-YEAR-P): ч. 2 transfers only.
 
 (defun %parse-transfer-entry (entry)
   "ENTRY is ((Y M D) (Y M D) [name]) → CALENDAR-TRANSFER."
@@ -62,6 +66,17 @@ Each FROM weekend is also recorded as a compensatory WORKING day."
                  :date from
                  :authority (calendar-transfer-authority tr))))
 
+(defun ru-last-decree-year ()
+  "The latest year with a decree block in data/ru/transfers.sexp."
+  (reduce #'max (ru-transfer-decrees) :key #'car))
+
+(defun ru-provisional-year-p (year)
+  "True when YEAR is after the last decree year: no Government decree on
+transfers is known yet, so the calendar applies the ТК ст. 112 holidays and
+the automatic ч. 2 weekend transfers only. A decree may still move days
+(ч. 5); treat such years as provisional."
+  (> year (ru-last-decree-year)))
+
 ;;;; --- USSR (late Soviet non-working holidays; settlement-oriented) --------
 ;;;; List follows common post-1965 / 1977-Constitution practice. Earlier
 ;;;; Soviet calendars (1920s–1950s) differed; extend with :FROM/:TO as needed.
@@ -92,6 +107,9 @@ Each FROM weekend is also recorded as a compensatory WORKING day."
 
 (define-calendar russian-holidays-calendar (:register "RU" :constructor russian-holidays-calendar)
   ;; --- New Year block ---
+  ;; Every January holiday carries :RU-TK-112-TRANSFER: before 2013 a January
+  ;; holiday on a weekend moved to the next working day like any other; from
+  ;; 2013 (ФЗ-35) RU-NEW-YEAR-HOLIDAY-BLOCK-P exempts 1–8 January.
   (:fixed "Новый год" 1 1 :from 1992
    :observed :ru-tk-112-transfer
    :authority "ТК РФ ст. 112 (Новогодние каникулы / Новый год)")
@@ -99,18 +117,25 @@ Each FROM weekend is also recorded as a compensatory WORKING day."
    :observed :ru-tk-112-transfer
    :authority "ТК РФ ст. 112 (до ФЗ-201: 1–2 января)")
   (:fixed "Новогодние каникулы" 1 2 :from 2005
+   :observed :ru-tk-112-transfer
    :authority "ФЗ от 29.12.2004 № 201-ФЗ; ТК РФ ст. 112")
   (:fixed "Новогодние каникулы" 1 3 :from 2005
+   :observed :ru-tk-112-transfer
    :authority "ФЗ от 29.12.2004 № 201-ФЗ; ТК РФ ст. 112")
   (:fixed "Новогодние каникулы" 1 4 :from 2005
+   :observed :ru-tk-112-transfer
    :authority "ФЗ от 29.12.2004 № 201-ФЗ; ТК РФ ст. 112")
   (:fixed "Новогодние каникулы" 1 5 :from 2005
+   :observed :ru-tk-112-transfer
    :authority "ФЗ от 29.12.2004 № 201-ФЗ; ТК РФ ст. 112")
   (:fixed "Новогодние каникулы" 1 6 :from 2013
+   :observed :ru-tk-112-transfer
    :authority "ФЗ от 23.04.2012 № 35-ФЗ; ТК РФ ст. 112")
   (:fixed "Рождество Христово" 1 7 :from 1991
+   :observed :ru-tk-112-transfer
    :authority "Указ Президента РСФСР / ТК РФ ст. 112 (Рождество — 7 января)")
   (:fixed "Новогодние каникулы" 1 8 :from 2013
+   :observed :ru-tk-112-transfer
    :authority "ФЗ от 23.04.2012 № 35-ФЗ; ТК РФ ст. 112")
 
   ;; --- Rest of year ---

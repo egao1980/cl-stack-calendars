@@ -38,10 +38,10 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `GBLO` | [gov.uk/bank-holidays](https://www.gov.uk/bank-holidays) | Published proclamation substitute dates |
 | `GBLO` | Special Royal Proclamations (s.1(2)–(3)) | Extras + relocated BH in `data/gb/proclamations.sexp` (VE 1995/2020, Jubilees 2002/2012/2022, Wedding 2011, State Funeral 2022-09-19, Coronation 2023), each citing its London Gazette notice. `find-calendar "GB"` / `"GBLO"` and `(uk-bank-holidays-calendar)` apply every year; `:year N` only that year |
 | `TARGET` | [ECB GC decision 14 Dec 2000](https://www.ecb.europa.eu/press/pr/date/2000/html/pr001214_4.en.html) | Long-term TARGET closing days (no weekend in-lieu) |
-| `RU` | [ТК РФ ст. 112](http://www.consultant.ru/document/cons_doc_LAW_34683/) | Non-working holidays + automatic weekend transfer (except 1–8 Jan) |
+| `RU` | [ТК РФ ст. 112](http://www.consultant.ru/document/cons_doc_LAW_34683/) | Non-working holidays + automatic weekend transfer (ч. 2; 1–8 Jan exempt from 2013); a ч. 5 decree moving the day cancels the automatic transfer |
 | `RU` | ФЗ от 29.12.2004 № 201-ФЗ | NY 1–5 Jan, Unity Day 4 Nov; drop 7 Nov & 12 Dec (from 2005) |
-| `RU` | ФЗ от 23.04.2012 № 35-ФЗ | NY block adds 6 and 8 Jan |
-| `RU` | Discretionary перенос acts (ПП / ФЗ) | Full corpus in `data/ru/transfers.sexp` (**1991–2026**); gaps 1998 & 2004 = no discretionary act (TK-only). 2000 = ФЗ-217 |
+| `RU` | ФЗ от 23.04.2012 № 35-ФЗ | NY block adds 6 and 8 Jan; weekends on 1–8 Jan no longer transfer automatically (applied from 2013) |
+| `RU` | Discretionary перенос acts (ПП / ФЗ) | Full corpus in `data/ru/transfers.sexp` (**1991–2027**; 2028+ provisional, `ru-provisional-year-p`); gaps 1998 & 2004 = no discretionary act (TK-only). 2000 = ФЗ-217 |
 | `USSR` | КЗоТ СССР / Указы Президиума ВС | Late-Soviet non-working days (see starter-russian.lisp) |
 | `JP` | [国民の祝日に関する法律](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html) | 祝日 list; Art. 3(2) 振替 from **1973-04-12** (昭和48年法律第10号) + 振替 chain; Art. 3(3) 国民の休日 from 1985 (Saturday included). Checked against [内閣府 CSV](https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv) 1955–2027 |
 | `JP` | 休日ニ関スル件（大正元年勅令19号 / 昭和2年勅令25号） | Imperial 祝祭日 1900–1948-07-19; day-precise 年号 (天長節 Meiji/Taisho/Showa, 先帝祭) |
@@ -81,7 +81,7 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `FI` `IE` `HR` `LT` `SI` `LV` `EE` `LU` `MT` | National statutes (starter-eu.lisp) | Eras for Brigid 2023, HR 2020 reform, LT Vėlinės 2020, LU Europe Day 2019 |
 | `country-calendar` | [date-holidays](https://github.com/commenthol/date-holidays) CC BY-SA 3.0 | 206 jurisdictions + 6 empty stubs; years 2000–2040 public/bank; outside them (and for stubs) `holiday-p` signals `calendar-out-of-range` unless `:strict nil` |
 
-Hand-maintained starters beat `country-calendar` when both exist (prefer `japan-holidays-calendar` / `china-holidays-calendar` / `russian-holidays-calendar` / `us-federal-holidays-calendar` over corpus `"JP"` / `"CN"` / `"RU"` / `"US"`).
+Hand-maintained starters beat `country-calendar` when both exist (prefer `japan-holidays-calendar` / `china-holidays-calendar` / `russian-holidays-calendar` / `us-federal-holidays-calendar` over corpus `"JP"` / `"CN"` / `"RU"` / `"US"`). `country-calendar "RU"` itself defers to `russian-holidays-calendar` (#13).
 
 ### Subnational composites
 
@@ -129,7 +129,7 @@ Reference loci: `+jerusalem+`, `+mecca+`, `+tokyo+`, `+beijing+`, `+delhi+`, `+u
 | `:us-federal-in-lieu` | 5 U.S.C. § 6103(b) + EO 11582 § 3(a) | Sat→Fri, Sun→Mon (Mon–Fri workweek) |
 | `:uk-proclamation-substitute` | BFDA 1971 + Royal Proclamations | next free weekday; exclusive across rules |
 | `:jp-furikae` | [祝日法](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html) Art. 3(2) | **Sunday only** → 翌日 from 1973-04-12; chain over consecutive 祝日 from 2007-01-01 (平成19年法律第5号) |
-| `:ru-tk-112-transfer` | ТК РФ ст. 112 ч. 2 | weekend∩holiday → next workday; **not** for 1–8 Jan |
+| `:ru-tk-112-transfer` | ТК РФ ст. 112 ч. 2, ч. 5 | weekend∩holiday → next workday; **not** for 1–8 Jan from 2013; cancelled when a decree transfer's FROM is the holiday or that workday |
 | `:nyse-rule-7-2` | NYSE Rule 7.2 | Sat→Fri, Sun→Mon, unless the Friday is the last weekday of its month (monthly / yearly accounting period) |
 
 Calendar flag `:sandwich-holidays-p` + `:sandwich-authority` implements 祝日法 Art. 3(3) (国民の休日).

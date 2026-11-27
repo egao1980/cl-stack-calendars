@@ -92,6 +92,13 @@ CALENDAR-PROVENANCE reports; DEFINE-CALENDAR classes default to :NORMATIVE."))
                    (%cached (calendar :suppressed)
                             (%date-set (calendar-suppressed-dates calendar))))))
 
+(defun %transfer-from-date-p (calendar date)
+  "True when DATE is the FROM of one of CALENDAR's decree transfers."
+  (values (gethash (date-rd date)
+                   (%cached (calendar :transfer-from)
+                     (%date-set (remove nil (mapcar #'calendar-transfer-from
+                                                    (calendar-transfers calendar))))))))
+
 (defun %rule-calendar-observed-p (calendar)
   "True when some rule of CALENDAR can place a substitute day. The furikae
 chain pass replaces per-rule observance, so it never does."
@@ -137,6 +144,10 @@ Two passes, so the result is the same for any order of the rules:
    substitute cannot take the same day).
 2. Substitutes are placed in nominal-date order (ties by name). Each one skips
    weekend days, every claimed day and every substitute placed before it.
+   Under a policy with :DECREE-CANCELS-SUBSTITUTE (ТК РФ ст. 112 ч. 5), a
+   substitute whose nominal date or own day is the FROM of a decree transfer
+   is not a holiday: the decree moved that rest day elsewhere. The day stays
+   claimed, so no later substitute takes it.
 
 Two rules on the same nominal date both keep it; HOLIDAY-P then reports both
 names. :BRIDGE extras are added last and claim nothing."
@@ -161,7 +172,10 @@ names. :BRIDGE extras are added last and claim nothing."
       (dolist (e (stable-sort (remove-if-not #'fourth entries) #'%substitute-entry<))
         (let ((d (place-substitute (second e) (fourth e) weekend-days #'claimedp)))
           (claim d)
-          (emit e d)))
+          (unless (and (observed-policy-decree-cancels-substitute-p (rule-observed (first e)))
+                       (or (%transfer-from-date-p calendar d)
+                           (%transfer-from-date-p calendar (second e))))
+            (emit e d))))
       (dolist (e entries)
         (let ((bridge (rule-bridge (first e)))
               (dates (gethash e dates-by-entry)))

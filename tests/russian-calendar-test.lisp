@@ -10,10 +10,13 @@
     (ok (holiday-p cal (make-date 2005 11 4)))))
 
 (deftest ru-era-2013-extends-january
-  "ФЗ-35: с 2013 в каникулах 6 и 8 января."
+  "ФЗ-35: с 2013 в каникулах 6 и 8 января. Before, 6 and 8 January were off
+only as ст. 112 ч. 2 transfers (2012-01-06 for Sunday 1 January, #13)."
   (let ((cal (russian-holidays-calendar)))
-    (ng (holiday-p cal (make-date 2012 1 6)))
+    (ng (holiday-p cal (make-date 2011 1 8)))
     (ng (holiday-p cal (make-date 2012 1 8)))
+    (ok (holiday-p cal (make-date 2012 1 6)))
+    (ng (holiday-p cal (make-date 2004 1 6)))
     (ok (holiday-p cal (make-date 2013 1 6)))
     (ok (holiday-p cal (make-date 2013 1 7)))
     (ok (holiday-p cal (make-date 2013 1 8)))))

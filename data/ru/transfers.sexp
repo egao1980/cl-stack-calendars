@@ -3,7 +3,12 @@
 ;;;; extra day off. Automatic ТК ст. 112 weekend∩holiday moves are *not*
 ;;;; listed here.
 ;;;;
-;;;; Coverage: every located normative act from Dec 1991 through 2026.
+;;;; A decree that moves the rest day of a weekend holiday outside 1–8 January
+;;;; records FROM as the Monday that ст. 112 ч. 2 would otherwise make a day
+;;;; off; the engine also accepts the holiday itself as FROM (ч. 5 cancels the
+;;;; automatic transfer either way).
+;;;;
+;;;; Coverage: every located normative act from Dec 1991 through 2027.
 ;;;; Years with no discretionary act (only automatic TK transfers): 1993
 ;;;; (aside from the NY span stored under 1994), 1998, 2004.
 ;;;;
@@ -182,7 +187,9 @@
   :uri "https://base.garant.ru/72067300/"
   :transfers (((2019 1 5) (2019 5 2) "с 5 января на 2 мая")
               ((2019 1 6) (2019 5 3) "с 6 января на 3 мая")
-              ((2019 2 23) (2019 5 10) "с 23 февраля на 10 мая")))
+              ;; The decree names the holiday ("с субботы 23 февраля"); FROM records the
+              ;; ст. 112 ч. 2 Monday it cancels, as the 2013 and 2014 blocks do.
+              ((2019 2 25) (2019 5 10) "с субботы 23 февраля на пятницу 10 мая")))
 
  (:year 2020
   :authority "Постановление Правительства РФ от 10.07.2019 № 875"
@@ -224,8 +231,9 @@
   :uri "https://www.consultant.ru/document/cons_doc_LAW_487367/"
   :transfers (((2025 1 4) (2025 5 2) "с 4 января на 2 мая")
               ((2025 1 5) (2025 12 31) "с 5 января на 31 декабря")
-              ((2025 2 23) (2025 5 8) "с 23 февраля на 8 мая")
-              ((2025 3 8) (2025 6 13) "с 8 марта на 13 июня")
+              ;; FROM = the ст. 112 ч. 2 Monday the decree cancels (decree text: 23 февраля, 8 марта).
+              ((2025 2 24) (2025 5 8) "с воскресенья 23 февраля на четверг 8 мая")
+              ((2025 3 10) (2025 6 13) "с субботы 8 марта на пятницу 13 июня")
               ((2025 11 1) (2025 11 3) "с 1 ноября на 3 ноября")))
 
  (:year 2026
@@ -233,4 +241,11 @@
   :uri "http://government.ru/dep_news/56309/"
   :transfers (((2026 1 3) (2026 1 9) "с 3 января на 9 января")
               ((2026 1 4) (2026 12 31) "с 4 января на 31 декабря")))
+
+ (:year 2027
+  :authority "Постановление Правительства РФ от 17.09.2026 № 1187"
+  :uri "http://static.government.ru/media/files/Rcbz6Xcgzzt7GLO5H0Ib0b1uNU5ARsKQ.pdf"
+  :transfers (((2027 1 2) (2027 11 5) "с субботы 2 января на пятницу 5 ноября")
+              ((2027 1 3) (2027 12 31) "с воскресенья 3 января на пятницу 31 декабря")
+              ((2027 2 20) (2027 2 22) "с субботы 20 февраля на понедельник 22 февраля")))
 )
