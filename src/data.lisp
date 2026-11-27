@@ -137,6 +137,8 @@ against a different data root."
                  *vn-notices*
                  *th-bank*
                  *th-lunar*
+                 *bd-holidays*
+                 *pk-holidays*
                  *np-gazette* *lk-poya* *sg-gazette* *kh-gazette*
                  *co-transfers* *cl-transfers* *ar-transfers* *nyse-special-closures*))
     (when (boundp sym)

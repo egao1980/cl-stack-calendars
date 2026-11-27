@@ -272,6 +272,18 @@
    #:uganda-holidays-calendar
    #:ghana-holidays-calendar
    #:pakistan-holidays-calendar
+   #:pk-estimated-year-p
+   #:pk-provisional-year-p
+   #:pk-confidence
+   #:pk-decree-rows
+   #:*pk-last-list-year*
+   #:bd-estimated-year-p
+   #:bd-provisional-year-p
+   #:bd-confidence
+   #:bd-decree-rows
+   #:*bd-last-list-year*
+   #:bd-jumatul-bida-estimates
+   #:load-south-asia-blocks
    #:egypt-holidays-calendar
    #:turkey-holidays-calendar
    #:iran-holidays-calendar
