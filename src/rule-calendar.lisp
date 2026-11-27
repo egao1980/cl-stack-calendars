@@ -179,7 +179,10 @@ sorted and joined with \"; \", or T when none of them is a string."
   "Hash-table RD → holiday name for all RULE occurrences in YEAR, applying
 observance substitutes (independent of rule order, see
 %OBSERVE-RULE-ENTRIES), optional sandwich days, and decree TRANSFERS whose TO
-date falls in YEAR (or adjacent for Dec 31 ↔ Jan moves)."
+date falls in YEAR. A transfer goes only into the map of its own year: the
+map of the year before may hold a rule day such as a substitute that runs
+into January, but never another year's transfer, so HOLIDAY-P (which reads
+YEAR-1 first) cannot name a rule holiday after a transfer."
   (let ((pairs (%observe-rule-entries calendar year)))
     (when (calendar-sandwich-holidays-p calendar)
       ;; :SANDWICH-FROM is a year or a date: sandwich days start on that day.
@@ -206,7 +209,7 @@ date falls in YEAR (or adjacent for Dec 31 ↔ Jan moves)."
       (dolist (tr (calendar-transfers calendar))
         (let ((to (calendar-transfer-to tr)))
           (when (and to
-                     (<= (1- year) (date-year to) (1+ year))
+                     (= (date-year to) year)
                      (not (%suppressed-date-p calendar to)))
             (unless (gethash (date-rd to) map)
               (setf (gethash (date-rd to) map)
@@ -314,7 +317,8 @@ rearrangements in starter calendars (normative source of truth)."
                                          :from ,(%bound-form from)
                                          :to ,(%bound-form to))))))))
 
-(defmacro define-calendar (name (&key register (weekend-days nil weekend-days-p)
+(defmacro define-calendar (name (&key register constructor
+                                      (weekend-days nil weekend-days-p)
                                       sandwich-holidays-p sandwich-authority
                                       sandwich-from
                                       furikae-chain-p furikae-from
@@ -333,6 +337,13 @@ Each clause:
 
 AUTHORITY is the normative citation (statute, EO, ECB decision, proclamation).
 It is the source of truth for civil :FROM/:TO and for OBSERVED rearrangements.
+
+REGISTER names the calendar in the registry (FIND-CALENDAR). By default the
+registered calendar is (MAKE-INSTANCE NAME). With CONSTRUCTOR, a symbol naming
+a function of no required arguments, the registry calls that function instead
+(REGISTER-CALENDAR-CONSTRUCTOR): starters whose data files add days
+(proclamations, decrees, gazettes) register their constructor, so the
+registered calendar carries every year of that data.
 
 WEEKEND-DAYS is a form giving a weekday list such as '(5 6) or an era list
 such as '((nil 4 5) ((2013 6 29) 5 6)). Without it, a calendar with REGISTER
@@ -378,5 +389,7 @@ CALENDAR-TRANSFERS / MAKE-RUSSIAN-HOLIDAYS-CALENDAR — not in this macro."
         :furikae-chain-from ,(%bound-form furikae-chain-from)
         :rules (list ,@(mapcar #'%holiday-rule-constructor-form rules))))
      ,@(when register
-         `((register-calendar ,register (make-instance ',name))))
+         (if constructor
+             `((register-calendar-constructor ,register ',constructor))
+             `((register-calendar ,register (make-instance ',name)))))
      ',name))

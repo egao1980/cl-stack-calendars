@@ -375,7 +375,7 @@
 
 ;;; --- Asia / Pacific -------------------------------------------------------
 
-(define-calendar cambodia-holidays-calendar (:register "KH")
+(define-calendar cambodia-holidays-calendar (:register "KH" :constructor cambodia-holidays-calendar)
   (:fixed "New Year's Day" 1 1 :from 1953 :authority "Public holiday")
   (:fixed "Victory over Genocide Day" 1 7 :from 1979
    :authority "Liberation from Khmer Rouge — 7 January 1979")
@@ -460,7 +460,7 @@
   (:computed "Orozo Ait" #'eid-al-fitr :from 1991 :authority "Eid al-Fitr (tabular)")
   (:computed "Kurman Ait" #'eid-al-adha :from 1991 :authority "Eid al-Adha (tabular)"))
 
-(define-calendar singapore-holidays-calendar (:register "SG")
+(define-calendar singapore-holidays-calendar (:register "SG" :constructor singapore-holidays-calendar)
   (:fixed "New Year's Day" 1 1 :from 1965 :authority "Public holiday")
   (:computed "Chinese New Year" #'chinese-new-year-date :from 1965
    :authority "Lunar New Year (computed)")
@@ -744,8 +744,13 @@
 (defun sierra-leone-holidays-calendar () (make-instance 'sierra-leone-holidays-calendar))
 (defun south-sudan-holidays-calendar () (make-instance 'south-sudan-holidays-calendar))
 (defun cambodia-holidays-calendar (&key year transfers)
-  "Cambodia public holidays. YEAR attaches gazetted Buddhist holiday block."
-  (let ((tr (or transfers (when year (kh-gazette-transfers-for-year year)))))
+  "Cambodia public holidays with the gazetted Buddhist holiday blocks of
+data/kh/gazette-holidays.sexp. Without YEAR, every year in the file applies
+(the registered \"KH\" calendar); with YEAR, only that year's days."
+  (let ((tr (or transfers
+                (if year
+                    (kh-gazette-transfers-for-year year)
+                    (all-block-transfers (kh-gazette))))))
     (make-instance 'cambodia-holidays-calendar :transfers tr)))
 (defun laos-holidays-calendar () (make-instance 'laos-holidays-calendar))
 (defun tajikistan-holidays-calendar () (make-instance 'tajikistan-holidays-calendar))
@@ -754,8 +759,13 @@
 (defun hong-kong-holidays-calendar () (make-instance 'hong-kong-holidays-calendar))
 (defun kyrgyzstan-holidays-calendar () (make-instance 'kyrgyzstan-holidays-calendar))
 (defun singapore-holidays-calendar (&key year transfers)
-  "Singapore public holidays. YEAR attaches MOM gazetted Vesak/Deepavali/Hari Raya."
-  (let ((tr (or transfers (when year (sg-gazette-transfers-for-year year)))))
+  "Singapore public holidays with the MOM gazetted Vesak/Deepavali/Hari Raya
+days of data/sg/gazette-holidays.sexp. Without YEAR, every year in the file
+applies (the registered \"SG\" calendar); with YEAR, only that year's days."
+  (let ((tr (or transfers
+                (if year
+                    (sg-gazette-transfers-for-year year)
+                    (all-block-transfers (sg-gazette))))))
     (make-instance 'singapore-holidays-calendar :transfers tr)))
 (defun switzerland-holidays-calendar () (make-instance 'switzerland-holidays-calendar))
 (defun norway-holidays-calendar () (make-instance 'norway-holidays-calendar))

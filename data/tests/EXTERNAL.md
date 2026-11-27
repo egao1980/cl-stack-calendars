@@ -11,7 +11,8 @@ vacanza/holidays has no CL client; those blocks stay as a frozen dump in the sex
 
 | Source | Kind | What we compare |
 |--------|------|-----------------|
-| [gov.uk bank-holidays.json](https://www.gov.uk/bank-holidays.json) | Official (OGL) | England & Wales vs `(uk-bank-holidays-calendar :year N)` |
+| [gov.uk bank-holidays.json](https://www.gov.uk/bank-holidays.json) | Official (OGL) | England & Wales 2019–2028 vs `(uk-bank-holidays-calendar :year N)` and the registered `GB` / `GBLO` |
+| [gov.uk, archived](https://web.archive.org/web/20190105193750id_/https://www.gov.uk/bank-holidays.json) (`govuk-archive`) | Official (OGL), frozen | England & Wales 2012–2018, which the live file no longer lists. Kept as is by the refresh script; agrees with the 2012, 2013 and 2016 snapshots. Checked against the registered `GB` / `GBLO` and `country-calendar "GB"` |
 | [内閣府 syukujitsu.csv](https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv) | Official | 1955–2027 vs `JP` starter |
 | [vacanza/holidays](https://github.com/vacanza/holidays) 0.82 | Computational (MIT) | Independent of date-holidays. Asserted: USFED (weekdays), TARGET, DE, FR, JP. GBLO is locked by gov.uk (vacanza keeps weekend Christmas). |
 

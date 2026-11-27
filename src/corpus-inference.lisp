@@ -100,7 +100,7 @@ those years signals CALENDAR-OUT-OF-RANGE."
   "Register normative starters for corpus-only country codes."
   (dolist (entry (list-country-calendars))
     (let ((code (first entry)))
-      (unless (find-calendar code :errorp nil)
+      (unless (calendar-registered-p code)
         (let ((cal (make-corpus-inferred-calendar code)))
           (when cal
             (register-calendar code cal)))))))

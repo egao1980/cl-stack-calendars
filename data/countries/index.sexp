@@ -70,7 +70,7 @@
  ("FO" "Faroe Islands" 615)
  ("FR" "France" 451)
  ("GA" "Gabon" 455)
- ("GB" "United Kingdom" 327)
+ ("GB" "United Kingdom" 370)
  ("GD" "Grenada" 533)
  ("GE" "Georgia" 697)
  ("GF" "French Guiana" 492)

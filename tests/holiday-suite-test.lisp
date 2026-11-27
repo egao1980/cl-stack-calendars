@@ -357,14 +357,18 @@
 ;;; --- gazette constructors vs bare registry ----------------------------
 
 (deftest year-bound-constructors-add-gazette-days
-  (ng (holiday-p (find-calendar "CN") (make-date 2026 2 15)))
+  "The :YEAR constructors and the registered calendar (every data year, #14)
+both carry the gazette/decree days; MAKE-INSTANCE alone has the rules only."
+  (ok (holiday-p (find-calendar "CN") (make-date 2026 2 15)))
   (ok (holiday-p (china-holidays-calendar :year 2026) (make-date 2026 2 15)))
-  (ng (holiday-p (find-calendar "IN") (make-date 2024 11 1)))
+  (ng (holiday-p (make-instance 'china-holidays-calendar) (make-date 2026 2 15)))
+  (ok (holiday-p (find-calendar "IN") (make-date 2024 11 1)))
   (ok (holiday-p (india-holidays-calendar :year 2024) (make-date 2024 11 1)))
-  (ok (holiday-p (find-calendar "GBLO") (make-date 2022 5 30)))
+  (ng (holiday-p (find-calendar "GBLO") (make-date 2022 5 30)))
   (ng (holiday-p (uk-bank-holidays-calendar :year 2022) (make-date 2022 5 30)))
+  (ok (holiday-p (make-instance 'uk-bank-holidays-calendar) (make-date 2022 5 30)))
   (ok (business-day-p (russian-holidays-calendar :year 2024) (make-date 2024 4 27)))
-  (ng (business-day-p (find-calendar "RU") (make-date 2024 4 27))))
+  (ok (business-day-p (find-calendar "RU") (make-date 2024 4 27))))
 
 ;;; --- exchange holiday overlay -----------------------------------------
 

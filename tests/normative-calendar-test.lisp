@@ -206,7 +206,7 @@
 
 (deftest india-dopt-diwali-2024
   (let ((cal (india-holidays-calendar :year 2024))
-        (bare (india-holidays-calendar)))
+        (bare (make-instance 'india-holidays-calendar)))
     (ok (holiday-p cal (make-date 2024 11 1)))
     (ok (holiday-p cal (make-date 2024 3 25))) ; Holi
     (ng (holiday-p bare (make-date 2024 11 1)))))
@@ -234,18 +234,20 @@
   (let ((cal (colombia-holidays-calendar)))
     ;; Reyes 2025: Jan 6 is Monday → stays Jan 6
     (ok (holiday-p cal (make-date 2025 1 6)))
-    ;; 2025 Jul 20 Sunday → Emiliani Monday Jul 21 is in puente corpus
-    (ok (holiday-p (colombia-holidays-calendar :year 2025) (make-date 2025 7 21)))))
+    ;; 20 Jul is fixed under Ley 51/1983 (not moved): 2025-07-20 is the
+    ;; Sunday holiday and Monday 21 Jul is a working day (#14, #15).
+    (ok (holiday-p cal (make-date 2025 7 20)))
+    (ng (holiday-p (colombia-holidays-calendar :year 2025) (make-date 2025 7 21)))))
 
 (deftest chile-bridge-2024
   (let ((cal (chile-holidays-calendar :year 2024))
-        (bare (chile-holidays-calendar)))
+        (bare (make-instance 'chile-holidays-calendar)))
     (ok (holiday-p cal (make-date 2024 9 20)))
     (ng (holiday-p bare (make-date 2024 9 20)))))
 
 (deftest philippines-proclamation-2025
   (let ((cal (philippines-holidays-calendar :year 2025))
-        (bare (philippines-holidays-calendar)))
+        (bare (make-instance 'philippines-holidays-calendar)))
     (ok (holiday-p cal (make-date 2025 4 11))) ; Holy Week bridge
     (ng (holiday-p bare (make-date 2025 4 11)))
     (ok (holiday-p cal (make-date 2025 12 26))) ; Rizal bridge
@@ -402,7 +404,7 @@
 
 (deftest indonesia-cuti-bersama-2025
   (let ((cal (indonesia-holidays-calendar :year 2025))
-        (bare (indonesia-holidays-calendar)))
+        (bare (make-instance 'indonesia-holidays-calendar)))
     (ok (holiday-p cal (make-date 2025 1 28)))
     (ok (holiday-p cal (make-date 2025 4 7)))
     (ng (holiday-p bare (make-date 2025 1 28)))))
@@ -416,7 +418,7 @@
 (deftest korea-temporary-holiday-2024-armed-forces
   "2024-10-01 임시공휴일 (국군의 날)."
   (let ((cal (south-korea-holidays-calendar :year 2024))
-        (bare (south-korea-holidays-calendar)))
+        (bare (make-instance 'south-korea-holidays-calendar)))
     (ok (holiday-p cal (make-date 2024 10 1)))
     (ng (holiday-p bare (make-date 2024 10 1)))
     (ok (holiday-p cal (make-date 2024 10 3))))) ; 개천절 still
@@ -431,7 +433,7 @@
 (deftest gb-platinum-jubilee-2022
   "Spring BH relocated May 30 → Jun 2; extra Jun 3."
   (let ((cal (uk-bank-holidays-calendar :year 2022))
-        (bare (uk-bank-holidays-calendar)))
+        (bare (make-instance 'uk-bank-holidays-calendar)))
     (ng (holiday-p cal (make-date 2022 5 30)))
     (ok (holiday-p bare (make-date 2022 5 30)))
     (ok (holiday-p cal (make-date 2022 6 2)))
@@ -507,24 +509,24 @@
   (ok (np-gazette-for-year 2025))
   (let ((cal (nepal-holidays-calendar :year 2025)))
     (ok (holiday-p cal (make-date 2025 10 2))) ; Vijaya Dashami
-    (ng (holiday-p (nepal-holidays-calendar) (make-date 2025 10 2)))))
+    (ng (holiday-p (make-instance 'nepal-holidays-calendar) (make-date 2025 10 2)))))
 
 (deftest lk-poya-gazette-2024
   (ok (lk-poya-for-year 2024))
   (let ((cal (sri-lanka-holidays-calendar :year 2024)))
     (ok (holiday-p cal (make-date 2024 1 3))) ; Poya
-    (ng (holiday-p (sri-lanka-holidays-calendar) (make-date 2024 1 3)))))
+    (ng (holiday-p (make-instance 'sri-lanka-holidays-calendar) (make-date 2024 1 3)))))
 
 (deftest kh-gazette-vesak-2024
   (ok (kh-gazette-for-year 2024))
   (let ((cal (cambodia-holidays-calendar :year 2024)))
     (ok (holiday-p cal (make-date 2024 5 22))) ; Visak Bochea
-    (ng (holiday-p (cambodia-holidays-calendar) (make-date 2024 5 22)))))
+    (ng (holiday-p (make-instance 'cambodia-holidays-calendar) (make-date 2024 5 22)))))
 
 (deftest sg-gazette-vesak-deepavali-2025
   (ok (sg-gazette-for-year 2025))
   (let ((cal (singapore-holidays-calendar :year 2025))
-        (bare (singapore-holidays-calendar)))
+        (bare (make-instance 'singapore-holidays-calendar)))
     (ok (holiday-p cal (make-date 2025 5 12))) ; Vesak
     (ok (holiday-p cal (make-date 2025 10 20))) ; Deepavali
     (ng (holiday-p bare (make-date 2025 5 12)))
@@ -533,7 +535,7 @@
 (deftest india-dopt-backfill-2015
   (ok (in-dopt-for-year 2015))
   (let ((cal (india-holidays-calendar :year 2015))
-        (bare (india-holidays-calendar)))
+        (bare (make-instance 'india-holidays-calendar)))
     (ok (holiday-p cal (make-date 2015 11 11))) ; Diwali
     (ng (holiday-p bare (make-date 2015 11 11)))))
 
