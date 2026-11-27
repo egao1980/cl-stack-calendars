@@ -54,3 +54,17 @@ which made the old NCONC over these lists destructive)."
         append (loop for tr in (getf plist :transfers)
                      when (%transfer-touches-year-p tr year)
                        collect tr)))
+
+(defun all-block-transfers (blocks)
+  "A fresh list of every CALENDAR-TRANSFER in BLOCKS, for all years. BLOCKS is
+a cached corpus ((KEY . PLIST) …) with the transfers under :TRANSFERS, as for
+TRANSFERS-TOUCHING-YEAR. A calendar built from this list is, on every day of
+every year Y, the same as one built from TRANSFERS-TOUCHING-YEAR of Y (#14)."
+  (loop for (nil . plist) in blocks
+        append (copy-list (getf plist :transfers))))
+
+(defun all-block-working-days (blocks)
+  "A fresh list of every CALENDAR-WORKING-DAY under :WORKING in BLOCKS, for
+all years (compensatory work days of RU decrees and CN notices)."
+  (loop for (nil . plist) in blocks
+        append (copy-list (getf plist :working))))

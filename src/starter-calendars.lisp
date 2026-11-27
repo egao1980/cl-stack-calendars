@@ -122,7 +122,13 @@
                     when (= (date-year d) year)
                     collect d)))
 
-(define-calendar uk-bank-holidays-calendar (:register "GBLO")
+(defun gb-all-suppressed ()
+  "Every statutory rule date suppressed (relocated) by a proclamation in the
+file, fresh."
+  (loop for (nil . plist) in (gb-proclamations)
+        append (copy-list (getf plist :suppressed))))
+
+(define-calendar uk-bank-holidays-calendar (:register "GBLO" :constructor uk-bank-holidays-calendar)
   ;; Common-law / customary (not in Bank Holidays Act 1871; observed as rest days).
   (:easter "Good Friday" -2 :from 1900
    :authority ("Common law Good Friday; Banking and Financial Dealings Act 1971"
@@ -165,14 +171,24 @@
 (defun us-federal-holidays-calendar () (make-instance 'us-federal-holidays-calendar))
 
 (defun uk-bank-holidays-calendar (&key year transfers suppressed-dates)
-  "England & Wales bank holidays. YEAR attaches special proclamations
-(extra BH + relocated Spring/Early May with suppressed original dates)."
-  (let ((tr (or transfers (when year (gb-transfers-for-year year))))
-        (sup (or suppressed-dates (when year (gb-suppressed-for-year year)))))
+  "England & Wales bank holidays with the special proclamations of
+data/gb/proclamations.sexp (extra bank holidays, and Spring/Early May
+holidays relocated with their original dates suppressed). Without YEAR, every
+proclamation in the file applies (this is the registered \"GB\" / \"GBLO\"
+calendar); with YEAR, only those touching that year. TRANSFERS and
+SUPPRESSED-DATES, when given, replace the file's lists."
+  (let ((tr (or transfers
+                (if year
+                    (gb-transfers-for-year year)
+                    (all-block-transfers (gb-proclamations)))))
+        (sup (or suppressed-dates
+                 (if year
+                     (gb-suppressed-for-year year)
+                     (gb-all-suppressed)))))
     (make-instance 'uk-bank-holidays-calendar
                    :transfers tr
                    :suppressed-dates sup)))
 
 ;; ISO aliases for population-order / country-code lookup
 (register-calendar "US" (us-federal-holidays-calendar))
-(register-calendar "GB" (uk-bank-holidays-calendar))
+(register-calendar-constructor "GB" 'uk-bank-holidays-calendar)

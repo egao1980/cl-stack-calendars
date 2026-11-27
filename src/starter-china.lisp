@@ -57,7 +57,7 @@
                     when (= (date-year (calendar-working-day-date wd)) year)
                     collect wd)))
 
-(define-calendar china-holidays-calendar (:register "CN")
+(define-calendar china-holidays-calendar (:register "CN" :constructor china-holidays-calendar)
   (:fixed "元旦" 1 1 :from 1949
    :authority "全国年节及纪念日放假办法（元旦）")
   ;; 春节: 除夕 from 2025 revision; 初一–初三 historically / confirmed in 办法
@@ -97,10 +97,19 @@
    :authority "全国年节及纪念日放假办法（国庆节）"))
 
 (defun china-holidays-calendar (&key year transfers working-days)
-  "PRC holiday calendar. YEAR attaches every 国办调休 TO/上班 day that
-falls in that year (cross-year NY blocks included)."
-  (let ((tr (or transfers (when year (cn-transfers-for-year year))))
-        (wd (or working-days (when year (cn-working-days-for-year year)))))
+  "PRC holiday calendar with the 国办调休 notices of data/cn/transfers.sexp
+(TO → day off; 上班 → working day). Without YEAR, every notice in the file
+applies (this is the registered \"CN\" calendar); with YEAR, only the days
+that fall in that year (cross-year NY blocks included). TRANSFERS and
+WORKING-DAYS, when given, replace the file's lists."
+  (let ((tr (or transfers
+                (if year
+                    (cn-transfers-for-year year)
+                    (all-block-transfers (cn-transfer-notices)))))
+        (wd (or working-days
+                (if year
+                    (cn-working-days-for-year year)
+                    (all-block-working-days (cn-transfer-notices))))))
     (make-instance 'china-holidays-calendar
                    :transfers tr
                    :working-days wd)))

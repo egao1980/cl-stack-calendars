@@ -35,7 +35,7 @@
   "DoPT gazetted festival TO days in YEAR."
   (transfers-touching-year (in-dopt-holidays) year))
 
-(define-calendar india-holidays-calendar (:register "IN")
+(define-calendar india-holidays-calendar (:register "IN" :constructor india-holidays-calendar)
   (:fixed "Republic Day" 1 26 :from 1950
    :authority ("Negotiable Instruments Act 1881 — national holiday"
                "Constitution of India — Republic Day from 1950"))
@@ -60,7 +60,12 @@
    :authority "DoPT gazetted — Prophet Mohammad's Birthday (tabular)"))
 
 (defun india-holidays-calendar (&key year transfers)
-  "Indian public holidays. YEAR attaches DoPT OM gazetted Hindu/lunar set."
+  "Indian public holidays with the DoPT OM gazetted Hindu/lunar days of
+data/in/dopt-holidays.sexp. Without YEAR, every OM in the file applies (this
+is the registered \"IN\" calendar); with YEAR, only that year's days.
+TRANSFERS, when given, replaces the file's list."
   (let ((tr (or transfers
-                (when year (in-dopt-transfers-for-year year)))))
+                (if year
+                    (in-dopt-transfers-for-year year)
+                    (all-block-transfers (in-dopt-holidays))))))
     (make-instance 'india-holidays-calendar :transfers tr)))

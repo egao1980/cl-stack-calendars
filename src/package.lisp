@@ -422,6 +422,10 @@
    #:no-business-day
    #:no-business-day-date
    #:no-business-day-calendar
-   #:no-business-day-direction))
+   #:no-business-day-direction
+   #:register-calendar-constructor
+   #:calendar-registered-p
+   #:all-block-transfers
+   #:all-block-working-days))
 
 (in-package #:cl-stack-calendars)

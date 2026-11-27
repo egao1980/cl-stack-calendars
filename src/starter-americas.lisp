@@ -86,7 +86,7 @@
    :authority "LFT — 25 de diciembre"))
 
 ;;; Colombia (floor 1900; Ley 51/1983 Emiliani Monday + decree puentes)
-(define-calendar colombia-holidays-calendar (:register "CO")
+(define-calendar colombia-holidays-calendar (:register "CO" :constructor colombia-holidays-calendar)
   (:fixed "Año Nuevo" 1 1 :from 1900 :authority "Festivo nacional")
   (:computed "Día de los Reyes Magos"
    (lambda (y) (co-emiliani-monday y 1 6)) :from 1984
@@ -270,7 +270,7 @@
   (transfers-touching-year (cl-transfers) year))
 
 ;;; Chile (floor 1900; Ley 19.973/2004 Monday moves + bridge decrees)
-(define-calendar chile-holidays-calendar (:register "CL")
+(define-calendar chile-holidays-calendar (:register "CL" :constructor chile-holidays-calendar)
   (:fixed "Año Nuevo" 1 1 :from 1900 :authority "Feriado legal")
   (:easter "Viernes Santo" -2 :from 1900 :authority "Feriado legal")
   (:fixed "Día del Trabajador" 5 1 :from 1900 :authority "Feriado legal")
@@ -298,8 +298,13 @@
 (defun brazil-holidays-calendar () (make-instance 'brazil-holidays-calendar))
 (defun mexico-holidays-calendar () (make-instance 'mexico-holidays-calendar))
 (defun colombia-holidays-calendar (&key year transfers)
-  "Colombian national holidays. YEAR attaches decree puente / extra days."
-  (let ((tr (or transfers (when year (co-transfers-for-year year)))))
+  "Colombian national holidays with the decree puente / extra days of
+data/co/transfers.sexp. Without YEAR, every year in the file applies (the
+registered \"CO\" calendar); with YEAR, only that year's days."
+  (let ((tr (or transfers
+                (if year
+                    (co-transfers-for-year year)
+                    (all-block-transfers (co-transfers))))))
     (make-instance 'colombia-holidays-calendar :transfers tr)))
 
 (defun argentina-holidays-calendar () (make-instance 'argentina-holidays-calendar))
@@ -308,6 +313,11 @@
 (defun australia-holidays-calendar () (make-instance 'australia-holidays-calendar))
 (defun venezuela-holidays-calendar () (make-instance 'venezuela-holidays-calendar))
 (defun chile-holidays-calendar (&key year transfers)
-  "Chilean public holidays. YEAR attaches bridge-day decree extras."
-  (let ((tr (or transfers (when year (cl-transfers-for-year year)))))
+  "Chilean public holidays with the bridge-day laws of data/cl/transfers.sexp.
+Without YEAR, every year in the file applies (the registered \"CL\"
+calendar); with YEAR, only that year's days."
+  (let ((tr (or transfers
+                (if year
+                    (cl-transfers-for-year year)
+                    (all-block-transfers (cl-transfers))))))
     (make-instance 'chile-holidays-calendar :transfers tr)))

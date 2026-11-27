@@ -36,7 +36,7 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `GBLO` | [Banking and Financial Dealings Act 1971](https://www.legislation.gov.uk/ukpga/1971/80) s.1 & Sch.1 | Statutory bank holidays + proclamation power |
 | `GBLO` | [Bank Holidays Act 1871](https://en.wikipedia.org/wiki/Bank_Holidays_Act_1871) | England & Wales: Easter Mon, Whit Mon, first Mon Aug, Boxing Day (research window from 1900); Whit/Aug replaced experimentally 1965, permanently BFDA 1971 |
 | `GBLO` | [gov.uk/bank-holidays](https://www.gov.uk/bank-holidays) | Published proclamation substitute dates |
-| `GBLO` | Special Royal Proclamations (s.1(2)–(3)) | Extras + relocated BH in `data/gb/proclamations.sexp` (VE 1995/2020, Jubilees 2002/2012/2022, Wedding 2011, State Funeral 2022-09-19, Coronation 2023). Use `(uk-bank-holidays-calendar :year N)` |
+| `GBLO` | Special Royal Proclamations (s.1(2)–(3)) | Extras + relocated BH in `data/gb/proclamations.sexp` (VE 1995/2020, Jubilees 2002/2012/2022, Wedding 2011, State Funeral 2022-09-19, Coronation 2023), each citing its London Gazette notice. `find-calendar "GB"` / `"GBLO"` and `(uk-bank-holidays-calendar)` apply every year; `:year N` only that year |
 | `TARGET` | [ECB GC decision 14 Dec 2000](https://www.ecb.europa.eu/press/pr/date/2000/html/pr001214_4.en.html) | Long-term TARGET closing days (no weekend in-lieu) |
 | `RU` | [ТК РФ ст. 112](http://www.consultant.ru/document/cons_doc_LAW_34683/) | Non-working holidays + automatic weekend transfer (except 1–8 Jan) |
 | `RU` | ФЗ от 29.12.2004 № 201-ФЗ | NY 1–5 Jan, Unity Day 4 Nov; drop 7 Nov & 12 Dec (from 2005) |
@@ -62,8 +62,8 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `PH` | RA / proclamations | Ninoy Aquino Day 2004; EDSA 1986; Independence 4 Jul→12 Jun. Bridge days in `data/ph/proclamations.sexp` (**2024–2026**). `(philippines-holidays-calendar :year N)` |
 | `TH` | Royal Gazette / Cabinet | Statutory list + substitute days in `data/th/transfers.sexp` (**2024–2026**). `(thailand-holidays-calendar :year N)` |
 | `MY` | JPM / PMO cuti persekutuan | Federal set + extras in `data/my/transfers.sexp` (**2024–2026**). `(malaysia-holidays-calendar :year N)` |
-| `CO` | Ley 51/1983 Emiliani + Decreto puente | Monday moves via `co-emiliani-monday`; puentes in `data/co/transfers.sexp` (**2024–2026**). `(colombia-holidays-calendar :year N)` |
-| `CL` | Ley 19.973/2004 + D.O. puentes | Monday moves + bridge extras in `data/cl/transfers.sexp` (**2010–2026**; 2010–2023 corpus backfill). `(chile-holidays-calendar :year N)` |
+| `CO` | [Ley 51/1983](https://apps.procuraduria.gov.co/gd_1952/docs/l0051_83.htm) (Emiliani) | Monday moves via `co-emiliani-monday`. `data/co/transfers.sexp` is empty since 0.12.0: the "puentes" it held have no legal basis (#15) |
+| `CL` | Ley 19.973/2004; [Ley 20.215](https://www.bcn.cl/leychile/navegar?idLey=20215), [Ley 20.983](https://www.bcn.cl/leychile/navegar?idLey=20983) | Monday moves + bridge extras in `data/cl/transfers.sexp` (**2010–2026**; 2010–2023 corpus backfill; bogus 2025/2026-09-17 removed in 0.12.0). The registered `CL` applies every year |
 | `SD` `IQ` `AF` `AO` `UZ` | National statutes (starter-mena/africa/asia.lisp) | ≥35M fill: Sudan Coptic+Islamic; Iraq National Day/Victory/Ghadir; AF Independence + Nowruz to 2020; AO Liberation/Peace eras; UZ Navro'z/Independence |
 | `MZ` `MG` `CM` `CI` `NE` `BF` `ML` `MW` `ZM` `YE` `SY` `KP` `NP` `LK` `VE` `CL` `KZ` | National statutes (starter-africa/mena/asia/americas.lisp) | ≥20M normative fill with `:from`/`:to` eras |
 | `DE` | Feiertagsgesetze / Einigungsvertrag Art. 2 | Bundeseinheitliche Feiertage; 17. Juni Einheit 1954–1990, then 3. Oktober from 1990 |

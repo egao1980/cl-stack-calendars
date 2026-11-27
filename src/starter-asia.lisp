@@ -35,7 +35,7 @@
   (transfers-touching-year (id-cuti-bersama) year))
 
 ;;; Indonesia (formation 1945)
-(define-calendar indonesia-holidays-calendar (:register "ID")
+(define-calendar indonesia-holidays-calendar (:register "ID" :constructor indonesia-holidays-calendar)
   (:fixed "Tahun Baru Masehi" 1 1 :from 1946
    :authority "Libur nasional sejak 1946; Keppres tahunan")
   (:computed "Tahun Baru Imlek"
@@ -106,7 +106,7 @@
    :authority "Prophet's birthday (tabular)"))
 
 ;;; Philippines (1946)
-(define-calendar philippines-holidays-calendar (:register "PH")
+(define-calendar philippines-holidays-calendar (:register "PH" :constructor philippines-holidays-calendar)
   (:fixed "New Year's Day" 1 1 :from 1946
    :authority "Republic Act / Proclamation — regular holiday")
   (:fixed "EDSA People Power Revolution Anniversary" 2 25 :from 1986
@@ -174,7 +174,7 @@
    :authority "Ngày Văn hóa các dân tộc Việt Nam — nghỉ lễ từ 2026"))
 
 ;;; Thailand (floor 1900)
-(define-calendar thailand-holidays-calendar (:register "TH")
+(define-calendar thailand-holidays-calendar (:register "TH" :constructor thailand-holidays-calendar)
   (:fixed "New Year's Day" 1 1 :from 1900
    :authority "Public holiday (Gregorian New Year)")
   (:computed "Makha Bucha"
@@ -352,7 +352,7 @@
 (defun sg-gazette-transfers-for-year (year)
   (gazette-transfers-for-year (sg-gazette) year))
 
-(define-calendar south-korea-holidays-calendar (:register "KR")
+(define-calendar south-korea-holidays-calendar (:register "KR" :constructor south-korea-holidays-calendar)
   (:fixed "신정" 1 1 :from 1948
    :authority "관공서의 공휴일에 관한 규정 — New Year")
   (:computed "설날"
@@ -420,7 +420,7 @@
    :authority "Islamic holiday (tabular)"))
 
 ;;; Malaysia (1957 / 1963)
-(define-calendar malaysia-holidays-calendar (:register "MY")
+(define-calendar malaysia-holidays-calendar (:register "MY" :constructor malaysia-holidays-calendar)
   (:fixed "New Year's Day" 1 1 :from 1957
    :authority "Federal public holiday (most states)")
   (:computed "Chinese New Year"
@@ -508,34 +508,59 @@
    :authority "Eid al-Adha (tabular Hijri)"))
 
 (defun indonesia-holidays-calendar (&key year transfers)
-  "Indonesian national holidays. YEAR attaches cuti bersama TO days for that year."
-  (let ((tr (or transfers (when year (id-transfers-for-year year)))))
+  "Indonesian national holidays with the cuti bersama days of
+data/id/cuti-bersama.sexp. Without YEAR, every year in the file applies (the
+registered \"ID\" calendar); with YEAR, only that year's days."
+  (let ((tr (or transfers
+                (if year
+                    (id-transfers-for-year year)
+                    (all-block-transfers (id-cuti-bersama))))))
     (make-instance 'indonesia-holidays-calendar :transfers tr)))
 
 (defun bangladesh-holidays-calendar () (make-instance 'bangladesh-holidays-calendar))
 
 (defun philippines-holidays-calendar (&key year transfers)
-  "Philippine holidays. YEAR attaches Malacañang proclamation bridge days."
-  (let ((tr (or transfers (when year (ph-transfers-for-year year)))))
+  "Philippine holidays with the Malacañang proclamation days of
+data/ph/proclamations.sexp. Without YEAR, every year in the file applies (the
+registered \"PH\" calendar); with YEAR, only that year's days."
+  (let ((tr (or transfers
+                (if year
+                    (ph-transfers-for-year year)
+                    (all-block-transfers (ph-proclamations))))))
     (make-instance 'philippines-holidays-calendar :transfers tr)))
 
 (defun vietnam-holidays-calendar () (make-instance 'vietnam-holidays-calendar))
 
 (defun thailand-holidays-calendar (&key year transfers)
-  "Thai public holidays. YEAR attaches Royal Gazette substitute/bridge days."
-  (let ((tr (or transfers (when year (th-transfers-for-year year)))))
+  "Thai public holidays with the Royal Gazette substitute/bridge days of
+data/th/transfers.sexp. Without YEAR, every year in the file applies (the
+registered \"TH\" calendar); with YEAR, only that year's days."
+  (let ((tr (or transfers
+                (if year
+                    (th-transfers-for-year year)
+                    (all-block-transfers (th-transfers))))))
     (make-instance 'thailand-holidays-calendar :transfers tr)))
 
 (defun south-korea-holidays-calendar (&key year transfers)
-  "ROK public holidays. YEAR attaches national 임시공휴일 for that year."
-  (let ((tr (or transfers (when year (kr-transfers-for-year year)))))
+  "ROK public holidays with the national 임시공휴일 of
+data/kr/temporary-holidays.sexp. Without YEAR, every year in the file applies
+(the registered \"KR\" calendar); with YEAR, only that year's days."
+  (let ((tr (or transfers
+                (if year
+                    (kr-transfers-for-year year)
+                    (all-block-transfers (kr-temporary-holidays))))))
     (make-instance 'south-korea-holidays-calendar :transfers tr)))
 
 (defun myanmar-holidays-calendar () (make-instance 'myanmar-holidays-calendar))
 
 (defun malaysia-holidays-calendar (&key year transfers)
-  "Malaysian federal holidays. YEAR attaches JPM/PMO additional days."
-  (let ((tr (or transfers (when year (my-transfers-for-year year)))))
+  "Malaysian federal holidays with the JPM/PMO additional days of
+data/my/transfers.sexp. Without YEAR, every year in the file applies (the
+registered \"MY\" calendar); with YEAR, only that year's days."
+  (let ((tr (or transfers
+                (if year
+                    (my-transfers-for-year year)
+                    (all-block-transfers (my-transfers))))))
     (make-instance 'malaysia-holidays-calendar :transfers tr)))
 (defun taiwan-holidays-calendar () (make-instance 'taiwan-holidays-calendar))
 (defun uzbekistan-holidays-calendar () (make-instance 'uzbekistan-holidays-calendar))
@@ -559,7 +584,7 @@
   (:fixed "Constitution Day" 12 27 :from 1972
    :authority "Socialist Constitution promulgated 1972"))
 
-(define-calendar nepal-holidays-calendar (:register "NP")
+(define-calendar nepal-holidays-calendar (:register "NP" :constructor nepal-holidays-calendar)
   (:fixed "New Year's Day" 1 1 :from 1900 :authority "Public holiday")
   (:fixed "Prithvi Jayanti" 1 11 :from 1900 :to 2007
    :authority "King Prithvi Narayan Shah birthday — abolished 2008")
@@ -575,7 +600,7 @@
   (:computed "Eid al-Fitr" #'eid-al-fitr :from 1900 :authority "Public holiday (tabular)")
   (:computed "Eid al-Adha" #'eid-al-adha :from 1900 :authority "Public holiday (tabular)"))
 
-(define-calendar sri-lanka-holidays-calendar (:register "LK")
+(define-calendar sri-lanka-holidays-calendar (:register "LK" :constructor sri-lanka-holidays-calendar)
   (:fixed "New Year's Day" 1 1 :from 1948 :authority "Public holiday")
   (:fixed "Tamil Thai Pongal Day" 1 15 :from 1948 :authority "Public holiday")
   (:fixed "National Day" 2 4 :from 1948
@@ -615,13 +640,23 @@
 (defun north-korea-holidays-calendar () (make-instance 'north-korea-holidays-calendar))
 
 (defun nepal-holidays-calendar (&key year transfers)
-  "Nepal public holidays. YEAR attaches MoHA gazetted Dashain/Tihar block."
-  (let ((tr (or transfers (when year (np-gazette-transfers-for-year year)))))
+  "Nepal public holidays with the MoHA gazetted Dashain/Tihar blocks of
+data/np/gazette-holidays.sexp. Without YEAR, every year in the file applies
+(the registered \"NP\" calendar); with YEAR, only that year's days."
+  (let ((tr (or transfers
+                (if year
+                    (np-gazette-transfers-for-year year)
+                    (all-block-transfers (np-gazette))))))
     (make-instance 'nepal-holidays-calendar :transfers tr)))
 
 (defun sri-lanka-holidays-calendar (&key year transfers)
-  "Sri Lanka public holidays. YEAR attaches gazetted Poya/Vesak/Deepavali set."
-  (let ((tr (or transfers (when year (lk-poya-transfers-for-year year)))))
+  "Sri Lanka public holidays. With YEAR, attaches that year's days from
+data/lk/poya-days.sexp. Without YEAR (the registered \"LK\" calendar) the file
+is not applied: its Poya dates are new-moon dates, not the full-moon Poya days
+the gazettes appoint (2024 Vesak is listed as 1 May; it was 23 May), so all
+years of it would make the calendar worse (#14 follow-up)."
+  (let ((tr (or transfers
+                (when year (lk-poya-transfers-for-year year)))))
     (make-instance 'sri-lanka-holidays-calendar :transfers tr)))
 
 (defun kazakhstan-holidays-calendar () (make-instance 'kazakhstan-holidays-calendar))

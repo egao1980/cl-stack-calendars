@@ -37,6 +37,27 @@ Since 0.10.0, `holiday-p` outside the coverage signals `calendar-out-of-range`, 
 
 Corpus-inferred starters no longer extrapolate: their rules run only over the corpus years, and their `:authority` says they are inferred.
 
+### Registered calendars and data files
+
+Since 0.12.0 a calendar found by code carries every year of its data file. Before, `find-calendar "GB"` had no proclamations, `"RU"` no decree transfers, and so on for every starter whose constructor takes `:year`. Now `find-calendar` returns the same calendar as the constructor called without `:year`, and that calendar applies every block of the file. On each day of a year Y it gives the same answers as `(constructor :year Y)`.
+
+| Code | Data file | What it adds |
+|---|---|---|
+| `GB`, `GBLO` | `data/gb/proclamations.sexp` | Royal Proclamations 1995–2023 (London Gazette) |
+| `RU` | `data/ru/transfers.sexp` | Government decree transfers and working Saturdays |
+| `CN` | `data/cn/transfers.sexp` | 国办 调休 notices and 上班 days |
+| `IN` | `data/in/dopt-holidays.sexp` | DoPT gazetted festivals |
+| `ID`, `PH`, `TH`, `KR`, `MY` | `data/{id,ph,th,kr,my}/…` | cuti bersama, proclamations, Royal Gazette, 임시공휴일, JPM days |
+| `NP`, `KH`, `SG` | `data/{np,kh,sg}/gazette-holidays.sexp` | gazetted festival blocks |
+| `CL` | `data/cl/transfers.sexp` | Fiestas Patrias bridge days, 2 January, bank 31 December |
+| `CO` | `data/co/transfers.sexp` | nothing: the file is empty, since Colombia decrees no "puentes" |
+
+`LK` is the exception: `data/lk/poya-days.sexp` lists new-moon dates rather than Poya days. So `find-calendar "LK"` and `(sri-lanka-holidays-calendar)` leave it out, and only `:year N` applies it.
+
+Registered data calendars are built on first lookup (`register-calendar-constructor`). `clear-data-caches` and `set-data-root` rebuild them. `(make-instance 'russian-holidays-calendar)` still gives the statute rules alone. A decree transfer is named only in the year map of its own date, so a rule holiday keeps its name: CN 2026-01-01 is 元旦, not 调休.
+
+`country-calendar "GB"` is England and Wales, the scope of `find-calendar "GB"`. The date-holidays dump had no Summer bank holiday and missed the 2002, 2011 and 2012 proclamations. Both are fixed in the file, as its `:note` describes. On weekdays the corpus now matches the starter over 2000–2040 and gov.uk over 2012–2028.
+
 ### Caching and threads
 
 Since 0.9.1 a `rule-calendar` builds each year's holiday map once and keeps it, together with its working-day and suppressed-date sets, in a per-instance synchronized table (`:synchronized t` on SBCL). Queries from several threads are safe. As an example, `holidays-between` over 41 years of KR now takes milliseconds; it used to take about a minute. A `setf` of any rule-calendar accessor (`calendar-rules`, `calendar-transfers`, `calendar-working-days`, `calendar-suppressed-dates`, `calendar-weekend-days`, the sandwich and furikae settings) drops the cache. After changing a rule struct or a list in place, call `(clear-calendar-cache cal)`.
@@ -74,7 +95,7 @@ Since 0.8.0 a wrapper keeps its constituents' weekends and their working-day ove
 
 `calendar-weekend-days` is the union or intersection of the constituents' lists. With `:weekend-days`, that plain list replaces the constituents' weekends and their working-day overrides. An empty calendar list, or an unknown mode, signals `calendar-error`. A `versioned-calendar` delegates `holiday-p`, `weekend-day-p`, `business-day-p` and `calendar-weekend-days` to `(calendar-as-of c)`, its newest snapshot.
 
-Russian/USSR: `(russian-holidays-calendar :year 2026)` = ТК eras + decree transfers; `(ussr-holidays-calendar)` for late-Soviet fixed days.
+Russian/USSR: `(russian-holidays-calendar)` (and `find-calendar "RU"`) = ТК eras + every decree transfer; `:year 2026` keeps only that year's; `(ussr-holidays-calendar)` for late-Soviet fixed days.
 
 Normative starters (prefer over `country-calendar` corpus): `japan-holidays-calendar` (祝日法 + Tokyo equinoxes), `(china-holidays-calendar :year 2026)` (放假办法 + Beijing lunar + 调休), `india-holidays-calendar`, `germany-holidays-calendar` / `france-holidays-calendar` / `italy-holidays-calendar` / `spain-holidays-calendar` / `netherlands-holidays-calendar` / `belgium-holidays-calendar` / `austria-holidays-calendar` / `poland-holidays-calendar` / `sweden-holidays-calendar`, plus `target-calendar` (ECB). See [`docs/AUTHORITIES.md`](docs/AUTHORITIES.md).
 

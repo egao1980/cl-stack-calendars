@@ -90,7 +90,7 @@ Each FROM weekend is also recorded as a compensatory WORKING day."
 
 ;;;; --- Russian Federation (ТК РФ ст. 112 eras) -----------------------------
 
-(define-calendar russian-holidays-calendar (:register "RU")
+(define-calendar russian-holidays-calendar (:register "RU" :constructor russian-holidays-calendar)
   ;; --- New Year block ---
   (:fixed "Новый год" 1 1 :from 1992
    :observed :ru-tk-112-transfer
@@ -147,10 +147,19 @@ Each FROM weekend is also recorded as a compensatory WORKING day."
   (make-instance 'ussr-holidays-calendar))
 
 (defun russian-holidays-calendar (&key year transfers working-days)
-  "RF holiday calendar. When YEAR is given, attach every decree transfer
-whose FROM or TO falls in that year (FROM → working; TO → extra day off)."
-  (let ((tr (or transfers (when year (ru-transfers-for-year year))))
-        (wd (or working-days (when year (ru-working-days-for-year year)))))
+  "RF holiday calendar with the Government decree transfers of
+data/ru/transfers.sexp (FROM → working day; TO → extra day off). Without
+YEAR, every decree in the file applies (this is the registered \"RU\"
+calendar); with YEAR, only the transfers whose FROM or TO falls in that year.
+TRANSFERS and WORKING-DAYS, when given, replace the file's lists."
+  (let ((tr (or transfers
+                (if year
+                    (ru-transfers-for-year year)
+                    (all-block-transfers (ru-transfer-decrees)))))
+        (wd (or working-days
+                (if year
+                    (ru-working-days-for-year year)
+                    (all-block-working-days (ru-transfer-decrees))))))
     (make-instance 'russian-holidays-calendar
                    :transfers tr
                    :working-days wd)))
