@@ -136,15 +136,15 @@ so Saturday 1 February was no longer a working day."
 (deftest rule-name-wins-over-adjacent-year-transfer
   "A decree day that is also a rule holiday keeps the rule's name. HOLIDAY-P
 reads the previous year's map first, and that map used to hold the 2026
-transfers too, so CN 2026-01-01 was named 调休 instead of 元旦."
+transfers too, so CN 2026-01-01 was named 调休 instead of 元旦. Since #26 the
+notice's other days carry their festival too: 2026-01-02 is 元旦（调休）."
   (dolist (cal (list (china-holidays-calendar :year 2026) (find-calendar "CN")))
     (multiple-value-bind (holiday name) (holiday-p cal (make-date 2026 1 1))
       (ok holiday)
-      (ok (and (stringp name) (search "元旦" name))
-          (format nil "2026-01-01 name ~s" name)))
+      (ok (equal name "元旦") (format nil "2026-01-01 name ~s" name)))
     (multiple-value-bind (holiday name) (holiday-p cal (make-date 2026 1 2))
       (ok holiday)
-      (ok (equal name "调休") (format nil "2026-01-02 name ~s" name)))))
+      (ok (equal name "元旦（调休）") (format nil "2026-01-02 name ~s" name)))))
 
 (deftest-parametrize govuk-gold-vs-registered-gb
     ((code source) :rows '(("GB" "govuk") ("GBLO" "govuk")

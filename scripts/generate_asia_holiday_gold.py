@@ -2563,6 +2563,455 @@ def vn_consistency_check(days: dict) -> None:
         print("  VN nghỉ bù rule vs notices:", *b)
     print(f"  VN 2000-{VN_LAST_NOTICE_YEAR}: {len(bad)} years where the nghỉ bù rule and the notices differ")
 
+# --- China ----------------------------------------------------------------
+#
+# 《全国年节及纪念日放假办法》 of each era (第二条 the days off, 第六条 a day
+# on a Saturday or Sunday gives a 补假 on a working day): the 1999 text
+# (国务院令第270号, from 1999-09-18), 国务院令第513号 (2008-01-01), 第644号
+# (2014-01-01) and 第795号 (2025-01-01). The yearly 国务院办公厅 notices (国办发明电)
+# place each holiday's 放假 window and make Saturdays and Sundays 上班 days.
+# The script reads each notice's text (cached under ~/.cache/cl-stack-calendars/cn/)
+# and parses the windows and 上班 days from it, checking every 星期 / 周 the
+# text prints against the date. Lunar dates and 清明 are the Hong Kong
+# Observatory's tables (UTC+8, the same day as Beijing time).
+#
+# Two fixtures:
+#   cn-holiday-gold.sexp            2007-2040: the gov.cn notices 2007-2027 (primary),
+#                                   then provisional years (statute days only).
+#   cn-secondary-holiday-gold.sexp  2000-2006: Xinhua dispatches, Xinhua / Anhui
+#                                   government republications and Wikisource
+#                                   transcriptions; lower confidence.
+#
+# Day names: a statutory day is its festival (春节, 国庆节, 春节（除夕） ...); a
+# weekday off that 第六条 owes for a statutory day on a Saturday or Sunday is
+# "<festival>（补休）"; any other weekday off in a window is "<window>（调休）"
+# (it is paid back by a 上班 day); a Saturday or Sunday in a window that is no
+# statutory day is "<window>（休息日）". 补休 days are matched to the statutory
+# weekend days in date order: each takes the first weekday off after it that is
+# no statutory day (the notices of 2008-2013 spell the moves out, e.g. 2009:
+# "10月3日（星期六）公休日及中秋节分别调至10月5日（星期一）、10月6日（星期二）").
+
+CN_DIR = "cn"
+CN_NOTE = (
+    "Days off of the 全国年节及纪念日放假办法 and the yearly 国务院办公厅 notices: every day of each notice's "
+    "放假 window is a holiday (its Saturdays and Sundays too, as the notice counts them: '共7天'), and the "
+    "notice's 上班 Saturdays and Sundays are working days (:working-days). Names: the statutory festival, "
+    "'<festival>（补休）' for the weekday 第六条 owes for a statutory day on a weekend, '<window>（调休）' for a "
+    "weekday off paid back by a 上班 day, '<window>（休息日）' for a weekend day in a window. 2007-2027 are "
+    "parsed from the State Council notices on www.gov.cn (with 国办发明电〔2019〕3号, 〔2020〕1号 and "
+    "国发明电〔2015〕1号). 2028-2040 are provisional: the 第二条 days of the 2024 text only, no window, no "
+    "补休, no 调休."
+)
+CN_SECONDARY_NOTE = (
+    "LOWER CONFIDENCE. 2000-2006: no State Council notice of these years is on www.gov.cn. The days are "
+    "parsed from Xinhua dispatches (2000 元旦 via Guangming Daily, 2000 国庆 via Sina), the xinhuanet copy "
+    "of 国办发明电〔2003〕53号 and the Anhui government copy of 〔2005〕35号 (Wayback), and the zh.wikisource "
+    "transcriptions of 〔2001〕1号, 〔2001〕45号, 〔2002〕27号 with the 2003-04-21 SARS amendment, and "
+    "〔2004〕52号. No text of the 2000 春节 and 劳动节 arrangements was found: those holidays are the "
+    "1999 第二条 days only. 2006-12-30/31 上班 are from the 2007 notice 国办发明电〔2006〕49号 (gov.cn)."
+)
+
+CN_STATUTE_SOURCES = [
+    ("全国年节及纪念日放假办法 (国务院1999年9月18日修订, 国务院令第270号) 第二条、第六条",
+     "https://xzfg.moj.gov.cn/front/law/detail?LawID=740",
+     "（一）新年，放假1天(1月1日)；（二）春节，放假3天(农历正月初一、初二、初三)；（三）劳动节，放假3天(5月1日、2日、3日)；"
+     "（四）国庆节，放假3天(10月1日、2日、3日)。第六条 全体公民放假的假日，如果适逢星期六、星期日，应当在工作日补假。"),
+    ("国务院关于修改《全国年节及纪念日放假办法》的决定 (国务院令第513号, 2007-12-14, 自2008年1月1日起施行)",
+     "https://www.ndrc.gov.cn/fzggw/jgsj/shs/sjdt/200712/t20071217_1122443.html",
+     "（一）新年，放假1天（1月1日）；（二）春节，放假3天（农历除夕、正月初一、初二）；（三）清明节，放假1天（农历清明当日）；"
+     "（四）劳动节，放假1天（5月1日）；（五）端午节，放假1天（农历端午当日）；（六）中秋节，放假1天（农历中秋当日）；"
+     "（七）国庆节，放假3天（10月1日、2日、3日）。"),
+    ("国务院关于修改《全国年节及纪念日放假办法》的决定 (国务院令第644号, 2013-12-11, 自2014年1月1日起施行)",
+     "https://www.gov.cn/flfg/2013-12/11/content_2546268.htm",
+     "第二条第二项修改为：“（二）春节，放假3天（农历正月初一、初二、初三）”。"),
+    ("国务院关于修改《全国年节及纪念日放假办法》的决定 (国务院令第795号, 2024-11-10, 自2025年1月1日起施行)",
+     "https://www.gov.cn/zhengce/content/202411/content_6986380.htm",
+     "第二条第二项修改为“（二）春节，放假4天（农历除夕、正月初一至初三）”，第四项修改为“（四）劳动节，放假2天（5月1日、2日）”。"
+     "增加第七条：全体公民放假的假日，可合理安排统一放假调休。"),
+    ("Hong Kong Observatory, Gregorian-Lunar Calendar Conversion Tables",
+     "https://www.hko.gov.hk/en/gts/time/conversion.htm",
+     "农历正月初一、除夕、五月初五、八月十五 and the 清明 solar term ('Bright & Clear'), T1999e.txt-T2041e.txt."),
+]
+
+# Each notice: holiday year, number, title, URI, cache file, kind, fetch URI
+# (a Wayback capture where the page is gone) and, for an amendment, what it does.
+CN_NOTICES = [
+    dict(year=2000, no="国务院办公厅关于2000年元旦期间放假的通知（文号未见）", kind="secondary-news",
+         uri="https://www.gmw.cn/01gmrb/1999-12/17/GB/GM%5E18273%5E1%5EGM1-1716.HTM",
+         fetch="https://web.archive.org/web/20060401id_/http://www.gmw.cn/01gmrb/1999-12/17/GB/GM%5E18273%5E1%5EGM1-1716.HTM",
+         cache="wayback-gmw-2000-yuandan.html", section="元旦",
+         note="新华社北京1999年12月16日电 (光明日报 1999-12-17)"),
+    dict(year=2000, no="国务院办公厅关于2000年国庆节放假的通知（文号未见）", kind="secondary-news",
+         uri="https://finance.sina.cn/sa/2000-09-14/detail-ikkntiak6511730.d.html",
+         cache="secondary-sina-2000-guoqing.html", section="国庆节",
+         note="新华网北京2000年9月14日电 (新浪)"),
+    dict(year=2001, no="国办发明电〔2001〕1号", kind="secondary-transcription",
+         uri="https://zh.wikisource.org/wiki/国务院办公厅关于2001年春节、“五一”、“十一”放假安排的通知",
+         cache="ws-2001.html"),
+    dict(year=2002, no="国办发明电〔2001〕45号", kind="secondary-transcription",
+         uri="https://zh.wikisource.org/wiki/国务院办公厅关于2002年部分节假日休息安排的通知",
+         cache="ws-2002.html"),
+    dict(year=2003, no="国办发明电〔2002〕27号", kind="secondary-transcription",
+         uri="https://zh.wikisource.org/wiki/国务院办公厅关于2003年部分节假日休息安排的通知",
+         cache="ws-2003.html"),
+    dict(year=2003, no="国务院办公厅关于2003年“五一”放假调休安排的通知（2003-04-21，文号未见）",
+         kind="secondary-transcription", amends="劳动节",
+         uri="https://zh.wikisource.org/wiki/国务院办公厅关于2003年“五一”放假调休安排的通知",
+         cache="ws-2003-wuyi.html", note="非典: 五一按法定假日休假，暂不实行长假"),
+    dict(year=2004, no="国办发明电〔2003〕53号", kind="official-republication",
+         uri="http://news.xinhuanet.com/zhengfu/2004-04/02/content_1397359.htm",
+         fetch="https://web.archive.org/web/20040411id_/http://news.xinhuanet.com/zhengfu/2004-04/02/content_1397359.htm",
+         cache="wayback-xinhua-notice-2004.html"),
+    dict(year=2005, no="国办发明电〔2004〕52号", kind="secondary-transcription",
+         uri="https://zh.wikisource.org/wiki/国务院办公厅关于2005年部分节假日安排的通知",
+         cache="ws-2005.html"),
+    dict(year=2006, no="国办发明电〔2005〕35号", kind="official-republication",
+         uri="http://www.ah.gov.cn/UserData/DocHtml/1/2013/7/12/6862126522205.html",
+         fetch="https://web.archive.org/web/20160305id_/http://www.ah.gov.cn/UserData/DocHtml/1/2013/7/12/6862126522205.html",
+         cache="wayback-ahgov-notice-2006.html", note="皖政办明电〔2005〕61号转发"),
+    dict(year=2007, no="国办发明电〔2006〕49号", uri="https://www.gov.cn/gongbao/content/2007/content_503397.htm",
+         cache="notice-2007.html"),
+    dict(year=2008, no="国办发明电〔2007〕52号", uri="https://www.gov.cn/zwgk/2007-12/18/content_837184.htm",
+         cache="notice-2008.html"),
+    dict(year=2009, no="国办发明电〔2008〕42号", uri="https://www.gov.cn/zwgk/2008-12/10/content_1174014.htm",
+         cache="notice-2009.html"),
+    dict(year=2010, no="国办发明电〔2009〕27号", uri="https://www.gov.cn/zwgk/2009-12/08/content_1482691.htm",
+         cache="notice-2010.html"),
+    dict(year=2011, no="国办发明电〔2010〕40号", uri="https://www.gov.cn/zwgk/2010-12/10/content_1762643.htm",
+         cache="notice-2011.html"),
+    dict(year=2012, no="国办发明电〔2011〕45号", uri="https://www.gov.cn/zwgk/2011-12/06/content_2012097.htm",
+         cache="notice-2012.html"),
+    dict(year=2013, no="国办发明电〔2012〕33号", uri="https://www.gov.cn/zwgk/2012-12/10/content_2286598.htm",
+         cache="notice-2013.html"),
+    dict(year=2014, no="国办发明电〔2013〕28号", uri="https://www.gov.cn/zwgk/2013-12/11/content_2546204.htm",
+         cache="notice-2014.html"),
+    dict(year=2015, no="国办发明电〔2014〕28号", uri="https://www.gov.cn/zhengce/content/2014-12/16/content_9302.htm",
+         cache="notice-2015.html"),
+    dict(year=2015, no="国发明电〔2015〕1号", uri="https://www.gov.cn/zhengce/zhengceku/2015-05/13/content_9742.htm",
+         cache="amend-2015-0903.html", amends="special",
+         section="中国人民抗日战争暨世界反法西斯战争胜利70周年纪念日"),
+    dict(year=2016, no="国办发明电〔2015〕18号", uri="https://www.gov.cn/zhengce/content/2015-12/10/content_10394.htm",
+         cache="notice-2016.html"),
+    dict(year=2017, no="国办发明电〔2016〕17号", uri="https://www.gov.cn/zhengce/content/2016-12/01/content_5141603.htm",
+         cache="notice-2017.html"),
+    dict(year=2018, no="国办发明电〔2017〕12号", uri="https://www.gov.cn/zhengce/content/2017-11/30/content_5243579.htm",
+         cache="notice-2018.html"),
+    dict(year=2019, no="国办发明电〔2018〕15号", uri="https://www.gov.cn/zhengce/content/2018-12/06/content_5346276.htm",
+         cache="notice-2019.html"),
+    dict(year=2019, no="国办发明电〔2019〕3号", uri="https://www.gov.cn/zhengce/zhengceku/2019-03/22/content_5375877.htm",
+         cache="amend-2019-laodong.html", amends="劳动节"),
+    dict(year=2020, no="国办发明电〔2019〕16号", uri="https://www.gov.cn/zhengce/content/2019-11/21/content_5454164.htm",
+         cache="notice-2020.html"),
+    dict(year=2020, no="国办发明电〔2020〕1号", uri="https://www.gov.cn/zhengce/zhengceku/2020-01/27/content_5472352.htm",
+         cache="amend-2020-chunjie.html", amends="extend"),
+    dict(year=2021, no="国办发明电〔2020〕27号", uri="https://www.gov.cn/zhengce/content/2020-11/25/content_5564127.htm",
+         cache="notice-2021.html"),
+    dict(year=2022, no="国办发明电〔2021〕11号", uri="https://www.gov.cn/zhengce/content/2021-10/25/content_5644835.htm",
+         cache="notice-2022.html"),
+    dict(year=2023, no="国办发明电〔2022〕16号", uri="https://www.gov.cn/zhengce/content/2022-12/08/content_5730844.htm",
+         cache="notice-2023.html"),
+    dict(year=2024, no="国办发明电〔2023〕7号", uri="https://www.gov.cn/zhengce/content/202310/content_6911527.htm",
+         cache="notice-2024.html"),
+    dict(year=2025, no="国办发明电〔2024〕12号", uri="https://www.gov.cn/zhengce/zhengceku/202411/content_6986383.htm",
+         cache="notice-2025.html"),
+    dict(year=2026, no="国办发明电〔2025〕7号", uri="https://www.gov.cn/zhengce/content/202511/content_7047090.htm",
+         cache="notice-2026.html"),
+    dict(year=2027, no="国办发明电〔2026〕10号", uri="https://www.gov.cn/zhengce/zhengceku/202611/content_7085102.htm",
+         cache="notice-2027.html"),
+]
+CN_FIRST_PRIMARY = 2007
+CN_LAST_NOTICE_YEAR = 2027
+
+CN_WEEKDAY = {"一": 0, "二": 1, "三": 2, "四": 3, "五": 4, "六": 5, "日": 6, "天": 6}
+CN_SECTION_NAMES = {"“五一”": "劳动节", "“五一”国际劳动节": "劳动节", "\"五一\"": "劳动节",
+                    "“十一”": "国庆节", "新年": "元旦"}
+_CN_DATE = re.compile(r"(?:(\d{4})年)?(?:(\d{1,2})\s*月)?\s*(\d{1,2})\s*日((?:\s*[（(][^）)]*[）)])?)")
+_CN_SEP = re.compile(r"^\s*(?:—+|－+|-+|至)\s*")
+
+
+def cn_notice_text(notice: dict) -> str:
+    raw = cached(f"{CN_DIR}/{notice['cache']}", notice.get("fetch", notice["uri"]), 200)
+    for enc in ("utf-8", "gb18030"):
+        try:
+            return page_text(raw.decode(enc).encode("utf-8"))
+        except UnicodeDecodeError:
+            continue
+    return page_text(raw)
+
+
+def _cn_body(text: str) -> str:
+    start = text.find("一、")
+    start = 0 if start < 0 else start
+    ends = [i for i in (text.find(k, start) for k in ("节假日期间", "调休放假期间", "放假期间", "鼓励单位和个人"))
+            if i > 0]
+    return text[start:min(ends)] if ends else text[start:]
+
+
+def cn_sections(notice: dict) -> list[tuple[str, str]]:
+    """[(section name, section text)] of NOTICE: '一、元旦：…' blocks, or the whole
+    body under NOTICE's :section for a dispatch or a one-holiday amendment."""
+    body = _cn_body(cn_notice_text(notice))
+    if notice.get("section") or notice.get("amends"):
+        name = notice.get("section") or notice.get("amends")
+        if notice.get("amends") == "extend":
+            name = "春节"
+        return [(name, body.replace("|", ""))]
+    # A heading starts a line: "|二、春节：|" ("正月初七、周二" is no heading).
+    parts = re.split(r"(?:^|\|)\s*([一二三四五六七八])、\s*([^：:。|]{1,14}?)\s*[：:。]", body)
+    out = []
+    for i in range(1, len(parts) - 2, 3):
+        name = parts[i + 1].strip()
+        out.append((CN_SECTION_NAMES.get(name, name), parts[i + 2].replace("|", "")))
+    return out
+
+
+def _cn_dates(text: str, year: int, section: str):
+    """Every date of a section's TEXT as (start, end, date, weekday-or-None).
+    A date with no year is in YEAR, except a December date of the 元旦 section,
+    which is in YEAR - 1; a date with no month takes the month before it."""
+    out, month, yr, prev_month = [], None, None, None
+    for m in _CN_DATE.finditer(text):
+        y, mo, d, paren = m.group(1), m.group(2), int(m.group(3)), m.group(4) or ""
+        if mo and month is not None and int(mo) != month:
+            prev_month = month
+        if mo:
+            month = int(mo)
+        if month is None:
+            continue
+        if y:
+            yr = int(y)
+        elif mo:
+            yr = year - 1 if (month == 12 and section == "元旦") else year
+        wd = re.search(r"(?:星期|周)([一二三四五六日天])", paren)
+        try:
+            dt = date(yr, month, d)
+        except ValueError:  # "1月29日—2月4日…其中，29日、30日、31日": the window's first month
+            dt = date(yr, prev_month, d)
+        if wd:
+            assert dt.weekday() == CN_WEEKDAY[wd.group(1)], (section, dt, m.group(0))
+        out.append((m.start(), m.end(), dt))
+    return out
+
+
+def _cn_weekend_run(d: date) -> list[date]:
+    """D and the Saturdays and Sundays next to it."""
+    run = [d]
+    n = d - timedelta(days=1)
+    while n.weekday() >= 5:
+        run.insert(0, n)
+        n -= timedelta(days=1)
+    n = d + timedelta(days=1)
+    while n.weekday() >= 5:
+        run.append(n)
+        n += timedelta(days=1)
+    return run
+
+
+def cn_parse_section(name: str, text: str, year: int) -> tuple[list[date], list[date]]:
+    """(window days, 上班 days) of one section."""
+    dates = _cn_dates(text, year, name)
+    # The dates of the clauses that end in 上班, by position in the full scan (so a
+    # date with no month takes the section's month).
+    working = []
+    pos = 0
+    for clause in re.split(r"([，。；,;])", text):
+        if "上班" in clause and "照常上班" not in clause and "正常上班" not in clause:
+            working += [d for s, _, d in dates if pos <= s < pos + len(clause)]
+        pos += len(clause)
+    window = []
+    # A range DATE — DATE / DATE 至 DATE (the first one: the 放假 window).
+    for i, (s, e, d) in enumerate(dates):
+        rest = text[e:]
+        sep = _CN_SEP.match(rest)
+        if sep and i + 1 < len(dates) and dates[i + 1][0] == e + sep.end():
+            end = dates[i + 1][2]
+            if "为法定假日" in text[dates[i + 1][1]:dates[i + 1][1] + 6]:
+                continue  # 2003 amendment: "5月1日-3日为法定假日", not a window
+            window = [d + timedelta(days=k) for k in range((end - d).days + 1)]
+            break
+    # The notices of 2000-2009 name no 上班 day for some windows: "9月27日（星期六）、9月28日
+    # （星期日）两个公休日调至9月29日（星期一）、30日（星期二）" (2008 国庆节). A Saturday or
+    # Sunday the section moves into its window is a 上班 day.
+    if window:
+        for s, e, d in dates:
+            if d.weekday() >= 5 and d not in window and "调至" in text[e:e + 40] and d not in working:
+                working.append(d)
+    m = re.search(r"共\s*(\d+)\s*天", text)
+    if window and m:
+        assert int(m.group(1)) == len(window), (name, year, window, m.group(0))
+    if not window and dates:
+        first = dates[0][2]
+        if "与周末连休" in text:
+            window = _cn_weekend_run(first)
+        elif "补休" in text:
+            bu = [d for s, _, d in dates if "补休" in text[s:s + 16] and d != first]
+            assert len(bu) == 1, (name, year, text)
+            window = sorted(set(_cn_weekend_run(first)) | set(_cn_weekend_run(bu[0])) |
+                            {first + timedelta(days=k) for k in range((bu[0] - first).days + 1)})
+        else:
+            window = [first]
+    return window, working
+
+
+def cn_notice_days(year: int) -> tuple[dict, set, dict, dict]:
+    """({date: window name}, {上班 dates}, {date: notice no.}, {date: special name})
+    of the notices for holiday YEAR, amendments applied."""
+    off, working, by, special = {}, set(), {}, {}
+    cancelled = set()
+    for notice in [n for n in CN_NOTICES if n["year"] == year]:
+        if year == 2000 and notice["section"] == "元旦":
+            # "调整为：1999年12月31日、2000年1月1日、1月2日。2000年1月3日照常上班。"
+            text = cn_notice_text(notice)
+            assert "1999年12月31日、2000年1月1日、1月2日" in text.replace("|", ""), "2000 元旦 text"
+            for d in (date(1999, 12, 31), date(2000, 1, 1), date(2000, 1, 2)):
+                off[d], by[d] = "元旦", notice["no"]
+            continue
+        kind = notice.get("amends")
+        for name, text in cn_sections(notice):
+            if kind == "extend":
+                m = re.search(r"延长(\d{4})年春节假期至(\d{1,2})月(\d{1,2})日", text)
+                assert m, text
+                end = date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+                last = max(d for d, w in off.items() if w == "春节")
+                d = last + timedelta(days=1)
+                while d <= end:
+                    off[d], by[d], special[d] = "春节", notice["no"], "春节（延长假期）"
+                    if d in working:
+                        working.discard(d)
+                        cancelled.add(d)
+                    d += timedelta(days=1)
+                continue
+            if kind == "劳动节":
+                for d in [d for d, w in off.items() if w == "劳动节"]:
+                    del off[d]
+                working -= {d for d in working if d.month in (4, 5)}
+                if year == 2003:
+                    # "5月1日-3日为法定假日，5月3日(星期六)的公休调至5月5日(星期一)休息，5月4日(星期日)照常公休。"
+                    assert "5月3日(星期六)的公休调至5月5日(星期一)休息" in text, text
+                    for d in (date(2003, 5, k) for k in range(1, 6)):
+                        off[d], by[d] = "劳动节", notice["no"]
+                    continue
+            window, up = cn_parse_section(name, text, year)
+            for d in window:
+                off[d], by[d] = name, notice["no"]
+                if kind == "special" and d.weekday() < 5 and d == window[0]:
+                    special[d] = name
+            working |= set(up)
+    return off, working, by, special, cancelled
+
+
+def cn_statutory(year: int) -> list[tuple[date, str]]:
+    """第二条 of the 放假办法 in force in YEAR (from 2000)."""
+    ny = hk_lunar(year, 1, 1)
+    out = [(date(year, 1, 1), "元旦")]
+    if 2008 <= year <= 2013 or year >= 2025:
+        out.append((ny - timedelta(days=1), "春节（除夕）"))
+    out += [(ny + timedelta(days=k), "春节") for k in range(2 if 2008 <= year <= 2013 else 3)]
+    if year >= 2008:
+        out += [(hk_ching_ming(year), "清明节"), (hk_lunar(year, 5, 5), "端午节"),
+                (hk_lunar(year, 8, 15), "中秋节")]
+    labour = 3 if year <= 2007 else (2 if year >= 2025 else 1)
+    out += [(date(year, 5, k), "劳动节") for k in range(1, labour + 1)]
+    out += [(date(year, 10, k), "国庆节") for k in (1, 2, 3)]
+    return out
+
+
+def cn_label(year: int) -> tuple[dict, set, list]:
+    """({date: [names]}, {上班 dates}, [problems]) for the notices of holiday YEAR:
+    each window day named by the convention above. Problems: a statutory day the
+    notices leave out, and the count check (weekdays off that are no statutory or
+    special day = 补休 owed + 上班 days)."""
+    off, working, _, special, cancelled = cn_notice_days(year)
+    stat: dict[date, list[str]] = {}
+    for y in {d.year for d in off} | {year}:
+        for d, n in cn_statutory(y):
+            if d in off or y == year:
+                stat.setdefault(d, []).append(n)
+    problems = []
+    windows = set(off.values())
+    for d in sorted(stat):
+        if d not in off and d.year == year:
+            base = stat[d][0].split("（")[0]
+            if any(base in w for w in windows):
+                problems.append(("statutory day outside its window", (d, stat[d])))
+            else:
+                off[d] = base  # no notice text for this holiday: the statute day alone
+    names: dict[date, list[str]] = {}
+    for d in sorted(off):
+        if d in stat:
+            names[d] = list(stat[d])
+        elif d in special:
+            names[d] = [special[d]]
+    free = [d for d in sorted(off) if d not in names and d.weekday() < 5]
+    # 第六条: a statutory day on a Saturday or Sunday owes a weekday; two festivals on one
+    # weekday (国庆节 and 中秋节 on 2020-10-01) owe one for the second.
+    # The weekend days first, in date order (on 2009-10-03, a Saturday, 国庆节 before
+    # 中秋节, as the notice moves them), then the weekday overlaps.
+    owed = [(d, n) for d in sorted(stat) if d in off and d.weekday() >= 5 for n in reversed(stat[d])] + \
+        [(d, n) for d in sorted(stat) if d in off and d.weekday() < 5 for n in stat[d][:-1]]
+    for d, n in owed:
+        same = [f for f in free if off[f] == off[d]]
+        pick = [f for f in same if f > d][:1] or same[-1:] or \
+            [f for f in free if 0 < (f - d).days <= 14][:1]
+        if pick:
+            names[pick[0]] = [f"{n.split('（')[0]}（补休）"]
+            free.remove(pick[0])
+        else:
+            problems.append(("第六条 补休 not given", (d, n)))
+    for d in free:
+        names[d] = [f"{off[d]}（调休）"]
+    for d in sorted(off):
+        names.setdefault(d, [f"{off[d]}（休息日）"])
+    paid = len(free)
+    if paid != len(working) + len(cancelled):
+        problems.append(("调休 days vs 上班 days", (paid, sorted(free), sorted(working | cancelled))))
+    return names, working, problems
+
+
+@__import__("functools").lru_cache(maxsize=None)
+def _cn_all(first: int, last: int):
+    days: dict[date, list[str]] = {}
+    working: set = set()
+    problems = []
+    for y in range(min(first, 2000), CN_LAST_NOTICE_YEAR + 1):
+        n, w, p = cn_label(y)
+        for d, names in n.items():
+            days[d] = names
+        working |= w
+        problems += [(y,) + x for x in p]
+    for y in range(CN_LAST_NOTICE_YEAR + 1, LAST + 1):
+        for d, n in cn_statutory(y):
+            days.setdefault(d, []).append(n)
+    return days, working, problems
+
+
+def cn_holidays(year: int) -> list[tuple[date, str]]:
+    days, _, _ = _cn_all(2000, LAST)
+    return [(d, " / ".join(n)) for d, n in sorted(days.items()) if d.year == year]
+
+
+def cn_working_days(year: int) -> list[date]:
+    _, working, _ = _cn_all(2000, LAST)
+    return sorted(d for d in working if d.year == year)
+
+
+def cn_consistency_check(days: dict) -> None:
+    _, _, problems = _cn_all(2000, LAST)
+    for p in problems:
+        print("  CN notice vs statute:", *p)
+    print(f"  CN 2000-{CN_LAST_NOTICE_YEAR}: {len(problems)} notice blocks where the statute and the notice differ")
+
+
+def _cn_sources(first: int, last: int) -> list[tuple[str, str, str]]:
+    out = list(CN_STATUTE_SOURCES)
+    for n in CN_NOTICES:
+        if first <= n["year"] <= last:
+            body = " ".join(f"{s}：{t}" for s, t in cn_sections(n))
+            kind = n.get("kind", "primary")
+            title = f"{n['no']} ({n['year']}; {kind}{'; ' + n['note'] if n.get('note') else ''})"
+            out.append((title, n["uri"], body))
+    return out
+
 # --- registry and writer --------------------------------------------------
 
 COUNTRIES = {
@@ -2582,6 +3031,16 @@ COUNTRIES = {
                sources=VN_SOURCES, note=VN_NOTE,
                python=lambda years: __import__("holidays").VN(years=years),
                crosscheck=vn_consistency_check),
+    "CN": dict(name="China", first=CN_FIRST_PRIMARY, build=cn_holidays, working=cn_working_days,
+               working_label="上班", sources=lambda: _cn_sources(CN_FIRST_PRIMARY, CN_LAST_NOTICE_YEAR),
+               note=CN_NOTE, python=lambda years: __import__("holidays").CN(years=years, language="zh_CN"),
+               python_weekdays_only=True, crosscheck=cn_consistency_check),
+    "CN-SECONDARY": dict(name="China (secondary sources)", country="CN", first=2000, last=CN_FIRST_PRIMARY - 1,
+                         file="cn-secondary-holiday-gold.sexp", confidence="secondary",
+                         build=cn_holidays, working=cn_working_days, working_label="上班",
+                         sources=lambda: _cn_sources(2000, CN_FIRST_PRIMARY - 1), note=CN_SECONDARY_NOTE,
+                         python=lambda years: __import__("holidays").CN(years=years, language="zh_CN"),
+                         python_weekdays_only=True),
     "TW": dict(name="Taiwan", build=tw_holidays, working=tw_working_days, sources=TW_SOURCES, note=TW_NOTE,
                python=lambda years: __import__("holidays").TW(years=years),
                crosscheck=tw_official_check),
@@ -2595,26 +3054,31 @@ def lisp_string(s: str) -> str:
 def build(cc: str) -> None:
     spec = COUNTRIES[cc]
     first = spec.get("first", FIRST)
+    last = spec.get("last", LAST)
+    country = spec.get("country", cc)
+    sources = spec["sources"]() if callable(spec["sources"]) else spec["sources"]
     days: dict[date, list[str]] = {}
-    for year in range(first, LAST + 1):
+    for year in range(first, last + 1):
         for d, name in spec["build"](year):
             assert d.year == year, (cc, d, name)
             if name not in days.setdefault(d, []):
                 days[d].append(name)
     lines = [
-        f";; {spec['name']} national holidays {first}-{LAST}: external gold for {cc}.",
+        f";; {spec['name']} national holidays {first}-{last}: external gold for {country}.",
         f";; Regenerate: uv run --no-project --with holidays==0.109 python -I "
         f"scripts/generate_asia_holiday_gold.py {cc}",
         ";; :days lists every holiday as (YEAR MONTH DAY NAME); any other day is not one.",
         "(",
-        f" :country {lisp_string(cc)}",
+        f" :country {lisp_string(country)}",
         f" :generated {lisp_string(GENERATED)}",
-        f" :from {first} :to {LAST}",
+        f" :from {first} :to {last}",
         f" :note {lisp_string(spec['note'])}",
         " :sources",
         " (",
     ]
-    for title, uri, text in spec["sources"]:
+    if spec.get("confidence"):
+        lines.insert(lines.index(" :sources"), f" :confidence :{spec['confidence']}")
+    for title, uri, text in sources:
         lines.append(f"  (:title {lisp_string(title)} :uri {lisp_string(uri)}")
         lines.append(f"   :text {lisp_string(text)})")
     lines.append(" )")
@@ -2626,7 +3090,7 @@ def build(cc: str) -> None:
     if spec.get("working"):
         lines.append(" :working-days")
         lines.append(" (")
-        for year in range(first, LAST + 1):
+        for year in range(first, last + 1):
             for d in spec["working"](year):
                 lines.append(f"  ({d.year} {d.month} {d.day} {lisp_string(spec.get('working_label', '補行上班'))})")
         lines.append(" )")
@@ -2641,7 +3105,7 @@ def build(cc: str) -> None:
         lines[-1] = " ))"
     else:
         lines.append(")")
-    out = ROOT / "data" / "tests" / f"{cc.lower()}-holiday-gold.sexp"
+    out = ROOT / "data" / "tests" / spec.get("file", f"{cc.lower()}-holiday-gold.sexp")
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"{cc}: {len(days)} days -> {out.relative_to(ROOT)}")
     if spec.get("crosscheck"):
@@ -2649,11 +3113,15 @@ def build(cc: str) -> None:
 
     # Secondary check only.
     try:
-        py = spec["python"](range(first, LAST + 1))
+        py = spec["python"](range(first, last + 1))
     except ImportError:
         print(f"{cc}: python-holidays not installed, secondary check skipped")
         return
     ours, theirs = set(days), set(py.keys())
+    if spec.get("python_weekdays_only"):
+        # python-holidays lists no Saturday or Sunday of a window that is no statutory day.
+        ours = {d for d in ours if d.weekday() < 5}
+        theirs = {d for d in theirs if d.weekday() < 5}
     for d in sorted(ours - theirs):
         print(f"  {cc} {d} gold only: {days[d]}")
     for d in sorted(theirs - ours):
