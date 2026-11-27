@@ -426,6 +426,10 @@
    #:register-calendar-constructor
    #:calendar-registered-p
    #:all-block-transfers
-   #:all-block-working-days))
+   #:all-block-working-days
+   #:calendar-provenance
+   #:calendar-corpus-agreement
+   #:corpus-derived-calendar
+   #:*corpus-inference-min-agreement*))
 
 (in-package #:cl-stack-calendars)

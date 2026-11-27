@@ -37,13 +37,14 @@
     (ng (find-calendar "PS" :errorp nil) "no inferred starter for a stub")))
 
 (deftest corpus-inferred-starter-stays-in-its-window
-  (let ((ad (find-calendar "AD")))
+  (let ((ad (make-corpus-inferred-calendar "AD")))
     (ok (equal '(2000 . 2040) (calendar-coverage ad)))
     (ok (holidays-between ad (make-date 2024 1 1) (make-date 2024 12 31)))
     (ok (signals (holiday-p ad (make-date 1950 1 1)) 'calendar-out-of-range))
     (ok (signals (holiday-p ad (make-date 2090 1 1)) 'calendar-out-of-range))
-    (ok (every (lambda (r) (search "Corpus-inferred" (princ-to-string
-                                                      (cl-stack-calendars::holiday-rule-authority r))))
+    (ok (every (lambda (r) (search "Corpus-derived, not normative"
+                                   (princ-to-string
+                                    (cl-stack-calendars::holiday-rule-authority r))))
                (calendar-rules ad)))))
 
 (deftest normative-starters-are-unbounded

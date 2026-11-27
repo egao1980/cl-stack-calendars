@@ -48,6 +48,19 @@ of its own."))
 (defmethod calendar-name ((calendar holiday-calendar))
   (string (class-name (class-of calendar))))
 
+(defgeneric calendar-provenance (calendar)
+  (:documentation "Where CALENDAR's holidays come from:
+
+  :NORMATIVE       hand-maintained rules, each citing its statute, decree or
+                   proclamation in :AUTHORITY (DEFINE-CALENDAR starters);
+  :CORPUS-DERIVED  rules inferred from the date-holidays corpus by
+                   recurrence, checked against no statute;
+  :CORPUS          the corpus table itself (COUNTRY-CALENDAR);
+  NIL              not stated (a user calendar, or a composite)."))
+
+(defmethod calendar-provenance ((calendar holiday-calendar))
+  nil)
+
 ;;; --- holiday-observance value type ---------------------------------------
 
 (defclass holiday-observance ()

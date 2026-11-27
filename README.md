@@ -24,7 +24,7 @@ A `:computed` rule may yield several dates per year (since 0.7.0). Its COMPUTE m
 `(calendar-coverage cal)` gives the years a calendar has data for:
 
 - NIL for statute-rule calendars, which are unbounded;
-- `(2000 . 2040)` for `country-calendar` and corpus-inferred starters;
+- `(2000 . 2040)` for `country-calendar` and corpus-derived calendars;
 - `:none` for an empty stub (`country-calendar-stub-p`).
 
 Since 0.10.0, `holiday-p` outside the coverage signals `calendar-out-of-range`, a `calendar-error` with the readers `calendar-out-of-range-calendar`, `-date` and `-coverage`. So `holidays-between` and `business-days-between` signal too. It offers two restarts: `use-value` returns a value for `holiday-p`, and `continue` treats the date as not a holiday.
@@ -35,7 +35,7 @@ Since 0.10.0, `holiday-p` outside the coverage signals `calendar-out-of-range`, 
 (holiday-p (country-calendar "DE" :strict nil) (make-date 2041 10 3)) ; => NIL, no signal
 ```
 
-Corpus-inferred starters no longer extrapolate: their rules run only over the corpus years, and their `:authority` says they are inferred.
+Corpus-derived calendars do not extrapolate: their rules run only over the corpus years, and their `:authority` says they are inferred and not normative.
 
 ### Registered calendars and data files
 
@@ -58,6 +58,16 @@ Registered data calendars are built on first lookup (`register-calendar-construc
 
 `country-calendar "GB"` is England and Wales, the scope of `find-calendar "GB"`. The date-holidays dump had no Summer bank holiday and missed the 2002, 2011 and 2012 proclamations. Both are fixed in the file, as its `:note` describes. On weekdays the corpus now matches the starter over 2000–2040 and gov.uk over 2012–2028.
 
+### Provenance: normative, corpus-derived, corpus
+
+Since 0.13.0 `(calendar-provenance cal)` says where a calendar's days come from:
+
+- `:normative`: a `define-calendar` starter whose rules cite a statute, decree or proclamation.
+- `:corpus-derived`: fixed and Easter rules inferred from the date-holidays corpus.
+- `:corpus`: the corpus table itself, `country-calendar`.
+
+The 93 corpus codes without a hand starter (`BH`, `XK`, `GU` and so on) used to be registered as inferred rule calendars and reported as normative. Those calendars missed 10,413 of their own corpus days in 2000–2040: every Eid, nth-weekday holiday, Orthodox Easter and substitute day. Now `find-calendar` returns the inferred calendar only when it reproduces at least 99% of the corpus (`calendar-corpus-agreement`, `*corpus-inference-min-agreement*`); 22 codes pass. The other 71 get `(country-calendar CODE)`. `normative-coverage-by-population` reports these codes as `:corpus-derived` or `:corpus`, never `:normative`. [`docs/AUTHORITIES.md`](docs/AUTHORITIES.md#corpus-only-codes-corpus-derived-or-corpus) lists which code is which.
+
 ### Caching and threads
 
 Since 0.9.1 a `rule-calendar` builds each year's holiday map once and keeps it, together with its working-day and suppressed-date sets, in a per-instance synchronized table (`:synchronized t` on SBCL). Queries from several threads are safe. As an example, `holidays-between` over 41 years of KR now takes milliseconds; it used to take about a minute. A `setf` of any rule-calendar accessor (`calendar-rules`, `calendar-transfers`, `calendar-working-days`, `calendar-suppressed-dates`, `calendar-weekend-days`, the sandwich and furikae settings) drops the cache. After changing a rule struct or a list in place, call `(clear-calendar-cache cal)`.
@@ -77,7 +87,7 @@ Every error is a `calendar-error`:
 
 Since 0.9.0 a weekend can change by era. `:weekend-days` on `define-calendar`, `make-data-calendar`, a `rule-calendar` or `country-calendar` takes either a weekday list (`'(5 6)`) or an era list (`'((nil 4 5) ((2013 6 29) 5 6))`). `(weekend-days-on cal date)` gives the list in force on DATE, and `calendar-weekend-days` gives the current one. Observance shifts (`:next-weekday`, `:us-federal-in-lieu`, …) use the weekend of each day they look at.
 
-The cited table `country-weekend-days` / `weekend-era-source` supplies the weekend for registered starters (`define-calendar :register`), corpus-inferred starters and `country-calendar`. It covers SA, AE, BH, QA, KW, OM, JO, YE, DZ, LY, IQ, SD, BD, EG, SY, IL, IR, AF and NP. Any code the table does not list keeps Sat/Sun. Two examples:
+The cited table `country-weekend-days` / `weekend-era-source` supplies the weekend for registered starters (`define-calendar :register`), corpus-derived calendars and `country-calendar`. It covers SA, AE, BH, QA, KW, OM, JO, YE, DZ, LY, IQ, SD, BD, EG, SY, IL, IR, AF and NP. Any code the table does not list keeps Sat/Sun. Two examples:
 
 - SA moved from Thu–Fri to Fri–Sat on 2013-06-29.
 - AE moved from Thu–Fri to Fri–Sat on 2006-09-01, then to Sat–Sun on 2022-01-01.

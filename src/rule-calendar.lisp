@@ -43,6 +43,9 @@ under another."
    ;; Years the rules are known to hold, (FROM . TO), for data-derived rule
    ;; calendars (corpus-inferred starters); NIL = unbounded statute rules.
    (coverage :initarg :coverage :initform nil :reader %rule-calendar-coverage)
+   ;; :NORMATIVE for DEFINE-CALENDAR starters, :CORPUS-DERIVED for rules
+   ;; inferred from the corpus, NIL when not stated (CALENDAR-PROVENANCE).
+   (provenance :initarg :provenance :initform nil :reader calendar-provenance)
    (strict :initarg :strict :initform t :reader calendar-strict-p)
    ;; 祝日法第3条第3項 (and analogues): insert weekdays sandwiched by holidays.
    (sandwich-holidays-p :initarg :sandwich-holidays-p :initform nil
@@ -73,7 +76,8 @@ RULES — normally built via DEFINE-CALENDAR. Observance policies on rules must
 cite their normative authority (:AUTHORITY). TRANSFERS encode annual Government
 decree weekend moves; WORKING-DAYS encode compensatory work weekends;
 SUPPRESSED-DATES remove rule holidays relocated by proclamation. :WEEKEND-DAYS
-is a weekday list or an era list (WEEKEND-SPEC-MIXIN)."))
+is a weekday list or an era list (WEEKEND-SPEC-MIXIN). :PROVENANCE is what
+CALENDAR-PROVENANCE reports; DEFINE-CALENDAR classes default to :NORMATIVE."))
 
 (defmethod weekend-day-p ((calendar rule-calendar) date)
   (and (member (date-day-of-week date) (weekend-days-on calendar date))
@@ -324,7 +328,8 @@ rearrangements in starter calendars (normative source of truth)."
                                       furikae-chain-p furikae-from
                                       furikae-chain-from)
                                 &body rules)
-  "Define NAME as a RULE-CALENDAR subclass from RULES.
+  "Define NAME as a RULE-CALENDAR subclass from RULES. Its instances report
+CALENDAR-PROVENANCE :NORMATIVE.
 
 Each clause:
 
@@ -378,6 +383,7 @@ CALENDAR-TRANSFERS / MAKE-RUSSIAN-HOLIDAYS-CALENDAR — not in this macro."
      (defclass ,name (rule-calendar) ()
        (:default-initargs
         :name ,(string name)
+        :provenance :normative
         :weekend-days ,(cond (weekend-days-p weekend-days)
                              (register `(country-weekend-days ,register))
                              (t ''(6 7)))
