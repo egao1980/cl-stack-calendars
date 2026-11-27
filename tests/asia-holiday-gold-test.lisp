@@ -377,3 +377,57 @@ matches the listed dates where the tithi does not shift it."
   (ok (my-provisional-year-p 2028))
   (ok (my-estimated-year-p 2007))
   (ng (my-estimated-year-p 2008)))
+
+;;; --- Vietnam (#40) ---------------------------------------------------------
+
+(defparameter *vn-holiday-gold* (load-holiday-gold "VN"))
+
+(deftest vn-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *vn-holiday-gold* "VN")
+  (ok (getf *vn-holiday-gold* :working-days)))
+
+(deftest vn-registered-calendar-matches-gold
+  "find-calendar \"VN\" agrees with the statute of each era, its nghỉ bù and
+the yearly notices (Tết and Quốc khánh placement, hoán đổi, làm bù) on every
+day 2000–2040."
+  (let ((vn (find-calendar "VN")))
+    (%report-holiday-gold "VN" (%holiday-gold-mismatches *vn-holiday-gold* (constantly vn)))))
+
+(deftest vn-year-calendars-match-gold
+  (%report-holiday-gold "VN :year"
+                        (%holiday-gold-mismatches *vn-holiday-gold*
+                                                  (lambda (y) (vietnam-holidays-calendar :year y)))))
+
+(deftest vn-country-calendar-matches-gold
+  (let ((vn (country-calendar "VN")))
+    (ok (eq :normative (calendar-provenance vn)))
+    (%report-holiday-gold "country-calendar VN"
+                          (%holiday-gold-mismatches *vn-holiday-gold* (constantly vn)))))
+
+(deftest vn-issue-40-days
+  (let ((vn (find-calendar "VN")))
+    (flet ((holiday (y m d) (holiday-p vn (make-date y m d))))
+      (ok (holiday 2025 1 27) "Tết 2025: 28 tháng Chạp to mùng 3 (TB 6150/TB-BLĐTBXH)")
+      (ok (holiday 2025 1 31))
+      (ng (holiday 2025 2 3))
+      (ok (holiday 2014 2 3) "first five-day Tết (BLLĐ 2012): mùng 4")
+      (ok (holiday 2014 2 5) "its nghỉ bù")
+      (ng (holiday 2013 2 18) "2013: four Tết days, two nghỉ bù and one hoán đổi, then work")
+      (ok (holiday 2025 9 1) "Quốc khánh 2025: 1/9 and 2/9")
+      (ng (holiday 2025 9 3))
+      (ok (holiday 2024 9 3) "Quốc khánh 2024: 2/9 and 3/9")
+      (ok (holiday 2022 9 1))
+      (ng (holiday 2020 9 3) "one Quốc khánh day before 2021")
+      (ok (holiday 2026 11 24) "Ngày Văn hóa Việt Nam (NQ 28/2026/QH16)")
+      (ng (holiday 2025 11 24))
+      (ok (holiday 2027 7 27) "27/7 from 1 March 2027")
+      (ng (holiday 2026 7 27))
+      (ok (holiday 2023 5 2) "Giỗ Tổ on a Saturday, 30/4 on a Sunday: nghỉ bù 2/5 and 3/5")
+      (ok (holiday 2023 5 3))
+      (ok (holiday 2025 5 2) "hoán đổi")
+      (ok (business-day-p vn (make-date 2025 4 26)) "làm bù Saturday")
+      (ng (holiday 2025 1 25) "a Saturday in the Tết block is a weekly rest day"))))
+
+(deftest vn-provisional-years
+  (ng (vn-provisional-year-p 2027))
+  (ok (vn-provisional-year-p 2028)))
