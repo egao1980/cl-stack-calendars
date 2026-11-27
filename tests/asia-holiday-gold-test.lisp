@@ -313,3 +313,67 @@ years after 2027 are provisional)."
 (deftest id-provisional-years
   (ng (id-provisional-year-p 2027))
   (ok (id-provisional-year-p 2028)))
+
+;;; --- Malaysia (#40) --------------------------------------------------------
+
+(defparameter *my-holiday-gold* (load-holiday-gold "MY"))
+
+(deftest my-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *my-holiday-gold* "MY" :from 2008))
+
+(deftest my-registered-calendar-matches-gold
+  "find-calendar \"MY\" holds the federal days of every JPM list 2008–2027,
+the s. 3 replacements and the s. 8 days, and the estimates of 2028–2040."
+  (let ((my (find-calendar "MY")))
+    (%report-holiday-gold "MY" (%holiday-gold-mismatches *my-holiday-gold* (constantly my)))))
+
+(deftest my-year-calendars-match-gold
+  (%report-holiday-gold "MY :year"
+                        (%holiday-gold-mismatches *my-holiday-gold*
+                                                  (lambda (y) (malaysia-holidays-calendar :year y)))))
+
+(deftest my-country-calendar-matches-gold
+  (let ((my (country-calendar "MY")))
+    (ok (eq :normative (calendar-provenance my)))
+    (%report-holiday-gold "country-calendar MY"
+                          (%holiday-gold-mismatches *my-holiday-gold* (constantly my)))))
+
+(deftest my-issue-40-days
+  (let ((my (find-calendar "MY")))
+    (flet ((holiday (y m d) (holiday-p my (make-date y m d))))
+      (ok (holiday 2024 10 31) "Deepavali 2024 (Warta No. 19239)")
+      (ng (holiday 2024 9 3) "no Deepavali in September")
+      (ok (holiday 2025 10 20))
+      (ok (holiday 2026 11 8))
+      (ok (holiday 2026 11 9) "Deepavali on a Sunday: s. 3")
+      (ok (holiday 2024 6 3) "the Agong's birthday, first Monday of June")
+      (ok (holiday 2016 6 4) "first Saturday of June to 2016")
+      (ok (holiday 2018 9 9) "9 September 2017-2019")
+      (ok (holiday 2024 7 7) "Awal Muharam")
+      (ok (holiday 2024 7 8) "Awal Muharam on a Sunday: s. 3")
+      (ok (holiday 2024 9 16) "Maulidur Rasul and Malaysia Day")
+      (ng (holiday 2024 9 17) "two holidays on one weekday give no extra day")
+      (ok (holiday 2026 5 31) "Wesak 2026")
+      (ok (holiday 2026 6 2) "Wesak on a Sunday, 1 June the Agong's birthday: s. 3 gives 2 June")
+      (ng (holiday 2026 5 13) "no Wesak bridge")
+      (ok (holiday 2026 3 20) "s. 8 day before Hari Raya Puasa 2026")
+      (ok (holiday 2022 5 4) "Labour Day replacement after Hari Raya Puasa 2022 (PMO)")
+      (ok (holiday 2018 5 9) "GE14")
+      (ng (holiday 2024 1 1) "1 January is a state day")
+      (ng (holiday 2024 3 28) "Nuzul Al-Quran is a state / FT day"))))
+
+(deftest my-deepavali-estimate-is-not-lunar-8-1
+  "The estimate for years with no list lands in late October or November and
+matches the listed dates where the tithi does not shift it."
+  (ok (= (date-rd (my-deepavali-estimate 2024)) (date-rd (make-date 2024 10 31))))
+  (ok (= (date-rd (my-deepavali-estimate 2026)) (date-rd (make-date 2026 11 8))))
+  (ok (= (date-rd (my-wesak-estimate 2026)) (date-rd (make-date 2026 5 31))))
+  (loop for y from 2028 to 2040
+        for d = (my-deepavali-estimate y)
+        do (ok (<= (date-rd (make-date y 10 17)) (date-rd d) (date-rd (make-date y 11 16))))))
+
+(deftest my-provisional-years
+  (ng (my-provisional-year-p 2027))
+  (ok (my-provisional-year-p 2028))
+  (ok (my-estimated-year-p 2007))
+  (ng (my-estimated-year-p 2008)))
