@@ -55,9 +55,10 @@ Diyanet by one day (2000-12-28 vs 27): the method is a separate question."
 (deftest hijri-one-eid-per-hijri-year
   "Every Hijri year 1410–1471 gives one Eid al-Fitr (1 Shawwal) and one Eid
 al-Adha (10 Dhu al-Hijjah) in each Islamic-holiday starter, whatever the
-Gregorian year. ID takes its 2000–2027 Eid days from the SKB 3 Menteri, which
-may differ from the tabular date by a day (#41), so its SKB years are left
-out here; asia-holiday-gold-test checks them."
+Gregorian year. ID takes its 2000–2027 Eid days from the SKB 3 Menteri and MY
+its 2008–2027 days from the JPM lists, which may differ from the tabular date
+by a day (#41, #40), so those years are left out here; asia-holiday-gold-test
+checks them."
   (let ((missing '()))
     (dolist (code '("SA" "AE" "EG" "TN" "TR" "ID" "MY" "PK" "DZ" "MA" "JO" "KW"))
       (let ((cal (find-calendar code)))
@@ -66,7 +67,9 @@ out here; asia-holiday-gold-test checks them."
                    (let ((d (tabular-hijri-date h (first md) (second md))))
                      (unless (or (holiday-p cal d)
                                  (and (string= code "ID")
-                                      (not (cl-stack-calendars::id-estimated-year-p (date-year d)))))
+                                      (not (cl-stack-calendars::id-estimated-year-p (date-year d))))
+                                 (and (string= code "MY")
+                                      (not (my-estimated-year-p (date-year d)))))
                        (push (list code h (suite-date-iso d)) missing)))))))
     (ok (null missing)
         (format nil "missing Eids: ~s" (subseq missing 0 (min 20 (length missing)))))))
