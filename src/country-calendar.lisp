@@ -79,7 +79,8 @@ unless the calendar was loaded with :STRICT NIL."))
     ("TW" . taiwan-holidays-calendar)
     ("PH" . philippines-holidays-calendar)
     ("ID" . indonesia-holidays-calendar)
-    ("MY" . malaysia-holidays-calendar))
+    ("MY" . malaysia-holidays-calendar)
+    ("VN" . vietnam-holidays-calendar))
   "Corpus codes whose COUNTRY-CALENDAR defers to a hand starter: alist CODE →
 starter constructor. The date-holidays dump for these codes is known to be
 wrong (RU: no 2–5 January from 2005, no ТК ст. 112 transfers or decrees,
@@ -97,7 +98,8 @@ proclaimed special days, Ninoy Aquino Day 2024 not moved; ID: Islamic days
 off the SKB (Idul Adha 2024-06-16, SKB 06-17), no election days; #41. MY:
 counts the state day 1 January, has the Agong's birthday on the first Monday
 of June before 2017 and Malaysia Day before 2010, and misses Wesak and
-Deepavali in years such as 2008; #40). The corpus file stays as shipped;
+Deepavali in years such as 2008; VN: Giỗ Tổ before 2007, no nghỉ bù, no
+five-day Tết, no hoán đổi or làm bù; #40). The corpus file stays as shipped;
 its days are no longer consulted.")
 
 (defclass normative-country-calendar (country-holiday-calendar)

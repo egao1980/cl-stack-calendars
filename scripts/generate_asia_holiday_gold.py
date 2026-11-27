@@ -40,6 +40,8 @@ FIRST, LAST = 2000, 2040
 GENERATED = "2026-11-27"
 CACHE = Path.home() / ".cache" / "cl-stack-calendars"
 UA = "Mozilla/5.0 (cl-stack-calendars holiday gold)"
+HND_URI = ("https://web.archive.org/web/2023id_/"
+           "https://www.informatik.uni-leipzig.de/~duc/amlich/JavaScript/amlich-hnd.js")
 
 
 def fetch(url: str, data: bytes | None = None, tries: int = 8) -> bytes:
@@ -1627,6 +1629,940 @@ def my_holidays(year: int) -> list[tuple[date, str]]:
     return days + [x for x in my_replacements(days) if x[0].year == year] + extra
 
 
+# --- Vietnam --------------------------------------------------------------
+#
+# Ngày nghỉ lễ, tết of cán bộ, công chức, viên chức (Saturday and Sunday off
+# since QĐ 188/1999/QĐ-TTg): Bộ luật Lao động 1994 Điều 73 (as amended by Luật
+# 84/2007, Giỗ Tổ), BLLĐ 2012 Điều 115 (Tết 5 days from 2014), BLLĐ 2019
+# Điều 111-112 (Quốc khánh 2 days from 2021), NQ 28/2026/QH16 (24/11 from
+# 2026) and the 2026 amending law (27/7 from 1 March 2027); and the yearly
+# Thủ tướng / VPCP / Bộ LĐTBXH / Bộ Nội vụ notices that place the Tết and
+# Quốc khánh days, swap weekdays off (hoán đổi) and make Saturdays working
+# days (làm bù). A holiday on a Saturday or Sunday gives the next working day
+# (nghỉ bù). Lunar dates: the notices, and for years with no notice Hồ Ngọc
+# Đức's amlich tables (UTC+7).
+
+VN_NOTE = (
+    "Days off of government offices (cán bộ, công chức, viên chức; Saturday and Sunday are the weekly "
+    "rest): the statutory days of each era, their nghỉ bù, and the yearly notices' Tết and Quốc khánh "
+    "placement, hoán đổi days and làm bù Saturdays (:working-days), 2000-2027. A Saturday or Sunday "
+    "inside a block is a weekly rest day, not a holiday. 2028-2040 are provisional: statutory days, "
+    "Tết as giao thừa + mùng 1-4, the Quốc khánh day next to 2/9 by the 2021-2027 pattern, nghỉ bù."
+)
+
+VN_SOURCES = [
+    ("Bộ luật Lao động 1994 Điều 73; Luật 35/2002/QH10; Luật 84/2007/QH11 (Giỗ Tổ Hùng Vương, from 11/04/2007)",
+     "https://moit.gov.vn/upload/2005517/20210623/L%2084-2007-QH11.doc",
+     "Tết dương lịch 1 ngày; Tết âm lịch bốn ngày (một ngày cuối năm và ba ngày đầu năm âm lịch); 30/4; 1/5; "
+     "2/9; Giỗ Tổ Hùng Vương 10/3 âm lịch (2007). Nếu những ngày nghỉ nói trên trùng vào ngày nghỉ hàng tuần "
+     "thì người lao động được nghỉ bù vào ngày tiếp theo."),
+    ("Quyết định 188/1999/QĐ-TTg, Điều 1: tuần làm việc 40 giờ, nghỉ thứ bảy và chủ nhật (from 02/10/1999)",
+     "https://caselaw.vn/van-ban-phap-luat/239691-quyet-dinh-so-188-1999-qd-ttg-ngay-17-09-1999-cua-thu-tuong-chinh-phu-ve-che-do-tuan-lam-viec-40-gio",
+     "Saturday and Sunday are the weekly rest of cán bộ, công chức: a holiday on either gives a nghỉ bù."),
+    ("Bộ luật Lao động 2012 (10/2012/QH13) Điều 115, in force 01/05/2013",
+     "https://moit.gov.vn/upload/2005517/20210623/_CB99Ad01.pdf",
+     "Tết Âm lịch 05 ngày (first in 2014); nghỉ bù vào ngày kế tiếp."),
+    ("Bộ luật Lao động 2019 (45/2019/QH14) Điều 111(3), 112, in force 01/01/2021",
+     "https://vanban.chinhphu.vn/?pageid=27160&docid=198540",
+     "Quốc khánh 02 ngày (ngày 02 tháng 9 dương lịch và 01 ngày liền kề trước hoặc sau); Tết Âm lịch 05 "
+     "ngày; Thủ tướng quyết định cụ thể ngày nghỉ; nghỉ bù vào ngày làm việc kế tiếp."),
+    ("Nghị quyết 28/2026/QH16 về phát triển văn hóa Việt Nam, Điều 2(1) (in force 01/07/2026)",
+     "https://image.sggp.org.vn/Uploaded/2026/evesfnbfjpy/2026_05_06/nq28-phat-trien-van-hoa-7155.pdf",
+     "Ngày 24 tháng 11 hằng năm là Ngày Văn hóa Việt Nam; người lao động được nghỉ làm việc và hưởng nguyên lương."),
+    ("Luật sửa đổi, bổ sung một số điều của Bộ luật Lao động, ... (passed 21/11/2026, in force 01/03/2027)",
+     "https://baochinhphu.vn/quoc-hoi-dong-y-bo-sung-2-ngay-nghi-le-duoc-huong-nguyen-luong-102261121121448218.htm",
+     "Bổ sung Ngày Tổ quốc tri ân - Ngày Thương binh, liệt sĩ (27/7) và Ngày Văn hóa Việt Nam (24/11) là ngày "
+     "nghỉ lễ, Tết hưởng nguyên lương. The law's number and signed text were not yet published."),
+    ("The yearly notices 2000-2027: Thủ tướng / VPCP công văn, Bộ LĐTBXH (to 2025) and Bộ Nội vụ (from 2025) thông báo",
+     "https://datafiles.chinhphu.vn/cpp/files/vbpq/2026/9/10065_vpcp-kgvx_02102026_1-signed.signed.pdf",
+     "E.g. 872/VPCP-KGVX (2010), 9197/VPCP-KGVX (2012), 5083/TB-BLĐTBXH (2014), 573/TB-VPCP (2018), "
+     "6519/VPCP-KGVX (2019), 8056/VPCP-KGVX (2023), 6150/TB-BLĐTBXH (2025), 12590/TB-BNV and 9441/TB-BNV "
+     "(2026), 10065/VPCP-KGVX (2026 Ngày Văn hóa; Tết and Quốc khánh 2027). 2000-2009: provincial UBND "
+     "directives on vanban.chinhphu.vn quoting the Bộ LĐTBXH guidance; nghỉ bù days with no notice found "
+     "follow the statute."),
+    ("Hồ Ngọc Đức, Âm lịch Việt Nam, amlich-hnd.js tables TK21 (UTC+7)",
+     HND_URI,
+     "Tết (1/1 âm lịch), giao thừa and Giỗ Tổ (10/3) in years with no notice."),
+]
+
+VN_NOTICES = {
+    2000: {
+        "sources": [
+            ('02/2000/CT-UB UBND tỉnh Cần Thơ 2000-01-14: Chỉ thị về việc tổ chức Tết Nguyên đán Canh Thìn năm 2000 (mục 10: 40h/5 ngày nghỉ Tết 6 ngày 04/02–09/02/2000, 2 ngày nghỉ bù vì mùng 1, mùng 2 trùng thứ bảy, chủ nhật; thực hiện CV 4331/LĐTBXH-BHLĐ 16/12/1999)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=9347'),
+            ('01/2000/CT-UB UBND tỉnh Bạc Liêu 2000-01-18: Chỉ thị về việc tổ chức đón tết, vui xuân Canh Thìn năm 2000 (CBCC nghỉ 06 ngày 04/02–09/02, có 02 ngày nghỉ bù thứ bảy và chủ nhật)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=7413'),
+            ('02/2000/CT-TTg Thủ tướng Chính phủ 2000-01-19: Chỉ thị về tổ chức đón Tết Canh Thìn, năm 2000 (không nêu ngày nghỉ)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=7243'),
+            ('4331/LĐTBXH-BHLĐ Bộ Lao động - Thương binh và Xã hội 1999-12-16 — Công văn hướng dẫn nghỉ Tết Canh Thìn (được UBND Cần Thơ trích dẫn; chưa tìm thấy bản gốc trực tuyến)', None),
+        ],
+        "days": [
+            ('2000-01-01', 'Tết Dương lịch (thứ bảy)', 'le'),
+            ('2000-01-03', 'nghỉ bù Tết Dương lịch (CHƯA XÁC MINH bằng văn bản)', 'bu'),
+            ('2000-02-04', 'Tết Nguyên đán (ngày cuối năm Kỷ Mão)', 'le'),
+            ('2000-02-05', 'Tết Nguyên đán (mùng 1, thứ bảy)', 'le'),
+            ('2000-02-06', 'Tết Nguyên đán (mùng 2, chủ nhật)', 'le'),
+            ('2000-02-07', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2000-02-08', 'nghỉ bù Tết (mùng 4)', 'bu'),
+            ('2000-02-09', 'nghỉ bù Tết (mùng 5)', 'bu'),
+            ('2000-04-30', 'Ngày Chiến thắng (chủ nhật)', 'le'),
+            ('2000-05-01', 'Quốc tế Lao động', 'le'),
+            ('2000-05-02', 'nghỉ bù 30/4 (CHƯA XÁC MINH bằng văn bản)', 'bu'),
+            ('2000-09-02', 'Quốc khánh (thứ bảy)', 'le'),
+            ('2000-09-04', 'nghỉ bù Quốc khánh (CHƯA XÁC MINH bằng văn bản)', 'bu'),
+        ],
+        "working": [],
+    },
+    2001: {
+        "sources": [
+            ('01/2001/CT.UBT UBND tỉnh Cần Thơ 2001-01-02: Chỉ thị về tổ chức đón Tết Tân Tỵ, năm 2001 (mục 11: CBCC nghỉ Tết 4 ngày 23/01–26/01/2001, nhằm 29 tháng Chạp đến hết mùng 3)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=8447'),
+            ('25/2000/CT.UBT UBND tỉnh Cần Thơ 2000-12-25: Chỉ thị về tổ chức đón Tết Tân Tỵ, năm 2001 (same wording, mục 10)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=8413'),
+            ('27/2000/CT-TTg Thủ tướng Chính phủ 2000-12-25: Chỉ thị tổ chức đón tết Tân Tỵ năm 2001 (không nêu ngày nghỉ)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=8419'),
+            ('49/2000/QĐ-BGD&ĐT Bộ Giáo dục và Đào tạo 2000-12-04: QĐ điều chỉnh thời gian nghỉ Tết Âm lịch Tân Tỵ cho giáo dục phổ thông, mầm non... (chỉ áp dụng ngành giáo dục: 22/01–28/01/2001; KHÔNG áp dụng cho CBCC)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=8429'),
+        ],
+        "days": [
+            ('2001-01-01', 'Tết Dương lịch', 'le'),
+            ('2001-01-23', 'Tết Nguyên đán (29 tháng Chạp, ngày cuối năm Canh Thìn)', 'le'),
+            ('2001-01-24', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2001-01-25', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2001-01-26', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2001-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2001-05-01', 'Quốc tế Lao động', 'le'),
+            ('2001-09-02', 'Quốc khánh (chủ nhật)', 'le'),
+            ('2001-09-03', 'nghỉ bù Quốc khánh (CHƯA XÁC MINH bằng văn bản)', 'bu'),
+        ],
+        "working": [],
+    },
+    2002: {
+        "sources": [
+            ('01/2002/CT-UB UBND tỉnh Cần Thơ 2002-01-03: Chỉ thị về tổ chức đón tết Nhâm Ngọ, năm 2002 (mục 9: CBCC nghỉ Tết 4 ngày 11/02–14/02/2002, 30 tháng Chạp đến hết mùng 3)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=10122'),
+            ('02/2002/CT-UBNDT UBND tỉnh Sóc Trăng 2002-01-07: V/v tổ chức Tết nguyên đán Nhâm Ngọ 2002 (mục 10: nghỉ 4 ngày 11/02–14/02/2002)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=10289'),
+            ('03/2002/CT-UB UBND tỉnh Vĩnh Long 2002-01-24: Tổ chức đón Tết Nguyên Đán Nhâm Ngọ 2002 (CBCC nghỉ 11/02–14/02/2002)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=10658'),
+        ],
+        "days": [
+            ('2002-01-01', 'Tết Dương lịch', 'le'),
+            ('2002-02-11', 'Tết Nguyên đán (30 tháng Chạp)', 'le'),
+            ('2002-02-12', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2002-02-13', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2002-02-14', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2002-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2002-05-01', 'Quốc tế Lao động', 'le'),
+            ('2002-09-02', 'Quốc khánh', 'le'),
+        ],
+        "working": [],
+    },
+    2003: {
+        "sources": [
+            ('20/2002/CT-UB UBND tỉnh Cần Thơ 2002-12-26: Chỉ thị về tổ chức đón Tết Quí Mùi, năm 2003 (mục 11: CBCC nghỉ 6 ngày gồm 4 ngày Tết và 2 ngày nghỉ bù, 31/01–05/02/2003, 29 tháng Chạp đến hết mùng 5)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=11342'),
+            ('01/2003/CT-UB UBND tỉnh Lạng Sơn 2003-01-14: Chỉ thị về tổ chức đón Tết Quý Mùi-năm 2003 (4 ngày 31/01–03/02 + 02 ngày nghỉ bù thứ bảy, chủ nhật)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=11436'),
+        ],
+        "days": [
+            ('2003-01-01', 'Tết Dương lịch', 'le'),
+            ('2003-01-31', 'Tết Nguyên đán (29 tháng Chạp, ngày cuối năm Nhâm Ngọ)', 'le'),
+            ('2003-02-01', 'Tết Nguyên đán (mùng 1, thứ bảy)', 'le'),
+            ('2003-02-02', 'Tết Nguyên đán (mùng 2, chủ nhật)', 'le'),
+            ('2003-02-03', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2003-02-04', 'nghỉ bù Tết (mùng 4)', 'bu'),
+            ('2003-02-05', 'nghỉ bù Tết (mùng 5)', 'bu'),
+            ('2003-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2003-05-01', 'Quốc tế Lao động', 'le'),
+            ('2003-09-02', 'Quốc khánh', 'le'),
+        ],
+        "working": [],
+    },
+    2004: {
+        "sources": [
+            ('08/2003/CT.UBNDT UBND tỉnh Sóc Trăng 2003-12-05: V/v tổ chức Tết nguyên đán Giáp Thân 2004 (mục 9: nghỉ 6 ngày 21/01–26/01/2004, tính cả ngày nghỉ bù thứ bảy và chủ nhật)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=12421'),
+            ("UBND TP.HCM (qua báo Người Lao Động) 2004-01-10: Báo NLĐ 10/01/2004: 'Nghỉ Tết Nguyên Đán 2004: ít nhất 4 ngày rưỡi' – UBND TPHCM thông báo 9/1/2004: nghỉ 21–24/1, nghỉ bù 26/1 (40h/5 ngày)",
+             'https://nld.com.vn/thoi-su-trong-nuoc/nghi-tet-nguyen-dan-2004-it-nhat-4-ngay-ruoi-79039.htm'),
+            ("UBND TP.HCM (qua báo Tuổi Trẻ) 2004-04-20: Báo Tuổi Trẻ 20/04/2004: 'Nghỉ lễ và treo cờ Tổ quốc ngày 30-4 và 1-5' – 1/5 trùng thứ bảy, đơn vị 40h/5 ngày nghỉ bù 3/5",
+             'https://tuoitre.vn/nghi-le-va-treo-co-to-quoc-ngay-30-4-va-1-5-29525.htm'),
+        ],
+        "days": [
+            ('2004-01-01', 'Tết Dương lịch', 'le'),
+            ('2004-01-21', 'Tết Nguyên đán (30 tháng Chạp)', 'le'),
+            ('2004-01-22', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2004-01-23', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2004-01-24', 'Tết Nguyên đán (mùng 3, thứ bảy)', 'le'),
+            ('2004-01-26', 'nghỉ bù Tết (mùng 5)', 'bu'),
+            ('2004-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2004-05-01', 'Quốc tế Lao động (thứ bảy)', 'le'),
+            ('2004-05-03', 'nghỉ bù 1/5', 'bu'),
+            ('2004-09-02', 'Quốc khánh', 'le'),
+        ],
+        "working": [],
+    },
+    2005: {
+        "sources": [
+            ('04/2005/CT-UB UBND TP Cần Thơ 2005-01-14: Về tổ chức đón Tết Nguyên đán Ất Dậu năm 2005 (mục 13: CBCC nghỉ 06 ngày gồm 4 ngày Tết và 2 ngày thứ bảy, chủ nhật, 08/02–13/02/2005)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=14329'),
+            ('01/2005/CT-UBNDT UBND tỉnh Sóc Trăng 2005-01-06: Về việc tổ chức Tết Nguyên Đán Ất Dậu năm 2005 (mục 9: nghỉ 04 ngày 08/02–11/02; 12, 13/02 là nghỉ cuối tuần)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=14304'),
+            ('48/2004/CT-TTg Thủ tướng Chính phủ 2004-12-24: Chỉ thị về tổ chức đón tết Ất Dậu năm 2005 (không nêu ngày nghỉ)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=13666'),
+            ("UBND TP.HCM (qua báo SGGP) 2004-12-22: SGGP 22/12/2004: 'Làm việc 40 giờ/tuần được nghỉ bù Tết Dương lịch thêm ngày 3-1-2005' (thông báo UBND TPHCM)",
+             'https://www.sggp.org.vn/lam-viec-40-giotuan-duoc-nghi-bu-tet-duong-lich-them-ngay-3-1-2005-post39767.html'),
+            ('UBND tỉnh Khánh Hòa (qua Báo Khánh Hòa) 2004-12-22: Báo Khánh Hòa 22/12/2004: Thông báo về việc treo cờ Tổ quốc và nghỉ Tết Dương lịch năm 2005 (UBND tỉnh Khánh Hòa: nghỉ 1/1–3/1/2005)',
+             'https://baokhanhhoa.vn/xa-hoi/200412/thong-bao-ve-viec-treo-co-to-quoc-va-nghi-tet-duong-lich-nam-2005-1812098/'),
+        ],
+        "days": [
+            ('2005-01-01', 'Tết Dương lịch (thứ bảy)', 'le'),
+            ('2005-01-03', 'nghỉ bù Tết Dương lịch', 'bu'),
+            ('2005-02-08', 'Tết Nguyên đán (30 tháng Chạp)', 'le'),
+            ('2005-02-09', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2005-02-10', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2005-02-11', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2005-04-30', 'Ngày Chiến thắng (thứ bảy)', 'le'),
+            ('2005-05-01', 'Quốc tế Lao động (chủ nhật)', 'le'),
+            ('2005-05-02', 'nghỉ bù 30/4 (CHƯA XÁC MINH bằng văn bản)', 'bu'),
+            ('2005-05-03', 'nghỉ bù 1/5 (CHƯA XÁC MINH bằng văn bản)', 'bu'),
+            ('2005-09-02', 'Quốc khánh', 'le'),
+        ],
+        "working": [],
+    },
+    2006: {
+        "sources": [
+            ('01/CT.UBND UBND tỉnh Vĩnh Long 2006-01-05: Chỉ thị về việc tổ chức đón Tết Nguyên Đán Bính Tuất 2006 (CBCCVC nghỉ Tết 06 ngày 28/01–02/02/2006)',
+             'https://vinhlong.gov.vn/Portals/1027/VanBan/2006/012006CT.doc'),
+            ("UBND TP.HCM (qua báo SGGP) 2006-01-14: SGGP 14/01/2006: 'Treo cờ Tổ quốc và nghỉ Tết Nguyên đán Bính Tuất năm 2006' (UBND TPHCM: nghỉ 28–31/1; 40h/5 ngày nghỉ bù 1 và 2/2)",
+             'https://www.sggp.org.vn/treo-co-to-quoc-va-nghi-tet-nguyen-dan-binh-tuat-nam-2006-post51017.html'),
+            ("UBND TP.HCM (qua Dân trí) 2006-01-13: Dân trí 13/01/2006: 'Treo cờ Tổ quốc và nghỉ Tết âm lịch 4 ngày' (same TPHCM notice)",
+             'https://dantri.com.vn/thoi-su/treo-co-to-quoc-va-nghi-tet-am-lich-4-ngay-1137153930.htm'),
+            ("UBND TP.HCM (qua Tiền Phong) 2005-12-23: Tiền Phong 23/12/2005: 'Nghỉ bù tết dương lịch vào ngày 2/1' (UBND TPHCM)",
+             'https://tienphong.vn/nghi-bu-tet-duong-lich-vao-ngay-21-post32852.tpo'),
+            ("01/CT-UBND UBND tỉnh Lạng Sơn 2006-01-13: Chỉ thị về tổ chức đón tết Bính Tuất - năm 2006 (CONFLICTING: 'nghỉ năm ngày ... 28/01 đến hết 01/02/2006')",
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=15562'),
+        ],
+        "days": [
+            ('2006-01-01', 'Tết Dương lịch (chủ nhật)', 'le'),
+            ('2006-01-02', 'nghỉ bù Tết Dương lịch', 'bu'),
+            ('2006-01-28', 'Tết Nguyên đán (29 tháng Chạp, thứ bảy)', 'le'),
+            ('2006-01-29', 'Tết Nguyên đán (mùng 1, chủ nhật)', 'le'),
+            ('2006-01-30', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2006-01-31', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2006-02-01', 'nghỉ bù Tết (mùng 4)', 'bu'),
+            ('2006-02-02', 'nghỉ bù Tết (mùng 5)', 'bu'),
+            ('2006-04-30', 'Ngày Chiến thắng (chủ nhật)', 'le'),
+            ('2006-05-01', 'Quốc tế Lao động', 'le'),
+            ('2006-05-02', 'nghỉ bù 30/4 (CHƯA XÁC MINH bằng văn bản)', 'bu'),
+            ('2006-09-02', 'Quốc khánh (thứ bảy)', 'le'),
+            ('2006-09-04', 'nghỉ bù Quốc khánh (CHƯA XÁC MINH bằng văn bản)', 'bu'),
+        ],
+        "working": [],
+    },
+    2007: {
+        "sources": [
+            ('01/2007/CT-UBND UBND tỉnh Tiền Giang 2007-01-10: Về việc tổ chức Tết Đinh Hợi năm 2007 (mục 15: nghỉ 16/02–21/02/2007, 29 tháng Chạp Bính Tuất đến hết mùng 5, tính cả ngày nghỉ bù thứ bảy và chủ nhật)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=19720'),
+            ('01/2007/CT-TTg Thủ tướng Chính phủ 2007-01-09: Về việc tổ chức đón Tết Đinh Hợi năm 2007 (không nêu ngày nghỉ)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=19655'),
+            ('84/2007/QH11 Quốc hội 2007-04-02: Luật sửa đổi, bổ sung Điều 73 BLLĐ (thêm Giỗ Tổ Hùng Vương 10/3 âm lịch; hiệu lực 11/4/2007)',
+             'https://vanban.chinhphu.vn/default.aspx?pageid=27160&docid=80046'),
+            ("Bộ LĐTBXH (qua báo Người Lao Động) 2007-04-18: NLĐ 18/04/2007: 'Được phép nghỉ ngày Giỗ Tổ Hùng Vương từ năm nay' — Bộ LĐTBXH đề nghị bố trí nghỉ; năm nay Giỗ Tổ nhằm 26-4",
+             'https://tuoitre.vn/nld/thoi-su-trong-nuoc/duoc-phep-nghi-ngay-gio-to-hung-vuong-tu-nam-nay-186560.htm'),
+        ],
+        "days": [
+            ('2007-01-01', 'Tết Dương lịch', 'le'),
+            ('2007-02-16', 'Tết Nguyên đán (29 tháng Chạp, ngày cuối năm Bính Tuất)', 'le'),
+            ('2007-02-17', 'Tết Nguyên đán (mùng 1, thứ bảy)', 'le'),
+            ('2007-02-18', 'Tết Nguyên đán (mùng 2, chủ nhật)', 'le'),
+            ('2007-02-19', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2007-02-20', 'nghỉ bù Tết (mùng 4)', 'bu'),
+            ('2007-02-21', 'nghỉ bù Tết (mùng 5)', 'bu'),
+            ('2007-04-26', 'Giỗ Tổ Hùng Vương (10/3 âm lịch) – lần đầu', 'le'),
+            ('2007-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2007-05-01', 'Quốc tế Lao động', 'le'),
+            ('2007-09-02', 'Quốc khánh (chủ nhật)', 'le'),
+            ('2007-09-03', 'nghỉ bù Quốc khánh (CHƯA XÁC MINH bằng văn bản)', 'bu'),
+        ],
+        "working": [],
+    },
+    2008: {
+        "sources": [
+            ('UBND TP Đà Nẵng 2007-12-19: Thông báo về việc treo cờ và nghỉ lễ Tết dương lịch 2008 (UBND TP Đà Nẵng, đăng lại trên Cổng TTĐT Chính phủ)',
+             'https://baochinhphu.vn/thong-bao-ve-viec-treo-co-va-nghi-le-tet-duong-lich-2008-10239253.htm'),
+        ],
+        "days": [
+            ('2008-01-01', 'Tết Dương lịch', 'le'),
+            ('2008-02-06', 'Tết Nguyên đán (30 tháng Chạp)', 'le'),
+            ('2008-02-07', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2008-02-08', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2008-02-09', 'Tết Nguyên đán (mùng 3, trùng thứ Bảy)', 'le'),
+            ('2008-02-11', 'Nghỉ bù mùng 3 Tết (thứ Bảy 09/02)', 'bu'),
+            ('2008-04-15', 'Giỗ Tổ Hùng Vương (10/3 âm lịch)', 'le'),
+            ('2008-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2008-05-01', 'Ngày Quốc tế Lao động', 'le'),
+            ('2008-09-02', 'Quốc khánh', 'le'),
+        ],
+        "working": [],
+    },
+    2009: {
+        "sources": [
+            ('UBND tỉnh Đồng Nai 2009-01 (posted 2011-07-20 on portal): Lunar New Year holiday announcement 2009 (UBND tỉnh Đồng Nai thông báo nghỉ Tết Kỷ Sửu)',
+             'https://dongnai.gov.vn/en/news/Administrative-news/lunar-new-year-holiday-announcement-2009-1756.html'),
+        ],
+        "days": [
+            ('2009-01-01', 'Tết Dương lịch', 'le'),
+            ('2009-01-25', 'Tết Nguyên đán (30 tháng Chạp, trùng Chủ nhật)', 'le'),
+            ('2009-01-26', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2009-01-27', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2009-01-28', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2009-01-29', 'Nghỉ bù 30 Tết (Chủ nhật 25/01)', 'bu'),
+            ('2009-04-04', 'Giỗ Tổ Hùng Vương (10/3 âm lịch, trùng thứ Bảy)', 'le'),
+            ('2009-04-06', 'Nghỉ bù Giỗ Tổ Hùng Vương', 'bu'),
+            ('2009-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2009-05-01', 'Ngày Quốc tế Lao động', 'le'),
+            ('2009-09-02', 'Quốc khánh', 'le'),
+        ],
+        "working": [],
+    },
+    2010: {
+        "sources": [
+            ('872/VPCP-KGVX Văn phòng Chính phủ (ý kiến Thủ tướng; ký: BT,CN Nguyễn Xuân Phúc) 2010-02-05: Công văn V/v hoán đổi ngày nghỉ vào dịp tết âm lịch 2010 đối với cán bộ, công chức, viên chức',
+             'https://moit.gov.vn/van-ban-phap-luat/van-ban-dieu-hanh/-cong-van-ve-viec-hoan-doi-ngay-nghi-vao-dip-tet-am-lich-201.html (scan: https://moit.gov.vn/upload/2005517/20210623/872-VPCP-KGVX.pdf)'),
+            ('410/TB-LĐTBXH Bộ LĐTBXH 2010-02 (unverified): Thông báo về việc nghỉ làm việc ngày thứ sáu 19/02/2010 và làm việc bù thứ bảy 27/02/2010 (number from a luatvietnam listing; text NOT fetched)',
+             'https://luatvietnam.vn/lao-dong/thong-bao-410-tb-ldtbxh-bo-lao-dong-thuong-binh-va-xa-hoi-49878-d6.html'),
+            ('Cổng TTĐT Chính phủ 2010-02-05: Nghỉ Tết Canh Dần tới 9 ngày (Cổng TTĐT Chính phủ)',
+             'https://baochinhphu.vn/nghi-tet-canh-dan-toi-9-ngay-10231132.htm'),
+            ('UBND TP Cần Thơ 2010-02 (portal date 25/10/2010): Thông báo thời gian nghỉ ... Tết Nguyên đán Canh Dần năm 2010 (UBND TP Cần Thơ)',
+             'https://baochinhphu.vn/thong-bao-ve-viec-treo-co-to-quoc-thoi-gian-nghi-va-truc-trong-dip-tet-nguyen-dan-canh-dan-nam-2010-10242940.htm'),
+            ('UBND tỉnh Đồng Nai 2009-12: Day-off ... on occasion of New Year Day 2010 (UBND tỉnh Đồng Nai)',
+             'https://dongnai.gov.vn/en/news/Our-activities/day-off-and-national-flag-hanging-on-occasion-of-new-year-day-940.html'),
+            ('UBND TP Cần Thơ 2010-04-08: Thông báo thời gian nghỉ dịp Giỗ Tổ Hùng Vương, 30/4 và 1/5/2010 (UBND TP Cần Thơ)',
+             'https://baochinhphu.vn/thong-bao-ve-viec-treo-co-to-quoc-thoi-gian-nghi-va-truc-trong-dip-le-gio-to-hung-vuong-ngay-mien-nam-hoan-toan-giai-phong-va-ngay-quoc-te-lao-dong-10241897.htm'),
+            ('5971/VPCP-KGVX (+ thông báo BLĐTBXH ngày 25/8/2010, số chưa rõ) Văn phòng Chính phủ / Bộ LĐTBXH 2010-08-25: Hoán đổi ngày nghỉ dịp Quốc khánh 2/9 (Bộ LĐTBXH thông báo theo văn bản 5971/VPCP-KGVX)',
+             'https://baochinhphu.vn/hoan-doi-ngay-nghi-dip-quoc-khanh-2-9-10236510.htm'),
+            ('Sở GDĐT Hà Nội (via Cổng TTĐT CP) 2010-09-29: Các trường nơi diễn ra Đại lễ được nghỉ học (Hà Nội, schools only)',
+             'https://baochinhphu.vn/cac-truong-noi-dien-ra-dai-le-duoc-nghi-hoc-10237572.htm'),
+        ],
+        "days": [
+            ('2010-01-01', 'Tết Dương lịch', 'le'),
+            ('2010-02-13', 'Tết Nguyên đán (30 tháng Chạp, trùng thứ Bảy)', 'le'),
+            ('2010-02-14', 'Tết Nguyên đán (mùng 1, trùng Chủ nhật)', 'le'),
+            ('2010-02-15', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2010-02-16', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2010-02-17', 'Nghỉ bù 30 Tết (thứ Bảy 13/02)', 'bu'),
+            ('2010-02-18', 'Nghỉ bù mùng 1 Tết (Chủ nhật 14/02)', 'bu'),
+            ('2010-02-19', 'Nghỉ hoán đổi (mùng 6 Tết), làm bù thứ Bảy 27/02', 'doi'),
+            ('2010-04-23', 'Giỗ Tổ Hùng Vương (10/3 âm lịch)', 'le'),
+            ('2010-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2010-05-01', 'Ngày Quốc tế Lao động (trùng thứ Bảy)', 'le'),
+            ('2010-05-03', 'Nghỉ bù Quốc tế Lao động', 'bu'),
+            ('2010-09-02', 'Quốc khánh', 'le'),
+            ('2010-09-03', 'Nghỉ hoán đổi (thứ Sáu), làm bù thứ Bảy 11/09', 'doi'),
+        ],
+        "working": [('2010-02-27', 'Làm bù cho ngày nghỉ hoán đổi 19/02 (Tết Canh Dần) - CV 872/VPCP-KGVX'), ('2010-09-11', 'Làm bù cho ngày nghỉ hoán đổi 03/09 (Quốc khánh) - CV 5971/VPCP-KGVX')],
+    },
+    2011: {
+        "sources": [
+            ('9529/VPCP-KGVX Văn phòng Chính phủ 2010-12-31: Công văn V/v hoán đổi ngày nghỉ vào dịp Tết Âm lịch và Giỗ Tổ Hùng Vương năm 2011 đối với cán bộ, công chức, viên chức',
+             'https://baochinhphu.vn/hoan-doi-ngay-nghi-vao-dip-tet-nguyen-dan-tan-mao-va-gio-to-hung-vuong-nam-2011-doi-voi-can-bo-cong-chuc-vien-chuc-10256468.htm'),
+            ('24/TB-BLĐTBXH Bộ LĐTBXH 2011-01-06: Thông báo về việc hoán đổi ngày nghỉ hàng tuần vào dịp Tết Âm lịch và Giỗ Tổ Hùng Vương năm 2011',
+             'https://baochinhphu.vn/lich-nghi-tet-am-lich-va-gio-to-hung-vuong-nam-2011-10258360.htm'),
+            ('Bộ LĐTBXH (Văn phòng) 2011-04-05: Công văn v/v hoán đổi ngày nghỉ vào dịp Giỗ Tổ Hùng Vương năm 2011 (restates TB 24/TB-BLĐTBXH)',
+             'https://baochinhphu.vn/cong-van-v-v-hoan-doi-ngay-nghi-vao-dip-gio-to-hung-vuong-nam-2011-10270089.htm'),
+            ('Cổng TTĐT Hà Nội 2011-04-06: Hoán đổi ngày nghỉ vào dịp Giỗ Tổ Hùng Vương (Hà Nội portal)',
+             'https://baochinhphu.vn/hoan-doi-ngay-nghi-vao-dip-gio-to-hung-vuong-10270450.htm'),
+            ('UBND TP Cần Thơ 2011-01-18: Thông báo thời gian nghỉ Tết Nguyên đán Tân Mão năm 2011 (UBND TP Cần Thơ)',
+             'https://baochinhphu.vn/thong-bao-thoi-gian-nghi-tet-nguyen-dan-tan-mao-nam-2011-10258272.htm'),
+            ('UBND tỉnh Đồng Nai 2010-12-27: Thông báo nghỉ Tết Dương lịch năm 2011 (UBND tỉnh Đồng Nai)',
+             'https://baochinhphu.vn/thong-bao-nghi-tet-duong-lich-nam-2011-10254929.htm'),
+            ('UBND TP Hồ Chí Minh 2010-12-24: TP. Hồ Chí Minh thông báo việc nghỉ bù tết Dương lịch',
+             'https://baochinhphu.vn/tp-ho-chi-minh-thong-bao-viec-nghi-bu-tet-duong-lich-10254270.htm'),
+            ('UBND tỉnh Đồng Nai 2011-04-25: Nghỉ lễ và treo cờ dịp lễ 30-4 và 1-5 (UBND tỉnh Đồng Nai)',
+             'https://baochinhphu.vn/nghi-le-va-treo-co-dip-le-30-4-va-1-5-10273705.htm'),
+            ('114/TB-UBND UBND tỉnh Kon Tum 2011-04-22: Thông báo v/v treo cờ Tổ quốc, khẩu hiệu và nghỉ lễ 30/4 và 1/5',
+             'https://baochinhphu.vn/thong-bao-ve-viec-treo-co-to-quoc-khau-hieu-va-nghi-le-30-4-va-1-5-10274722.htm'),
+            ('UBND TP Hồ Chí Minh 2011-08-17: Nghỉ Lễ và treo cờ ... Quốc khánh 2/9 năm 2011 (UBND TPHCM)',
+             'https://baochinhphu.vn/nghi-le-va-treo-co-to-quoc-nhan-ky-niem-lan-thu-66-cach-mang-thang-tam-va-quoc-khanh-2-9-10299446.htm'),
+            ('UBND tỉnh Đồng Nai 2011-08-26: Nghỉ lễ và treo cờ ngày 02-9 (UBND tỉnh Đồng Nai)',
+             'https://baochinhphu.vn/nghi-le-va-treo-co-ngay-02-9-102100936.htm'),
+        ],
+        "days": [
+            ('2011-01-01', 'Tết Dương lịch (trùng thứ Bảy)', 'le'),
+            ('2011-01-03', 'Nghỉ bù Tết Dương lịch', 'bu'),
+            ('2011-01-31', 'Nghỉ hoán đổi (28 tháng Chạp), làm bù thứ Bảy 29/01', 'doi'),
+            ('2011-02-01', 'Nghỉ hoán đổi (29 tháng Chạp), làm bù Chủ nhật 30/01', 'doi'),
+            ('2011-02-02', 'Tết Nguyên đán (30 tháng Chạp)', 'le'),
+            ('2011-02-03', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2011-02-04', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2011-02-05', 'Tết Nguyên đán (mùng 3, trùng thứ Bảy)', 'le'),
+            ('2011-02-07', 'Nghỉ bù mùng 3 Tết (thứ Bảy 05/02)', 'bu'),
+            ('2011-04-11', 'Nghỉ hoán đổi (thứ Hai), làm bù thứ Bảy 09/04', 'doi'),
+            ('2011-04-12', 'Giỗ Tổ Hùng Vương (10/3 âm lịch)', 'le'),
+            ('2011-04-30', 'Ngày Chiến thắng (trùng thứ Bảy)', 'le'),
+            ('2011-05-01', 'Ngày Quốc tế Lao động (trùng Chủ nhật)', 'le'),
+            ('2011-05-02', 'Nghỉ bù Ngày Chiến thắng', 'bu'),
+            ('2011-05-03', 'Nghỉ bù Ngày Quốc tế Lao động', 'bu'),
+            ('2011-09-02', 'Quốc khánh', 'le'),
+        ],
+        "working": [('2011-01-29', 'Làm bù cho nghỉ hoán đổi 31/01 (Tết Tân Mão)'), ('2011-01-30', 'Làm bù (Chủ nhật) cho nghỉ hoán đổi 01/02 (Tết Tân Mão)'), ('2011-04-09', 'Làm bù cho nghỉ hoán đổi 11/04 (Giỗ Tổ)')],
+    },
+    2012: {
+        "sources": [
+            ('UBND TP Hồ Chí Minh 2011-12-16: Thông báo về nghỉ Tết Dương Lịch năm 2012 (UBND TPHCM)',
+             'https://baochinhphu.vn/thong-bao-ve-nghi-tet-duong-lich-nam-2012-102112637.htm'),
+            ("UBND tỉnh Đồng Nai 2011-12-09: Thông báo về việc nghỉ Tết Dương lịch 2012 (UBND tỉnh Đồng Nai; text has typo '2/2/2012' for 2/1/2012)",
+             'https://baochinhphu.vn/thong-bao-ve-viec-nghi-tet-duong-lich-102112020.htm'),
+            ('Bộ LĐTBXH 2011-11-29: Đề nghị hoán đổi ngày nghỉ hàng tuần vào dịp nghỉ lễ, tết năm 2012 (tờ trình BLĐTBXH)',
+             'https://baochinhphu.vn/de-nghi-hoan-doi-ngay-nghi-hang-tuan-vao-dip-nghi-le-tet-nam-2012-doi-voi-can-bo-cong-chuc-vien-chuc-102110995.htm'),
+            ('9197/VPCP-KGVX Văn phòng Chính phủ 2011-12-27: Công văn V/v hoán đổi ngày nghỉ vào dịp Tết âm lịch năm 2012 đối với cán bộ, công chức, viên chức',
+             'https://baochinhphu.vn/hoan-doi-ngay-nghi-vao-dip-tet-am-lich-nam-2012-doi-voi-can-bo-cong-chuc-vien-chuc-102113721.htm'),
+            ('Cổng TTĐT CP 2011-12-28: Công chức, viên chức nghỉ Tết nguyên đán Nhâm thìn 9 ngày',
+             'https://baochinhphu.vn/cong-chuc-vien-chuc-nghi-tet-nguyen-dan-nham-thin-9-ngay-102113684.htm'),
+            ('UBND TP Hà Nội 2012-01-17: Thông báo về thời gian nghỉ Tết Nguyên đán Nhâm Thìn năm 2012 (UBND TP Hà Nội)',
+             'https://baochinhphu.vn/thong-bao-ve-thoi-gian-nghi-tet-nguyen-dan-nham-thin-nam-2012-102116067.htm'),
+        ],
+        "days": [
+            ('2012-01-01', 'Tết Dương lịch (trùng Chủ nhật)', 'le'),
+            ('2012-01-02', 'Nghỉ bù Tết Dương lịch', 'bu'),
+            ('2012-01-22', 'Tết Nguyên đán (ngày cuối năm, 29 tháng Chạp, trùng Chủ nhật)', 'le'),
+            ('2012-01-23', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2012-01-24', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2012-01-25', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2012-01-26', 'Nghỉ bù ngày cuối năm (Chủ nhật 22/01)', 'bu'),
+            ('2012-01-27', 'Nghỉ hoán đổi (thứ Sáu), làm bù thứ Bảy 04/02', 'doi'),
+            ('2012-03-31', 'Giỗ Tổ Hùng Vương (10/3 âm lịch, trùng thứ Bảy)', 'le'),
+            ('2012-04-02', 'Nghỉ bù Giỗ Tổ Hùng Vương (COMPUTED, unverified)', 'bu'),
+            ('2012-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2012-05-01', 'Ngày Quốc tế Lao động', 'le'),
+            ('2012-09-02', 'Quốc khánh (trùng Chủ nhật)', 'le'),
+            ('2012-09-03', 'Nghỉ bù Quốc khánh (from search snippet of Bộ Tư pháp notice 27/08/2012, not fetched)', 'bu'),
+            ('2012-12-31', 'Nghỉ hoán đổi dịp Tết Dương lịch 2013 (làm bù thứ Bảy 05/01/2013)', 'doi'),
+        ],
+        "working": [('2012-02-04', 'Làm bù cho nghỉ hoán đổi 27/01 (Tết Nhâm Thìn) - CV 9197/VPCP-KGVX')],
+    },
+    2013: {
+        "sources": [
+            ('9570/VPCP-KGVX Văn phòng Chính phủ 2012-11-23 — Công văn về việc hoán đổi ngày nghỉ hằng tuần vào các dịp nghỉ lễ, tết năm 2013 (cited in TB 4606)', None),
+            ('4606/TB-BLĐTBXH Bộ LĐTBXH 2012-12-07: Thông báo về việc hoán đổi ngày nghỉ hằng tuần vào các dịp nghỉ lễ, tết năm 2013 (English translation on hethongphapluat.com, part of item 3 paywalled)',
+             'https://hethongphapluat.com/announcement-no-4606-tb-bldtbxh-of-december-07-2012-swapping-the-weekends-during-holidays-2013.html'),
+            ('Cổng TTĐT CP 2012-11-23: Hoán đổi ngày nghỉ Tết Dương lịch, Tết Nguyên đán 2013 (Cổng TTĐT CP; covers TDL, Tết, 30/4-1/5)',
+             'https://baochinhphu.vn/hoan-doi-ngay-nghi-tet-duong-lich-tet-nguyen-dan-2013-102134929.htm'),
+        ],
+        "days": [
+            ('2013-01-01', 'Tết Dương lịch', 'le'),
+            ('2013-02-09', 'Tết Nguyên đán (ngày cuối năm, 29 tháng Chạp, trùng thứ Bảy)', 'le'),
+            ('2013-02-10', 'Tết Nguyên đán (mùng 1, trùng Chủ nhật)', 'le'),
+            ('2013-02-11', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2013-02-12', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2013-02-13', 'Nghỉ bù ngày cuối năm (thứ Bảy 09/02)', 'bu'),
+            ('2013-02-14', 'Nghỉ bù mùng 1 (Chủ nhật 10/02)', 'bu'),
+            ('2013-02-15', 'Nghỉ hoán đổi (mùng 6), làm bù thứ Bảy 23/02', 'doi'),
+            ('2013-04-19', 'Giỗ Tổ Hùng Vương (10/3 âm lịch)', 'le'),
+            ('2013-04-29', 'Nghỉ hoán đổi (thứ Hai), làm bù thứ Bảy 04/05', 'doi'),
+            ('2013-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2013-05-01', 'Ngày Quốc tế Lao động', 'le'),
+            ('2013-09-02', 'Quốc khánh', 'le'),
+        ],
+        "working": [('2013-01-05', 'Làm bù cho nghỉ hoán đổi 31/12/2012 (Tết Dương lịch 2013)'), ('2013-02-23', 'Làm bù cho nghỉ hoán đổi 15/02 (Tết Quý Tỵ)'), ('2013-05-04', 'Làm bù cho nghỉ hoán đổi 29/04 (30/4-1/5)')],
+    },
+    2014: {
+        "sources": [
+            ('10525/VPCP-KGVX Văn phòng Chính phủ (ký: PCN Nguyễn Khắc Định) 2013-12-12: Công văn V/v nghỉ Tết Âm lịch và hoán đổi ngày nghỉ hằng tuần vào các dịp nghỉ lễ năm 2014 đối với CBCCVC (English translation)',
+             'https://hethongphapluat.com/official-dispatch-no-10525-vpcp-kgvx-of-december-12-2013-on-leave-days-of-lunar-new-year-and-shift-of-weekends-in-occasions-of-public-holidays-in-2014-for-cadres-civil-servants-public-employees.html'),
+            ('5083/TB-BLĐTBXH Bộ LĐTBXH (BT Phạm Thị Hải Chuyền) 2013-12-23: Thông báo về việc nghỉ Tết Âm lịch và hoán đổi ngày nghỉ hằng tuần vào các dịp nghỉ lễ năm 2014 (full Vietnamese text)',
+             'https://hethongphapluat.com/announcement-no-5083-tb-bldtbxh-dated-december-23-2013-days-off-during-tet-holiday-and-swapping-of-days-off-during-public-holidays-in-2014.html'),
+            ("Cổng TTĐT CP 2013-12-13: Hoán đổi ngày nghỉ Tết Nguyên đán, các dịp lễ 2014 (Cổng TTĐT CP; contains typo '26/4/2013' for 26/4/2014)",
+             'https://baochinhphu.vn/hoan-doi-ngay-nghi-tet-nguyen-dan-cac-dip-le-2014-102155503.htm'),
+            ('Bộ LĐTBXH - Cục An toàn lao động 2013-12-19: Người làm trong doanh nghiệp, nghỉ Tết bao nhiêu ngày? (Cục ATLĐ answer)',
+             'https://baochinhphu.vn/nguoi-lam-trong-doanh-nghiep-nghi-tet-bao-nhieu-ngay-102155926.htm'),
+        ],
+        "days": [
+            ('2014-01-01', 'Tết Dương lịch', 'le'),
+            ('2014-01-28', 'Nghỉ hoán đổi (28 tháng Chạp), làm bù thứ Bảy 25/01', 'doi'),
+            ('2014-01-29', 'Nghỉ hoán đổi (29 tháng Chạp), làm bù thứ Bảy 08/02', 'doi'),
+            ('2014-01-30', 'Tết Nguyên đán (30 tháng Chạp)', 'le'),
+            ('2014-01-31', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2014-02-01', 'Tết Nguyên đán (mùng 2, trùng thứ Bảy)', 'le'),
+            ('2014-02-02', 'Tết Nguyên đán (mùng 3, trùng Chủ nhật)', 'le'),
+            ('2014-02-03', 'Tết Nguyên đán (mùng 4)', 'le'),
+            ('2014-02-04', 'Nghỉ bù Tết (thứ Bảy 01/02) - label inferred', 'bu'),
+            ('2014-02-05', 'Nghỉ bù Tết (Chủ nhật 02/02) - label inferred', 'bu'),
+            ('2014-04-09', 'Giỗ Tổ Hùng Vương (10/3 âm lịch)', 'le'),
+            ('2014-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2014-05-01', 'Ngày Quốc tế Lao động', 'le'),
+            ('2014-05-02', 'Nghỉ hoán đổi (thứ Sáu), làm bù thứ Bảy 26/04', 'doi'),
+            ('2014-09-01', 'Nghỉ hoán đổi (thứ Hai), làm bù thứ Bảy 06/09', 'doi'),
+            ('2014-09-02', 'Quốc khánh', 'le'),
+        ],
+        "working": [('2014-01-25', 'Làm bù cho nghỉ hoán đổi 28/01 (Tết Giáp Ngọ)'), ('2014-02-08', 'Làm bù cho nghỉ hoán đổi 29/01 (Tết Giáp Ngọ)'), ('2014-04-26', 'Làm bù cho nghỉ hoán đổi 02/05 (30/4-1/5)'), ('2014-09-06', 'Làm bù cho nghỉ hoán đổi 01/09 (Quốc khánh)')],
+    },
+    2015: {
+        "sources": [
+            ('89/NQ-CP Chính phủ 2014-12-05: Nghị quyết phiên họp Chính phủ thường kỳ tháng 11/2014, mục 2: hoán đổi ngày nghỉ hằng tuần dịp lễ, Tết 2015 (bản tiếng Anh chính thức VGP)',
+             'https://en.baochinhphu.vn/the-governments-regular-meeting-november-2014-11122046.htm'),
+            ('Báo Điện tử Chính phủ (VGP) 2014-12-01: PM decides length of key holidays (VGP news, 01/12/2014)',
+             'https://en.baochinhphu.vn/pm-decides-length-of-key-holidays-11121853.htm'),
+            ('4724/TB-LĐTBXH Bộ LĐTBXH 2014-12-11: Thông báo về việc hoán đổi ngày nghỉ, ngày đi làm bù các dịp nghỉ lễ, Tết năm 2015 (cited; text quoted verbatim in BHXH VN CV 5152/BHXH-VP 23/12/2014)',
+             'https://web.archive.org/web/20250908205928/https://luatvietnam.vn/lao-dong/cong-van-5152-bhxh-vp-2014-hoan-doi-ngay-nghi-ngay-di-lam-bu-cac-dip-le-tet-nam-2015-320163-d6.html'),
+            ('baodautu.vn (Bộ KH&ĐT) 2015-08: Lịch nghỉ lễ 2/9/2015: 2/9 rơi vào thứ Tư, chỉ nghỉ 1 ngày, không hoán đổi (báo Đầu tư, corroboration only)',
+             'https://baodautu.vn/lich-nghi-le-29-va-cac-dia-diem-ban-phao-hoa-mung-quoc-khanh-d31737.html'),
+        ],
+        "days": [
+            ('2015-01-01', 'Tết Dương lịch', 'le'),
+            ('2015-01-02', 'Nghỉ hoán đổi (làm bù thứ Bảy 27/12/2014)', 'doi'),
+            ('2015-02-16', '28 tháng Chạp – nghỉ hoán đổi (làm bù thứ Bảy 14/2)', 'doi'),
+            ('2015-02-17', 'Tết Nguyên đán (29 tháng Chạp)', 'le'),
+            ('2015-02-18', 'Tết Nguyên đán (30 tháng Chạp, giao thừa)', 'le'),
+            ('2015-02-19', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2015-02-20', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2015-02-21', 'Tết Nguyên đán (mùng 3, thứ Bảy)', 'le'),
+            ('2015-02-23', 'mùng 5 – nghỉ bù cho mùng 3 trùng thứ Bảy (derived)', 'bu'),
+            ('2015-04-28', 'Giỗ Tổ Hùng Vương (10/3 âm lịch)', 'le'),
+            ('2015-04-29', 'Nghỉ hoán đổi (làm bù thứ Bảy 25/4)', 'doi'),
+            ('2015-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2015-05-01', 'Ngày Quốc tế Lao động', 'le'),
+            ('2015-09-02', 'Quốc khánh', 'le'),
+        ],
+        "working": [('2014-12-27', '(năm 2014) làm bù cho 02/01/2015 – theo NQ 89/NQ-CP và TB 4724/TB-LĐTBXH'), ('2015-02-14', 'làm bù cho 16/02/2015 (28 tháng Chạp)'), ('2015-04-25', 'làm bù cho 29/04/2015')],
+    },
+    2016: {
+        "sources": [
+            ('79/NQ-CP Chính phủ 2015-11-04: Nghị quyết phiên họp Chính phủ thường kỳ tháng 10/2015, mục 5: lịch nghỉ Tết 2016 (bản tiếng Anh chính thức VGP)',
+             'https://en.baochinhphu.vn/the-governments-regular-meeting-october-2015-11124543.htm'),
+            ("4659/TB-LĐTBXH Bộ LĐTBXH 2015-11-13: Thông báo về việc nghỉ lễ, tết năm 2016 (as reported by Chinhphu.vn 19/11/2015 'Lịch nghỉ lễ, tết năm 2016')",
+             'https://baochinhphu.vn/lich-nghi-le-tet-nam-2016-102193901.htm'),
+            ("Báo Điện tử Chính phủ 2015-10-30: Tết Âm lịch 2016 được nghỉ 9 ngày (Chinhphu.vn 30/10/2015: 'không thực hiện hoán đổi ngày nghỉ hằng tuần')",
+             'https://baochinhphu.vn/tet-am-lich-2016-duoc-nghi-9-ngay-102192887.htm'),
+            ('baodautu.vn 2016-04: Giỗ tổ Hùng Vương và ngày lễ 30/4 - 1/5 được nghỉ mấy ngày? (báo Đầu tư, citing Bộ LĐTBXH; corroboration)',
+             'https://baodautu.vn/gio-to-hung-vuong-va-ngay-le-304---15-duoc-nghi-may-ngay-d40397.html'),
+        ],
+        "days": [
+            ('2016-01-01', 'Tết Dương lịch (thứ Sáu)', 'le'),
+            ('2016-02-07', 'Tết Nguyên đán (29 tháng Chạp = giao thừa, Chủ Nhật)', 'le'),
+            ('2016-02-08', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2016-02-09', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2016-02-10', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2016-02-11', 'Tết Nguyên đán (mùng 4)', 'le'),
+            ('2016-02-12', 'mùng 5 – nghỉ bù cho 07/02 trùng Chủ Nhật', 'bu'),
+            ('2016-04-16', 'Giỗ Tổ Hùng Vương (thứ Bảy)', 'le'),
+            ('2016-04-18', 'Nghỉ bù Giỗ Tổ Hùng Vương', 'bu'),
+            ('2016-04-30', 'Ngày Chiến thắng (thứ Bảy)', 'le'),
+            ('2016-05-01', 'Ngày Quốc tế Lao động (Chủ Nhật)', 'le'),
+            ('2016-05-02', 'Nghỉ bù Ngày Chiến thắng', 'bu'),
+            ('2016-05-03', 'Nghỉ bù Ngày Quốc tế Lao động', 'bu'),
+            ('2016-09-02', 'Quốc khánh (thứ Sáu)', 'le'),
+        ],
+        "working": [],
+    },
+    2017: {
+        "sources": [
+            ('9794/VPCP-KGVX Văn phòng Chính phủ (ý kiến Thủ tướng Nguyễn Xuân Phúc) 2016-11-14: V/v nghỉ Tết Âm lịch năm 2017 đối với cán bộ, công chức, viên chức',
+             'https://vanban.chinhphu.vn/default.aspx?pageid=27160&docid=187180'),
+            ('4699/TB-LĐTBXH Bộ LĐTBXH 2016-11-24: Thông báo về việc nghỉ Tết Âm lịch năm 2017 đối với cán bộ, công chức, viên chức và người lao động',
+             'https://web.archive.org/web/2025/https://luatvietnam.vn/lao-dong/thong-bao-4699-tb-ldtbxh-bo-lao-dong-thuong-binh-va-xa-hoi-110630-d6.html'),
+            ('Báo Điện tử Chính phủ 2016-11-25: Thông báo nghỉ Tết Âm lịch năm 2017 (Chinhphu.vn 25/11/2016)',
+             'https://baochinhphu.vn/thong-bao-nghi-tet-am-lich-nam-2017-102212799.htm'),
+            ("Bộ Công Thương (moit.gov.vn) 2016-11-25: Lịch nghỉ tết 2017 (Bộ Công Thương; 'không hoán đổi'; other 2017 holidays per Điều 115 BLLĐ 2012)",
+             'https://moit.gov.vn/tin-tuc/hoat-dong/lich-nghi-tet-20172.html'),
+            ('Báo Điện tử Chính phủ 2017-04-25: Lịch nghỉ Lễ 30/4 và 1/5 (Chinhphu.vn 25/04/2017: 2/5 nghỉ bù cho 30/4; năm 2017 không hoán đổi)',
+             'https://baochinhphu.vn/lich-nghi-le-30-4-va-1-5-102220064.htm'),
+            ('Bộ Công Thương 2017-04-28: Lịch nghỉ lễ 30/4 và 1/5 năm 2017 (Bộ Công Thương)',
+             'https://moit.gov.vn/tin-tuc/hoat-dong/lich-nghi-le-30-4-va-1-5-nam-20172.html'),
+            ('Bộ Công Thương 2017-08-09: Quốc khánh 2/9: Người lao động được nghỉ 3 ngày (Bộ Công Thương 09/08/2017: 2/9 thứ Bảy, nghỉ bù thứ Hai 4/9)',
+             'https://moit.gov.vn/tin-tuc/hoat-dong/quoc-khanh-2-9-nguoi-lao-dong-duoc-nghi-3-ngay2.html'),
+        ],
+        "days": [
+            ('2017-01-01', 'Tết Dương lịch (Chủ Nhật)', 'le'),
+            ('2017-01-02', 'Nghỉ bù Tết Dương lịch', 'bu'),
+            ('2017-01-26', 'Tết Nguyên đán (29 tháng Chạp)', 'le'),
+            ('2017-01-27', 'Tết Nguyên đán (30 tháng Chạp)', 'le'),
+            ('2017-01-28', 'Tết Nguyên đán (mùng 1, thứ Bảy)', 'le'),
+            ('2017-01-29', 'Tết Nguyên đán (mùng 2, Chủ Nhật)', 'le'),
+            ('2017-01-30', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2017-01-31', 'mùng 4 – nghỉ bù cho mùng 1', 'bu'),
+            ('2017-02-01', 'mùng 5 – nghỉ bù cho mùng 2', 'bu'),
+            ('2017-04-06', 'Giỗ Tổ Hùng Vương (thứ Năm)', 'le'),
+            ('2017-04-30', 'Ngày Chiến thắng (Chủ Nhật)', 'le'),
+            ('2017-05-01', 'Ngày Quốc tế Lao động', 'le'),
+            ('2017-05-02', 'Nghỉ bù Ngày Chiến thắng', 'bu'),
+            ('2017-09-02', 'Quốc khánh (thứ Bảy)', 'le'),
+            ('2017-09-04', 'Nghỉ bù Quốc khánh', 'bu'),
+        ],
+        "working": [],
+    },
+    2018: {
+        "sources": [
+            ('573/TB-VPCP Văn phòng Chính phủ 2017-12-14: Kết luận của Thủ tướng Chính phủ tại cuộc họp Thường trực Chính phủ về nghỉ lễ, tết năm 2018 của cán bộ, công chức, viên chức',
+             'https://vanban.chinhphu.vn/default.aspx?pageid=27160&docid=192234'),
+            ('5427/TB-LĐTBXH Bộ LĐTBXH 2017-12-22: Thông báo về nghỉ lễ, tết năm 2018 đối với cán bộ, công chức, viên chức và người lao động (Vietnamese text mirrored on hethongphapluat)',
+             'https://hethongphapluat.com/notice-no-5427-tb-ldtbxh-dated-december-22-2017.html'),
+            ('Báo Điện tử Chính phủ 2017-12-15: Kết luận của Thủ tướng về nghỉ lễ, tết năm 2018 (Chinhphu.vn 15/12/2017)',
+             'https://baochinhphu.vn/ket-luan-cua-thu-tuong-ve-nghi-le-tet-nam-2018-102231860.htm'),
+            ('Báo Điện tử Chính phủ 2018-03-09: Lịch nghỉ chính thức dịp Giỗ Tổ Hùng Vương, 30/4 và 1/5 (Chinhphu.vn 09/03/2018)',
+             'https://baochinhphu.vn/lich-nghi-chinh-thuc-dip-gio-to-hung-vuong-30-4-va-1-5-102235658.htm'),
+            ('6519/VPCP-KGVX Văn phòng Chính phủ 2018-07-11: V/v nghỉ lễ, tết năm 2019 (Tết DL: nghỉ 31/12/2018 – 01/01/2019, làm bù 05/01/2019)',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=194090'),
+        ],
+        "days": [
+            ('2018-01-01', 'Tết Dương lịch (thứ Hai)', 'le'),
+            ('2018-02-14', 'Tết Nguyên đán (29 tháng Chạp)', 'le'),
+            ('2018-02-15', 'Tết Nguyên đán (30 tháng Chạp)', 'le'),
+            ('2018-02-16', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2018-02-17', 'Tết Nguyên đán (mùng 2, thứ Bảy)', 'le'),
+            ('2018-02-18', 'Tết Nguyên đán (mùng 3, Chủ Nhật)', 'le'),
+            ('2018-02-19', 'mùng 4 – nghỉ bù cho mùng 2', 'bu'),
+            ('2018-02-20', 'mùng 5 – nghỉ bù cho mùng 3', 'bu'),
+            ('2018-04-25', 'Giỗ Tổ Hùng Vương (thứ Tư)', 'le'),
+            ('2018-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2018-05-01', 'Ngày Quốc tế Lao động', 'le'),
+            ('2018-09-02', 'Quốc khánh (Chủ Nhật)', 'le'),
+            ('2018-09-03', 'Nghỉ bù Quốc khánh', 'bu'),
+            ('2018-12-31', 'Nghỉ hoán đổi Tết Dương lịch 2019 (làm bù thứ Bảy 05/01/2019)', 'doi'),
+        ],
+        "working": [],
+    },
+    2019: {
+        "sources": [
+            ('6519/VPCP-KGVX Văn phòng Chính phủ (ý kiến Thủ tướng Nguyễn Xuân Phúc) 2018-07-11: V/v nghỉ lễ, tết năm 2019 đối với cán bộ, công chức, viên chức',
+             'https://vanban.chinhphu.vn/?pageid=27160&docid=194090'),
+            ('3238/TB-LĐTBXH Bộ LĐTBXH 2018-08-06: Thông báo về nghỉ lễ, tết năm 2019 (English reference translation, excerpt only)',
+             'https://english.luatvietnam.vn/announcement-no-3238-tb-ldtbxh-dated-august-06th-2018-of-the-ministry-of-labor-war-invalids-and-social-affairs-regarding-2019s-national-and-tet-hol-165768-Doc6.html'),
+            ('luatvietnam.vn 2018: Lịch nghỉ tất cả ngày lễ, tết năm 2019 của công chức (LuatVietnam summary of TB 3238; secondary, incl. Giỗ Tổ nghỉ bù 15/4)',
+             'https://luatvietnam.vn/tin-phap-luat/lich-nghi-tat-ca-ngay-le-tet-nam-2019-cua-cong-chuc-230-17931-article.html'),
+        ],
+        "days": [
+            ('2019-01-01', 'Tết Dương lịch (thứ Ba)', 'le'),
+            ('2019-02-04', 'Tết Nguyên đán (30 tháng Chạp)', 'le'),
+            ('2019-02-05', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2019-02-06', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2019-02-07', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2019-02-08', 'Tết Nguyên đán (mùng 4)', 'le'),
+            ('2019-04-14', 'Giỗ Tổ Hùng Vương (Chủ Nhật)', 'le'),
+            ('2019-04-15', 'Nghỉ bù Giỗ Tổ Hùng Vương', 'bu'),
+            ('2019-04-29', 'Nghỉ hoán đổi (làm bù thứ Bảy 04/05)', 'doi'),
+            ('2019-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2019-05-01', 'Ngày Quốc tế Lao động', 'le'),
+            ('2019-09-02', 'Quốc khánh (thứ Hai)', 'le'),
+        ],
+        "working": [('2019-01-05', 'làm bù cho 31/12/2018 (Tết Dương lịch)'), ('2019-05-04', 'làm bù cho 29/04/2019')],
+    },
+    2020: {
+        "sources": [
+            ('9087/VPCP-KGVX Văn phòng Chính phủ (ý kiến Thủ tướng Nguyễn Xuân Phúc) 2019-10-07 — V/v nghỉ Tết Âm lịch năm 2020 (cited in TB 4544; PDF not located on vanban.chinhphu.vn)', None),
+            ('4544/TB-LĐTBXH Bộ LĐTBXH 2019-10-25: Thông báo về việc nghỉ Tết Âm lịch năm 2020 đối với cán bộ, công chức, viên chức và người lao động',
+             'https://web.archive.org/web/2025/https://luatvietnam.vn/lao-dong/thong-bao-4544-tb-ldtbxh-177775-d6.html'),
+            ('Báo Điện tử Chính phủ 2019-10-08: Thủ tướng chốt 7 ngày nghỉ Tết Nguyên đán Canh Tý 2020 (Chinhphu.vn 08/10/2019)',
+             'https://baochinhphu.vn/thu-tuong-chot-7-ngay-nghi-tet-nguyen-dan-canh-ty-2020-102262334.htm'),
+            ('Báo Điện tử Chính phủ 2020-04: Chỉ đạo, điều hành nổi bật tháng 4/2020 (Công điện TTg: đợt nghỉ Lễ 30/4 và 01/5 từ 30/4 đến hết 03/5/2020)',
+             'https://baochinhphu.vn/chi-dao-dieu-hanh-cua-chinh-phu-thu-tuong-chinh-phu-noi-bat-thang-4-2020-102272124.htm'),
+        ],
+        "days": [
+            ('2020-01-01', 'Tết Dương lịch (thứ Tư)', 'le'),
+            ('2020-01-23', 'Tết Nguyên đán (29 tháng Chạp)', 'le'),
+            ('2020-01-24', 'Tết Nguyên đán (30 tháng Chạp)', 'le'),
+            ('2020-01-25', 'Tết Nguyên đán (mùng 1, thứ Bảy)', 'le'),
+            ('2020-01-26', 'Tết Nguyên đán (mùng 2, Chủ Nhật)', 'le'),
+            ('2020-01-27', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2020-01-28', 'mùng 4 – nghỉ bù cho mùng 1', 'bu'),
+            ('2020-01-29', 'mùng 5 – nghỉ bù cho mùng 2', 'bu'),
+            ('2020-04-02', 'Giỗ Tổ Hùng Vương (thứ Năm)', 'le'),
+            ('2020-04-30', 'Ngày Chiến thắng (thứ Năm)', 'le'),
+            ('2020-05-01', 'Ngày Quốc tế Lao động (thứ Sáu)', 'le'),
+            ('2020-09-02', 'Quốc khánh (thứ Tư) – last year of the 1-day Quốc khánh under BLLĐ 2012', 'le'),
+        ],
+        "working": [],
+    },
+    2021: {
+        "sources": [
+            ('9895/VPCP-KGVX Văn phòng Chính phủ 2020-11-26: V/v nghỉ Tết Âm lịch và Quốc khánh năm 2021 (TTg Nguyễn Xuân Phúc đồng ý)',
+             'https://baochinhphu.vn/thu-tuong-chot-phuong-an-nghi-tet-am-lich-7-ngay-102283382.htm'),
+            ('4875/TB-LĐTBXH Bộ LĐTBXH 2020-12-10: Thông báo về việc nghỉ Tết Âm lịch và Quốc khánh năm 2021',
+             'https://web.archive.org/web/20240224232444/https://www.molisa.gov.vn/baiviet/224408?tintucID=224408'),
+            ('— Bộ LĐTBXH (cổng TTĐT) 2021-04: Dịp lễ 30/4 và 1/5 năm nay người lao động được nghỉ 4 ngày (MOLISA news; statutory nghỉ bù)',
+             'https://molisa.gov.vn/baiviet/224849?tintucID=224849'),
+        ],
+        "days": [
+            ('2021-01-01', 'Tết Dương lịch', 'le'),
+            ('2021-02-10', 'Tết Nguyên đán (29 tháng Chạp Canh Tý)', 'le'),
+            ('2021-02-11', 'Tết Nguyên đán (30 tháng Chạp, giao thừa)', 'le'),
+            ('2021-02-12', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2021-02-13', 'Tết Nguyên đán (mùng 2, thứ Bảy)', 'le'),
+            ('2021-02-14', 'Tết Nguyên đán (mùng 3, Chủ nhật)', 'le'),
+            ('2021-02-15', 'Nghỉ bù Tết (mùng 4) cho mùng 2 trùng thứ Bảy', 'bu'),
+            ('2021-02-16', 'Nghỉ bù Tết (mùng 5) cho mùng 3 trùng Chủ nhật', 'bu'),
+            ('2021-04-21', 'Giỗ Tổ Hùng Vương (10/3 âm lịch)', 'le'),
+            ('2021-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2021-05-01', 'Ngày Quốc tế Lao động (thứ Bảy)', 'le'),
+            ('2021-05-03', 'Nghỉ bù 1/5 trùng thứ Bảy', 'bu'),
+            ('2021-09-02', 'Quốc khánh', 'le'),
+            ('2021-09-03', 'Quốc khánh (ngày liền kề sau)', 'le'),
+        ],
+        "working": [],
+    },
+    2022: {
+        "sources": [
+            ('245/VPCP-KGVX Văn phòng Chính phủ 2022-01-11: V/v nghỉ Tết Nguyên đán và Quốc khánh năm 2022 (PTTg Vũ Đức Đam)',
+             'https://baochinhphu.vn/nghi-tet-nham-dan-tu-31-01-2022-den-het-ngay-04-02-2022-102220112154637865.htm'),
+            ('119/TB-LĐTBXH Bộ LĐTBXH 2022-01 (≈12/01, unverified): Thông báo về việc nghỉ Tết Nguyên đán Nhâm Dần 2022 và Quốc khánh 2/9 (number per luatvietnam listing; date not confirmed)',
+             'https://web.archive.org/web/20220529092447/http://www.molisa.gov.vn/Pages/tintuc/chitiet.aspx?tintucID=230102'),
+            ('— Bộ LĐTBXH (cổng TTĐT) 2021-12: Chính thức đề xuất Thủ tướng phương án nghỉ Tết Nhâm Dần (lists Tết DL, Giỗ Tổ, 30/4-1/5 nghỉ bù per BLLĐ)',
+             'https://web.archive.org/web/20221128022448/http://www.molisa.gov.vn/Pages/tintuc/chitiet.aspx?tintucID=229960'),
+        ],
+        "days": [
+            ('2022-01-01', 'Tết Dương lịch (thứ Bảy)', 'le'),
+            ('2022-01-03', 'Nghỉ bù Tết Dương lịch', 'bu'),
+            ('2022-01-31', 'Tết Nguyên đán (29 tháng Chạp Tân Sửu, giao thừa)', 'le'),
+            ('2022-02-01', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2022-02-02', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2022-02-03', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2022-02-04', 'Tết Nguyên đán (mùng 4)', 'le'),
+            ('2022-04-10', 'Giỗ Tổ Hùng Vương (Chủ nhật)', 'le'),
+            ('2022-04-11', 'Nghỉ bù Giỗ Tổ', 'bu'),
+            ('2022-04-30', 'Ngày Chiến thắng (thứ Bảy)', 'le'),
+            ('2022-05-01', 'Ngày Quốc tế Lao động (Chủ nhật)', 'le'),
+            ('2022-05-02', 'Nghỉ bù 30/4', 'bu'),
+            ('2022-05-03', 'Nghỉ bù 1/5', 'bu'),
+            ('2022-09-01', 'Quốc khánh (ngày liền kề trước)', 'le'),
+            ('2022-09-02', 'Quốc khánh', 'le'),
+        ],
+        "working": [],
+    },
+    2023: {
+        "sources": [
+            ('8056/VPCP-KGVX Văn phòng Chính phủ 2022-12-01: V/v nghỉ Tết Âm lịch và nghỉ lễ Quốc khánh năm 2023 (PTTg Vũ Đức Đam)',
+             'https://vanban.chinhphu.vn/?docid=206939&pageid=27160'),
+            ('?/TB-LĐTBXH Bộ LĐTBXH 2022-12-07: Thông báo lịch nghỉ tết Âm lịch và nghỉ lễ Quốc khánh năm 2023 (number not captured)',
+             'https://web.archive.org/web/20230924024656/https://molisa.gov.vn/Pages/tintuc/chitiet.aspx?tintucID=233090'),
+            ('— Báo Điện tử Chính phủ (EN) 2022-12-27: Ministry announces length of public holidays in 2023 (19 days)',
+             'https://en.baochinhphu.vn/ministry-announces-length-of-public-holidays-in-2023-111221227083008472.htm'),
+            ('— Bộ LĐTBXH (cổng TTĐT) 2023-04: Lịch nghỉ Lễ Giỗ tổ Hùng Vương, nghỉ Lễ 30/4 và 1/5 năm 2023 (MOLISA)',
+             'https://www.molisa.gov.vn/baiviet/236545?tintucID=236545'),
+        ],
+        "days": [
+            ('2023-01-01', 'Tết Dương lịch (Chủ nhật)', 'le'),
+            ('2023-01-02', 'Nghỉ bù Tết Dương lịch', 'bu'),
+            ('2023-01-20', 'Tết Nguyên đán (29 tháng Chạp Nhâm Dần)', 'le'),
+            ('2023-01-21', 'Tết Nguyên đán (30 tháng Chạp, thứ Bảy)', 'le'),
+            ('2023-01-22', 'Tết Nguyên đán (mùng 1, Chủ nhật)', 'le'),
+            ('2023-01-23', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2023-01-24', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2023-01-25', 'Nghỉ bù Tết (mùng 4)', 'bu'),
+            ('2023-01-26', 'Nghỉ bù Tết (mùng 5)', 'bu'),
+            ('2023-04-29', 'Giỗ Tổ Hùng Vương (thứ Bảy)', 'le'),
+            ('2023-04-30', 'Ngày Chiến thắng (Chủ nhật)', 'le'),
+            ('2023-05-01', 'Ngày Quốc tế Lao động', 'le'),
+            ('2023-05-02', 'Nghỉ bù (Giỗ Tổ trùng thứ Bảy)', 'bu'),
+            ('2023-05-03', 'Nghỉ bù (30/4 trùng Chủ nhật)', 'bu'),
+            ('2023-09-01', 'Quốc khánh (ngày liền kề trước)', 'le'),
+            ('2023-09-02', 'Quốc khánh (thứ Bảy)', 'le'),
+            ('2023-09-04', 'Nghỉ bù Quốc khánh', 'bu'),
+        ],
+        "working": [],
+    },
+    2024: {
+        "sources": [
+            ('8662/VPCP-KGVX Văn phòng Chính phủ 2023-11-03: V/v nghỉ Tết Âm lịch và nghỉ lễ Quốc khánh năm 2024 (TTg Phạm Minh Chính)',
+             'https://vanban.chinhphu.vn/?docid=208894&pageid=27160'),
+            ('?/TB-LĐTBXH Bộ LĐTBXH 2023-11: Thông báo lịch nghỉ Tết Âm lịch, Quốc khánh 2024 (number not captured)',
+             'https://xaydungchinhsach.chinhphu.vn/lich-nghi-tet-nguyen-dan-giap-thin-nam-2024-11923110317204931.htm'),
+            ('2450/VPCP-KGVX Văn phòng Chính phủ 2024-04-12: V/v đề xuất hoán đổi ngày làm việc dịp nghỉ lễ 30/4 và 01/5 năm 2024',
+             'https://vanban.chinhphu.vn/?docid=210073&pageid=27160'),
+            ('1570/TB-BLĐTBXH Bộ LĐTBXH 2024-04-12: Thông báo hoán đổi ngày làm việc dịp nghỉ lễ 30/4-01/5 năm 2024',
+             'https://baochinhphu.vn/nghi-le-30-4-1-5-thu-tuong-chot-nghi-5-ngay-102240412180501967.htm'),
+        ],
+        "days": [
+            ('2024-01-01', 'Tết Dương lịch', 'le'),
+            ('2024-02-08', 'Tết Nguyên đán (29 tháng Chạp Quý Mão)', 'le'),
+            ('2024-02-09', 'Tết Nguyên đán (30 tháng Chạp)', 'le'),
+            ('2024-02-10', 'Tết Nguyên đán (mùng 1, thứ Bảy)', 'le'),
+            ('2024-02-11', 'Tết Nguyên đán (mùng 2, Chủ nhật)', 'le'),
+            ('2024-02-12', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2024-02-13', 'Nghỉ bù Tết (mùng 4)', 'bu'),
+            ('2024-02-14', 'Nghỉ bù Tết (mùng 5)', 'bu'),
+            ('2024-04-18', 'Giỗ Tổ Hùng Vương', 'le'),
+            ('2024-04-29', 'Nghỉ hoán đổi (làm bù thứ Bảy 4/5)', 'doi'),
+            ('2024-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2024-05-01', 'Ngày Quốc tế Lao động', 'le'),
+            ('2024-09-02', 'Quốc khánh', 'le'),
+            ('2024-09-03', 'Quốc khánh (ngày liền kề sau)', 'le'),
+        ],
+        "working": [('2024-05-04', 'làm bù cho thứ Hai 29/4/2024 (hoán đổi, TB 1570/TB-BLĐTBXH)')],
+    },
+    2025: {
+        "sources": [
+            ('8726/VPCP-KGVX Văn phòng Chính phủ 2024-11-26: V/v nghỉ Tết Âm lịch và một số dịp nghỉ lễ năm 2025 (TTg Phạm Minh Chính)',
+             'https://baochinhphu.vn/tet-nguyen-dan-at-ty-2025-thu-tuong-dong-y-nghi-9-ngay-lien-tuc-102241126202134613.htm'),
+            ('6150/TB-BLĐTBXH Bộ LĐTBXH 2024-12-03: Thông báo về việc nghỉ tết Âm lịch, nghỉ lễ Quốc khánh, nghỉ lễ 30/4 và 01/5 năm 2025',
+             'https://baochinhphu.vn/chinh-thuc-bo-ldtbxh-thong-bao-lich-nghi-tet-nguyen-dan-at-ty-va-nghi-le-nam-2025-10224120316465192.htm'),
+        ],
+        "days": [
+            ('2025-01-01', 'Tết Dương lịch', 'le'),
+            ('2025-01-27', 'Tết Nguyên đán (28 tháng Chạp Giáp Thìn)', 'le'),
+            ('2025-01-28', 'Tết Nguyên đán (29 tháng Chạp, giao thừa)', 'le'),
+            ('2025-01-29', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2025-01-30', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2025-01-31', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2025-04-07', 'Giỗ Tổ Hùng Vương', 'le'),
+            ('2025-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2025-05-01', 'Ngày Quốc tế Lao động', 'le'),
+            ('2025-05-02', 'Nghỉ hoán đổi (làm bù thứ Bảy 26/4)', 'doi'),
+            ('2025-09-01', 'Quốc khánh (ngày liền kề trước)', 'le'),
+            ('2025-09-02', 'Quốc khánh', 'le'),
+        ],
+        "working": [('2025-04-26', 'làm bù cho thứ Sáu 2/5/2025 (hoán đổi, TB 6150/TB-BLĐTBXH)')],
+    },
+    2026: {
+        "sources": [
+            ('12729/VPCP-KGVX Văn phòng Chính phủ 2025-12-25: V/v nghỉ Tết Dương lịch năm 2026 (PTTg Phạm Thị Thanh Trà)',
+             'https://baochinhphu.vn/thu-tuong-chinh-phu-dong-y-nghi-4-ngay-tet-duong-lich-2026-102251225095413405.htm'),
+            ('12590/TB-BNV Bộ Nội vụ 2025-12-25: Thông báo hoán đổi ngày làm việc dịp nghỉ Tết Dương lịch năm 2026',
+             'https://xaydungchinhsach.chinhphu.vn/lich-nghi-tet-duong-lich-2026-119251225111725138.htm'),
+            ('9859/VPCP-KGVX Văn phòng Chính phủ 2025-10-13: V/v nghỉ Tết Âm lịch, nghỉ lễ Quốc khánh năm 2026 (TTg Phạm Minh Chính)',
+             'https://baochinhphu.vn/thu-tuong-chinh-phu-dong-y-phuong-an-nghi-tet-binh-ngo-9-ngay-lien-tuc-102251013191235348.htm'),
+            ('9441/TB-BNV Bộ Nội vụ 2025-10-16: Thông báo về việc nghỉ tết Âm lịch, nghỉ lễ Quốc khánh năm 2026',
+             'https://moha.gov.vn/tin-tuc/bo-noi-vu-thong-bao-ve-viec-nghi-tet-am-lich-nghi----oid57695'),
+            ('3383/BNV-CVL Bộ Nội vụ 2026-04-10: Công văn về lịch nghỉ Giỗ Tổ, 30/4-1/5/2026: thực hiện theo BLLĐ, không hoán đổi',
+             'https://baochinhphu.vn/chinh-thuc-bo-noi-vu-ra-thong-bao-lich-nghi-gio-to-hung-vuong-le-30-4-1-5-102260410213402453.htm'),
+            ('10065/VPCP-KGVX Văn phòng Chính phủ 2026-10-02: V/v phương án nghỉ một số dịp Lễ, Tết năm 2026 và năm 2027 (incl. 01 ngày Ngày Văn hóa VN 24/11/2026)',
+             'https://datafiles.chinhphu.vn/cpp/files/vbpq/2026/9/10065_vpcp-kgvx_02102026_1-signed.signed.pdf'),
+        ],
+        "days": [
+            ('2026-01-01', 'Tết Dương lịch', 'le'),
+            ('2026-01-02', 'Nghỉ hoán đổi (làm bù thứ Bảy 10/1)', 'doi'),
+            ('2026-02-16', 'Tết Nguyên đán (29 tháng Chạp Ất Tỵ, giao thừa)', 'le'),
+            ('2026-02-17', 'Tết Nguyên đán (mùng 1)', 'le'),
+            ('2026-02-18', 'Tết Nguyên đán (mùng 2)', 'le'),
+            ('2026-02-19', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2026-02-20', 'Tết Nguyên đán (mùng 4)', 'le'),
+            ('2026-04-26', 'Giỗ Tổ Hùng Vương (Chủ nhật)', 'le'),
+            ('2026-04-27', 'Nghỉ bù Giỗ Tổ', 'bu'),
+            ('2026-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2026-05-01', 'Ngày Quốc tế Lao động', 'le'),
+            ('2026-08-31', 'Nghỉ hoán đổi (làm bù thứ Bảy 22/8)', 'doi'),
+            ('2026-09-01', 'Quốc khánh (ngày liền kề trước)', 'le'),
+            ('2026-09-02', 'Quốc khánh', 'le'),
+            ('2026-11-24', 'Ngày Văn hóa Việt Nam (NQ 28/2026/QH16; nghỉ 01 ngày, không hoán đổi)', 'le'),
+        ],
+        "working": [('2026-01-10', 'làm bù cho thứ Sáu 2/1/2026 (hoán đổi, TB 12590/TB-BNV)'), ('2026-08-22', 'làm bù cho thứ Hai 31/8/2026 (hoán đổi, TB 9441/TB-BNV)')],
+    },
+    2027: {
+        "sources": [
+            ('10065/VPCP-KGVX Văn phòng Chính phủ 2026-10-02: V/v phương án nghỉ một số dịp Lễ, Tết năm 2026 và năm 2027',
+             'https://datafiles.chinhphu.vn/cpp/files/vbpq/2026/9/10065_vpcp-kgvx_02102026_1-signed.signed.pdf'),
+            ('11483/TB-BNV Bộ Nội vụ 2026-10-09: Thông báo về việc nghỉ Tết Âm lịch và nghỉ lễ Quốc khánh năm 2027',
+             'https://xaydungchinhsach.chinhphu.vn/de-xuat-2-phuong-an-nghi-tet-nguyen-dan-2027-tet-dinh-mui-11926080513033257.htm'),
+        ],
+        "days": [
+            ('2027-01-01', 'Tết Dương lịch', 'le'),
+            ('2027-02-04', 'Tết Nguyên đán (28 tháng Chạp Bính Ngọ)', 'le'),
+            ('2027-02-05', 'Tết Nguyên đán (29 tháng Chạp, giao thừa)', 'le'),
+            ('2027-02-06', 'Tết Nguyên đán (mùng 1, thứ Bảy)', 'le'),
+            ('2027-02-07', 'Tết Nguyên đán (mùng 2, Chủ nhật)', 'le'),
+            ('2027-02-08', 'Tết Nguyên đán (mùng 3)', 'le'),
+            ('2027-02-09', 'Nghỉ bù Tết (mùng 4)', 'bu'),
+            ('2027-02-10', 'Nghỉ bù Tết (mùng 5)', 'bu'),
+            ('2027-04-16', 'Giỗ Tổ Hùng Vương', 'le'),
+            ('2027-04-30', 'Ngày Chiến thắng', 'le'),
+            ('2027-05-01', 'Ngày Quốc tế Lao động (thứ Bảy)', 'le'),
+            ('2027-05-03', 'Nghỉ bù 1/5 trùng thứ Bảy', 'bu'),
+            ('2027-07-27', 'Ngày Tổ quốc tri ân, Ngày Thương binh, liệt sĩ (luật sửa đổi BLLĐ, hiệu lực 01/03/2027)', 'le'),
+            ('2027-09-02', 'Quốc khánh', 'le'),
+            ('2027-09-03', 'Quốc khánh (ngày liền kề sau)', 'le'),
+            ('2027-11-24', 'Ngày Văn hóa Việt Nam', 'le'),
+        ],
+        "working": [],
+    },
+}
+
+
+VN_LAST_NOTICE_YEAR = 2027
+
+
+def hnd_year(yy: int) -> tuple[date, date]:
+    """(Tết, Giỗ Tổ) of Gregorian year YY from the HND table (decodeLunarYear)."""
+    js = cached("vn/amlich-hnd.js", HND_URI, 10000).decode("latin-1")
+    tables = {name: [int(x, 16) for x in re.findall(r"0x[0-9a-fA-F]+", body)]
+              for name, body in re.findall(r"var\s+(TK\d+)\s*=\s*new\s+Array\(([^)]*)\)", js)}
+    k = tables["TK21"][yy - 2000] if yy < 2100 else tables["TK22"][yy - 2100]
+    tet = date(yy, 1, 1) + timedelta(days=k >> 17)
+    lengths = [(29, 30)[(k >> (4 + 11 - i)) & 1] for i in range(12)]
+    month3 = tet + timedelta(days=lengths[0] + lengths[1])
+    if (k & 0xF) in (1, 2):
+        month3 += timedelta(days=(29, 30)[(k >> 16) & 1])
+    return tet, month3 + timedelta(days=9)
+
+
+def vn_quoc_khanh_adjacent(year: int) -> date:
+    """The day next to 2/9 for a year with no notice, by the 2021-2027 notices:
+    3/9 when 2/9 is a Monday, Thursday or Sunday, else 1/9."""
+    d = date(year, 9, 2)
+    return d + timedelta(days=1 if d.weekday() in (0, 3, 6) else -1)
+
+
+def vn_nghi_bu(days: list[tuple[date, str]], blocked: set) -> list[tuple[date, str]]:
+    """Each holiday on a Saturday or Sunday, in date order, gives the next
+    working day (Monday-Friday, no holiday, no hoán đổi day)."""
+    taken = {d for d, _ in days} | blocked
+    out = []
+    for d, name in sorted(days):
+        if d.weekday() >= 5:
+            n = d + timedelta(days=1)
+            while n.weekday() >= 5 or n in taken:
+                n += timedelta(days=1)
+            taken.add(n)
+            out.append((n, f"Nghỉ bù {name}"))
+    return out
+
+
+def vn_statutory(year: int) -> list[tuple[date, str]]:
+    """The statutory days of a year with no notice."""
+    tet, gio_to = hnd_year(year)
+    out = [(date(year, 1, 1), "Tết Dương lịch"), (gio_to, "Giỗ Tổ Hùng Vương"),
+           (date(year, 4, 30), "Ngày Chiến thắng"), (date(year, 5, 1), "Ngày Quốc tế Lao động"),
+           (date(year, 7, 27), "Ngày Tổ quốc tri ân, Ngày Thương binh, liệt sĩ"),
+           (date(year, 9, 2), "Quốc khánh"), (vn_quoc_khanh_adjacent(year), "Quốc khánh (ngày liền kề)"),
+           (date(year, 11, 24), "Ngày Văn hóa Việt Nam")]
+    out += [(tet + timedelta(days=i), "Tết Nguyên đán (ước tính)") for i in range(-1, 4)]
+    return out
+
+
+def _vn_by_date_year(key: str):
+    for block in VN_NOTICES.values():
+        for row in block[key]:
+            yield date.fromisoformat(row[0]), row
+
+
+def vn_holidays(year: int) -> list[tuple[date, str]]:
+    if year <= VN_LAST_NOTICE_YEAR:
+        return [(d, row[1]) for d, row in _vn_by_date_year("days") if d.year == year]
+    days = vn_statutory(year)
+    return days + [x for x in vn_nghi_bu(days, set()) if x[0].year == year]
+
+
+def vn_working_days(year: int) -> list[date]:
+    return sorted(d for d, _ in _vn_by_date_year("working") if d.year == year)
+
+
+def vn_consistency_check(days: dict) -> None:
+    """The notices against the statute: in every notice year, the statutory days
+    (as the notice placed Tết and Quốc khánh) plus their nghỉ bù and the
+    notice's hoán đổi days give exactly the notice's days off."""
+    bad = []
+    for year in range(FIRST, VN_LAST_NOTICE_YEAR + 1):
+        rows = [(d, row) for d, row in _vn_by_date_year("days") if d.year == year]
+        le = [(d, row[1]) for d, row in rows if row[2] == "le"]
+        doi = {d for d, row in rows if row[2] == "doi"}
+        # A Saturday hoán đổi of the year before (31/12) blocks nothing here.
+        derived = {d for d, _ in le} | doi | {d for d, _ in vn_nghi_bu(le, doi) if d.year == year}
+        listed = {d for d, _ in rows}
+        if derived != listed:
+            bad.append((year, sorted(derived ^ listed)))
+    for b in bad:
+        print("  VN nghỉ bù rule vs notices:", *b)
+    print(f"  VN 2000-{VN_LAST_NOTICE_YEAR}: {len(bad)} years where the nghỉ bù rule and the notices differ")
+
 # --- registry and writer --------------------------------------------------
 
 COUNTRIES = {
@@ -1642,6 +2578,10 @@ COUNTRIES = {
                python=lambda years: __import__("holidays").PH(years=years)),
     "MY": dict(name="Malaysia", first=MY_FIRST_LIST, build=my_holidays, sources=MY_SOURCES, note=MY_NOTE,
                python=lambda years: __import__("holidays").MY(years=years)),
+    "VN": dict(name="Vietnam", build=vn_holidays, working=vn_working_days, working_label="làm bù",
+               sources=VN_SOURCES, note=VN_NOTE,
+               python=lambda years: __import__("holidays").VN(years=years),
+               crosscheck=vn_consistency_check),
     "TW": dict(name="Taiwan", build=tw_holidays, working=tw_working_days, sources=TW_SOURCES, note=TW_NOTE,
                python=lambda years: __import__("holidays").TW(years=years),
                crosscheck=tw_official_check),
@@ -1688,7 +2628,7 @@ def build(cc: str) -> None:
         lines.append(" (")
         for year in range(first, LAST + 1):
             for d in spec["working"](year):
-                lines.append(f"  ({d.year} {d.month} {d.day} \"補行上班\")")
+                lines.append(f"  ({d.year} {d.month} {d.day} {lisp_string(spec.get('working_label', '補行上班'))})")
         lines.append(" )")
     if spec.get("cuti"):
         lines.append(" :cuti-bersama")

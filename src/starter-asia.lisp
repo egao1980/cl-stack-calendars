@@ -213,38 +213,128 @@ of each SKB 3 Menteri (data/id/skb.sexp)."
    :from 2010
    :authority "RA 9849 (2009) — Eid'l Adha a regular holiday, its date proclaimed yearly (data/ph); tabular estimate in years with no proclamation"))
 
+;;; --- Vietnam: yearly notices on ngày nghỉ lễ, tết (data/vn) -------------
+
+(defun load-vn-notices (&optional (path (data-path "vn/notices.sexp")))
+  "Return alist YEAR → (:authority A :uri U :tet … :quoc-khanh … :transfers …
+:working …) from the yearly notices: :TET the five Tết days the Thủ tướng
+placed (from 2014), :QUOC-KHANH the day next to 2/9 (from 2021), :TRANSFERS
+the hoán đổi weekdays off, :WORKING the Saturdays worked instead (làm bù)."
+  (mapcar
+   (lambda (block)
+     (let ((auth (getf block :authority)))
+       (flet ((dates (key) (mapcar (lambda (d) (apply #'make-date d)) (getf block key))))
+         (cons (getf block :year)
+               (list :authority auth
+                     :uri (getf block :uri)
+                     :tet (dates :tet)
+                     :quoc-khanh (dates :quoc-khanh)
+                     :transfers (mapcar (lambda (e) (make-extra-day-transfer e auth))
+                                        (getf block :holidays))
+                     :working (mapcar (lambda (d)
+                                        (make-calendar-working-day :date (apply #'make-date d)
+                                                                   :authority auth))
+                                      (getf block :working)))))))
+   (read-data-form path)))
+
+(defvar *vn-notices* nil)
+
+(defun vn-notices ()
+  (or *vn-notices* (setf *vn-notices* (load-vn-notices))))
+
+(defun vn-notice-for-year (year)
+  "Plist of the notices block for YEAR, or NIL."
+  (cdr (assoc year (vn-notices))))
+
+(defun vn-transfers-for-year (year)
+  "hoán đổi days whose date falls in YEAR."
+  (transfers-touching-year (vn-notices) year))
+
+(defun vn-working-days-for-year (year)
+  "làm bù days that fall in YEAR."
+  (getf (vn-notice-for-year year) :working))
+
+(defparameter *vn-last-notice-year* 2027
+  "The latest year whose Tết and Quốc khánh days a notice has placed (VPCP
+10065/VPCP-KGVX, 02/10/2026, for 2027).")
+
+(defun vn-provisional-year-p (year)
+  "True for a year after the last notice: its Tết and Quốc khánh days are
+estimates and it has no hoán đổi or làm bù days."
+  (> year *vn-last-notice-year*))
+
+(defun vn-tet-days (year)
+  "The Tết Nguyên đán days of YEAR: to 2013 the last day of the lunar year and
+mùng 1-3 (BLLĐ 1994 Điều 73); from 2014 the five days the notice placed, or,
+after the last notice, giao thừa and mùng 1-4 (BLLĐ 2012 Điều 115). Lunar
+dates at UTC+7."
+  (let ((notice (getf (vn-notice-for-year year) :tet)))
+    (cond ((and (>= year 2014) notice) notice)
+          (t (let ((tet (chinese-new-year-date year :zone +vietnam-lunisolar-zone+)))
+               (loop for i from -1 to (if (>= year 2014) 3 2)
+                     collect (+ tet i)))))))
+
+(defun vn-quoc-khanh-adjacent (year)
+  "The Quốc khánh day next to 2/9 (BLLĐ 2019 Điều 112(1)(đ)): the notice's,
+or, after the last notice, 3/9 when 2/9 is a Monday, Thursday or Sunday and
+1/9 otherwise, the choices of the 2021-2027 notices."
+  (or (getf (vn-notice-for-year year) :quoc-khanh)
+      (let ((d (make-date year 9 2)))
+        (+ d (if (member (date-day-of-week d) '(1 4 7)) 1 -1)))))
+
+(defun vn-nghi-bu-pass (calendar year pairs)
+  "Nghỉ bù (BLLĐ 1994 Điều 73, BLLĐ 2012 Điều 115(3), BLLĐ 2019 Điều 111(3)):
+each holiday of YEAR on the weekly rest day, in date order, gives the next
+working day. The weekly rest of cán bộ, công chức is Saturday and Sunday
+from 02/10/1999 (QĐ 188/1999/QĐ-TTg), Sunday before. A working day is not a
+holiday and not a hoán đổi day of CALENDAR."
+  (let ((taken (make-hash-table :test #'eql))
+        (extra '())
+        (two-day-from (date-rd (make-date 1999 10 2))))
+    (flet ((rest-day-p (d)
+             (if (cl:>= (date-rd d) two-day-from)
+                 (>= (date-day-of-week d) 6)
+                 (= 7 (date-day-of-week d)))))
+      (dolist (pair pairs)
+        (setf (gethash (date-rd (car pair)) taken) t))
+      (dolist (tr (calendar-transfers calendar))
+        (let ((to (calendar-transfer-to tr)))
+          (when to (setf (gethash (date-rd to) taken) t))))
+      (dolist (pair (sort (copy-list pairs) #'cl:< :key (lambda (p) (date-rd (car p)))))
+        (when (rest-day-p (car pair))
+          (let ((next (+ (car pair) 1)))
+            (loop while (or (rest-day-p next) (gethash (date-rd next) taken))
+                  do (setf next (+ next 1)))
+            (setf (gethash (date-rd next) taken) t)
+            (push (cons next (format nil "Nghỉ bù ~a" (cdr pair))) extra)))))
+    (append pairs (nreverse extra))))
+
 ;;; Vietnam (1945)
-(define-calendar vietnam-holidays-calendar (:register "VN")
-  (:fixed "Tết Dương lịch" 1 1 :from 1945
-   :authority "Ngày nghỉ lễ — New Year")
-  (:computed "Giao thừa / Tết"
-             (lambda (y) (chinese-new-year-eve-date y :zone +vietnam-lunisolar-zone+))
-   :from 1945
-   :authority "Giao thừa — ngày cuối năm Âm lịch (UTC+7 from 1968, Quyết định 121-CP)")
-  (:computed "Tết Nguyên Đán"
-             (lambda (y) (chinese-new-year-date y :zone +vietnam-lunisolar-zone+))
-   :from 1945
-   :authority "Tết — Âm lịch mùng 1 (UTC+7 from 1968, Quyết định 121-CP)")
-  (:computed "Tết"
-             (lambda (y) (+ (chinese-new-year-date y :zone +vietnam-lunisolar-zone+) 1))
-   :from 1945 :authority "Tết mùng 2")
-  (:computed "Tết"
-             (lambda (y) (+ (chinese-new-year-date y :zone +vietnam-lunisolar-zone+) 2))
-   :from 1945 :authority "Tết mùng 3")
+(define-calendar vietnam-holidays-calendar (:register "VN" :constructor vietnam-holidays-calendar
+                                            :observance-pass vn-nghi-bu-pass)
+  ;; Ngày nghỉ lễ, tết of cán bộ, công chức, viên chức: Bộ luật Lao động 1994
+  ;; Điều 73 (Luật 84/2007: Giỗ Tổ), BLLĐ 2012 Điều 115 (Tết 5 ngày from 2014),
+  ;; BLLĐ 2019 Điều 112 (Quốc khánh 2 ngày from 2021), NQ 28/2026/QH16 (24/11)
+  ;; and the 2026 amending law (27/7). The yearly notices' Tết and Quốc khánh
+  ;; days, hoán đổi and làm bù are in data/vn/notices.sexp; nghỉ bù in
+  ;; VN-NGHI-BU-PASS. Lunar dates at UTC+7 (+VIETNAM-LUNISOLAR-ZONE+).
+  ;; https://vanban.chinhphu.vn/?pageid=27160&docid=198540
+  (:fixed "Tết Dương lịch" 1 1 :from 1945 :authority "BLLĐ 1994 Điều 73; BLLĐ 2019 Điều 112(1)(a) — Tết Dương lịch, 01 ngày")
+  (:computed "Tết Nguyên đán" #'vn-tet-days :from 1945
+   :authority "BLLĐ 1994 Điều 73 — bốn ngày (một ngày cuối năm và ba ngày đầu năm âm lịch) to 2013; BLLĐ 2012 Điều 115, BLLĐ 2019 Điều 112 — 05 ngày from 2014, placed by the Thủ tướng (data/vn), estimated as giao thừa + mùng 1-4 after the last notice")
   (:computed "Giỗ Tổ Hùng Vương"
              (lambda (y) (chinese-lunar-date y 3 10 :zone +vietnam-lunisolar-zone+))
    :from 2007
-   :authority "Bộ luật Lao động 2007 — Giỗ Tổ Hùng Vương (âm lịch 10/3)")
-  (:fixed "Ngày thống nhất đất nước" 4 30 :from 1976
-   :authority "Liberation / Reunification Day")
-  (:fixed "Ngày Quốc tế Lao động" 5 1 :from 1945
-   :authority "International Labour Day")
-  (:fixed "Quốc khánh" 9 2 :from 1945
-   :authority "National Day — Declaration of Independence 2 Sep 1945")
-  (:fixed "Quốc khánh" 9 3 :from 2021
-   :authority "Bộ luật Lao động — Quốc khánh nghỉ 2 ngày (2–3/9) từ 2021")
-  (:fixed "Ngày Văn hóa" 11 24 :from 2026
-   :authority "Ngày Văn hóa các dân tộc Việt Nam — nghỉ lễ từ 2026"))
+   :authority "Luật 84/2007/QH11 (hiệu lực 11/04/2007) — Giỗ Tổ Hùng Vương, 10/3 âm lịch")
+  (:fixed "Ngày Chiến thắng" 4 30 :from 1976 :authority "BLLĐ 1994 Điều 73; BLLĐ 2019 Điều 112(1)(c) — 30/4")
+  (:fixed "Ngày Quốc tế Lao động" 5 1 :from 1945 :authority "BLLĐ 1994 Điều 73; BLLĐ 2019 Điều 112(1)(d) — 1/5")
+  (:fixed "Ngày Tổ quốc tri ân, Ngày Thương binh, liệt sĩ" 7 27 :from (2027 3 1)
+   :authority "Luật sửa đổi, bổ sung một số điều của Bộ luật Lao động (thông qua 21/11/2026, hiệu lực 01/03/2027) — 27/7")
+  (:fixed "Quốc khánh" 9 2 :from 1945 :authority "BLLĐ 1994 Điều 73; BLLĐ 2019 Điều 112(1)(đ) — 02/9")
+  (:computed "Quốc khánh" #'vn-quoc-khanh-adjacent :from 2021
+   :authority "BLLĐ 2019 Điều 112(1)(đ) — 01 ngày liền kề trước hoặc sau 02/9, chosen by the Thủ tướng (data/vn), estimated after the last notice")
+  (:fixed "Ngày Văn hóa Việt Nam" 11 24 :from (2026 7 1)
+   :authority "Nghị quyết 28/2026/QH16 Điều 2(1) (hiệu lực 01/07/2026) — 24/11, người lao động được nghỉ làm việc"))
 
 ;;; Thailand (floor 1900)
 (define-calendar thailand-holidays-calendar (:register "TH" :constructor thailand-holidays-calendar)
@@ -974,7 +1064,23 @@ have estimated Eid days."
                                     (all-block-transfers (ph-proclamations))))
                  :suppressed-dates (or suppressed-dates (ph-suppressed-for-year year))))
 
-(defun vietnam-holidays-calendar () (make-instance 'vietnam-holidays-calendar))
+(defun vietnam-holidays-calendar (&key year transfers working-days)
+  "Vietnamese days off of government offices (cán bộ, công chức, viên chức):
+the statutory days of each era with their nghỉ bù, and the hoán đổi days and
+làm bù Saturdays of the yearly notices in data/vn/notices.sexp (2000-2027).
+Without YEAR, every year in the file applies (the registered \"VN\"
+calendar); with YEAR, only that year's days. Years after the last notice are
+provisional (VN-PROVISIONAL-YEAR-P)."
+  (make-instance 'vietnam-holidays-calendar
+                 :transfers (or transfers
+                                (if year
+                                    (vn-transfers-for-year year)
+                                    (all-block-transfers (vn-notices))))
+                 :working-days (or working-days
+                                   (if year
+                                       (vn-working-days-for-year year)
+                                       (loop for (nil . plist) in (vn-notices)
+                                             append (getf plist :working))))))
 
 (defun thailand-holidays-calendar (&key year transfers)
   "Thai public holidays with the Royal Gazette substitute/bridge days of
