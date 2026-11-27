@@ -449,6 +449,8 @@
    #:vn-provisional-year-p
    #:vn-notice-for-year
    #:vn-tet-days
-   #:vn-notices))
+   #:vn-notices
+   #:cn-provisional-year-p
+   #:cn-notice-confidence))
 
 (in-package #:cl-stack-calendars)

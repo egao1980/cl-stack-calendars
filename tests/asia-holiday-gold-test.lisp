@@ -431,3 +431,151 @@ day 2000–2040."
 (deftest vn-provisional-years
   (ng (vn-provisional-year-p 2027))
   (ok (vn-provisional-year-p 2028)))
+
+;;; --- China (#26) -----------------------------------------------------------
+
+(defparameter *cn-holiday-gold* (load-holiday-gold "CN"))
+
+(deftest cn-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *cn-holiday-gold* "CN" :from 2007)
+  (ok (getf *cn-holiday-gold* :working-days)))
+
+(deftest cn-registered-calendar-matches-gold
+  "find-calendar \"CN\" agrees with the 放假办法 of each era and every State
+Council notice on www.gov.cn 2007–2027 (holiday, business day and 上班 day),
+and with the statute days of the provisional years 2028–2040."
+  (let ((cn (find-calendar "CN")))
+    (%report-holiday-gold "CN" (%holiday-gold-mismatches *cn-holiday-gold* (constantly cn)))))
+
+(deftest cn-year-calendars-match-gold
+  (%report-holiday-gold "CN :year"
+                        (%holiday-gold-mismatches *cn-holiday-gold*
+                                                  (lambda (y) (china-holidays-calendar :year y)))))
+
+(deftest cn-country-calendar-matches-gold
+  "country-calendar \"CN\" defers to the starter: the corpus has no 调休 or 上班 days."
+  (let ((cn (country-calendar "CN")))
+    (ok (eq :normative (calendar-provenance cn)))
+    (%report-holiday-gold "country-calendar CN"
+                          (%holiday-gold-mismatches *cn-holiday-gold* (constantly cn)))))
+
+(defun %cn-name-mismatches (gold calendar)
+  "Every (ISO GOLD-NAME OUR-NAME) where CALENDAR's name for a GOLD day is not
+the gold's name. Two festivals on one day are \"中秋节 / 国庆节\" in the gold
+and \"中秋节; 国庆节\" in HOLIDAY-P."
+  (flet ((parts (string separator)
+           (loop for start = 0 then (+ end (length separator))
+                 for end = (or (search separator string :start2 start) (length string))
+                 collect (subseq string start end)
+                 while (< end (length string)))))
+    (loop for (y m d gold-name) in (getf gold :days)
+          for date = (make-date y m d)
+          for ours = (nth-value 1 (holiday-p calendar date))
+          unless (and (stringp ours)
+                      (equal (sort (parts ours "; ") #'string<)
+                             (sort (parts gold-name " / ") #'string<)))
+            collect (list (suite-date-iso date) gold-name ours))))
+
+(deftest cn-holiday-names-match-gold
+  "Each day off carries its festival name, not \"调休\" (#26, #12): the
+statutory day its festival, a 第六条 day （补休）, a weekday swapped for a
+上班 day （调休）, a weekend day of a window （休息日）."
+  (let ((bad (%cn-name-mismatches *cn-holiday-gold* (find-calendar "CN"))))
+    (loop for row in bad for i below 25
+          do (ok nil (format nil "CN name ~{~a gold ~s ours ~s~}" row)))
+    (ok (null bad) (format nil "CN: ~d names differ from the gold" (length bad)))))
+
+(defparameter *cn-secondary-holiday-gold*
+  (read-data-form (data-path "tests/cn-secondary-holiday-gold.sexp")))
+
+(deftest cn-secondary-gold-2000-2006-lower-confidence
+  "LOWER CONFIDENCE. 2000–2006 against the Xinhua dispatches and
+republications and the zh.wikisource transcriptions of the notices (no
+notice of these years is on www.gov.cn): the days only those texts give."
+  (let ((gold *cn-secondary-holiday-gold*))
+    (ok (string= "CN" (getf gold :country)))
+    (ok (eq :secondary (getf gold :confidence)))
+    (ok (= 2000 (getf gold :from)))
+    (ok (= 2006 (getf gold :to)))
+    (%report-holiday-gold "CN 2000-2006 (secondary sources)"
+                          (%holiday-gold-mismatches gold (constantly (find-calendar "CN"))))
+    (%report-holiday-gold "CN :year 2000-2006 (secondary sources)"
+                          (%holiday-gold-mismatches gold (lambda (y) (china-holidays-calendar :year y))))
+    (let ((bad (%cn-name-mismatches gold (find-calendar "CN"))))
+      (ok (null bad) (format nil "CN 2000-2006 names: ~s" (subseq bad 0 (min 10 (length bad))))))))
+
+(deftest cn-statute-eras
+  "第二条 of each 放假办法: 1999 (令第270号) 劳动节 5/1–3 and 春节 初一–初三;
+2008 (令第513号) 除夕–初二, 劳动节 one day, 清明 端午 中秋; 2014 (令第644号)
+初一–初三; 2025 (令第795号) 除夕–初三, 劳动节 5/1–2. The rules alone, no notice."
+  (let ((rules (make-instance 'china-holidays-calendar)))
+    (flet ((holiday (y m d) (holiday-p rules (make-date y m d))))
+      (ok (holiday 2005 5 2))
+      (ok (holiday 2005 5 3))
+      (ng (holiday 2008 5 2))
+      (ng (holiday 2024 5 2))
+      (ok (holiday 2025 5 2))
+      (ok (holiday 2010 2 13) "除夕 2010 (令第513号)")
+      (ng (holiday 2010 2 16) "初三 2010 is no statutory day")
+      (ok (holiday 2005 2 11) "初三 2005")
+      (ok (holiday 2016 2 10) "初三 2016")
+      (ng (holiday 2016 2 7) "除夕 2016 is no statutory day")
+      (ok (holiday 2026 2 16) "除夕 2026 (令第795号)")
+      (ng (holiday 2007 4 5) "no 清明 before 2008"))))
+
+(deftest cn-issue-26-days
+  "The 2027 notice 国办发明电〔2026〕10号, the 2019 amendment 〔2019〕3号, the 2020
+extension 〔2020〕1号, the 2003 SARS amendment and the 2000 国庆 notice."
+  (let ((cn (find-calendar "CN")))
+    (flet ((holiday (y m d) (holiday-p cn (make-date y m d)))
+           (business (y m d) (business-day-p cn (make-date y m d)))
+           (name (y m d) (nth-value 1 (holiday-p cn (make-date y m d)))))
+      (ok (holiday 2027 2 5) "除夕 2027")
+      (ok (holiday 2027 2 12))
+      (ok (business 2027 1 31) "上班 Sunday")
+      (ok (business 2027 2 14))
+      (ok (holiday 2027 5 5))
+      (ok (business 2027 5 8))
+      (ok (holiday 2027 6 9))
+      (ok (business 2027 6 10) "端午 2027 is one day")
+      (ok (holiday 2027 9 15))
+      (ok (holiday 2027 10 7))
+      (ok (business 2027 9 26))
+      (ok (business 2027 10 9))
+      (ok (holiday 2019 5 2) "劳动节 2019 amended to 5/1–4")
+      (ok (holiday 2019 5 3))
+      (ok (business 2019 4 28))
+      (ok (business 2019 5 5))
+      (ok (holiday 2020 2 2) "春节 2020 extended to 2/2")
+      (ng (business 2020 2 1))
+      (ok (holiday 2003 5 5) "2003 五一 by the statute days (非典)")
+      (ok (business 2003 5 6))
+      (ng (business 2003 4 26) "the amendment cancels the 4/26–27 上班")
+      (ok (holiday 2000 10 4) "2000 国庆 10/1–7")
+      (ok (business 2000 9 30))
+      (ok (business 2000 10 8))
+      (ok (business 2000 1 3) "the 2000 元旦 rest moved to 1999-12-31")
+      (ok (holiday 1999 12 31))
+      (ok (equal "中秋节" (name 2026 9 25)))
+      (ok (equal "国庆节" (name 2026 10 1)))
+      (ok (equal "国庆节（调休）" (name 2026 10 6)))
+      (ok (equal "国庆节（补休）" (name 2026 10 5)))
+      (ok (equal "春节（除夕）" (name 2026 2 16)))
+      (ok (equal "春节（休息日）" (name 2026 2 15)))
+      (ok (equal "元旦（调休）" (name 2026 1 2)))
+      (ok (equal "中秋节" (name 2033 9 8)) "中秋 2033 (#38)"))))
+
+(deftest cn-provisional-years-and-confidence
+  "Years after the 2027 notice are provisional: statute days, no 调休 or 上班.
+2000–2006 notices are secondary sources, tagged in each day's authority."
+  (ng (cn-provisional-year-p 2027))
+  (ok (cn-provisional-year-p 2028))
+  (ok (eq :primary (cn-notice-confidence 2007)))
+  (ok (eq :primary (cn-notice-confidence 2027)))
+  (ok (eq :secondary (cn-notice-confidence 2003)))
+  (ok (eq :provisional (cn-notice-confidence 2030)))
+  (ng (cn-working-days-for-year 2028))
+  (let ((tr (find-if (lambda (tr) (= 2003 (date-year (calendar-transfer-to tr))))
+                     (cn-transfers-for-year 2003))))
+    (ok tr)
+    (ok (search "低可信度" (princ-to-string (calendar-transfer-authority tr))))))
