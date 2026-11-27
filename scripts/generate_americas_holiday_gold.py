@@ -823,6 +823,313 @@ def br_official_check(days: dict) -> None:
     print(f"  BR {len(BR_PORTARIAS)} portarias ({min(BR_PORTARIAS)}-{max(BR_PORTARIAS)}): feriados "
           f"nacionais agree except {len(diff)} listed overrides (Paixão de Cristo 2008, 2011, 2012)")
 
+# --- Argentina ------------------------------------------------------------
+#
+# Texts: infoleg (servicios.infoleg.gob.ar) and the Boletín Oficial, read
+# 2026-11-27. Official yearly lists: argentina.gob.ar (2017-2026), the Ministerio
+# del Interior pages (2001-2007) and the BCRA Comunicaciones "C" (2008-2015).
+
+INFOLEG = "https://servicios.infoleg.gob.ar/infolegInternet/anexos/"
+
+AR_SOURCES = [
+    ("Ley 21.329 (1976) art. 1, texto Ley 22.655 y Ley 24.445", INFOLEG + "65000-69999/65453/norma.htm",
+     "Feriados nacionales: 1 ene, Viernes Santo, 1 may, 25 may, 20 jun, 9 jul, 17 ago, 25 dic; "
+     "8 dic feriado desde Ley 24.445 (1995). No laborable: Jueves Santo."),
+    ("Ley 23.555 (1988) arts. 1 y 3", INFOLEG + "20000-24999/20986/norma.htm",
+     "Los feriados que coincidan con martes y miércoles se trasladan al lunes anterior; jueves y viernes, "
+     "al lunes siguiente. Art. 3 exceptúa Viernes Santo, 1/5, 25/5, 20/6, 9/7, 17/8, 8/12, 25/12, 1/1. "
+     "In 2000-2007 it moved 12 Oct; and 2 Apr from 2001 until Ley 26.110."),
+    ("Ley 24.445 (BO 1995-01-19) art. 4", INFOLEG + "0-4999/782/norma.htm",
+     "Los feriados del 20 de junio y del 17 de agosto serán cumplidos el tercer lunes del mes respectivo."),
+    ("Ley 22.769 (1983) y Decreto 901/1984; Ley 25.370 (BO 2000-12-21)", INFOLEG + "65000-69999/65442/norma.htm",
+     "Decreto 901/84 trasladó el feriado de Malvinas al 10 de junio (2000: 10 jun). Ley 25.370: 2 de abril, "
+     "Día del Veterano y de los Caídos en la guerra en Malvinas, feriado nacional; deroga Ley 22.769 y Dto. 901/84."),
+    ("Ley 26.085 (BO 2006-03-21)", INFOLEG + "110000-114999/114811/norma.htm",
+     "24 de marzo, Día Nacional de la Memoria por la Verdad y la Justicia, feriado nacional dentro de las "
+     "excepciones del art. 3 de la Ley 23.555 (inamovible); vigencia desde el día siguiente."),
+    ("Ley 26.110 (BO 2006-06-30)", INFOLEG + "115000-119999/117507/norma.htm",
+     "2 de abril, feriado nacional inamovible."),
+    ("Ley 26.416 (BO 2008-10-02)", INFOLEG + "145000-149999/145231/norma.htm",
+     "12 de octubre: martes y miércoles al lunes anterior; jueves, viernes, sábado y domingo al lunes siguiente."),
+    ("Decreto 1584/2010 (DNU, BO 2010-11-03) arts. 1-3", INFOLEG + "170000-174999/174389/norma.htm",
+     "Adds Lunes y Martes de Carnaval and 20 Nov (Soberanía Nacional); 20 Jun inamovible. Art. 2: 17 ago el "
+     "tercer lunes, 12 oct el segundo lunes, 20 nov el cuarto lunes del mes. Art. 3: feriados con fines turísticos."),
+    ("Ley 27.258 (BO 2016-06-10)", INFOLEG + "260000-264999/262574/norma.htm",
+     "17 de junio, Paso a la Inmortalidad del Gral. Güemes, feriado nacional (2016: viernes 17 jun)."),
+    ("Decretos 52/2017 y 80/2017 (DNU)", INFOLEG + "270000-274999/271382/norma.htm",
+     "2017: Ley 23.555 rule again (Tue/Wed -> previous Monday, Thu/Fri -> next Monday); 24/3, 2/4 and 20/6 inamovibles."),
+    ("Ley 27.399 (BO 2017-10-18) arts. 1, 4, 6, 7", INFOLEG + "280000-284999/281835/norma.htm",
+     "Inamovibles: 1/1, Carnaval (lunes y martes), 24/3, Viernes Santo, 2/4, 1/5, 25/5, 20/6, 9/7, 8/12, 25/12. "
+     "Trasladables: 17/6, 17/8, 12/10, 20/11. No laborable: Jueves Santo. Art. 6: martes y miércoles al lunes "
+     "anterior, jueves y viernes al lunes siguiente. Art. 7: hasta tres feriados o días no laborables con "
+     "fines turísticos por año, lunes o viernes."),
+    ("Decreto 789/2021 art. 1", INFOLEG + "355000-359999/356678/norma.htm",
+     "Los trasladables permanecen en su fecha cuando el art. 6 los superpondría con un feriado inamovible "
+     "(17 jun viernes: 2022, 2033, 2039)."),
+    ("Feriados con fines turísticos: Decretos 1585/2010, 1768/2013, 923/2017, 717/2019, 947/2020, 789/2021, "
+     "764/2022, 106/2023, 1027/2024; Resolución JGM 164/2025", INFOLEG + "170000-174999/174391/norma.htm",
+     "2011: 25/3, 9/12. 2012: 30/4, 24/12. 2013: 1/4, 21/6. 2014: 2/5, 26/12. 2015: 23/3, 7/12. 2016: 8/7, 9/12. "
+     "2018: 30/4, 24/12, 31/12. 2019: 8/7, 19/8, 14/10. 2020: 23/3, 10/7, 7/12. 2021: 24/5, 8/10, 22/11. "
+     "2022: 7/10, 21/11, 9/12. 2023: 26/5, 19/6, 13/10. 2024: 1/4, 21/6, 11/10. 2025: 2/5, 15/8, 21/11. "
+     "2026: 23/3, 10/7, 7/12."),
+    ("One-off feriados and moves", "https://www.boletinoficial.gob.ar/",
+     "Censo: 17 nov 2001 (Ley 24.254, DNU 1154/2001; 18 nov until 13 h, a Sunday, left out), 27 oct 2010 "
+     "(Dto. 67/2010 art. 19), 18 may 2022 (Dto. 42/2022). Bicentenario 24 may 2010 (DNU 615/2010). "
+     "27 feb 2012 (Ley 26.721), 24 sep 2012 (Ley 26.763), 31 ene 2013 (Ley 26.840), 20 feb 2013 (Ley 26.837). "
+     "20 dic 2022 (DNU 842/2022). 9 nov 2026, visita del Papa León XIV (DNU 1103/2026; 10-11 nov are "
+     "provincial only). Moves: 12 oct 2001 -> 8 oct (DNU 750/2001), 2002 -> 14 oct (DNU 1932/2002), "
+     "2003 -> 13 oct (DNU 810/2003); 17 ago 2011 -> 22 ago (DNU 521/2011); 20 nov 2015 -> 27 nov "
+     "(DNU 2226/2015); 2 abr 2020 -> 31 mar (DNU 297/2020); 12 oct 2025 -> 10 oct (Res. JGM 139/2025 "
+     "under Dto. 614/2025)."),
+    ("argentina.gob.ar Feriados nacionales 2017-2026 (official lists)",
+     "https://www.argentina.gob.ar/interior/feriados-nacionales-2026",
+     "2025-2026: argentina.gob.ar/sites/default/files/holidays-YYYY-es.json. 2017-2024: pinned Wayback copies "
+     "of the yearly page (see AR_OFFICIAL_PAGES in the script). Agree with this fixture except the listed overrides."),
+    ("Ministerio del Interior yearly Feriados pages 2001-2007 (Wayback) and BCRA Comunicaciones C 51829, "
+     "52431, 57511, 62554, 62750, 64929, 67410", "https://www.bcra.gob.ar/Pdfs/comytexord/C64929.pdf",
+     "The moved days of 2001-2009, 2011 and 2013-2015 listed in AR_MOVED_DAYS_CHECKED agree with this fixture."),
+]
+
+AR_NOTE = (
+    "Feriados nacionales (inamovibles and trasladables, on the day they are kept) plus the feriados or días "
+    "no laborables con fines turísticos (the official list types them 'turístico'; since 2025 the decrees "
+    "call them días no laborables, but the public administration and banks close) and one-off national "
+    "feriados. Not included: días no laborables (Jueves Santo; the Jewish and Islamic days of Ley 27.399 "
+    "arts. 2-3; 24 April, Ley 26.199), which each employer decides; provincial feriados (e.g. 10-11 Nov 2026); "
+    "asuetos for national public employees only (24 and 31 Dec 2001, 2014, 2015). From 2026 a trasladable on "
+    "a weekend may be moved by the Jefatura de Gabinete (Dto. 614/2025); the fixture keeps Ley 27.399 art. 6 "
+    "for years without such a resolution."
+)
+
+
+def ar_23555(d: date) -> date:
+    """Ley 23.555 art. 1 / Ley 27.399 art. 6: Tue/Wed -> previous Monday, Thu/Fri -> next Monday."""
+    wd = d.weekday()
+    if wd in (1, 2):
+        return d - timedelta(days=wd)
+    if wd in (3, 4):
+        return d + timedelta(days=7 - wd)
+    return d
+
+
+AR_PUENTES = {
+    2011: ((3, 25), (12, 9)), 2012: ((4, 30), (12, 24)), 2013: ((4, 1), (6, 21)),
+    2014: ((5, 2), (12, 26)), 2015: ((3, 23), (12, 7)), 2016: ((7, 8), (12, 9)),
+    2018: ((4, 30), (12, 24), (12, 31)), 2019: ((7, 8), (8, 19), (10, 14)),
+    2020: ((3, 23), (7, 10), (12, 7)), 2021: ((5, 24), (10, 8), (11, 22)),
+    2022: ((10, 7), (11, 21), (12, 9)), 2023: ((5, 26), (6, 19), (10, 13)),
+    2024: ((4, 1), (6, 21), (10, 11)), 2025: ((5, 2), (8, 15), (11, 21)),
+    2026: ((3, 23), (7, 10), (12, 7)),
+}
+
+AR_ONE_OFF = {
+    2001: [((11, 17), "Censo Nacional 2001")],
+    2010: [((5, 24), "Feriado del Bicentenario"), ((10, 27), "Censo Nacional 2010")],
+    2012: [((2, 27), "Bicentenario de la creación y primera jura de la Bandera"),
+           ((9, 24), "Bicentenario de la Batalla de Tucumán")],
+    2013: [((1, 31), "Bicentenario de la Asamblea General Constituyente de 1813"),
+           ((2, 20), "Bicentenario de la Batalla de Salta")],
+    2022: [((5, 18), "Censo Nacional 2022"), ((12, 20), "Feriado nacional (Selección campeona mundial)")],
+    2026: [((11, 9), "Visita de Su Santidad el Papa León XIV")],
+}
+
+# Yearly decree moves of a trasladable, overriding the rule of its era.
+AR_MOVES = {
+    (2001, 10): date(2001, 10, 8), (2002, 10): date(2002, 10, 14), (2003, 10): date(2003, 10, 13),
+    (2011, 8): date(2011, 8, 22), (2015, 11): date(2015, 11, 27), (2025, 10): date(2025, 10, 10),
+}
+
+
+def ar_holidays(year: int) -> list[tuple[date, str]]:
+    e = easter(year)
+    out = [
+        (date(year, 1, 1), "Año Nuevo"),
+        (e - timedelta(days=2), "Viernes Santo"),
+        (date(year, 5, 1), "Día del Trabajador"),
+        (date(year, 5, 25), "Día de la Revolución de Mayo"),
+        (date(year, 7, 9), "Día de la Independencia"),
+        (date(year, 12, 8), "Inmaculada Concepción de María"),
+        (date(year, 12, 25), "Navidad"),
+    ]
+    if year >= 2011:
+        out += [(e - timedelta(days=48), "Carnaval"), (e - timedelta(days=47), "Carnaval")]
+    if year >= 2006:
+        out.append((date(year, 3, 24), "Día Nacional de la Memoria por la Verdad y la Justicia"))
+    # Malvinas
+    if year == 2000:
+        out.append((date(2000, 6, 10), "Día de la Afirmación de los Derechos Argentinos sobre las Malvinas"))
+    elif year == 2020:
+        out.append((date(2020, 3, 31), "Día del Veterano y de los Caídos en la Guerra de Malvinas"))
+    else:
+        apr2 = date(year, 4, 2)
+        out.append((ar_23555(apr2) if year <= 2006 else apr2,
+                    "Día del Veterano y de los Caídos en la Guerra de Malvinas"))
+    # Belgrano
+    out.append((nth_monday(year, 6, 3) if year <= 2010 else date(year, 6, 20),
+                "Paso a la Inmortalidad del Gral. Manuel Belgrano"))
+    inamovible = {d for d, _ in out}
+
+    def trasladable(month: int, day: int) -> date:
+        if (year, month) in AR_MOVES:
+            return AR_MOVES[(year, month)]
+        nominal = date(year, month, day)
+        moved = ar_23555(nominal)
+        if year >= 2022 and moved in inamovible:  # Decreto 789/2021 art. 1
+            return nominal
+        return moved
+
+    # Güemes (Ley 27.258)
+    if year == 2016:
+        out.append((date(2016, 6, 17), "Paso a la Inmortalidad del Gral. Martín Miguel de Güemes"))
+    elif year >= 2017:
+        out.append((trasladable(6, 17), "Paso a la Inmortalidad del Gral. Martín Miguel de Güemes"))
+    # San Martín
+    if year >= 2017 or (year, 8) in AR_MOVES:
+        aug = trasladable(8, 17)
+    else:
+        aug = nth_monday(year, 8, 3)  # Ley 24.445 art. 4; Dto. 1584/2010 art. 2
+    out.append((aug, "Paso a la Inmortalidad del Gral. José de San Martín"))
+    # 12 October
+    if year >= 2017 or (year, 10) in AR_MOVES:
+        oct12 = trasladable(10, 12)
+    elif year <= 2007:
+        oct12 = ar_23555(date(year, 10, 12))
+    elif year <= 2010:
+        d = date(year, 10, 12)  # Ley 26.416
+        oct12 = d - timedelta(days=d.weekday()) if d.weekday() in (1, 2) else \
+            d + timedelta(days=(7 - d.weekday()) % 7)
+    else:
+        oct12 = nth_monday(year, 10, 2)  # Dto. 1584/2010 art. 2
+    out.append((oct12, "Día de la Raza" if year <= 2010 else "Día del Respeto a la Diversidad Cultural"))
+    # Soberanía Nacional (Dto. 1584/2010)
+    if year >= 2017 or (year, 11) in AR_MOVES:
+        out.append((trasladable(11, 20), "Día de la Soberanía Nacional"))
+    elif year >= 2010:
+        out.append((nth_monday(year, 11, 4), "Día de la Soberanía Nacional"))
+    for m, d in AR_PUENTES.get(year, ()):
+        out.append((date(year, m, d), "Feriado con fines turísticos"))
+    for (m, d), name in AR_ONE_OFF.get(year, ()):
+        out.append((date(year, m, d), name))
+    return out
+
+
+# Official yearly lists. 2017-2024: argentina.gob.ar pages (Wayback; a later
+# snapshot of each year). 2025-2026: the JSON files. Types kept: inamovible,
+# trasladable, turístico (and the 2017-2020 wording of the same); días no
+# laborables and provincial ("especial") days are left out.
+AR_OFFICIAL_PAGES = {
+    2017: ("20171009133512", "interior/feriados"), 2018: ("20190106053415", "interior/feriados2018"),
+    2019: ("20200218165353", "interior/feriados-nacionales-2019"),
+    2020: ("20210414202541", "interior/feriados-nacionales-2020"),
+    2021: ("20220116134158", "interior/feriados-nacionales-2021"),
+    2022: ("20230315183212", "interior/feriados-nacionales-2022"),
+    2023: ("20240530033655", "interior/feriados-nacionales-2023"),
+    2024: ("20250117160501", "interior/feriados-nacionales-2024"),
+}
+AR_OFFICIAL_OVERRIDES = {
+    date(2017, 4, 13): "list only: Jueves Santo, a día no laborable (Ley 21.329; Ley 27.399 art. 1).",
+    date(2022, 12, 20): "gold only: DNU 842/2022 (BO 2022-12-20); the archived page was never updated.",
+}
+# Moved days of 2001-2015 checked against the Ministerio del Interior yearly pages
+# (Wayback copies, 2001-2007) and BCRA Comunicaciones "C" (2008-2015).
+AR_MOVED_DAYS_CHECKED = {
+    2001: "04-02 06-18 08-20 10-08", 2002: "04-01 06-17 08-19", 2003: "03-31 06-16 08-18 10-13",
+    2004: "04-05 06-21 08-16 10-11", 2005: "04-02 06-20 08-15 10-10",
+    2006: "03-24 04-02 06-19 08-21 10-16", 2007: "04-02 06-18 08-20 10-15",
+    2008: "06-16 08-18 10-13", 2009: "06-15 08-17 10-12",
+    2011: "03-07 03-08 03-25 06-20 10-10 11-28 12-09",
+    2013: "02-11 02-12 04-01 06-21 08-19 10-14 11-25",
+    2014: "03-03 03-04 05-02 08-18 10-13 11-24 12-26", 2015: "02-16 02-17 03-23 08-17 10-12 12-07",
+}
+
+
+def _ar_official_days() -> dict:
+    import json
+    import re
+    import time
+    import urllib.request
+    cache = Path.home() / ".cache" / "cl-stack-calendars" / "ar-feriados"
+    cache.mkdir(parents=True, exist_ok=True)
+
+    def get(url: str) -> bytes:
+        delay = 5
+        for attempt in range(8):
+            try:
+                req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+                return urllib.request.urlopen(req, timeout=120).read()
+            except Exception:  # Wayback refuses connections at times: back off
+                if attempt == 7:
+                    raise
+                time.sleep(delay)
+                delay = min(2 * delay, 120)
+
+    def cached(name: str, url: str) -> str:
+        f = cache / name
+        if not f.exists() or f.stat().st_size < 1000:
+            f.write_bytes(get(url))
+        return f.read_bytes().decode("utf-8", "replace")
+
+    def keep(kind: str, label: str) -> bool:
+        k = kind.lower()
+        return ("turístic" in label.lower() or "turistic" in k
+                or (("inamovible" in k or "trasladable" in k) and "jueves santo" not in label.lower()
+                    or "jueves y viernes santo" in label.lower()))
+
+    months = "enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre diciembre".split()
+    out: dict[int, set] = {}
+    for year, (stamp, page) in AR_OFFICIAL_PAGES.items():
+        html = cached(f"page-{year}-{stamp}.html",
+                      f"http://web.archive.org/web/{stamp}id_/https://www.argentina.gob.ar/{page}")
+        days = set()
+        m = re.search(r"(?:const|var)\s+holidays\w*\s*=\s*\[(.*?)\];", html, re.S)
+        if m:
+            rows = re.findall(r'"date":\s*"(\d\d)/(\d\d)/(\d{4})",\s*"label":\s*"([^"]*)",\s*"type":\s*"([^"]*)"',
+                              m.group(1))
+            if any(int(b) > 12 for _, b, _, _, _ in rows):  # 2021 page writes mm/dd/yyyy
+                rows = [(b, a, c, lab, t) for a, b, c, lab, t in rows]
+            for dd, mm, yy, label, kind in rows:
+                if int(yy) == year and keep(kind, label):
+                    days.add(date(year, int(mm), int(dd)))
+        else:
+            for mon, body in re.findall(r'<h2 class="h5 text-center">(\w+)</h2>(.*?)(?=<h2 class="h5 text-center">|$)',
+                                        html, re.S):
+                fer = body.split('class="fer"', 1)[1] if 'class="fer"' in body else ""
+                for p in re.findall(r"<p>(.*?)</p>", fer, re.S):
+                    kind = re.search(r'sr-only">([^<]*)<', p)
+                    text = re.sub(r"<[^>]+>", "", p).strip()
+                    md = re.match(r"([\d ,y]+)\.\s*(.*)", text)
+                    if md and keep(kind.group(1) if kind else "", md.group(2)):
+                        for d in re.findall(r"\d+", md.group(1)):
+                            days.add(date(year, months.index(mon.lower()) + 1, int(d)))
+        assert len(days) > 12, (year, sorted(days))
+        out[year] = days
+    for year in (2025, 2026):
+        raw = cached(f"holidays-{year}-es.json",
+                     f"https://www.argentina.gob.ar/sites/default/files/holidays-{year}-es.json")
+        days = set()
+        for it in json.loads(raw)["mainEntity"]["itemListElement"]:
+            item = it["item"]
+            d = date.fromisoformat(item["startDate"])
+            if d.year == year and keep(item["additionalProperty"]["value"], item["name"]):
+                days.add(d)
+        out[year] = days
+    return out
+
+
+def ar_official_check(days: dict) -> None:
+    official = _ar_official_days()
+    diff = set()
+    for year, listed in official.items():
+        diff |= listed ^ {d for d in days if d.year == year}
+    unexplained = sorted(d for d in diff if d not in AR_OFFICIAL_OVERRIDES)
+    assert not unexplained, unexplained
+    assert set(AR_OFFICIAL_OVERRIDES) <= diff, sorted(set(AR_OFFICIAL_OVERRIDES) - diff)
+    print(f"  AR {min(official)}-{max(official)}: argentina.gob.ar agrees except {len(diff)} listed overrides")
+    for year, mds in AR_MOVED_DAYS_CHECKED.items():
+        for md in mds.split():
+            assert date(year, int(md[:2]), int(md[3:])) in days, (year, md)
+    print(f"  AR {len(AR_MOVED_DAYS_CHECKED)} years 2001-2015: Mininterior / BCRA moved days all in the gold")
+
 
 COUNTRIES = {
     "CO": dict(name="Colombia", build=co_holidays, sources=CO_SOURCES, note=CO_NOTE,
@@ -843,6 +1150,9 @@ COUNTRIES = {
     "PE": dict(name="Peru", build=pe_holidays, sources=PE_SOURCES, note=PE_NOTE,
                python=lambda years: __import__("holidays").PE(years=years),
                crosscheck=pe_official_check),
+    "AR": dict(name="Argentina", build=ar_holidays, sources=AR_SOURCES, note=AR_NOTE,
+               python=lambda years: __import__("holidays").AR(years=years),
+               crosscheck=ar_official_check),
 }
 
 
