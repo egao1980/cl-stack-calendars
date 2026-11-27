@@ -222,9 +222,9 @@
    #:ph-transfers-for-year
    #:vietnam-holidays-calendar
    #:thailand-holidays-calendar
-   #:th-transfers
-   #:th-notice-for-year
-   #:th-transfers-for-year
+   #:thailand-bank-holidays-calendar
+   #:th-decree-rows
+   #:th-provisional-year-p
    #:south-korea-holidays-calendar
    #:load-kr-temporary-holidays
    #:kr-temporary-holidays
@@ -451,6 +451,14 @@
    #:vn-tet-days
    #:vn-notices
    #:cn-provisional-year-p
-   #:cn-notice-confidence))
+   #:cn-notice-confidence
+   #:th-bank-provisional-year-p
+   #:th-confidence
+   #:th-bank-confidence
+   #:thai-lunar-year-type
+   #:thai-lunar-rule-day
+   #:thai-buddhist-day
+   #:*thai-lunar-uncertain-years*
+   #:*th-substitute-eras*))
 
 (in-package #:cl-stack-calendars)
