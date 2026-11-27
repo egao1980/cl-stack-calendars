@@ -1,8 +1,7 @@
 (in-package #:cl-stack-calendars)
 
-(defclass rule-calendar (holiday-calendar)
+(defclass rule-calendar (weekend-spec-mixin holiday-calendar)
   ((name :initarg :name :initform nil :accessor calendar-name)
-   (weekend-days :initarg :weekend-days :initform '(6 7) :accessor calendar-weekend-days)
    (rules :initarg :rules :initform nil :accessor calendar-rules)
    ;; 祝日法第3条第3項 (and analogues): insert weekdays sandwiched by holidays.
    (sandwich-holidays-p :initarg :sandwich-holidays-p :initform nil
@@ -32,10 +31,11 @@
 RULES — normally built via DEFINE-CALENDAR. Observance policies on rules must
 cite their normative authority (:AUTHORITY). TRANSFERS encode annual Government
 decree weekend moves; WORKING-DAYS encode compensatory work weekends;
-SUPPRESSED-DATES remove rule holidays relocated by proclamation."))
+SUPPRESSED-DATES remove rule holidays relocated by proclamation. :WEEKEND-DAYS
+is a weekday list or an era list (WEEKEND-SPEC-MIXIN)."))
 
 (defmethod weekend-day-p ((calendar rule-calendar) date)
-  (and (member (date-day-of-week date) (calendar-weekend-days calendar))
+  (and (member (date-day-of-week date) (weekend-days-on calendar date))
        (not (find date (calendar-working-days calendar)
                   :key #'calendar-working-day-date :test #'=))
        t))
@@ -53,7 +53,7 @@ chain pass replaces per-rule observance, so it never does."
   "Every nominal date of every rule valid in YEAR, as a list (RULE NOMINAL
 KEEP-P DIRECTION YEAR); KEEP-P and DIRECTION come from OBSERVANCE-MOVES. A
 computed rule can contribute several entries (RULE-NOMINAL-DATES)."
-  (let ((weekend-days (calendar-weekend-days calendar))
+  (let ((weekend-days (calendar-weekend-spec calendar))
         (observe-p (%rule-calendar-observed-p calendar)))
     (loop for rule in (calendar-rules calendar)
           append (loop for nominal in (rule-nominal-dates rule year)
@@ -91,7 +91,7 @@ Two passes, so the result is the same for any order of the rules:
 
 Two rules on the same nominal date both keep it; HOLIDAY-P then reports both
 names. :BRIDGE extras are added last and claim nothing."
-  (let* ((weekend-days (calendar-weekend-days calendar))
+  (let* ((weekend-days (calendar-weekend-spec calendar))
          (years (if (%rule-calendar-observed-p calendar)
                     (list (1- year) year (1+ year))
                     (list year)))
@@ -235,12 +235,12 @@ rearrangements in starter calendars (normative source of truth)."
                                          :from ,(%bound-form from)
                                          :to ,(%bound-form to))))))))
 
-(defmacro define-calendar (name (&key register (weekend-days ''(6 7))
-                                   sandwich-holidays-p sandwich-authority
-                                   sandwich-from
-                                   furikae-chain-p furikae-from
-                                   furikae-chain-from)
-                           &body rules)
+(defmacro define-calendar (name (&key register (weekend-days nil weekend-days-p)
+                                      sandwich-holidays-p sandwich-authority
+                                      sandwich-from
+                                      furikae-chain-p furikae-from
+                                      furikae-chain-from)
+                                &body rules)
   "Define NAME as a RULE-CALENDAR subclass from RULES.
 
 Each clause:
@@ -249,10 +249,16 @@ Each clause:
   (:nth-weekday NAME MONTH WEEKDAY NTH &key OBSERVED OBSERVED-FROM BRIDGE FROM TO AUTHORITY)
   (:easter NAME OFFSET &key ORTHODOX OBSERVED OBSERVED-FROM BRIDGE FROM TO AUTHORITY)
   (:computed NAME COMPUTE &key OBSERVED OBSERVED-FROM BRIDGE FROM TO AUTHORITY)
-    ;; COMPUTE is a form evaluating to (YEAR) → DATE (equinoxes, Chinese lunar, …)
+    ;; COMPUTE is a form evaluating to (YEAR) → NIL, a DATE or a list of
+    ;; DATEs (equinoxes, Chinese lunar, every Hijri occurrence, …)
 
 AUTHORITY is the normative citation (statute, EO, ECB decision, proclamation).
 It is the source of truth for civil :FROM/:TO and for OBSERVED rearrangements.
+
+WEEKEND-DAYS is a form giving a weekday list such as '(5 6) or an era list
+such as '((nil 4 5) ((2013 6 29) 5 6)). Without it, a calendar with REGISTER
+takes COUNTRY-WEEKEND-DAYS of that code (the cited weekend table; (6 7) for
+codes it does not list).
 
 Statute-named OBSERVED (prefer these):
 
@@ -282,7 +288,9 @@ CALENDAR-TRANSFERS / MAKE-RUSSIAN-HOLIDAYS-CALENDAR — not in this macro."
      (defclass ,name (rule-calendar) ()
        (:default-initargs
         :name ,(string name)
-        :weekend-days ,weekend-days
+        :weekend-days ,(cond (weekend-days-p weekend-days)
+                             (register `(country-weekend-days ,register))
+                             (t ''(6 7)))
         :sandwich-holidays-p ,sandwich-holidays-p
         :sandwich-authority ',sandwich-authority
         :sandwich-from ,(%bound-form sandwich-from)

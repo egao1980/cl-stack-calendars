@@ -85,6 +85,7 @@
                       (or (and plist (getf plist :source)) "date-holidays"))))
       (make-instance 'rule-calendar
                      :name (or (and plist (getf plist :name)) cc)
+                     :weekend-days (country-weekend-days cc)
                      :rules rules))))
 
 (defun register-corpus-inferred-territory-starters ()
