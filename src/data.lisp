@@ -106,8 +106,24 @@
       (resolve-data-root *exchanges-data-directory*)
       (data-path "exchanges/")))
 
+(defvar *data-generation* 0
+  "Incremented by CLEAR-DATA-CACHES; caches stamped with an older value are stale.")
+
+(defvar *data-generation-lock*
+  #+sbcl (sb-thread:make-mutex :name "cl-stack-calendars data generation")
+  #-sbcl nil)
+
+(defun %bump-data-generation ()
+  #+sbcl (sb-thread:with-mutex (*data-generation-lock*) (incf *data-generation*))
+  #-sbcl (incf *data-generation*))
+
 (defun clear-data-caches ()
-  "Drop every cache that was loaded from *DATA-ROOT*."
+  "Drop every cache that was loaded from *DATA-ROOT*, and bump
+*DATA-GENERATION* so rule calendars rebuild their year maps on next use.
+
+The caches are process-wide: SET-DATA-ROOT and WITH-DATA-ROOT clear them for
+every thread. They are not meant to run while other threads query calendars
+against a different data root."
   (when (fboundp 'clear-country-calendar-cache)
     (clear-country-calendar-cache))
   (let ((cache (find-symbol "*EXCHANGE-HOURS-CACHE*" :cl-stack-calendars)))
@@ -119,9 +135,10 @@
                  *id-cuti-bersama* *kr-temporary-holidays*
                  *ph-proclamations* *th-transfers* *my-transfers*
                  *np-gazette* *lk-poya* *sg-gazette* *kh-gazette*
-                 *co-transfers* *cl-transfers*))
+                 *co-transfers* *cl-transfers* *nyse-special-closures*))
     (when (boundp sym)
       (setf (symbol-value sym) nil)))
+  (%bump-data-generation)
   t)
 
 (defun write-data-zip (destination &optional (root (data-root)))

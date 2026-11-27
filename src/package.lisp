@@ -416,6 +416,12 @@
    #:calendar-coverage
    #:country-calendar-stub-p
    #:calendar-strict-p
-   #:date-covered-p))
+   #:date-covered-p
+   #:invalid-convention
+   #:invalid-convention-convention
+   #:no-business-day
+   #:no-business-day-date
+   #:no-business-day-calendar
+   #:no-business-day-direction))
 
 (in-package #:cl-stack-calendars)

@@ -22,6 +22,4 @@
   (cdr (assoc year corpus)))
 
 (defun gazette-transfers-for-year (corpus year)
-  (loop for (_y . plist) in corpus
-        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
-                             (getf plist :transfers))))
+  (transfers-touching-year corpus year))

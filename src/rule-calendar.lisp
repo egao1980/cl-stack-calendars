@@ -1,16 +1,28 @@
 (in-package #:cl-stack-calendars)
 
 (defun %make-calendar-cache ()
-  "A hash table safe for concurrent readers and writers (SBCL :SYNCHRONIZED).
-Entries are computed outside any lock; two threads that race on a missing
-year compute equal maps, and the later write wins."
-  #+sbcl (make-hash-table :test #'eql :synchronized t)
-  #-sbcl (make-hash-table :test #'eql))
+  "A hash table safe for concurrent readers and writers (SBCL :SYNCHRONIZED),
+stamped with the current *DATA-GENERATION*. Entries are computed outside any
+lock; two threads that race on a missing year compute equal maps, and the
+later write wins."
+  (let ((table #+sbcl (make-hash-table :test #'eql :synchronized t)
+               #-sbcl (make-hash-table :test #'eql)))
+    (setf (gethash :generation table) *data-generation*)
+    table))
+
+(defun %current-calendar-cache (calendar)
+  "CALENDAR's cache, replaced first when CLEAR-DATA-CACHES (or SET-DATA-ROOT)
+ran since it was made: year maps built from one data root are not reused
+under another."
+  (let ((cache (%rule-calendar-cache calendar)))
+    (if (eql (gethash :generation cache) *data-generation*)
+        cache
+        (setf (%rule-calendar-cache calendar) (%make-calendar-cache)))))
 
 (defmacro %cached ((calendar key) &body compute)
   "The cache entry KEY of rule CALENDAR, computed by COMPUTE when missing."
   (let ((cache (gensym "CACHE")) (k (gensym "KEY")) (v (gensym "V")) (hit (gensym "HIT")))
-    `(let ((,cache (%rule-calendar-cache ,calendar))
+    `(let ((,cache (%current-calendar-cache ,calendar))
            (,k ,key))
        (multiple-value-bind (,v ,hit) (gethash ,k ,cache)
          (if ,hit
@@ -169,12 +181,11 @@ observance substitutes (independent of rule order, see
 %OBSERVE-RULE-ENTRIES), optional sandwich days, and decree TRANSFERS whose TO
 date falls in YEAR (or adjacent for Dec 31 ↔ Jan moves)."
   (let ((pairs (%observe-rule-entries calendar year)))
-    (when (and (calendar-sandwich-holidays-p calendar)
-               (let ((sf (calendar-sandwich-from calendar)))
-                 (cond ((null sf) t)
-                       ((integerp sf) (>= year sf))
-                       (t t))))
-      (setf pairs (apply-sandwich-holidays pairs)))
+    (when (calendar-sandwich-holidays-p calendar)
+      ;; :SANDWICH-FROM is a year or a date: sandwich days start on that day.
+      (let ((sf (calendar-sandwich-from calendar)))
+        (setf pairs (apply-sandwich-holidays
+                     pairs (if (integerp sf) (make-date sf 1 1) sf)))))
     (when (calendar-furikae-chain-p calendar)
       (flet ((%as-date (bound)
                (cond ((null bound) nil)

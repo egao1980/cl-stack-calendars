@@ -35,9 +35,7 @@
   (cdr (assoc year (co-transfers))))
 
 (defun co-transfers-for-year (year)
-  (loop for (_y . plist) in (co-transfers)
-        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
-                             (getf plist :transfers))))
+  (transfers-touching-year (co-transfers) year))
 
 ;;; Brazil (floor 1900; Lei 662/1949 consolidates many)
 (define-calendar brazil-holidays-calendar (:register "BR")
@@ -269,9 +267,7 @@
   (cdr (assoc year (cl-transfers))))
 
 (defun cl-transfers-for-year (year)
-  (loop for (_y . plist) in (cl-transfers)
-        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
-                             (getf plist :transfers))))
+  (transfers-touching-year (cl-transfers) year))
 
 ;;; Chile (floor 1900; Ley 19.973/2004 Monday moves + bridge decrees)
 (define-calendar chile-holidays-calendar (:register "CL")

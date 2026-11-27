@@ -16,8 +16,10 @@
 ;;;; boundary via TRADING-SESSION). Early closes override the last segment.
 ;;;; Overnight segments use TRADING-SESSION :OVERNIGHT / :LABELED-BY.
 
-(defvar *exchange-hours-cache* (make-hash-table :test #'equal)
-  "MIC → EXCHANGE-HOURS.")
+(defvar *exchange-hours-cache*
+  #+sbcl (make-hash-table :test #'equal :synchronized t)
+  #-sbcl (make-hash-table :test #'equal)
+  "MIC → EXCHANGE-HOURS. Synchronized for concurrent first use.")
 
 (defstruct (exchange-session-spec (:constructor %make-exchange-session-spec))
   (open nil :type time-of-day)

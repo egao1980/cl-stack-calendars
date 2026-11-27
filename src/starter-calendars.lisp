@@ -113,9 +113,7 @@
 
 (defun gb-transfers-for-year (year)
   "Extra/relocated BH TO days whose date falls in YEAR."
-  (loop for (_y . plist) in (gb-proclamations)
-        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
-                             (getf plist :transfers))))
+  (transfers-touching-year (gb-proclamations) year))
 
 (defun gb-suppressed-for-year (year)
   "Statutory rule dates suppressed (relocated) that fall in YEAR."

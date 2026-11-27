@@ -32,9 +32,7 @@
 
 (defun id-transfers-for-year (year)
   "Cuti bersama TO days whose date falls in YEAR."
-  (loop for (_y . plist) in (id-cuti-bersama)
-        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
-                             (getf plist :transfers))))
+  (transfers-touching-year (id-cuti-bersama) year))
 
 ;;; Indonesia (formation 1945)
 (define-calendar indonesia-holidays-calendar (:register "ID")
@@ -245,9 +243,7 @@
 
 (defun kr-transfers-for-year (year)
   "임시공휴일 TO days whose date falls in YEAR."
-  (loop for (_y . plist) in (kr-temporary-holidays)
-        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
-                             (getf plist :transfers))))
+  (transfers-touching-year (kr-temporary-holidays) year))
 
 ;;; --- Philippines Malacañang proclamations (bridge / special days) -----
 
@@ -275,9 +271,7 @@
   (cdr (assoc year (ph-proclamations))))
 
 (defun ph-transfers-for-year (year)
-  (loop for (_y . plist) in (ph-proclamations)
-        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
-                             (getf plist :transfers))))
+  (transfers-touching-year (ph-proclamations) year))
 
 ;;; --- Thailand Royal Gazette substitute / bridge days ------------------
 
@@ -305,9 +299,7 @@
   (cdr (assoc year (th-transfers))))
 
 (defun th-transfers-for-year (year)
-  (loop for (_y . plist) in (th-transfers)
-        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
-                             (getf plist :transfers))))
+  (transfers-touching-year (th-transfers) year))
 
 ;;; --- Malaysia JPM / PMO additional public holidays --------------------
 
@@ -335,9 +327,7 @@
   (cdr (assoc year (my-transfers))))
 
 (defun my-transfers-for-year (year)
-  (loop for (_y . plist) in (my-transfers)
-        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
-                             (getf plist :transfers))))
+  (transfers-touching-year (my-transfers) year))
 
 ;;; --- Gazette corpora (Dashain, Poya, Vesak/Deepavali, …) --------------
 

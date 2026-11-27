@@ -46,17 +46,9 @@
   "Plist for the notice block keyed by YEAR, or NIL."
   (cdr (assoc year (cn-transfer-notices))))
 
-(defun %cn-transfer-touches-year-p (tr year)
-  (or (let ((to (calendar-transfer-to tr)))
-        (and to (= (date-year to) year)))
-      (let ((from (calendar-transfer-from tr)))
-        (and from (= (date-year from) year)))))
-
 (defun cn-transfers-for-year (year)
   "All 调休 TO days whose date falls in YEAR (any notice block)."
-  (loop for (_y . plist) in (cn-transfer-notices)
-        nconc (remove-if-not (lambda (tr) (%cn-transfer-touches-year-p tr year))
-                             (getf plist :transfers))))
+  (transfers-touching-year (cn-transfer-notices) year))
 
 (defun cn-working-days-for-year (year)
   "上班 days that fall in YEAR (any notice block)."

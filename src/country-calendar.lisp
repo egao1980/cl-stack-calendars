@@ -11,8 +11,11 @@
 (defvar *country-index* nil
   "Cached list of (CODE NAME DAY-COUNT) from index.sexp.")
 
-(defvar *country-calendar-cache* (make-hash-table :test #'equal)
-  "CODE → COUNTRY-HOLIDAY-CALENDAR instances.")
+(defvar *country-calendar-cache*
+  #+sbcl (make-hash-table :test #'equal :synchronized t)
+  #-sbcl (make-hash-table :test #'equal)
+  "(CODE WEEKEND-DAYS STRICT) → COUNTRY-HOLIDAY-CALENDAR. Synchronized: safe
+for concurrent first use; two racing loads build equal calendars.")
 
 (defclass country-holiday-calendar (weekend-spec-mixin holiday-calendar)
   ((code :initarg :code :reader country-calendar-code)

@@ -33,9 +33,7 @@
 
 (defun in-dopt-transfers-for-year (year)
   "DoPT gazetted festival TO days in YEAR."
-  (loop for (_y . plist) in (in-dopt-holidays)
-        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
-                             (getf plist :transfers))))
+  (transfers-touching-year (in-dopt-holidays) year))
 
 (define-calendar india-holidays-calendar (:register "IN")
   (:fixed "Republic Day" 1 26 :from 1950

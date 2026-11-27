@@ -112,10 +112,6 @@ Year bounds apply to DATE's Gregorian year; date bounds compare by RD."
     (and (from-ok (holiday-rule-from rule))
          (to-ok (holiday-rule-to rule)))))
 
-;;; Backward-compatible alias used by older call sites / tests.
-(defun rule-active-p (rule year)
-  (rule-valid-at-p rule (make-date year 7 1)))
-
 ;;; --- weekday keywords ----------------------------------------------------
 
 (defparameter *weekday-keywords*
@@ -170,10 +166,14 @@ force on each day."
   (= (date-day-of-week date) 7))
 
 (defun shift-forward-past-weekend (date weekend-days)
-  "DATE, or the first following day that is not a WEEKEND-DAYS weekday."
-  (loop for d = date then (+ d 1)
-        while (weekendp d weekend-days)
-        finally (return d)))
+  "DATE, or the first following day that is not a WEEKEND-DAYS weekday.
+Signals CALENDAR-ERROR when WEEKEND-DAYS covers every day of a week."
+  (loop for k from 0 below 8
+        for d = (+ date k)
+        unless (weekendp d weekend-days)
+          do (return-from shift-forward-past-weekend d))
+  (error 'calendar-error
+         :message (format nil "weekend ~s covers every weekday after ~a" weekend-days date)))
 
 (defun last-weekday-of-month-p (date weekend-days)
   "True when DATE is the last non-WEEKEND-DAYS day of its month."
@@ -283,16 +283,18 @@ against every rule's nominal date (see %RULE-CALENDAR-YEAR-MAP)."
                                  (lambda (d) (member d claimed :test #'=))))))))
       (apply-bridge-days base weekend-days bridge))))
 
-(defun apply-sandwich-holidays (date-name-alist)
+(defun apply-sandwich-holidays (date-name-alist &optional from)
   "祝日法第3条第3項: a day whose previous and next days are both holidays
 becomes a holiday (国民の休日), including Saturday. DATE-NAME-ALIST is a
-list of (DATE . NAME); returns an extended alist."
+list of (DATE . NAME); returns an extended alist. FROM (a DATE or NIL)
+bounds the sandwich days: none before FROM is added."
   (let* ((dates (sort (mapcar #'car date-name-alist) #'<))
          (set dates)
          (extra '()))
     (dolist (d dates)
       (let ((mid (+ d 1)))
-        (when (and (not (member mid set :test #'=))
+        (when (and (or (null from) (>= mid from))
+                   (not (member mid set :test #'=))
                    (member (+ mid 1) set :test #'=)
                    (/= (date-day-of-week mid) 7))
           ;; Sunday is already 休日; treating it as 国民の休日 would 振替 the next day.
