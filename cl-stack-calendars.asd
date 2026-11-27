@@ -57,3 +57,30 @@
   :perform (test-op (o c)
              (unless (symbol-call :rove :run c)
                (error "tests failed for ~A" (component-name c)))))
+
+;;; DRAFT prototype (docs/LOGIC-MIGRATION.md): observance precedence as
+;;; stratified Datalog on the cl-stack logic family. Not loaded by the
+;;; primary system; released behaviour is unchanged.
+(defsystem "cl-stack-calendars/logic"
+  :description "Prototype: holiday observance and precedence as logic-protocol rules (Datalog backend)"
+  :depends-on ("cl-stack-calendars"
+               (:version "logic-protocol" "0.2.0")
+               (:version "logic-backend-datalog" "0.2.0"))
+  :pathname "src/logic"
+  :serial t
+  :components ((:file "package")
+               (:file "rules")
+               (:file "facts")
+               (:file "engine"))
+  :in-order-to ((test-op (test-op "cl-stack-calendars/logic/tests"))))
+
+(defsystem "cl-stack-calendars/logic/tests"
+  :description "Prototype vs current engine over 2000-2040 (USFED, GBLO, JP, RU 2024) plus proofs"
+  :depends-on ("cl-stack-calendars/logic" "rove")
+  :pathname "tests/logic"
+  :serial t
+  :components ((:file "package")
+               (:file "comparison-test"))
+  :perform (test-op (o c)
+                    (unless (symbol-call :rove :run c)
+                      (error "tests failed for ~A" (component-name c)))))
