@@ -439,6 +439,7 @@
    #:kr-provisional-year-p
    #:kr-election-days
    #:calendar-observance-pass
-   #:tw-provisional-year-p))
+   #:tw-provisional-year-p
+   #:ph-provisional-year-p))
 
 (in-package #:cl-stack-calendars)

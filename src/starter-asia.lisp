@@ -107,38 +107,42 @@
 
 ;;; Philippines (1946)
 (define-calendar philippines-holidays-calendar (:register "PH" :constructor philippines-holidays-calendar)
-  (:fixed "New Year's Day" 1 1 :from 1946
-   :authority "Republic Act / Proclamation — regular holiday")
-  (:fixed "EDSA People Power Revolution Anniversary" 2 25 :from 1986
-   :authority "Special non-working holiday — EDSA 1986")
-  (:computed "Chinese New Year"
-   (lambda (y) (chinese-new-year-date y :location +beijing+))
-   :from 2012
-   :authority "Special non-working day by proclamation (often; Beijing tabular CNY)")
-  (:easter "Maundy Thursday" -3 :from 1946
-   :authority "Regular holiday (Holy Week)")
-  (:easter "Good Friday" -2 :from 1946
-   :authority "Regular holiday (Holy Week)")
-  (:fixed "Araw ng Kagitingan" 4 9 :from 1946
-   :authority "Day of Valor — regular holiday")
-  (:fixed "Labor Day" 5 1 :from 1946
-   :authority "Regular holiday")
+  ;; EO 292 (Administrative Code of 1987) Book I, Chapter 7, Sec. 26 as
+  ;; amended by RA 9177, 9256, 9492, 9849 and 10966. The yearly
+  ;; proclamations (moves, special days, Eid dates) are in data/ph.
+  ;; https://lawphil.net/statutes/repacts/ra2007/ra_9492_2007.html
+  (:fixed "New Year's Day" 1 1 :from 1946 :authority "EO 292 Sec. 26 (1)(a) — regular holiday")
+  (:fixed "EDSA People Power Revolution Anniversary" 2 25 :from 1986 :to 1999
+   :authority "Special day by yearly proclamation; from 2000 in data/ph (absent 2001, 2007, 2024; a special working day from 2025)")
+  (:easter "Maundy Thursday" -3 :from 1946 :authority "EO 292 Sec. 26 — regular holiday")
+  (:easter "Good Friday" -2 :from 1946 :authority "EO 292 Sec. 26 — regular holiday")
+  (:fixed "Araw ng Kagitingan" 4 9 :from 1946 :authority "EO 292 Sec. 26 — regular holiday (9 April)")
+  (:fixed "Labor Day" 5 1 :from 1946 :authority "EO 292 Sec. 26 — regular holiday")
   (:fixed "Independence Day" 6 12 :from 1962
    :authority "Independence Day moved to 12 June (Diosdado Macapagal, 1962); was 4 July 1946–1961")
   (:fixed "Independence Day" 7 4 :from 1946 :to 1961
    :authority "Philippine Independence Day (4 July) until 1961")
   (:fixed "Ninoy Aquino Day" 8 21 :from 2004
-   :authority "RA 9256 — Ninoy Aquino Day (special non-working)")
+   :authority "RA 9256 (2004) — Ninoy Aquino Day, 21 August, special non-working")
+  (:nth-weekday "National Heroes Day" 8 :sunday -1 :from 1946 :to 2006
+   :authority "EO 292 Sec. 26 — National Heroes Day, last Sunday of August")
   (:nth-weekday "National Heroes Day" 8 :monday -1 :from 2007
-   :authority "RA 9492 — National Heroes Day last Monday of August")
-  (:fixed "All Saints' Day" 11 1 :from 1946
-   :authority "Special non-working holiday")
-  (:fixed "Bonifacio Day" 11 30 :from 1946
-   :authority "Regular holiday (Andrés Bonifacio)")
-  (:fixed "Christmas Day" 12 25 :from 1946
-   :authority "Regular holiday")
-  (:fixed "Rizal Day" 12 30 :from 1946
-   :authority "Regular holiday (José Rizal)"))
+   :authority "RA 9492 (2007) — National Heroes Day, last Monday of August")
+  (:fixed "All Saints' Day" 11 1 :from 1946 :authority "EO 292 Sec. 26 (2) — nationwide special day")
+  (:fixed "Bonifacio Day" 11 30 :from 1946 :authority "EO 292 Sec. 26 — regular holiday")
+  (:fixed "Feast of the Immaculate Conception" 12 8 :from 2018
+   :authority "RA 10966 (2017) — 8 December, special non-working holiday")
+  (:fixed "Christmas Day" 12 25 :from 1946 :authority "EO 292 Sec. 26 — regular holiday")
+  (:fixed "Rizal Day" 12 30 :from 1946 :authority "EO 292 Sec. 26 — regular holiday")
+  (:fixed "Last Day of the Year" 12 31 :from 1988 :authority "EO 292 Sec. 26 (2) — nationwide special day")
+  (:computed "Eid'l Fitr (estimated)"
+             (lambda (y) (when (ph-provisional-year-p y) (eid-al-fitr y)))
+   :from 2002
+   :authority "RA 9177 (2002) — Eid'l Fitr a regular holiday, its date proclaimed yearly (data/ph); tabular estimate in years with no proclamation")
+  (:computed "Eid'l Adha (estimated)"
+             (lambda (y) (when (ph-provisional-year-p y) (eid-al-adha y)))
+   :from 2010
+   :authority "RA 9849 (2009) — Eid'l Adha a regular holiday, its date proclaimed yearly (data/ph); tabular estimate in years with no proclamation"))
 
 ;;; Vietnam (1945)
 (define-calendar vietnam-holidays-calendar (:register "VN")
@@ -248,6 +252,9 @@
 ;;; --- Philippines Malacañang proclamations (bridge / special days) -----
 
 (defun load-ph-proclamations (&optional (path (data-path "ph/proclamations.sexp")))
+  "Return alist YEAR → (:authority A :transfers … :suppressed … :uri …):
+the proclaimed days the statutory rules do not give, and the statutory
+dates the proclamations did not keep."
   (let ((form (read-data-form path)))
     (mapcar
      (lambda (block)
@@ -258,6 +265,8 @@
                                  (getf block :holidays))))
          (cons year (list :authority auth
                           :transfers transfers
+                          :suppressed (mapcar (lambda (d) (apply #'make-date d))
+                                              (getf block :suppressed))
                           :uri (getf block :uri)))))
      form)))
 
@@ -272,6 +281,21 @@
 
 (defun ph-transfers-for-year (year)
   (transfers-touching-year (ph-proclamations) year))
+
+(defun ph-suppressed-for-year (&optional year)
+  "Statutory dates the proclamations did not keep, in YEAR (or every year)."
+  (loop for (nil . plist) in (ph-proclamations)
+        append (remove-if-not (lambda (d) (or (null year) (= year (date-year d))))
+                              (getf plist :suppressed))))
+
+(defparameter *ph-last-eid-year* 2026
+  "The latest year whose Eid'l Fitr and Eid'l Adha are proclaimed (data/ph).")
+
+(defun ph-provisional-year-p (year)
+  "True when YEAR has no Eid'l Fitr / Eid'l Adha proclamation yet: its Eid
+days are tabular estimates and, after the last yearly proclamation (2027),
+only the statutory days are in it."
+  (> year *ph-last-eid-year*))
 
 ;;; --- Thailand Royal Gazette substitute / bridge days ------------------
 
@@ -775,15 +799,19 @@ registered \"ID\" calendar); with YEAR, only that year's days."
 
 (defun bangladesh-holidays-calendar () (make-instance 'bangladesh-holidays-calendar))
 
-(defun philippines-holidays-calendar (&key year transfers)
-  "Philippine holidays with the Malacañang proclamation days of
-data/ph/proclamations.sexp. Without YEAR, every year in the file applies (the
-registered \"PH\" calendar); with YEAR, only that year's days."
-  (let ((tr (or transfers
-                (if year
-                    (ph-transfers-for-year year)
-                    (all-block-transfers (ph-proclamations))))))
-    (make-instance 'philippines-holidays-calendar :transfers tr)))
+(defun philippines-holidays-calendar (&key year transfers suppressed-dates)
+  "Philippine regular holidays and nationwide special (non-working) days: the
+statutory days, changed by the proclamations of data/ph/proclamations.sexp
+(days added, statutory dates moved or not kept). Without YEAR, every year in
+the file applies (the registered \"PH\" calendar); with YEAR, only that
+year's. Special working days are not holidays. PH-PROVISIONAL-YEAR-P years
+have estimated Eid days."
+  (make-instance 'philippines-holidays-calendar
+                 :transfers (or transfers
+                                (if year
+                                    (ph-transfers-for-year year)
+                                    (all-block-transfers (ph-proclamations))))
+                 :suppressed-dates (or suppressed-dates (ph-suppressed-for-year year))))
 
 (defun vietnam-holidays-calendar () (make-instance 'vietnam-holidays-calendar))
 
