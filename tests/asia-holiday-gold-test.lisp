@@ -860,3 +860,162 @@ NIL with a :DATES-NOTE saying why."
               (ok (getf row (if (eq key :issued) :issued-uri :published-uri))
                   (format nil "~a ~s cited" label key))
               (ok (getf row :dates-note) (format nil "~a ~s NIL with a note" label key))))))))
+
+;;; --- Bangladesh and Pakistan (#47) ----------------------------------------
+
+(defparameter *bd-holiday-gold* (load-holiday-gold "BD"))
+
+(defparameter *bd-secondary-holiday-gold*
+  (read-data-form (data-path "tests/bd-secondary-holiday-gold.sexp")))
+
+(defparameter *pk-holiday-gold* (load-holiday-gold "PK"))
+
+(defparameter *pk-secondary-holiday-gold*
+  (read-data-form (data-path "tests/pk-secondary-holiday-gold.sexp")))
+
+(deftest bd-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *bd-holiday-gold* "BD" :from 2013)
+  (ok (getf *bd-holiday-gold* :weekends) "Friday–Saturday eras"))
+
+(deftest bd-registered-calendar-matches-gold
+  "find-calendar \"BD\" holds the general and executive-order days of every
+Ministry of Public Administration list 2013–2027 with its amendments, on the
+Friday–Saturday weekend, the working Saturdays of 2016, 2025 and 2026, and
+the fixed days and tabular estimates of 2028–2040."
+  (let ((bd (find-calendar "BD")))
+    (%report-holiday-gold "BD" (%holiday-gold-mismatches *bd-holiday-gold* (constantly bd)))))
+
+(deftest bd-year-calendars-match-gold
+  (%report-holiday-gold "BD :year"
+                        (%holiday-gold-mismatches *bd-holiday-gold*
+                                                  (lambda (y) (bangladesh-holidays-calendar :year y)))))
+
+(deftest bd-country-calendar-matches-gold
+  (let ((bd (country-calendar "BD")))
+    (ok (eq :normative (calendar-provenance bd)))
+    (%report-holiday-gold "country-calendar BD"
+                          (%holiday-gold-mismatches *bd-holiday-gold* (constantly bd)))))
+
+(deftest bd-secondary-gold-2002-2012-lower-confidence
+  "LOWER CONFIDENCE. 2002–2008 and 2010–2012 against the bank-holiday lists
+Bangladesh Bank circulated and news; 2009 has no list."
+  (let ((gold *bd-secondary-holiday-gold*))
+    (ok (string= "BD" (getf gold :country)))
+    (ok (eq :secondary (getf gold :confidence)))
+    (ok (equal '(2009) (getf gold :gaps)))
+    (%report-holiday-gold "BD 2002-2012 (secondary sources)"
+                          (%holiday-gold-mismatches gold (constantly (find-calendar "BD"))))
+    (%report-holiday-gold "BD :year 2002-2012 (secondary sources)"
+                          (%holiday-gold-mismatches gold (lambda (y) (bangladesh-holidays-calendar :year y))))))
+
+(deftest bd-issue-47-days
+  (let ((bd (find-calendar "BD")))
+    (flet ((holiday (y m d) (holiday-p bd (make-date y m d)))
+           (business (y m d) (business-day-p bd (make-date y m d))))
+      (ng (holiday 2025 3 17) "17 March cancelled (Cabinet Division, 16 Oct 2024)")
+      (ng (holiday 2025 8 15) "15 August absent from the 2025 list")
+      (ng (holiday 2024 8 15) "15 August 2024 cancelled by MoPA, 13 Aug 2024")
+      (ok (holiday 2023 8 15))
+      (ok (holiday 2024 3 17) "17 March to 2024")
+      (ok (holiday 2010 3 17) "17 March restored in the 2010 list")
+      (ng (holiday 2008 3 17) "not in the 2008 list")
+      (ok (holiday 2025 8 5) "July Mass Uprising Day from 2025")
+      (ng (holiday 2023 8 5) "not a holiday before 2025")
+      (ok (holiday 2026 11 7) "7 November from 2026 (MoPA, 7 Oct 2026)")
+      (ok (holiday 2025 3 31) "Eid-ul-Fitr 2025, general")
+      (ok (holiday 2025 4 2) "executive-order Eid days")
+      (ok (holiday 2025 4 3) "extra Eid day, MoPA 23 Mar 2025")
+      (ok (holiday 2025 10 2) "Bijoya Dashami")
+      (ok (holiday 2025 9 6) "Eid-e-Milad moved to 6 Sep")
+      (ng (holiday 2025 9 5))
+      (ok (holiday 2024 1 7) "election day 2024")
+      (ng (holiday 2025 4 13) "Chaitra Sankranti: hill districts only")
+      (ok (business 2025 5 17) "working Saturday (MoPA, 7 May 2025)")
+      (ng (business 2025 5 10) "Saturday weekend")
+      (ng (business 2024 4 19) "Friday weekend")
+      (ok (business 2004 5 8) "Saturday 2004: Friday-only weekend 2001-11-10 to 2005-09-08"))))
+
+(deftest bd-provisional-years-and-confidence
+  (ng (bd-provisional-year-p 2027))
+  (ok (bd-provisional-year-p 2028))
+  (ok (eq :primary (bd-confidence 2013)))
+  (ok (eq :secondary (bd-confidence 2010)))
+  (ok (eq :estimated (bd-confidence 2009)))
+  (ok (eq :provisional (bd-confidence 2030)))
+  (ok (equal (mapcar #'date-rd (list (make-date 2032 1 9) (make-date 2032 12 31)))
+             (mapcar #'date-rd (bd-jumatul-bida-estimates 2032)))
+      "tabular Eid-ul-Fitr 2033-01-03: the second Jumatul Bida of 2032"))
+
+(deftest pk-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *pk-holiday-gold* "PK" :from 2022))
+
+(deftest pk-registered-calendar-matches-gold
+  "find-calendar \"PK\" holds the federal holidays of the Cabinet Division
+circulars and moon-sighting notifications 2022–2026, and the fixed days and
+tabular estimates of 2027–2040."
+  (let ((pk (find-calendar "PK")))
+    (%report-holiday-gold "PK" (%holiday-gold-mismatches *pk-holiday-gold* (constantly pk)))))
+
+(deftest pk-year-calendars-match-gold
+  (%report-holiday-gold "PK :year"
+                        (%holiday-gold-mismatches *pk-holiday-gold*
+                                                  (lambda (y) (pakistan-holidays-calendar :year y)))))
+
+(deftest pk-country-calendar-matches-gold
+  (let ((pk (country-calendar "PK")))
+    (ok (eq :normative (calendar-provenance pk)))
+    (%report-holiday-gold "country-calendar PK"
+                          (%holiday-gold-mismatches *pk-holiday-gold* (constantly pk)))))
+
+(deftest pk-secondary-gold-2004-2021-lower-confidence
+  "LOWER CONFIDENCE. 2004–2021 against the State Bank of Pakistan closure
+circulars, PID releases and news, with the weekend of each era."
+  (let ((gold *pk-secondary-holiday-gold*))
+    (ok (string= "PK" (getf gold :country)))
+    (ok (eq :secondary (getf gold :confidence)))
+    (%report-holiday-gold "PK 2004-2021 (secondary sources)"
+                          (%holiday-gold-mismatches gold (constantly (find-calendar "PK"))))
+    (%report-holiday-gold "PK :year 2004-2021 (secondary sources)"
+                          (%holiday-gold-mismatches gold (lambda (y) (pakistan-holidays-calendar :year y))))))
+
+(deftest pk-issue-47-days
+  (let ((pk (find-calendar "PK")))
+    (flet ((holiday (y m d) (holiday-p pk (make-date y m d))))
+      (ok (holiday 2022 11 9) "Iqbal Day restored (Cabinet Division, 8 Nov 2022)")
+      (ng (holiday 2015 11 9) "cancelled by the MoI circular of 4 Nov 2015")
+      (ng (holiday 2021 11 9))
+      (ok (holiday 2014 11 9))
+      (ok (holiday 2024 5 28) "Youm-e-Takbeer 2024 (press release, 27 May 2024)")
+      (ok (holiday 2025 5 28) "Youm-e-Takbeer in the 2025 list")
+      (ng (holiday 2023 5 28))
+      (ok (holiday 2026 6 25) "Ashura 9 Muharram")
+      (ok (holiday 2026 6 26) "Ashura 10 Muharram")
+      (ok (holiday 2026 3 20) "Eid-ul-Fitr 2026 as notified (20–21 Mar)")
+      (ng (holiday 2026 3 22) "the list had 21–23 Mar; the notification 20–21 Mar")
+      (ok (holiday 2024 2 8) "ECP: general election 2024")
+      (ng (holiday 2024 4 13) "six-day-week offices only")
+      (ok (business-day-p pk (make-date 2011 10 8)) "Saturday working before 2011-10-15")
+      (ng (business-day-p pk (make-date 2011 10 15))))))
+
+(deftest pk-provisional-years-and-confidence
+  (ng (pk-provisional-year-p 2026))
+  (ok (pk-provisional-year-p 2027))
+  (ok (eq :primary (pk-confidence 2022)))
+  (ok (eq :secondary (pk-confidence 2015)))
+  (ok (eq :estimated (pk-confidence 2002)))
+  (ok (eq :provisional (pk-confidence 2027))))
+
+(deftest bd-pk-decree-rows-carry-issued-and-published
+  "Bitemporal step 1 (#93): every block and row of data/bd and data/pk has
+:ISSUED and :PUBLISHED, each a date with its citation or NIL with a
+:DATES-NOTE."
+  (let ((rows (append (bd-decree-rows) (pk-decree-rows))))
+    (ok (< 900 (length rows)))
+    (dolist (row rows)
+      (let ((label (format nil "~a ~s" (getf row :calendar) (or (getf row :date) (getf row :authority)))))
+        (dolist (key '(:issued :published))
+          (ok (member key row) (format nil "~a has ~s" label key))
+          (if (getf row key)
+              (ok (getf row (if (eq key :issued) :issued-uri :published-uri))
+                  (format nil "~a ~s cited" label key))
+              (ok (getf row :dates-note) (format nil "~a ~s NIL with a note" label key))))))))

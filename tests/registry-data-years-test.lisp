@@ -17,6 +17,8 @@
     ("KR" south-korea-holidays-calendar)
     ("MY" malaysia-holidays-calendar)
     ("NP" nepal-holidays-calendar)
+    ("BD" bangladesh-holidays-calendar)
+    ("PK" pakistan-holidays-calendar)
     ("KH" cambodia-holidays-calendar)
     ("SG" singapore-holidays-calendar)
     ("CO" colombia-holidays-calendar)
