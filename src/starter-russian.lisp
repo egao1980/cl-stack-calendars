@@ -49,17 +49,9 @@ Each FROM weekend is also recorded as a compensatory WORKING day."
    RU-TRANSFERS-FOR-YEAR / RU-WORKING-DAYS-FOR-YEAR."
   (cdr (assoc year (ru-transfer-decrees))))
 
-(defun %transfer-touches-year-p (tr year)
-  (or (let ((to (calendar-transfer-to tr)))
-        (and to (= (date-year to) year)))
-      (let ((from (calendar-transfer-from tr)))
-        (and from (= (date-year from) year)))))
-
 (defun ru-transfers-for-year (year)
   "All decree transfers whose FROM or TO falls in YEAR (any decree block)."
-  (loop for (_year . plist) in (ru-transfer-decrees)
-        nconc (remove-if-not (lambda (tr) (%transfer-touches-year-p tr year))
-                             (getf plist :transfers))))
+  (transfers-touching-year (ru-transfer-decrees) year))
 
 (defun ru-working-days-for-year (year)
   "Compensatory working days (FROM dates) that fall in YEAR."

@@ -41,6 +41,17 @@ Corpus-inferred starters no longer extrapolate: their rules run only over the co
 
 Since 0.9.1 a `rule-calendar` builds each year's holiday map once and keeps it, together with its working-day and suppressed-date sets, in a per-instance synchronized table (`:synchronized t` on SBCL). Queries from several threads are safe. As an example, `holidays-between` over 41 years of KR now takes milliseconds; it used to take about a minute. A `setf` of any rule-calendar accessor (`calendar-rules`, `calendar-transfers`, `calendar-working-days`, `calendar-suppressed-dates`, `calendar-weekend-days`, the sandwich and furikae settings) drops the cache. After changing a rule struct or a list in place, call `(clear-calendar-cache cal)`.
 
+Since 0.11.0 the corpus, exchange and registry caches are synchronized tables as well, so concurrent first use is safe. `clear-data-caches` (and with it `set-data-root` / `with-data-root`) also makes every rule calendar rebuild its year maps, because a cached year map belongs to one data root. These data-root functions are **process-wide**: they clear the caches for all threads, so don't switch roots while other threads are querying calendars against a different root.
+
+### Errors
+
+Every error is a `calendar-error`:
+
+- `adjust-date` with an unknown convention signals `invalid-convention`; its `use-value` restart retries with another convention.
+- `next-business-day` and `previous-business-day` give up after 366 days and signal `no-business-day`, for example on a calendar whose weekend is every day.
+- A weekend list that covers the whole week signals instead of looping, and so does a substitute day that finds no free day.
+- `holiday-p` outside a calendar's data signals `calendar-out-of-range` (see Data coverage).
+
 ### Weekends
 
 Since 0.9.0 a weekend can change by era. `:weekend-days` on `define-calendar`, `make-data-calendar`, a `rule-calendar` or `country-calendar` takes either a weekday list (`'(5 6)`) or an era list (`'((nil 4 5) ((2013 6 29) 5 6))`). `(weekend-days-on cal date)` gives the list in force on DATE, and `calendar-weekend-days` gives the current one. Observance shifts (`:next-weekday`, `:us-federal-in-lieu`, …) use the weekend of each day they look at.
@@ -126,7 +137,7 @@ Every exchange query — `exchange-trading-day-p`, `exchange-sessions-for-date`,
 (write-data-zip "/opt/app/data.zip")          ; pack the current tree
 ```
 
-`$CL_STACK_CALENDARS_DATA` is the default when `*data-root*` is unset. `*countries-data-directory*` / `*exchanges-data-directory*` still override those subtrees.
+`$CL_STACK_CALENDARS_DATA` is the default when `*data-root*` is unset. Switching the root is process-wide (see Caching and threads). `*countries-data-directory*` / `*exchanges-data-directory*` still override those subtrees.
 
 ## License
 

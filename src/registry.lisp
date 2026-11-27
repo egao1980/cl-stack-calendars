@@ -3,8 +3,11 @@
 ;;;; Global named registry of HOLIDAY-CALENDAR instances, e.g. "TARGET",
 ;;;; "USFED", "GBLO" (see starter-calendars.lisp).
 
-(defvar *calendar-registry* (make-hash-table :test 'equal)
-  "Maps registered calendar names (strings) to HOLIDAY-CALENDAR instances.")
+(defvar *calendar-registry*
+  #+sbcl (make-hash-table :test 'equal :synchronized t)
+  #-sbcl (make-hash-table :test 'equal)
+  "Maps registered calendar names (strings) to HOLIDAY-CALENDAR instances.
+Synchronized, so lookups may run while another thread registers.")
 
 (defun register-calendar (name calendar)
   "Register CALENDAR (any HOLIDAY-CALENDAR) under the string NAME, replacing

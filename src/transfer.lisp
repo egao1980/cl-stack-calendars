@@ -43,3 +43,14 @@ Nil FROM — decree extra leave (cuti bersama, 임시공휴일, proclamation)."
         (and to (= (date-year to) year)))
       (let ((from (calendar-transfer-from tr)))
         (and from (= (date-year from) year)))))
+
+(defun transfers-touching-year (blocks year)
+  "A fresh list of the CALENDAR-TRANSFERs in BLOCKS whose FROM or TO falls in
+YEAR. BLOCKS is a cached corpus ((KEY . PLIST) …) with the transfers under
+:TRANSFERS. The result never shares structure with BLOCKS, so callers may
+modify it (CLHS lets REMOVE-IF-NOT return its argument or share its tail,
+which made the old NCONC over these lists destructive)."
+  (loop for (nil . plist) in blocks
+        append (loop for tr in (getf plist :transfers)
+                     when (%transfer-touches-year-p tr year)
+                       collect tr)))

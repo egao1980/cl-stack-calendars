@@ -129,19 +129,32 @@ holiday of CALENDAR in the closed interval [START, END]."))
 
 ;;; --- business-day navigation ----------------------------------------------
 
+(defparameter *business-day-search-limit* 366
+  "Most days NEXT-BUSINESS-DAY / PREVIOUS-BUSINESS-DAY walk before signaling
+NO-BUSINESS-DAY.")
+
+(defun %search-business-day (calendar date step)
+  "First business day of CALENDAR strictly after (STEP 1) or before (STEP -1)
+DATE, within *BUSINESS-DAY-SEARCH-LIMIT* days; else signal NO-BUSINESS-DAY."
+  (loop for k from 1 to *business-day-search-limit*
+        for d = (+ date (* step k))
+        when (business-day-p calendar d)
+          do (return-from %search-business-day d))
+  (error 'no-business-day :calendar calendar :date date
+                          :direction (if (plusp step) :after :before)
+                          :limit *business-day-search-limit*))
+
 (defgeneric next-business-day (calendar date)
   (:documentation "The first business day of CALENDAR strictly after DATE."))
 
 (defmethod next-business-day ((calendar holiday-calendar) date)
-  (loop for d = (+ date 1) then (+ d 1)
-        when (business-day-p calendar d) return d))
+  (%search-business-day calendar date 1))
 
 (defgeneric previous-business-day (calendar date)
   (:documentation "The first business day of CALENDAR strictly before DATE."))
 
 (defmethod previous-business-day ((calendar holiday-calendar) date)
-  (loop for d = (- date 1) then (- d 1)
-        when (business-day-p calendar d) return d))
+  (%search-business-day calendar date -1))
 
 (defgeneric add-business-days (calendar date n)
   (:documentation "DATE shifted by N business days of CALENDAR: forward if N
@@ -178,6 +191,14 @@ FROM <= TO."
 one of :FOLLOWING, :MODIFIED-FOLLOWING, :PRECEDING, :MODIFIED-PRECEDING,
 :NEAREST, or :UNADJUSTED. DATE is returned unchanged whenever it is already a
 business day."))
+
+(defmethod adjust-date ((calendar holiday-calendar) date convention)
+  "Unknown CONVENTION: signal INVALID-CONVENTION; USE-VALUE retries with another."
+  (restart-case (error 'invalid-convention :convention convention)
+    (use-value (other)
+      :report "Adjust with another convention."
+      :interactive (lambda () (list (read)))
+      (adjust-date calendar date other))))
 
 (defmethod adjust-date ((calendar holiday-calendar) date (convention (eql :unadjusted)))
   date)

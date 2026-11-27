@@ -22,6 +22,28 @@ lookups) when no matching calendar/snapshot exists.")
   (:documentation "Signaled for malformed DEFINE-CALENDAR rule clauses or
 malformed data-calendar sexp files."))
 
+(define-condition invalid-convention (calendar-error)
+  ((convention :initarg :convention :reader invalid-convention-convention))
+  (:documentation "Signaled by ADJUST-DATE for a CONVENTION it does not know.
+Restart USE-VALUE retries with another convention.")
+  (:report (lambda (condition stream)
+             (format stream "unknown business-day convention ~s (want :following, :modified-following, :preceding, :modified-preceding, :nearest or :unadjusted)"
+                     (invalid-convention-convention condition)))))
+
+(define-condition no-business-day (calendar-error)
+  ((calendar :initarg :calendar :reader no-business-day-calendar)
+   (date :initarg :date :reader no-business-day-date)
+   (direction :initarg :direction :reader no-business-day-direction)
+   (limit :initarg :limit :reader no-business-day-limit))
+  (:documentation "Signaled by NEXT-BUSINESS-DAY / PREVIOUS-BUSINESS-DAY when no
+business day lies within LIMIT days of DATE (a calendar whose weekend is every
+day, or an unbroken run of holidays).")
+  (:report (lambda (condition stream)
+             (format stream "no business day within ~d days ~(~a~) of ~a"
+                     (no-business-day-limit condition)
+                     (no-business-day-direction condition)
+                     (no-business-day-date condition)))))
+
 (define-condition calendar-out-of-range (calendar-error)
   ((calendar :initarg :calendar :reader calendar-out-of-range-calendar)
    (date :initarg :date :reader calendar-out-of-range-date)
