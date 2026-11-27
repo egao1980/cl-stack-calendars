@@ -345,7 +345,68 @@ list of (DATE . NAME); returns an extended alist."
      (easter-holiday-rule-offset rule)))
 
 (defmethod rule-nominal-date ((rule computed-holiday-rule) year)
-  (funcall (computed-holiday-rule-compute rule) year))
+  (first (rule-nominal-dates rule year)))
+
+;;; --- several nominal dates per year (computed rules, Hijri dates) --------
+;;;;
+;;;; A Hijri year is about 11 days shorter than a Gregorian one, so a Hijri
+;;;; date falls twice in some Gregorian years (Eid al-Fitr 2000, 2033; Eid
+;;;; al-Adha 2006, 2039; …). The helpers below shadow datetime-protocol's
+;;;; single-date versions: they return occurrence *HIJRI-OCCURRENCE* (0 = the
+;;;; earlier) and note that a Hijri date was asked for. RULE-NOMINAL-DATES
+;;;; calls a computed rule's COMPUTE once per occurrence, so the existing
+;;;; starter forms such as (+ (eid-al-adha y) 2) yield both blocks, including
+;;;; days that run past 31 December.
+
+(defvar *hijri-occurrence* 0
+  "Index (0 = earlier) of the Hijri occurrence the helpers return.")
+
+(defvar *hijri-consulted* nil
+  "Set to T when an occurrence-aware Hijri helper is called.")
+
+(defun islamic-date-in-gregorian-year (g-year month day)
+  "Occurrence *HIJRI-OCCURRENCE* of tabular Islamic MONTH/DAY in Gregorian
+G-YEAR, or NIL when the year holds fewer occurrences."
+  (setf *hijri-consulted* t)
+  (nth *hijri-occurrence*
+       (datetime-protocol:islamic-dates-in-gregorian-year g-year month day)))
+
+(defun eid-al-fitr (g-year)
+  "1 Shawwal (tabular) in Gregorian G-YEAR; see *HIJRI-OCCURRENCE*."
+  (islamic-date-in-gregorian-year g-year 10 1))
+
+(defun eid-al-adha (g-year)
+  "10 Dhu al-Hijjah (tabular) in Gregorian G-YEAR; see *HIJRI-OCCURRENCE*."
+  (islamic-date-in-gregorian-year g-year 12 10))
+
+(defun islamic-new-year-date (g-year)
+  "1 Muharram (tabular) in Gregorian G-YEAR; see *HIJRI-OCCURRENCE*."
+  (islamic-date-in-gregorian-year g-year 1 1))
+
+(defun mawlid-date (g-year)
+  "12 Rabiʿ al-awwal (tabular) in Gregorian G-YEAR; see *HIJRI-OCCURRENCE*."
+  (islamic-date-in-gregorian-year g-year 3 12))
+
+(defun %compute-dates (value)
+  "COMPUTE's VALUE as a list of dates: NIL, one DATE, or a list of them."
+  (if (listp value) (remove nil value) (list value)))
+
+(defgeneric rule-nominal-dates (rule year)
+  (:documentation "Every nominal (pre-observance) DATE of RULE for YEAR, in
+order. Most rules have at most one; a computed rule may have several.")
+  (:method ((rule holiday-rule) year)
+    (let ((date (rule-nominal-date rule year)))
+      (and date (list date))))
+  (:method ((rule computed-holiday-rule) year)
+    (let* ((compute (computed-holiday-rule-compute rule))
+           (*hijri-consulted* nil)
+           (dates (let ((*hijri-occurrence* 0))
+                    (%compute-dates (funcall compute year)))))
+      ;; A Gregorian year holds at most two occurrences of a Hijri date.
+      (when *hijri-consulted*
+        (let ((*hijri-occurrence* 1))
+          (setf dates (append dates (%compute-dates (funcall compute year))))))
+      (remove-duplicates dates :test #'= :from-end t))))
 
 (defgeneric rule-observed (rule)
   (:method ((rule fixed-holiday-rule)) (fixed-holiday-rule-observed rule))
@@ -382,12 +443,12 @@ collisions. Empty when the nominal date is outside RULE's civil validity
 window. See HOLIDAY-RULE-AUTHORITY for the normative citation."))
 
 (defmethod rule-occurrences ((rule holiday-rule) year weekend-days &optional claimed)
-  (let ((nominal (rule-nominal-date rule year)))
-    (when (and nominal (rule-valid-at-p rule nominal))
-      (let ((observed (when (%observed-applies-at-p (rule-observed-from rule) nominal)
-                        (rule-observed rule))))
-        (observe-dates nominal observed (rule-bridge rule)
-                       weekend-days claimed)))))
+  (loop for nominal in (rule-nominal-dates rule year)
+        when (rule-valid-at-p rule nominal)
+          append (let ((observed (when (%observed-applies-at-p (rule-observed-from rule) nominal)
+                                   (rule-observed rule))))
+                   (observe-dates nominal observed (rule-bridge rule)
+                                  weekend-days claimed))))
 
 ;;; Compatibility: single primary occurrence (first of RULE-OCCURRENCES).
 (defun rule-occurrence (rule year weekend-days &optional claimed)
