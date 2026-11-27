@@ -262,7 +262,7 @@
   (:fixed "Navidad" 12 25 :from 1900 :authority "Feriado")
   (:fixed "Fin de Año" 12 31 :from 1900 :authority "Feriado nacional"))
 
-;;; Chile bridge-day decrees (Law 19.668 / annual D.O.)
+;;; Chile one-off holiday laws (data/cl/transfers.sexp)
 (defun load-cl-transfers (&optional (path (data-path "cl/transfers.sexp")))
   (let ((form (read-data-form path)))
     (mapcar
@@ -289,31 +289,95 @@
 (defun cl-transfers-for-year (year)
   (transfers-touching-year (cl-transfers) year))
 
-;;; Chile (floor 1900; Ley 19.973/2004 Monday moves + bridge decrees)
+;;; Chile — statutory moves (BCN texts, https://www.bcn.cl/leychile/navegar?idLey=N).
+
+(defun cl-ley-19668-monday (date)
+  "Ley 19.668 artículo único (D.O. 2000-03-10): a holiday on Tuesday, Wednesday
+or Thursday moves to the Monday of that week; on Friday, to the Monday of the
+next week. Monday, Saturday and Sunday stay."
+  (let ((dow (date-day-of-week date)))
+    (case dow
+      ((2 3 4) (- date (1- dow)))
+      (5 (+ date 3))
+      (t date))))
+
+(defun cl-iglesias-evangelicas-date (year)
+  "Ley 20.299 art. 2: 31 October on a Tuesday moves to the previous Friday, on
+a Wednesday to the next Friday."
+  (let ((d (make-date year 10 31)))
+    (case (date-day-of-week d)
+      (2 (- d 4))
+      (3 (+ d 2))
+      (t d))))
+
+(defparameter +santiago-standard+
+  (location -33.4489d0 -70.6693d0 :elevation 570d0 :zone -4 :name "Santiago (UTC-4)")
+  "Continental Chile in June: UTC-4 (winter time). Ley 21.357's solstice date
+is the civil date there.")
+
+(defun cl-pueblos-indigenas-date (year)
+  "Ley 21.357: the day of the southern winter solstice (Sun at 90°) in
+continental Chile; artículo transitorio: 21 June in 2021."
+  (if (= year 2021)
+      (make-date 2021 6 21)
+      (solar-longitude-date 90d0 year :location +santiago-standard+)))
+
+(defun cl-fiestas-patrias-extra-date (year)
+  "Ley 20.215 (Código del Trabajo art. 35 ter, from 2007): 17 September when
+18-19 September fall Tuesday-Wednesday, 20 September when they fall
+Wednesday-Thursday. Ley 20.983 (from 2017): 17 September when they fall
+Saturday-Sunday. NIL otherwise."
+  (let ((dow (date-day-of-week (make-date year 9 18))))
+    (cond ((and (>= year 2007) (= dow 2)) (make-date year 9 17))
+          ((and (>= year 2007) (= dow 3)) (make-date year 9 20))
+          ((and (>= year 2017) (= dow 6)) (make-date year 9 17)))))
+
+(defun cl-new-year-extra-date (year)
+  "Ley 20.983: 2 January when 1 January is a Sunday. NIL otherwise."
+  (when (= 7 (date-day-of-week (make-date year 1 1)))
+    (make-date year 1 2)))
+
+;;; Chile (feriados legales 2000–2040 checked against data/tests/cl-holiday-gold.sexp, #16)
 (define-calendar chile-holidays-calendar (:register "CL" :constructor chile-holidays-calendar)
-  (:fixed "Año Nuevo" 1 1 :from 1900 :authority "Feriado legal")
-  (:easter "Viernes Santo" -2 :from 1900 :authority "Feriado legal")
-  (:fixed "Día del Trabajador" 5 1 :from 1900 :authority "Feriado legal")
-  (:fixed "Día de las Glorias Navales" 5 21 :from 1900 :authority "Feriado legal")
+  ;; Feriados legales of every worker (Ley 2.977 and later acts). Not here:
+  ;; election days (Ley 18.700 art. 169, always on a weekend), the bank-only
+  ;; 31 December, and regional days. One-off laws: data/cl/transfers.sexp.
+  (:fixed "Año Nuevo" 1 1 :from 1900 :authority "Ley 2.977 art. 1")
+  (:computed "Feriado nacional (2 de enero)" #'cl-new-year-extra-date :from 2017
+   :authority "Ley 20.983 (D.O. 2016-12-30) — lunes 2 de enero cuando el 1 de enero es domingo")
+  (:easter "Viernes Santo" -2 :from 1900 :authority "Ley 2.977 art. 1 n.º 3")
+  (:easter "Sábado Santo" -1 :from 1900 :authority "Ley 2.977 art. 1 n.º 3 — viernes y sábado de la Semana Santa")
+  (:fixed "Día Nacional del Trabajo" 5 1 :from 1900 :authority "Código del Trabajo; Ley 19.973 art. 2")
+  (:fixed "Día de las Glorias Navales" 5 21 :from 1900 :authority "Ley 2.977 art. 1 n.º 5")
+  (:computed "Corpus Christi"
+             (lambda (y) (cl-ley-19668-monday (+ (easter-western y) 60))) :from 2000 :to 2006
+   :authority "Ley 19.668 (D.O. 2000-03-10) — Corpus Christi al lunes de la misma semana; suprimido por Ley 20.148 desde 2007")
+  (:computed "Día Nacional de los Pueblos Indígenas" #'cl-pueblos-indigenas-date :from 2021
+   :authority "Ley 21.357 (D.O. 2021-06-19) — día del solsticio de invierno; 2021: 21 de junio")
   (:computed "San Pedro y San Pablo"
-   (lambda (y) (co-emiliani-monday y 6 29)) :from 2005
-   :authority "Ley 19.973/2004 — 29 junio al lunes siguiente")
-  (:fixed "San Pedro y San Pablo" 6 29 :from 1900 :to 2004 :authority "Feriado legal")
-  (:fixed "Virgen del Carmen" 7 16 :from 1900 :authority "Feriado legal")
-  (:fixed "Asunción de la Virgen" 8 15 :from 1900 :authority "Feriado legal")
-  (:fixed "Fiestas Patrias" 9 18 :from 1900 :authority "Feriado legal")
-  (:fixed "Día de las Glorias del Ejército" 9 19 :from 1900 :authority "Feriado legal")
+             (lambda (y) (cl-ley-19668-monday (make-date y 6 29))) :from 2000
+   :authority "Ley 18.432; Ley 19.668 (D.O. 2000-03-10) — mar/mié/jue al lunes de esa semana, viernes al lunes siguiente")
+  (:fixed "San Pedro y San Pablo" 6 29 :from 1986 :to 1999 :authority "Ley 18.432 (1985)")
+  (:fixed "Virgen del Carmen" 7 16 :from 2007
+   :authority "Ley 20.148 (D.O. 2007-01-06) — en reemplazo de Corpus Christi")
+  (:fixed "Asunción de la Virgen" 8 15 :from 1900 :authority "Ley 2.977 art. 1 n.º 2")
+  (:nth-weekday "Día de la Unidad Nacional" 9 :monday 1 :from 1999 :to 2001
+   :authority "Ley 19.588 (1998) — primer lunes de septiembre; derogada por Ley 19.793 (D.O. 2002-03-06)")
+  (:computed "Feriado adicional Fiestas Patrias" #'cl-fiestas-patrias-extra-date :from 2007
+   :authority ("Ley 20.215 (D.O. 2007-09-14), Código del Trabajo art. 35 ter — lunes 17 o viernes 20 de septiembre"
+               "Ley 20.983 (D.O. 2016-12-30) — viernes 17 de septiembre cuando 18 y 19 son sábado y domingo"))
+  (:fixed "Independencia Nacional" 9 18 :from 1900 :authority "Ley 2.977 art. 1 n.º 4")
+  (:fixed "Día de las Glorias del Ejército" 9 19 :from 1900 :authority "Ley 2.977 art. 1 n.º 5")
   (:computed "Encuentro de Dos Mundos"
-   (lambda (y) (co-emiliani-monday y 10 12)) :from 2005
-   :authority "Ley 19.973/2004 — 12 octubre al lunes siguiente")
-  (:fixed "Encuentro de Dos Mundos" 10 12 :from 1900 :to 2004 :authority "Feriado legal")
-  (:fixed "Día Nacional de las Iglesias Evangélicas y Protestantes" 10 31 :from 2008
-   :authority "Ley 20.148/2007 — feriado 31 octubre")
-  (:fixed "Todos los Santos" 11 1 :from 1900 :authority "Feriado legal")
-  (:fixed "Inmaculada Concepción" 12 8 :from 1900 :authority "Feriado legal")
-  (:fixed "Navidad" 12 25 :from 1900 :authority "Feriado legal")
-  (:fixed "Día de los Pueblos Indígenas" 6 21 :from 2021
-   :authority "Ley 21.369/2021 — Día Nacional de los Pueblos Indígenas"))
+             (lambda (y) (cl-ley-19668-monday (make-date y 10 12))) :from 2000
+   :authority "Ley 3.810; Ley 19.668 (D.O. 2000-03-10) — mar/mié/jue al lunes de esa semana, viernes al lunes siguiente")
+  (:fixed "Encuentro de Dos Mundos" 10 12 :from 1922 :to 1999 :authority "Ley 3.810")
+  (:computed "Día Nacional de las Iglesias Evangélicas y Protestantes"
+             #'cl-iglesias-evangelicas-date :from 2008
+   :authority "Ley 20.299 (D.O. 2008-10-11) — 31 octubre; martes al viernes anterior, miércoles al viernes siguiente")
+  (:fixed "Día de Todos los Santos" 11 1 :from 1900 :authority "Ley 2.977 art. 1 n.º 2")
+  (:fixed "Inmaculada Concepción" 12 8 :from 1900 :authority "Ley 2.977 art. 1 n.º 2")
+  (:fixed "Navidad" 12 25 :from 1900 :authority "Ley 2.977 art. 1 n.º 2"))
 
 (defun brazil-holidays-calendar () (make-instance 'brazil-holidays-calendar))
 (defun mexico-holidays-calendar () (make-instance 'mexico-holidays-calendar))
@@ -334,9 +398,9 @@ calendar); with YEAR, only that year's days."
 (defun australia-holidays-calendar () (make-instance 'australia-holidays-calendar))
 (defun venezuela-holidays-calendar () (make-instance 'venezuela-holidays-calendar))
 (defun chile-holidays-calendar (&key year transfers)
-  "Chilean public holidays with the bridge-day laws of data/cl/transfers.sexp.
-Without YEAR, every year in the file applies (the registered \"CL\"
-calendar); with YEAR, only that year's days."
+  "Chilean feriados legales: the statutory rules plus the one-off laws of
+data/cl/transfers.sexp. Without YEAR, every year in the file applies (the
+registered \"CL\" calendar); with YEAR, only that year's days."
   (let ((tr (or transfers
                 (if year
                     (cl-transfers-for-year year)

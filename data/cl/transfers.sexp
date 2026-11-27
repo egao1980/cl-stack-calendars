@@ -1,73 +1,45 @@
-;;;; Diario Oficial — feriados adicionales / puentes (Fiestas Patrias etc.).
-;;;; Coverage: 2010–2026 (2024–2026 primary; 2010–2023 corpus backfill).
-;;;; Removed in 0.12.0 (#14, #16): "Feriado Adicional Fiestas Patrias" 2025-09-17
-;;;; and 2026-09-17. No law makes them holidays: Ley 20.215 adds 17 Sep only when
-;;;; 18 Sep is a Tuesday and 20 Sep when 19 Sep is a Thursday; Ley 20.983 adds
-;;;; 17 Sep when 18-19 Sep fall on Saturday-Sunday. In 2025 18 Sep is a Thursday,
-;;;; in 2026 a Friday. https://www.bcn.cl/leychile/navegar?idLey=20215
-;;;; https://www.bcn.cl/leychile/navegar?idLey=20983
+;;;; Chile — one-off feriados legales, each declared by its own act.
+;;;;
+;;;; Recurring days are rules in chile-holidays-calendar since 0.16.0 (#16):
+;;;; the Fiestas Patrias days of Ley 20.215 / Ley 20.983, 2 January (Ley 20.983)
+;;;; and the rest. This file used to list some of those years as "D.O. corpus
+;;;; backfill" and the bank-only 31 December for 2024-2026; both are gone.
+;;;; Texts: https://www.bcn.cl/leychile/navegar?idLey=N
+;;;; Format: ((:year Y :authority A :uri U :holidays (((Y M D) "Name") …)) …)
 (
-(:year 2026
-  :authority "Ley General de Bancos art. 38 — feriado bancario 31 de diciembre (restored by Ley 21.791)"
-  :uri "https://www.cmfchile.cl/portal/prensa/625/w4-article-102258.html"
+(:year 2022
+  :authority "Ley 21.482 (D.O. 2022-09-10) — feriado nacional el 16 de septiembre de 2022"
+  :uri "https://www.bcn.cl/leychile/navegar?idNorma=1181203"
   :holidays (
-              ((2026 12 31) "Fin de Año")
+              ((2022 9 16) "Feriado nacional")
               ))
 
-(:year 2025
-  :authority "Ley General de Bancos art. 38 — feriado bancario 31 de diciembre (Ley 21.791, D.O. 2025-12-17)"
-  :uri "https://www.cmfchile.cl/portal/prensa/625/w4-article-102258.html"
+(:year 2017
+  :authority "Ley 17.374 art. 43 (texto Ley 19.790) — el día del censo es feriado legal; Censo 2017"
+  :uri "https://www.bcn.cl/leychile/navegar?idNorma=28960"
   :holidays (
-              ((2025 12 31) "Fin de Año")
+              ((2017 4 19) "Censo Nacional de Población y Vivienda")
               ))
 
-(:year 2024
-  :authority "D.O. — feriado adicional Fiestas Patrias 2024"
-  :uri "https://www.diariooficial.interior.gob.cl/"
+(:year 2010
+  :authority "Ley 20.450 (D.O. 2010-07-19) — feriados el 17 y 20 de septiembre de 2010"
+  :uri "https://www.bcn.cl/leychile/navegar?idLey=20450"
   :holidays (
-              ((2024 9 20) "Feriado Adicional Fiestas Patrias")
-              ((2024 12 31) "Fin de Año")
+              ((2010 9 17) "Feriado Bicentenario")
+              ((2010 9 20) "Feriado Bicentenario")
               ))
 
- (:year 2023
-  :authority "D.O. — feriado adicional Fiestas Patrias 2023 (corpus backfill)"
-  :uri "https://www.diariooficial.interior.gob.cl/"
+(:year 2004
+  :authority "Ley 19.973 art. 1 (D.O. 2004-09-10) — feriado el 17 de septiembre de 2004"
+  :uri "https://www.bcn.cl/leychile/navegar?idLey=19973"
   :holidays (
-              ((2023 1 2) "Día adicional")
+              ((2004 9 17) "Feriado nacional")
               ))
 
- (:year 2021
-  :authority "D.O. — feriado adicional Fiestas Patrias 2021 (corpus backfill)"
-  :uri "https://www.diariooficial.interior.gob.cl/"
+(:year 2002
+  :authority "Ley 17.374 art. 43 (texto Ley 19.790, D.O. 2002-02-01) — el día del censo es feriado legal; Censo 2002"
+  :uri "https://www.bcn.cl/leychile/navegar?idNorma=28960"
   :holidays (
-              ((2021 9 17) "Feriado Adicional Fiestas Patrias")
-              ))
-
- (:year 2019
-  :authority "D.O. — feriado adicional Fiestas Patrias 2019 (corpus backfill)"
-  :uri "https://www.diariooficial.interior.gob.cl/"
-  :holidays (
-              ((2019 9 20) "Feriado Adicional Fiestas Patrias")
-              ))
-
- (:year 2018
-  :authority "D.O. — feriado adicional Fiestas Patrias 2018 (corpus backfill)"
-  :uri "https://www.diariooficial.interior.gob.cl/"
-  :holidays (
-              ((2018 9 17) "Feriado Adicional Fiestas Patrias")
-              ))
-
- (:year 2017
-  :authority "D.O. — feriado adicional Fiestas Patrias 2017 (corpus backfill)"
-  :uri "https://www.diariooficial.interior.gob.cl/"
-  :holidays (
-              ((2017 1 2) "Día adicional")
-              ))
-
- (:year 2013
-  :authority "D.O. — feriado adicional Fiestas Patrias 2013 (corpus backfill)"
-  :uri "https://www.diariooficial.interior.gob.cl/"
-  :holidays (
-              ((2013 9 20) "Feriado Adicional Fiestas Patrias")
+              ((2002 4 24) "Censo Nacional de Población y Vivienda")
               ))
 )

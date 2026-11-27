@@ -70,13 +70,15 @@ unless the calendar was loaded with :STRICT NIL."))
 
 (defparameter *country-calendar-normative*
   '(("RU" . russian-holidays-calendar)
-    ("CO" . colombia-holidays-calendar))
+    ("CO" . colombia-holidays-calendar)
+    ("CL" . chile-holidays-calendar))
   "Corpus codes whose COUNTRY-CALENDAR defers to a hand starter: alist CODE →
 starter constructor. The date-holidays dump for these codes is known to be
 wrong (RU: no 2–5 January from 2005, no ТК ст. 112 transfers or decrees,
 4 November before 2005; egao1980/cl-stack-calendars#13. CO: lists Easter
-Sunday, which Ley 51/1983 does not make a festivo; #15). The corpus file stays
-as shipped; its days are no longer consulted.")
+Sunday, which Ley 51/1983 does not make a festivo; #15. CL: Virgen del Carmen
+before 2007, 31 October before 2008, no Ley 19.668 moves; #16). The corpus
+file stays as shipped; its days are no longer consulted.")
 
 (defclass normative-country-calendar (country-holiday-calendar)
   ((normative :initarg :normative :reader country-calendar-normative
