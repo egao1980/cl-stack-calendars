@@ -134,46 +134,6 @@ of each SKB 3 Menteri (data/id/skb.sexp)."
   (:computed "Maulid Nabi Muhammad" (lambda (y) (when (id-estimated-year-p y) (mawlid-date y)))
    :from 1946 :authority "12 Rabiulawal — the SKB date in 2000-2027, tabular estimate otherwise"))
 
-;;; Bangladesh (1971)
-(define-calendar bangladesh-holidays-calendar (:register "BD")
-  (:fixed "Language Movement Day" 2 21 :from 1972
-   :authority "Shaheed Day / International Mother Language Day — national holiday")
-  (:fixed "Sheikh Mujibur Rahman's Birthday" 3 17 :from 2020
-   :authority "National holiday (Mujib's birthday)")
-  (:fixed "Independence Day" 3 26 :from 1972
-   :authority "Independence of Bangladesh 1971 — national holiday from 1972")
-  (:fixed "Bengali New Year" 4 14 :from 1972
-   :authority "Pohela Boishakh — national holiday")
-  (:fixed "May Day" 5 1 :from 1972
-   :authority "International Workers' Day")
-  (:fixed "National Mourning Day" 8 15 :from 1972
-   :authority "Assassination of Sheikh Mujibur Rahman — national holiday")
-  (:fixed "Victory Day" 12 16 :from 1972
-   :authority "Victory Day 1971 — national holiday")
-  (:fixed "Christmas Day" 12 25 :from 1972
-   :authority "Public holiday (Christmas)")
-  (:computed "Eid ul-Fitr" #'eid-al-fitr :from 1972
-   :authority "Islamic foundation holidays (tabular Hijri)")
-  (:computed "Eid ul-Fitr"
-   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
-   :from 1972 :authority "Eid ul-Fitr (2nd day)")
-  (:computed "Eid ul-Fitr"
-   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 2))))
-   :from 1972 :authority "Eid ul-Fitr (3rd day)")
-  (:computed "Eid ul-Adha" #'eid-al-adha :from 1972
-   :authority "Islamic foundation holidays (tabular Hijri)")
-  (:computed "Eid ul-Adha"
-   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 1))))
-   :from 1972 :authority "Eid ul-Adha (2nd day)")
-  (:computed "Eid ul-Adha"
-   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 2))))
-   :from 1972 :authority "Eid ul-Adha (3rd day)")
-  (:computed "Ashura"
-   (lambda (y) (islamic-date-in-gregorian-year y 1 10))
-   :from 1972 :authority "10 Muharram (tabular)")
-  (:computed "Eid-e-Milad-un-Nabi" #'mawlid-date :from 1972
-   :authority "Prophet's birthday (tabular)"))
-
 ;;; Philippines (1946)
 (define-calendar philippines-holidays-calendar (:register "PH" :constructor philippines-holidays-calendar)
   ;; EO 292 (Administrative Code of 1987) Book I, Chapter 7, Sec. 26 as
@@ -978,8 +938,6 @@ years estimate the moveable days."
                                 (append (id-skb-libur-for-year year)
                                         (when cuti-bersama (id-skb-cuti-for-year year))))
                  :suppressed-dates (id-skb-suppressed-for-year year)))
-
-(defun bangladesh-holidays-calendar () (make-instance 'bangladesh-holidays-calendar))
 
 (defun philippines-holidays-calendar (&key year transfers suppressed-dates)
   "Philippine regular holidays and nationwide special (non-working) days: the

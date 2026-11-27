@@ -83,7 +83,9 @@ unless the calendar was loaded with :STRICT NIL."))
     ("VN" . vietnam-holidays-calendar)
     ("CN" . china-holidays-calendar)
     ("TH" . thailand-holidays-calendar)
-    ("IN" . india-holidays-calendar))
+    ("IN" . india-holidays-calendar)
+    ("BD" . bangladesh-holidays-calendar)
+    ("PK" . pakistan-holidays-calendar))
   "Corpus codes whose COUNTRY-CALENDAR defers to a hand starter: alist CODE →
 starter constructor. The date-holidays dump for these codes is known to be
 wrong (RU: no 2–5 January from 2005, no ТК ст. 112 transfers or decrees,
@@ -107,8 +109,11 @@ and no 上班 days, and the statutory days of the wrong era; #26. TH: Buddhist
 days off the Thai lunar calendar (Asalha Bucha 2024-07-19 for 07-20), no
 วันหยุดชดเชย and no Cabinet special days; #40. IN: no festival or Islamic
 day at all, only Republic Day, Good Friday, 14 April, Independence Day,
-Gandhi Jayanti and Christmas; #42). The corpus file stays as shipped; its
-days are no longer consulted.")
+Gandhi Jayanti and Christmas; #42. BD: 17 March and 15 August in 2025, one
+Eid day, no executive-order days, Durga Puja 2025-10-08 for 10-02; PK:
+Iqbal Day 2015–2021 and Youm-e-Takbeer every year, one-day Eids on the
+tabular dates (Eid-ul-Adha 2024-06-16 for 06-17–19); #47). The corpus file
+stays as shipped; its days are no longer consulted.")
 
 (defclass normative-country-calendar (country-holiday-calendar)
   ((normative :initarg :normative :reader country-calendar-normative

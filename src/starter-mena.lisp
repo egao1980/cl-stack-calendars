@@ -3,32 +3,6 @@
 ;;;; Middle East / North Africa / Pakistan / Turkey / Iran —
 ;;;; research window max(1900, formation) → present.
 
-(define-calendar pakistan-holidays-calendar (:register "PK")
-  (:fixed "Kashmir Day" 2 5 :from 1990
-   :authority "Public holiday — Kashmir Solidarity Day")
-  (:fixed "Pakistan Day" 3 23 :from 1947
-   :authority "Lahore Resolution / Pakistan Day — public holiday")
-  (:fixed "Labour Day" 5 1 :from 1947 :authority "Public holiday")
-  (:fixed "Independence Day" 8 14 :from 1947
-   :authority "Independence 14 August 1947")
-  (:fixed "Iqbal Day" 11 9 :from 1947 :to 2014
-   :authority "Iqbal Day — was public holiday; removed from holidays then partially restored in practice")
-  (:fixed "Quaid-e-Azam Day / Christmas" 12 25 :from 1947
-   :authority "Birthday of Jinnah / Christmas — public holiday")
-  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1947 :authority "Public holiday (tabular)")
-  (:computed "Eid al-Fitr"
-   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
-   :from 1947 :authority "Eid Day 2")
-  (:computed "Eid al-Adha" #'eid-al-adha :from 1947 :authority "Public holiday (tabular)")
-  (:computed "Eid al-Adha"
-   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 1))))
-   :from 1947 :authority "Eid al-Adha Day 2")
-  (:computed "Ashura"
-   (lambda (y) (islamic-date-in-gregorian-year y 1 10))
-   :from 1947 :authority "10 Muharram (tabular)")
-  (:computed "Eid Milad-un-Nabi" #'mawlid-date :from 1947
-   :authority "Public holiday (tabular)"))
-
 (define-calendar egypt-holidays-calendar (:register "EG")
   (:fixed "Coptic Christmas" 1 7 :from 2003
    :authority "Public holiday (Coptic Christmas) from early 2000s recognition")
@@ -310,7 +284,6 @@
   (:computed "Islamic New Year" #'islamic-new-year-date :from 1919
    :authority "1 Muharram (tabular)"))
 
-(defun pakistan-holidays-calendar () (make-instance 'pakistan-holidays-calendar))
 (defun egypt-holidays-calendar () (make-instance 'egypt-holidays-calendar))
 (defun turkey-holidays-calendar () (make-instance 'turkey-holidays-calendar))
 (defun iran-holidays-calendar () (make-instance 'iran-holidays-calendar))

@@ -5906,6 +5906,1251 @@ def _in_sources() -> list[tuple[str, str, str]]:
     return out
 
 
+# --- Bangladesh and Pakistan ------------------------------------------------
+#
+# BD: public holidays of government offices, the general (সাধারণ ছুটি) and
+# executive-order (নির্বাহী আদেশে ছুটি) days of each year's holiday list with
+# its amendments and Eid notices (Ministry of Public Administration,
+# mopa.gov.bd; 2013-2027 primary). 2002-2008 and 2010-2012 come from the
+# bank-holiday lists Bangladesh Bank circulated (secondary). PK: federal
+# public holidays, the yearly circular and the moon-sighting notifications
+# (Cabinet Division from the 2022 list; 2004-2021 State Bank of Pakistan
+# closure circulars, PID releases and news, secondary).
+#
+# BD_LISTS / PK_LISTS transcribe each year's final dates (MM-DD|name) and the
+# documents they come from; days for one region or for six-day-week offices
+# only, optional, minorities' and bank holidays are left out. The fixed days
+# by era are transcribed separately below from the decrees and notices, and
+# bdpk_consistency_check() checks every list year against them.
+
+BD_LISTS = {
+    2002: dict(confidence='secondary', docs=[('BB DBOD circular letter 01: 2002 সনের ছুটি (reproduces Ministry of Finance, Banking Division প্রজ্ঞাপন under s.25 Negotiable Instruments Act 1881)', 'https://web.archive.org/web/20190619185504id_/https://www.bb.org.bd/mediaroom/circulars/dos/jan0102dbod01.pdf')],
+              working=[], days="""
+02-21|Shaheed Day & International Mother Language Day
+02-22|Eid-ul-Adha (day 1 of 3)
+02-23|Eid-ul-Adha
+02-24|Eid-ul-Adha (day 3 of 3)
+03-25|Ashura (Muharram)
+03-26|Independence and National Day
+04-14|Bengali New Year
+05-01|May Day
+05-24|Eid-e-Miladunnabi
+05-25|Buddha Purnima
+08-31|Janmashtami
+10-15|Durga Puja (Bijoya Dashami)
+10-22|Shab-e-Barat
+11-07|National Revolution and Solidarity Day
+11-29|Jumatul Bida
+12-03|Shab-e-Qadr
+12-05|Eid-ul-Fitr (day 1 of 3)
+12-06|Eid-ul-Fitr
+12-07|Eid-ul-Fitr (day 3 of 3)
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+    2003: dict(confidence='secondary', docs=[('BB DBOD circular letter 01: ২০০৩ সনের ছুটি (reproduces Finance Ministry Banking Division প্রজ্ঞাপন dated 2003-01-05)', 'https://web.archive.org/web/20190619202429id_/https://www.bb.org.bd/mediaroom/circulars/dos/jan0603dbod01.pdf'), ('BB OS circular letter 14: Change of Bank Holidays (Shab-e-Qadr moved to 23 Nov 2003)', 'https://web.archive.org/web/20190619234336id_/https://www.bb.org.bd/mediaroom/circulars/dos/nov1603os14le.pdf')],
+              working=[], days="""
+02-11|Eid-ul-Adha (day 1 of 3)
+02-12|Eid-ul-Adha
+02-13|Eid-ul-Adha (day 3 of 3)
+02-21|Shaheed Day & International Mother Language Day
+03-14|Ashura (Muharram)
+03-26|Independence and National Day
+04-14|Bengali New Year
+05-01|May Day
+05-14|Eid-e-Miladunnabi
+05-14|Buddha Purnima
+08-19|Janmashtami
+10-05|Durga Puja (Bijoya Dashami)
+10-12|Shab-e-Barat
+11-07|National Revolution and Solidarity Day
+11-21|Jumatul Bida
+11-25|Eid-ul-Fitr (day 1 of 3)
+11-26|Eid-ul-Fitr
+11-27|Eid-ul-Fitr (day 3 of 3)
+12-16|Victory Day
+12-25|Christmas Day
+11-23|Shab-e-Qadr (moved from 2003-11-22)
+"""),
+    2004: dict(confidence='secondary', docs=[('BB OS circular letter 17: ২০০৪ সনের ছুটি (per Finance Ministry Banking Division letter 2003-12-23)', 'https://web.archive.org/web/20190619202737id_/https://www.bb.org.bd/mediaroom/circulars/dos/dec2803os17.pdf')],
+              working=[], days="""
+02-01|Eid-ul-Adha (day 1 of 3)
+02-02|Eid-ul-Adha
+02-03|Eid-ul-Adha (day 3 of 3)
+02-21|Shaheed Day & International Mother Language Day
+03-02|Ashura (Muharram)
+03-26|Independence and National Day
+04-14|Bengali New Year
+05-01|May Day
+05-03|Eid-e-Miladunnabi
+05-03|Buddha Purnima
+09-06|Janmashtami
+10-01|Shab-e-Barat
+10-23|Durga Puja (Bijoya Dashami)
+11-07|National Revolution and Solidarity Day
+11-11|Shab-e-Qadr
+11-12|Jumatul Bida
+11-14|Eid-ul-Fitr (day 1 of 3)
+11-15|Eid-ul-Fitr
+11-16|Eid-ul-Fitr (day 3 of 3)
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+    2005: dict(confidence='secondary', docs=[('BB DOS circular letter 22: List of Holidays during 2005 (per Finance Ministry Banking Division letter 2004-12-21)', 'https://web.archive.org/web/20190619183406id_/https://www.bb.org.bd/mediaroom/circulars/dos/dec2704dosl22e.pdf')],
+              working=[], days="""
+01-20|Eid-ul-Adha (day 1 of 3)
+01-21|Eid-ul-Adha
+01-22|Eid-ul-Adha (day 3 of 3)
+02-20|Ashura (Muharram)
+02-21|Shaheed Day & International Mother Language Day
+03-26|Independence and National Day
+04-14|Bengali New Year
+04-22|Eid-e-Miladunnabi
+05-01|May Day
+05-22|Buddha Purnima
+08-26|Janmashtami
+09-20|Shab-e-Barat
+10-13|Durga Puja (Bijoya Dashami)
+10-28|Jumatul Bida
+11-01|Shab-e-Qadr
+11-03|Eid-ul-Fitr (day 1 of 3)
+11-04|Eid-ul-Fitr
+11-05|Eid-ul-Fitr (day 3 of 3)
+11-07|National Revolution and Solidarity Day
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+    2006: dict(confidence='secondary', docs=[('BB DOS circular letter 17: List of Holidays during 2006 (per Finance Ministry letter 2005-12-21)', 'https://web.archive.org/web/20190619235107id_/https://www.bb.org.bd/mediaroom/circulars/dos/dec2705dosl17e.pdf'), ('BB DOS circular letter 19: List of Holidays during 2007 (covers Eid-ul-Adha 31 Dec 2006)', 'https://web.archive.org/web/20190619201214id_/https://www.bb.org.bd/mediaroom/circulars/dos/dec1406dos19e.pdf')],
+              working=[], days="""
+01-10|Eid-ul-Adha (day 1 of 3)
+01-11|Eid-ul-Adha
+01-12|Eid-ul-Adha (day 3 of 3)
+02-09|Ashura (Muharram)
+02-21|Shaheed Day & International Mother Language Day
+03-26|Independence and National Day
+04-11|Eid-e-Miladunnabi
+04-14|Bengali New Year
+05-01|May Day
+05-11|Buddha Purnima
+08-16|Janmashtami
+09-09|Shab-e-Barat
+10-02|Durga Puja (Bijoya Dashami)
+10-20|Jumatul Bida
+10-21|Shab-e-Qadr
+10-24|Eid-ul-Fitr (day 1 of 3)
+10-25|Eid-ul-Fitr
+10-26|Eid-ul-Fitr (day 3 of 3)
+11-07|National Revolution and Solidarity Day
+12-16|Victory Day
+12-25|Christmas Day
+12-31|Eid-ul-Adha (day 1 of 3, from the 2007 list)
+"""),
+    2007: dict(confidence='secondary', docs=[('BB DOS circular letter 19: List of Holidays during 2007 (per Finance Ministry letter 2006-12-05)', 'https://web.archive.org/web/20190619201214id_/https://www.bb.org.bd/mediaroom/circulars/dos/dec1406dos19e.pdf')],
+              working=[], days="""
+01-01|Eid-ul-Adha
+01-02|Eid-ul-Adha (day 3 of 3)
+01-30|Ashura (Muharram)
+02-21|Shaheed Day & International Mother Language Day
+03-26|Independence and National Day
+04-01|Eid-e-Miladunnabi
+04-14|Bengali New Year
+05-01|May Day
+05-01|Buddha Purnima
+08-29|Shab-e-Barat
+09-04|Janmashtami
+10-10|Shab-e-Qadr
+10-12|Jumatul Bida
+10-13|Eid-ul-Fitr (day 1 of 3)
+10-14|Eid-ul-Fitr
+10-15|Eid-ul-Fitr (day 3 of 3)
+10-21|Durga Puja (Bijoya Dashami)
+11-07|National Revolution and Solidarity Day
+12-16|Victory Day
+12-20|Eid-ul-Adha (day 1 of 3)
+12-21|Eid-ul-Adha
+12-22|Eid-ul-Adha (day 3 of 3)
+12-25|Christmas Day
+"""),
+    2008: dict(confidence='secondary', docs=[('BB DOS circular letter 13: Holidays during 2008 (per Ministry of Establishment notification 2007-12-03)', 'https://web.archive.org/web/20190619205733id_/https://www.bb.org.bd/mediaroom/circulars/dos/dec1707dosl13e.pdf'), ('Nation mourns assassination of Bangabandhu today (FE)', 'https://today.thefinancialexpress.com.bd/print/nation-mourns-assassination-of-bangabandhu-today'), ("BB DOS circular letter 12: banks closed 29 Dec 2008 for 9th parliamentary election (government decision); see also FE 2008-12-25 'Govt declares Dec 29 public holiday' (cache news-fe-2008-12-25-dec29-election-holiday.html)", 'https://web.archive.org/web/20190619183420id_/https://www.bb.org.bd/mediaroom/circulars/dos/dec242008dosl12.pdf')],
+              working=[], days="""
+01-19|Ashura (Muharram)
+02-21|Shaheed Day & International Mother Language Day
+03-21|Eid-e-Miladunnabi
+03-26|Independence and National Day
+04-14|Bengali New Year
+05-01|May Day
+05-20|Buddha Purnima
+08-17|Shab-e-Barat
+08-24|Janmashtami
+09-26|Jumatul Bida
+09-28|Shab-e-Qadr
+10-01|Eid-ul-Fitr (day 1 of 3)
+10-02|Eid-ul-Fitr
+10-03|Eid-ul-Fitr (day 3 of 3)
+10-09|Durga Puja (Bijoya Dashami)
+12-08|Eid-ul-Adha (day 1 of 3)
+12-09|Eid-ul-Adha
+12-10|Eid-ul-Adha (day 3 of 3)
+12-16|Victory Day
+12-25|Christmas Day
+08-15|National Mourning Day (restored after HC verdict 2008-07-27)
+12-29|9th parliamentary election
+"""),
+    2010: dict(confidence='secondary', docs=[('BB DOS circular letter 22: Holidays during 2010 (per Ministry of Establishment notification 2009-11-25)', 'https://web.archive.org/web/20190619223610id_/https://www.bb.org.bd/mediaroom/circulars/dos/dec072009dosl22e.pdf'), ('Mar 17 declared public holiday (bdnews24; cabinet approves 2010 list: 14 general + 8 executive)', 'https://bdnews24.com/bangladesh/mar-17-declared-public-holiday')],
+              working=[], days="""
+02-21|Shaheed Day & International Mother Language Day
+02-27|Eid-e-Miladunnabi
+03-17|Birthday of Sheikh Mujibur Rahman
+03-26|Independence and National Day
+04-14|Bengali New Year
+05-01|May Day
+05-27|Buddha Purnima
+07-28|Shab-e-Barat
+08-15|National Mourning Day
+08-15|Janmashtami
+09-07|Shab-e-Qadr
+09-10|Jumatul Bida
+09-10|Eid-ul-Fitr (day before)
+09-11|Eid-ul-Fitr
+09-12|Eid-ul-Fitr (day after)
+10-17|Durga Puja (Bijoya Dashami)
+11-16|Eid-ul-Adha (day before)
+11-17|Eid-ul-Adha
+11-18|Eid-ul-Adha (day after)
+12-16|Victory Day
+12-17|Ashura
+12-25|Christmas Day
+"""),
+    2011: dict(confidence='secondary', docs=[('BB DOS circular letter 15: Holidays during 2011 (per Ministry of Establishment notification 2010-10-24)', 'https://web.archive.org/web/20190620001029id_/https://www.bb.org.bd/mediaroom/circulars/dos/dec012010dosl15e.pdf')],
+              working=[], days="""
+02-16|Eid-e-Miladunnabi
+02-21|Shaheed Day & International Mother Language Day
+03-17|Birthday of Sheikh Mujibur Rahman
+03-26|Independence and National Day
+04-14|Bengali New Year
+05-01|May Day
+05-17|Buddha Purnima
+07-17|Shab-e-Barat
+08-15|National Mourning Day
+08-22|Janmashtami
+08-26|Jumatul Bida
+08-28|Shab-e-Qadr
+08-30|Eid-ul-Fitr (day before)
+08-31|Eid-ul-Fitr
+09-01|Eid-ul-Fitr (day after)
+10-06|Durga Puja (Bijoya Dashami)
+11-06|Eid-ul-Adha (day before)
+11-07|Eid-ul-Adha
+11-08|Eid-ul-Adha (day after)
+12-06|Ashura
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+    2012: dict(confidence='secondary', docs=[('BB DOS circular letter 22: Holidays during 2012 (per MoPA notification 2011-11-03)', 'https://web.archive.org/web/20190619233609id_/https://www.bb.org.bd/mediaroom/circulars/dos/nov222011dosl22e.pdf')],
+              working=[], days="""
+02-05|Eid-e-Miladunnabi
+02-21|Shaheed Day & International Mother Language Day
+03-17|Birthday of Sheikh Mujibur Rahman
+03-26|Independence and National Day
+04-14|Bengali New Year
+05-01|May Day
+06-04|Buddha Purnima
+07-06|Shab-e-Barat
+08-09|Janmashtami
+08-15|National Mourning Day
+08-16|Shab-e-Qadr
+08-17|Jumatul Bida
+08-19|Eid-ul-Fitr (day before)
+08-20|Eid-ul-Fitr
+08-21|Eid-ul-Fitr (day after)
+10-24|Durga Puja (Bijoya Dashami)
+10-26|Eid-ul-Adha (day before)
+10-27|Eid-ul-Adha
+10-28|Eid-ul-Adha (day after)
+11-25|Ashura
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+    2013: dict(confidence='primary', docs=[('জনপ্রশাসন মন্ত্রণালয় বিধি-৪ শাখা প্রজ্ঞাপন: ২০১৩ সালের ছুটি', 'https://web.archive.org/web/20140925113026id_/http://mopa.gov.bd/index.php?option=com_docman&task=doc_download&gid=4227&Itemid='), ('BB DOS circular letter 19: ২০১৩ সনের ছুটি (per MoPA notification 2012-11-04)', 'https://web.archive.org/web/20190619230730id_/https://www.bb.org.bd/mediaroom/circulars/dos/nov222012dosl19.pdf')],
+              working=[], days="""
+01-25|Eid-e-Miladunnabi
+02-21|Shaheed Day & International Mother Language Day
+03-17|Birthday of Sheikh Mujibur Rahman
+03-26|Independence and National Day
+05-01|May Day
+05-23|Buddha Purnima
+08-02|Jumatul Bida
+08-09|Eid-ul-Fitr
+08-15|National Mourning Day
+08-28|Janmashtami
+10-14|Durga Puja (Bijoya Dashami)
+10-16|Eid-ul-Adha
+12-16|Victory Day
+12-25|Christmas Day
+04-14|Bengali New Year
+06-25|Shab-e-Barat
+08-06|Shab-e-Qadr
+08-08|Eid-ul-Fitr (day before)
+08-10|Eid-ul-Fitr (day after)
+10-15|Eid-ul-Adha (day before)
+10-17|Eid-ul-Adha (day after)
+11-14|Ashura
+"""),
+    2014: dict(confidence='primary', docs=[('জনপ্রশাসন মন্ত্রণালয় বিধি-৪ শাখা প্রজ্ঞাপন: ২০১৪ সালের ছুটি', 'https://web.archive.org/web/20150326054837id_/http://www.mopa.gov.bd/uploads/2015/archive/file121/reg4-2013-237.PDF'), ('BB DOS circular letter 21/2013: Holidays during 2014', 'https://web.archive.org/web/20190619183017id_/https://www.bb.org.bd/mediaroom/circulars/dos/nov132013dosl21e.pdf')],
+              working=[], days="""
+01-14|Eid-e-Miladunnabi
+02-21|Shaheed Day & International Mother Language Day
+03-17|Birthday of Sheikh Mujibur Rahman
+03-26|Independence and National Day
+05-01|May Day
+05-13|Buddha Purnima
+07-25|Jumatul Bida
+07-29|Eid-ul-Fitr
+08-15|National Mourning Day
+08-17|Janmashtami
+10-04|Durga Puja (Bijoya Dashami)
+10-06|Eid-ul-Adha
+12-16|Victory Day
+12-25|Christmas Day
+04-14|Bengali New Year
+06-14|Shab-e-Barat
+07-26|Shab-e-Qadr
+07-28|Eid-ul-Fitr (day before)
+07-30|Eid-ul-Fitr (day after)
+10-05|Eid-ul-Adha (day before)
+10-07|Eid-ul-Adha (day after)
+11-04|Ashura
+"""),
+    2015: dict(confidence='primary', docs=[('জনপ্রশাসন মন্ত্রণালয় বিধি-৪ শাখা প্রজ্ঞাপন: ২০১৫ সালের ছুটি', 'https://web.archive.org/web/20150326052116id_/http://www.mopa.gov.bd/uploads/2015/archive/file121/reg4-2014-246.PDF'), ('BB DOS circular letter 28: Holidays during 2015', 'https://web.archive.org/web/20150513124259id_/http://www.bb.org.bd:80/mediaroom/circulars/dos/nov192014dosl28e.pdf')],
+              working=[], days="""
+01-04|Eid-e-Miladunnabi
+02-21|Shaheed Day & International Mother Language Day
+03-17|Birthday of Sheikh Mujibur Rahman
+03-26|Independence and National Day
+05-01|May Day
+05-03|Buddha Purnima
+07-17|Jumatul Bida
+07-18|Eid-ul-Fitr
+08-15|National Mourning Day
+09-05|Janmashtami
+09-25|Eid-ul-Adha
+10-23|Durga Puja (Bijoya Dashami)
+12-16|Victory Day
+12-24|Eid-e-Miladunnabi
+12-25|Christmas Day
+04-14|Bengali New Year
+06-03|Shab-e-Barat
+07-15|Shab-e-Qadr
+07-17|Eid-ul-Fitr (day before)
+07-19|Eid-ul-Fitr (day after)
+09-24|Eid-ul-Adha (day before)
+09-26|Eid-ul-Adha (day after)
+10-24|Ashura
+"""),
+    2016: dict(confidence='primary', docs=[('২০১৬ সালের ছুটির তালিকা (2016 holiday list)', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/9e851f7c8bec486d840bb4705cafb8f0.PDF'), ('নির্বাহী আদেশে ৪ জুলাই ২০১৬ সরকারি ছুটি ও ১৬ জুলাই শনিবার কর্মদিবস', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/411649caa6e64ca9946dc4a17ae2c746.PDF'), ('২০১৬ সালের ঈদ-উল-আযহা উপলক্ষে সরকারি ছুটি পুনঃনির্ধারণ', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/6e4172a17fff4ff298e5865ed26ffaa1.PDF')],
+              working=['2016-07-16', '2016-09-24'], days="""
+02-21|Shaheed Day and International Mother Language Day (শহীদ দিবস ও আন্তর্জাতিক মাতৃভাষা দিবস)
+03-17|Birthday of Father of the Nation Bangabandhu Sheikh Mujibur Rahman (জাতির পিতার জন্মদিবস)
+03-26|Independence and National Day (স্বাধীনতা ও জাতীয় দিবস)
+04-14|Bengali New Year (নববর্ষ)
+05-01|May Day (মে দিবস)
+05-21|Buddha Purnima (বুদ্ধ পূর্ণিমা)
+05-23|Shab-e-Barat (শব-ই-বরাত)
+07-01|Jumatul Bida (জুমাতুল বিদা)
+07-03|Shab-e-Qadr (শব-ই-কদর)
+07-04|Eid-ul-Fitr extra day (executive order)
+07-05|Eid-ul-Fitr (day before/after)
+07-06|Eid-ul-Fitr (ঈদ-উল-ফিতর)
+07-07|Eid-ul-Fitr (day before/after)
+08-15|National Mourning Day (জাতীয় শোক দিবস)
+08-25|Janmashtami (শুভ জন্মাষ্টমী)
+09-11|Eid-ul-Adha (executive days)
+09-12|Eid-ul-Adha (executive days)
+09-13|Eid-ul-Adha (ঈদ-উল-আযহা)
+09-14|Eid-ul-Adha (executive days)
+10-11|Durga Puja (Bijoya Dashami) (দুর্গাপূজা)
+10-12|Ashura (আশুরা)
+12-12|Eid-e-Milad-un-Nabi (ঈদ-ই-মিলাদুন্নবী)
+12-16|Victory Day (বিজয় দিবস)
+12-25|Christmas Day (বড়দিন)
+"""),
+    2017: dict(confidence='primary', docs=[('২০১৭ খ্রিস্টাব্দে ছুটির তালিকার প্রজ্ঞাপন', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/59e7a2cb75364014acc5862bf3164f98.PDF')],
+              working=[], days="""
+02-21|Shaheed Day and International Mother Language Day
+03-17|Birthday of Bangabandhu Sheikh Mujibur Rahman
+03-26|Independence and National Day
+04-14|Bengali New Year (নববর্ষ)
+05-01|May Day
+05-10|Buddha Purnima
+05-12|Shab-e-Barat
+06-23|Shab-e-Qadr
+06-23|Jumatul Bida
+06-25|Eid-ul-Fitr (day before/after)
+06-26|Eid-ul-Fitr
+06-27|Eid-ul-Fitr (day before/after)
+08-14|Janmashtami
+08-15|National Mourning Day
+09-01|Eid-ul-Adha (day before/after)
+09-02|Eid-ul-Adha
+09-03|Eid-ul-Adha (day before/after)
+09-30|Durga Puja (Bijoya Dashami)
+10-01|Ashura
+12-01|Eid-e-Milad-un-Nabi
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+    2018: dict(confidence='primary', docs=[('২০১৮ খ্রিষ্টাব্দের ছুটির প্রজ্ঞাপন', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/224854f77483437c989f76ba8f63aec3.PDF'), ('একাদশ জাতীয় সংসদ নির্বাচন উপলক্ষ্যে ৩০ ডিসেম্বর ২০১৮ রবিবার সাধারণ ছুটি ঘোষণা', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/40505c5b5c254cd0945faea02256a534.PDF')],
+              working=[], days="""
+02-21|Shaheed Day and International Mother Language Day
+03-17|Birthday of Bangabandhu Sheikh Mujibur Rahman
+03-26|Independence and National Day
+04-14|Bengali New Year
+04-29|Buddha Purnima
+05-01|May Day
+05-02|Shab-e-Barat
+06-12|Shab-e-Qadr
+06-15|Eid-ul-Fitr (day before/after)
+06-15|Jumatul Bida
+06-16|Eid-ul-Fitr
+06-17|Eid-ul-Fitr (day before/after)
+08-15|National Mourning Day
+08-21|Eid-ul-Adha (day before/after)
+08-22|Eid-ul-Adha
+08-23|Eid-ul-Adha (day before/after)
+09-02|Janmashtami
+09-21|Ashura
+10-19|Durga Puja (Bijoya Dashami)
+11-21|Eid-e-Milad-un-Nabi
+12-16|Victory Day
+12-25|Christmas Day
+12-30|11th National Parliament election day (একাদশ জাতীয় সংসদ নির্বাচন)
+"""),
+    2019: dict(confidence='primary', docs=[('২০১৯ খ্রিষ্টাব্দের ছুটির তালিকা', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/89a3e19d04824446bc8298b9d079ed3a.PDF'), ('শব-ই-বরাত: ২১ এপ্রিল ২০১৯ এর পরিবর্তে ২২ এপ্রিল ২০১৯ সোমবার সরকারি ছুটি', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/7ee47a3771bd46d692cd6fcbc00f6612.PDF')],
+              working=[], days="""
+02-21|Shaheed Day and International Mother Language Day
+03-17|Birthday of Bangabandhu Sheikh Mujibur Rahman
+03-26|Independence and National Day
+04-14|Bengali New Year
+04-22|Shab-e-Barat (moved from 21 Apr)
+05-01|May Day
+05-18|Buddha Purnima
+05-31|Jumatul Bida
+06-02|Shab-e-Qadr
+06-04|Eid-ul-Fitr (day before/after)
+06-05|Eid-ul-Fitr
+06-06|Eid-ul-Fitr (day before/after)
+08-11|Eid-ul-Adha (day before/after)
+08-12|Eid-ul-Adha
+08-13|Eid-ul-Adha (day before/after)
+08-15|National Mourning Day
+08-23|Janmashtami
+09-10|Ashura
+10-08|Durga Puja (Bijoya Dashami)
+11-10|Eid-e-Milad-un-Nabi
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+    2020: dict(confidence='primary', docs=[('২০২০ খ্রিষ্টাব্দের ছুটির তালিকা', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/62dbfe531c2f4280ab6305538f1e7f42.PDF'), ('COVID-19: ২৯ মার্চ-০২ এপ্রিল ২০২০ সাধারণ ছুটি ঘোষণা', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/2d4f4eaaa1c244e3a39e9ec14dbc9bab.PDF'), ('COVID-19: ১৭-২৮ মে ২০২০ সাধারণ ছুটি বর্ধিতকরণ (last extension)', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/d6183533cab04a2ea56a6fcf39c4d2ec.pdf')],
+              working=[], days="""
+02-21|Shaheed Day and International Mother Language Day
+03-17|Birthday of Bangabandhu Sheikh Mujibur Rahman
+03-26|Independence and National Day
+04-09|Shab-e-Barat
+04-14|Bengali New Year
+05-01|May Day
+05-06|Buddha Purnima
+05-21|Shab-e-Qadr
+05-22|Jumatul Bida
+05-24|Eid-ul-Fitr (day before/after)
+05-25|Eid-ul-Fitr
+05-26|Eid-ul-Fitr (day before/after)
+07-31|Eid-ul-Adha (day before/after)
+08-01|Eid-ul-Adha
+08-02|Eid-ul-Adha (day before/after)
+08-11|Janmashtami
+08-15|National Mourning Day
+08-30|Ashura
+10-26|Durga Puja (Bijoya Dashami)
+10-30|Eid-e-Milad-un-Nabi
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+    2021: dict(confidence='primary', docs=[('২০২১ খ্রিষ্টাব্দে ... ছুটি পালন সংক্রান্ত (2021 holiday list)', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/77d51c0e35584fbe940f5879ad0d9210.PDF'), ('শব-ই-বরাত উপলক্ষ্যে ছুটির তারিখ ৩০ মার্চ ২০২১ পুনঃনির্ধারণ', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/162200eb7f1b45849a87d3111922667e.PDF'), ('আশুরা: ১৯ আগস্ট ২০২১ এর পরিবর্তে ২০ আগস্ট ২০২১ পুনঃনির্ধারণ', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/4484d45021034d25bf8b98a112ac187c.PDF'), ('ঈদ-ই-মিলাদুন্নবী: ১৯ অক্টোবর ২০২১ এর পরিবর্তে ২০ অক্টোবর ২০২১ পুনঃনির্ধারণ', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/1c3abddbd79c42c9ac599ede00d9a5f5.pdf')],
+              working=[], days="""
+02-21|Shaheed Day and International Mother Language Day
+03-17|Birthday of Bangabandhu Sheikh Mujibur Rahman
+03-26|Independence and National Day
+03-30|Shab-e-Barat (moved from 29 Mar)
+04-14|Bengali New Year
+05-01|May Day
+05-07|Jumatul Bida
+05-10|Shab-e-Qadr
+05-13|Eid-ul-Fitr (day before/after)
+05-14|Eid-ul-Fitr
+05-15|Eid-ul-Fitr (day before/after)
+05-26|Buddha Purnima
+07-20|Eid-ul-Adha (day before/after)
+07-21|Eid-ul-Adha
+07-22|Eid-ul-Adha (day before/after)
+08-15|National Mourning Day
+08-20|Ashura (moved from 19 Aug)
+08-30|Janmashtami
+10-15|Durga Puja (Bijoya Dashami)
+10-20|Eid-e-Milad-un-Nabi (moved from 19 Oct)
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+    2022: dict(confidence='primary', docs=[('২০২২ খ্রিষ্টাব্দের ছুটির তালিকার প্রজ্ঞাপন', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/78e441fd68d2412d9fe84bfa46a5b130.PDF')],
+              working=[], days="""
+02-21|Shaheed Day and International Mother Language Day
+03-17|Birthday of Bangabandhu Sheikh Mujibur Rahman and National Children's Day
+03-19|Shab-e-Barat
+03-26|Independence and National Day
+04-14|Bengali New Year
+04-29|Shab-e-Qadr
+04-29|Jumatul Bida
+05-01|May Day
+05-02|Eid-ul-Fitr (day before/after)
+05-03|Eid-ul-Fitr
+05-04|Eid-ul-Fitr (day before/after)
+05-15|Buddha Purnima
+07-09|Eid-ul-Adha (day before/after)
+07-10|Eid-ul-Adha
+07-11|Eid-ul-Adha (day before/after)
+08-09|Ashura
+08-15|National Mourning Day
+08-18|Janmashtami
+10-05|Durga Puja (Bijoya Dashami)
+10-09|Eid-e-Milad-un-Nabi
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+    2023: dict(confidence='primary', docs=[('২০২৩ খ্রিষ্টাব্দের ছুটির তালিকার প্রজ্ঞাপন', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/494fc5521c7c4e38aef7111ee1db5805.pdf'), ('২০ এপ্রিল ২০২৩ ঈদ-উল-ফিতর উপলক্ষ্যে সাধারণ ছুটি ও অফিস সময়সূচি', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/9c0c61ddf0c4483ea14cd10f42a50e7a.pdf'), ('২৭ জুন ২০২৩ ঈদ-উল-আজহা উপলক্ষ্যে সাধারণ ছুটি ঘোষণা', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/43b5ee66e7674c8896787bff3c917994.pdf')],
+              working=[], days="""
+02-21|Shaheed Day and International Mother Language Day
+03-08|Shab-e-Barat
+03-17|Birthday of Bangabandhu Sheikh Mujibur Rahman and National Children's Day
+03-26|Independence and National Day
+04-14|Bengali New Year
+04-19|Shab-e-Qadr
+04-20|Eid-ul-Fitr extra day
+04-21|Eid-ul-Fitr (day before/after)
+04-21|Jumatul Bida
+04-22|Eid-ul-Fitr
+04-23|Eid-ul-Fitr (day before/after)
+05-01|May Day
+05-04|Buddha Purnima
+06-27|Eid-ul-Adha extra day
+06-28|Eid-ul-Adha (day before/after)
+06-29|Eid-ul-Adha
+06-30|Eid-ul-Adha (day before/after)
+07-29|Ashura
+08-15|National Mourning Day
+09-06|Janmashtami
+09-28|Eid-e-Milad-un-Nabi
+10-24|Durga Puja (Bijoya Dashami)
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+    2024: dict(confidence='primary', docs=[('২০২৪ খ্রিষ্টাব্দের ছুটির তালিকার প্রজ্ঞাপন', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/a484acad5a6b4bd4b1f8244776dcf924.pdf'), ('দ্বাদশ জাতীয় সংসদ নির্বাচন উপলক্ষ্যে ০৭ জানুয়ারি ২০২৪ রবিবার সাধারণ ছুটি ঘোষণা', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/d90ecbe39a614994a76f7a9cfe21254d.pdf'), ('ছুটি সংক্রান্ত জরুরি বিজ্ঞপ্তি (5-8 Jan 2024 holiday notice on social media is fake)', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/2f7b5e0de31c4782a44cacfe0e05135b.pdf'), ('০৫, ০৬ ও ০৭ আগস্ট ২০২৪ নির্বাহী আদেশে দেশব্যাপী সাধারণ ছুটি ঘোষণা', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/20c4224f8f9b47bdba84cf74389097ad.pdf'), ('১৫ আগস্ট এর সাধারণ ছুটি বাতিল', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/fb23313f0dc14119981675fa41d59c1c.PDF'), ('শ্রীশ্রী দুর্গাপূজা উপলক্ষ্যে ১০ অক্টোবর ২০২৪ নির্বাহী আদেশে সাধারণ ছুটি', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/6957d28301ca40dd87322f44adcc2937.PDF')],
+              working=[], days="""
+01-07|12th National Parliament election day
+02-21|Shaheed Day and International Mother Language Day
+02-26|Shab-e-Barat
+03-17|Birthday of Bangabandhu Sheikh Mujibur Rahman and National Children's Day
+03-26|Independence and National Day
+04-05|Jumatul Bida
+04-07|Shab-e-Qadr
+04-10|Eid-ul-Fitr (day before/after)
+04-11|Eid-ul-Fitr
+04-12|Eid-ul-Fitr (day before/after)
+04-14|Bengali New Year
+05-01|May Day
+05-22|Buddha Purnima
+06-16|Eid-ul-Adha (day before/after)
+06-17|Eid-ul-Adha
+06-18|Eid-ul-Adha (day before/after)
+07-17|Ashura
+08-05|Nationwide general holiday by executive order (political transition)
+08-06|Nationwide general holiday by executive order (political transition)
+08-07|Nationwide general holiday by executive order (political transition)
+08-26|Janmashtami
+09-16|Eid-e-Milad-un-Nabi
+10-10|Durga Puja (Saptami/Ashtami) extra day
+10-13|Durga Puja (Bijoya Dashami)
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+    2025: dict(confidence='primary', docs=[('২০২৫ খ্রিষ্টাব্দের ছুটির তালিকার প্রজ্ঞাপন', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/d26ba76529fb4c449c71df7dd208f4c2.PDF'), ('ঈদ-উল-ফিতর উপলক্ষ্যে ০৩ এপ্রিল ২০২৫ বৃহস্পতিবার নির্বাহী আদেশে সরকারি ছুটি', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/7a6197f7edde4e9486027a8859223508.pdf'), ('চৈত্র সংক্রান্তি ১৩ এপ্রিল ২০২৫: তিন পার্বত্য জেলায় নির্বাহী আদেশে সাধারণ ছুটি, অন্যত্র ঐচ্ছিক', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/2dd11d0e929a4f46b9a4d33502ff56e9.pdf'), ('ঈদ-উল-আজহা: ১১ ও ১২ জুন ২০২৫ নির্বাহী আদেশে ছুটি; ১৭ ও ২৪ মে ২০২৫ শনিবার অফিস খোলা', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/bcb1cf6ef77f4f4a8a0b4bcaaba624f1.pdf'), ("মন্ত্রিপরিষদ বিভাগ প্রজ্ঞাপন: প্রতিবছর ৫ আগস্ট 'জুলাই গণঅভ্যুত্থান দিবস' (সাধারণ ছুটিসহ), 'ক' শ্রেণি", 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-cabinet/2024/12/6d6aa072a25747d994f12d9b9a02a045.pdf'), ('ঈদ-ই-মিলাদুন্নবী: ০৫ সেপ্টেম্বর ২০২৫ এর পরিবর্তে ০৬ সেপ্টেম্বর ২০২৫ শনিবার পুনঃনির্ধারণ', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/e6691427f2774cd48601e8d7722de9bb.pdf'), ('বেগম খালেদা জিয়ার মৃত্যুতে ৩১ ডিসেম্বর ২০২৫ নির্বাহী আদেশে এক দিনের সরকারি ছুটি', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2025/11/94ed82e8-eab5-47cf-a164-ee6e0cb7ede8.pdf'), ("মন্ত্রিপরিষদ বিভাগ পরিপত্র: ৮ আগস্ট 'নতুন বাংলাদেশ দিবস' উদ্\u200cযাপন/পালন না করা", 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-cabinet/2024/12/0c88bdefc8924409a4e50fac855590c3.pdf')],
+              working=['2025-05-17', '2025-05-24'], days="""
+02-15|Shab-e-Barat
+02-21|Shaheed Day and International Mother Language Day
+03-26|Independence and National Day
+03-28|Shab-e-Qadr
+03-28|Jumatul Bida
+03-29|Eid-ul-Fitr (2 days before/after)
+03-30|Eid-ul-Fitr (2 days before/after)
+03-31|Eid-ul-Fitr
+04-01|Eid-ul-Fitr (2 days before/after)
+04-02|Eid-ul-Fitr (2 days before/after)
+04-03|Eid-ul-Fitr extra day
+04-14|Bengali New Year
+05-01|May Day
+05-11|Buddha Purnima
+06-05|Eid-ul-Adha (2 days before / 3 after)
+06-06|Eid-ul-Adha (2 days before / 3 after)
+06-07|Eid-ul-Adha
+06-08|Eid-ul-Adha (2 days before / 3 after)
+06-09|Eid-ul-Adha (2 days before / 3 after)
+06-10|Eid-ul-Adha (2 days before / 3 after)
+06-11|Eid-ul-Adha extra days
+06-12|Eid-ul-Adha extra days
+07-06|Ashura
+08-05|July Mass Uprising Day (জুলাই গণঅভ্যুত্থান দিবস)
+08-16|Janmashtami
+09-06|Eid-e-Milad-un-Nabi (moved from 5 Sep)
+10-01|Durga Puja (Nabami)
+10-02|Durga Puja (Bijoya Dashami)
+12-16|Victory Day
+12-25|Christmas Day
+12-31|Mourning: death of former PM Begum Khaleda Zia
+"""),
+    2026: dict(confidence='primary', docs=[('২০২৬ খ্রিষ্টাব্দের ছুটির তালিকার প্রজ্ঞাপন', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2024/12/209c6283d9234a0fa8f1f30b90068b57.pdf'), ('ত্রয়োদশ জাতীয় সংসদ নির্বাচন ও গণভোট: ১১ ও ১২ ফেব্রুয়ারি ২০২৬ নির্বাহী আদেশে সরকারি ছুটি; ১০ ফেব্রুয়ারি শিল্পাঞ্চলে বিশেষ ছুটি', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2026/0/947ab09e-f78b-48a7-ab04-0f65ef8c676b.pdf'), ('ত্রয়োদশ জাতীয় সংসদ নির্বাচন ও গণভোট, ২০২৬ উপলক্ষে ঘোষিত ছুটির সংশোধনী', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2026/1/073743e4-f377-4abe-8f1a-034c66bf22fd.pdf'), ('ঈদ-উল-ফিতর উপলক্ষ্যে ১৮ মার্চ ২০২৬ বুধবার নির্বাহী আদেশে সরকারি ছুটি', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2026/2/3032280b-9b19-46aa-ae93-66afb17b0d33.pdf'), ("'চৈত্র সংক্রান্তি' উপলক্ষে তিন পার্বত্য জেলায় সাধারণ ছুটি ঘোষণা", 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2026/3/7d914619-f945-440b-9713-f57105930187.pdf'), ('ঈদ-উল-আজহা ২০২৬: ২৫ মে ২০২৬ সোমবার নির্বাহী আদেশে ছুটি (offices closed 25-31 May; 23 May Sat open)', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2026/4/1edcd3b7-92bb-4fd6-858f-23a258774209.pdf'), ("প্রতি বছর ৭ নভেম্বর 'জাতীয় বিপ্লব ও সংহতি দিবস' উপলক্ষ্যে সাধারণ ছুটি", 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2026/9/c2238493-30af-4bf7-b93e-fcd1506024dd.pdf')],
+              working=['2026-05-23'], days="""
+02-04|Shab-e-Barat
+02-11|13th National Parliament election and referendum (executive order)
+02-12|13th National Parliament election and referendum (executive order)
+02-21|Shaheed Day and International Mother Language Day
+03-17|Shab-e-Qadr
+03-18|Eid-ul-Fitr extra day
+03-19|Eid-ul-Fitr (2 days before/after)
+03-20|Eid-ul-Fitr (2 days before/after)
+03-20|Jumatul Bida
+03-21|Eid-ul-Fitr
+03-22|Eid-ul-Fitr (2 days before/after)
+03-23|Eid-ul-Fitr (2 days before/after)
+03-26|Independence and National Day
+04-14|Bengali New Year
+05-01|May Day
+05-01|Buddha Purnima
+05-25|Eid-ul-Adha extra day
+05-26|Eid-ul-Adha (2 days before / 3 after)
+05-27|Eid-ul-Adha (2 days before / 3 after)
+05-28|Eid-ul-Adha
+05-29|Eid-ul-Adha (2 days before / 3 after)
+05-30|Eid-ul-Adha (2 days before / 3 after)
+05-31|Eid-ul-Adha (2 days before / 3 after)
+06-26|Ashura
+08-05|July Mass Uprising Day
+08-26|Eid-e-Milad-un-Nabi
+09-04|Janmashtami
+10-20|Durga Puja (Nabami)
+10-21|Durga Puja (Bijoya Dashami)
+11-07|National Revolution and Solidarity Day (জাতীয় বিপ্লব ও সংহতি দিবস)
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+    2027: dict(confidence='primary', docs=[('২০২৭ খ্রিষ্টাব্দের ছুটির তালিকার প্রজ্ঞাপন', 'https://objectstorage.ap-dcc-gazipur-1.oraclecloud15.com/n/axvjbnqprylg/b/V2Ministry/o/office-mopa/2026/10/03fc1c89-fd52-46a7-abca-d5d373663001.pdf')],
+              working=[], days="""
+01-24|Shab-e-Barat
+02-21|Shaheed Day and International Mother Language Day
+03-05|Jumatul Bida
+03-07|Shab-e-Qadr
+03-08|Eid-ul-Fitr (2 days before/after)
+03-09|Eid-ul-Fitr (2 days before/after)
+03-10|Eid-ul-Fitr
+03-11|Eid-ul-Fitr (2 days before/after)
+03-12|Eid-ul-Fitr (2 days before/after)
+03-26|Independence and National Day
+04-14|Bengali New Year
+05-01|May Day
+05-15|Eid-ul-Adha (2 days before / 3 after)
+05-16|Eid-ul-Adha (2 days before / 3 after)
+05-17|Eid-ul-Adha
+05-18|Eid-ul-Adha (2 days before / 3 after)
+05-19|Eid-ul-Adha (2 days before / 3 after)
+05-20|Eid-ul-Adha (2 days before / 3 after)
+05-20|Buddha Purnima
+06-16|Ashura
+08-05|July Mass Uprising Day
+08-15|Eid-e-Milad-un-Nabi
+08-25|Janmashtami
+10-09|Durga Puja (Nabami)
+10-10|Durga Puja (Bijoya Dashami)
+11-07|National Revolution and Solidarity Day
+12-16|Victory Day
+12-25|Christmas Day
+"""),
+}
+PK_LISTS = {
+    2004: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPD CIRCULAR LETTER NO 34 OF 2003)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-34-of-2003'), ('SBP Public Holidays (BPD CIRCULAR LETTER NO 03 OF 2004)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-03-of-2004'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 04 OF 2004)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-04-of-2004'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 05 OF 2004)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-05-of-2004'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 09 OF 2004)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-09-of-2004'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 13 OF 2004)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-13-of-2004'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 14 OF 2004)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-14-of-2004'), ('SBP Bank Holiday (BPD CIRCULAR LETTER NO 24 OF 2004)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-24-of-2004'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 28 OF 2004)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-28-of-2004'), ('SBP Bank Holiday (BPD CIRCULAR LETTER NO 38 OF 2004)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-38-of-2004'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 41 OF 2004)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-41-of-2004'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 44 OF 2004)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-44-of-2004'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 47 OF 2004)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-47-of-2004')],
+              working=[], days="""
+02-02|Eid-ul-Azha
+02-03|Eid-ul-Azha
+02-04|Eid-ul-Azha
+02-05|Kashmir Day
+03-01|Ashura (9-10 Muharram)
+03-02|Ashura (9-10 Muharram)
+03-23|Pakistan Day
+05-01|Labour Day
+05-03|Eid Milad-un-Nabi
+08-14|Independence Day
+11-09|Allama Iqbal Day
+11-15|Eid-ul-Fitr
+11-16|Eid-ul-Fitr
+11-17|Eid-ul-Fitr
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2005: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPD CIRCULAR LETTER NO 49 OF 2004)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-49-of-2004'), ('SBP Public Holidays (BPD CIRCULAR LETTER NO 3 OF 2005)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-3-of-2005'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 6 OF 2005)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-6-of-2005'), ('SBP Public Holidays (BPD CIRCULAR LETTER NO 8 OF 2005)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-8-of-2005'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 12 OF 2005)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-12-of-2005'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 15 OF 2005)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-15-of-2005'), ('SBP Bank Holiday (BPD CIRCULAR LETTER NO 24 OF 2005)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-24-of-2005'), ('SBP L.G. Elections, 2005-Bank Holiday On Polling Day (BPD CIRCULAR LETTER NO 30 OF 2005)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-30-of-2005'), ('SBP Bank Holiday (BPD CIRCULAR LETTER NO 38 OF 2005)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-38-of-2005'), ('SBP Public Holidays (BPD CIRCULAR LETTER NO 44 OF 2005)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-44-of-2005'), ('SBP Public Holiday (EPD CIRCULAR LETTER NO 23 OF 2005)', 'https://www.sbp.org.pk/circulars/epd-circular-letter-no-23-of-2005'), ('SBP Public Holidays (BPD CIRCULAR LETTER NO 43 OF 2005)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-43-of-2005')],
+              working=[], days="""
+01-20|Eid-ul-Azha
+01-21|Eid-ul-Azha
+01-22|Eid-ul-Azha
+02-05|Kashmir Day
+02-19|Ashura (9-10 Muharram)
+02-20|Ashura (9-10 Muharram)
+03-23|Pakistan Day
+04-22|Eid Milad-un-Nabi
+11-03|Eid-ul-Fitr
+11-04|Eid-ul-Fitr
+11-05|Eid-ul-Fitr
+11-09|Allama Iqbal Day
+"""),
+    2006: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPD CIRCULAR LETTER NO 47 OF 2005)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-47-of-2005'), ('SBP Public Holidays (BPD CIRCULAR LETTER NO 02 OF 2006)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-02-of-2006'), ('SBP Public Holidays (EPD CIRCULAR LETTER NO 01 OF 2006)', 'https://www.sbp.org.pk/circulars/epd-circular-letter-no-01-of-2006'), ('SBP Public Holidays (BPD CIRCULAR LETTER NO 05 OF 2006)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-05-of-2006'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 07 OF 2006)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-07-of-2006'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 08 OF 2006)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-08-of-2006'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 09 OF 2006)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-09-of-2006'), ('SBP Bank Holiday (BPD CIRCULAR LETTER NO 11 OF 2006)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-11-of-2006'), ('SBP Public Holiday (BPD CIRCULAR LETTER NO 17 OF 2006)', 'https://www.sbp.org.pk/circulars/bpd-circular-letter-no-17-of-2006'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 20 OF 2006)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-20-of-2006'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 23 OF 2006)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-23-of-2006'), ('SBP Public Holidays (EPD CIRCULAR LETTER NO 20 OF 2006)', 'https://www.sbp.org.pk/circulars/epd-circular-letter-no-20-of-2006'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 25 OF 2006)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-25-of-2006'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 30 OF 2006)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-30-of-2006')],
+              working=[], days="""
+01-10|Eid-ul-Azha
+01-11|Eid-ul-Azha
+01-12|Eid-ul-Azha
+02-08|Ashura (9-10 Muharram)
+02-09|Ashura (9-10 Muharram)
+03-23|Pakistan Day
+04-11|Eid Milad-un-Nabi
+05-01|Labour Day
+08-14|Independence Day
+10-23|Eid-ul-Fitr
+10-24|Eid-ul-Fitr
+10-25|Eid-ul-Fitr
+11-09|Allama Iqbal Day
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2007: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 32 OF 2006)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-32-of-2006'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 31 OF 2006)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-31-of-2006'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 02 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-02-of-2007'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 03 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-03-of-2007'), ('SBP Public Holiday On Friday March 23, 2007 (BPRD CIRCULAR LETTER NO 07 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-07-of-2007'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 12 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-12-of-2007'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 15 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-15-of-2007'), ('SBP Bank Holiday On Monday, The 2Nd July, 2007 (BPRD CIRCULAR LETTER NO 18 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-18-of-2007'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 22 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-22-of-2007'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 28 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-28-of-2007'), ('SBP Addendum In Circular Letter No 28 Dated September 11, 2007 (BPRD CIRCULAR LETTER NO 29 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-29-of-2007'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 34 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-34-of-2007'), ('SBP Public Holidays (EPD CIRCULAR LETTER NO 25 OF 2007)', 'https://www.sbp.org.pk/circulars/epd-circular-letter-no-25-of-2007'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 36 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-36-of-2007'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 38 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-38-of-2007'), ('SBP Public Holidays (EPD CIRCULAR LETTER NO 26 OF 2007)', 'https://www.sbp.org.pk/circulars/epd-circular-letter-no-26-of-2007'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 39 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-39-of-2007'), ('SBP closed for three days (Dawn, APP/Karachi Dec 27)', 'https://www.dawn.com/news/282036'), ('Musharraf announces three-day mourning (Dawn)', 'https://www.dawn.com/news/282040')],
+              working=[], days="""
+01-01|Eid-ul-Azha
+01-02|Eid-ul-Azha
+01-29|Ashura (9-10 Muharram)
+01-30|Ashura (9-10 Muharram)
+02-05|Kashmir Day
+03-23|Pakistan Day
+04-01|Eid Milad-un-Nabi
+05-01|Labour Day
+08-14|Independence Day
+10-13|Eid-ul-Fitr
+10-14|Eid-ul-Fitr
+10-15|Eid-ul-Fitr
+10-16|Eid-ul-Fitr
+11-09|Allama Iqbal Day
+12-20|Eid-ul-Azha
+12-21|Eid-ul-Azha
+12-22|Eid-ul-Azha
+12-25|Quaid-e-Azam Day / Christmas
+12-28|National mourning: Benazir Bhutto assassination (closure)
+12-29|National mourning: Benazir Bhutto assassination (closure)
+12-30|National mourning: Benazir Bhutto assassination (closure)
+"""),
+    2008: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 40 OF 2007)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-40-of-2007'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 01 OF 2008)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-01-of-2008'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 02 OF 2008)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-02-of-2008'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 03 OF 2008)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-03-of-2008'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 05 OF 2008)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-05-of-2008'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 09 OF 2008)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-09-of-2008'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 17 OF 2008)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-17-of-2008'), ('SBP Public Holiday August 14, 2008 (BPRD CIRCULAR LETTER NO 20 OF 2008)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-20-of-2008'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 23 OF 2008)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-23-of-2008'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 27 OF 2008)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-27-of-2008'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 35 OF 2008)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-35-of-2008'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 36 OF 2008)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-36-of-2008'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 37 OF 2008)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-37-of-2008')],
+              working=[], days="""
+01-19|Ashura (9-10 Muharram)
+01-20|Ashura (9-10 Muharram)
+02-05|Kashmir Day
+02-18|General Election 2008 (polling day)
+03-21|Eid Milad-un-Nabi
+05-01|Labour Day
+08-14|Independence Day
+10-01|Eid-ul-Fitr
+10-02|Eid-ul-Fitr
+10-03|Eid-ul-Fitr
+12-08|Eid-ul-Azha
+12-09|Eid-ul-Azha
+12-10|Eid-ul-Azha
+12-25|Quaid-e-Azam Day / Christmas
+12-27|First martyrdom anniversary of Benazir Bhutto (one-off public holiday)
+"""),
+    2009: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 38 OF 2008)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-38-of-2008'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 01 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-01-of-2009'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 03 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-03-of-2009'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 06 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-06-of-2009'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 10 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-10-of-2009'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 13 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-13-of-2009'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 17 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-17-of-2009'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 22 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-22-of-2009'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 24 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-24-of-2009'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 28 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-28-of-2009'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 33 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-33-of-2009'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 36 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-36-of-2009'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 38 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-38-of-2009'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 40 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-40-of-2009')],
+              working=[], days="""
+01-07|Ashura (9-10 Muharram)
+01-08|Ashura (9-10 Muharram)
+02-05|Kashmir Day
+03-10|Eid Milad-un-Nabi
+03-23|Pakistan Day
+05-01|Labour Day
+08-14|Independence Day
+09-21|Eid-ul-Fitr
+09-22|Eid-ul-Fitr
+09-23|Eid-ul-Fitr
+11-09|Allama Iqbal Day
+11-27|Eid-ul-Azha
+11-28|Eid-ul-Azha
+11-29|Eid-ul-Azha
+11-30|Eid-ul-Azha
+12-25|Quaid-e-Azam Day / Christmas
+12-27|Ashura (9-10 Muharram)
+12-28|Ashura (9-10 Muharram)
+"""),
+    2010: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 41 OF 2009)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-41-of-2009'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 03 OF 2010)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-03-of-2010'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 04 OF 2010)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-04-of-2010'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 06 OF 2010)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-06-of-2010'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 10 OF 2010)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-10-of-2010'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 14 OF 2010)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-14-of-2010'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 17 OF 2010)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-17-of-2010'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 20 OF 2010)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-20-of-2010'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 22 OF 2010)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-22-of-2010'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 26 OF 2010)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-26-of-2010'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 28 OF 2010)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-28-of-2010'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 30 OF 2010)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-30-of-2010'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 31 OF 2010)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-31-of-2010'), ('Five-day working week notified (Daily Times via pakistanlink)', 'https://pakistanlink.org/Headlines/April10/24/09.htm'), ('Two weekly holidays to continue till Oct 31 (Express Tribune)', 'https://tribune.com.pk/story/31895/two-weekly-holidays-to-continue-till-oct-31'), ('No more two-day weekends (Express Tribune)', 'https://tribune.com.pk/story/78271/no-more-two-day-weekends'), ('Notification issued to end two-weekly offs (Dunya News)', 'https://dunyanews.tv/en/Pakistan/35057-Notification-issued-to-end-twoweekly-offs')],
+              working=[], days="""
+02-05|Kashmir Day
+02-27|Eid Milad-un-Nabi
+03-23|Pakistan Day
+05-01|Labour Day
+08-14|Independence Day
+09-10|Eid-ul-Fitr
+09-11|Eid-ul-Fitr
+09-12|Eid-ul-Fitr
+09-13|Eid-ul-Fitr
+11-09|Allama Iqbal Day
+11-17|Eid-ul-Azha
+11-18|Eid-ul-Azha
+11-19|Eid-ul-Azha
+12-16|Ashura (9-10 Muharram)
+12-17|Ashura (9-10 Muharram)
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2011: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 33 OF 2010)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-33-of-2010'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 01 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-01-of-2011'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 02 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-02-of-2011'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 05 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-05-of-2011'), ('SBP Half-Day Public Holiday (BPRD CIRCULAR LETTER NO 07 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-07-of-2011'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 09 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-09-of-2011'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 14 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-14-of-2011'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 17 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-17-of-2011'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 18 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-18-of-2011'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 19 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-19-of-2011'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 23 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-23-of-2011'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 24 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-24-of-2011'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 25 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-25-of-2011'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 26 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-26-of-2011'), ('SBP press release: State Bank to observe five-day working week from tomorrow', 'https://www.sbp.org.pk/press/2011/Five-Day-Working-14-Oct-11.pdf'), ('Energy Plan: Five-day work week starts this weekend (Express Tribune)', 'https://tribune.com.pk/story/273809/energy-plan-five-day-work-week-starts-this-weekend')],
+              working=[], days="""
+02-05|Kashmir Day
+02-16|Eid Milad-un-Nabi
+03-23|Pakistan Day
+05-01|Labour Day
+08-14|Independence Day
+08-31|Eid-ul-Fitr
+09-01|Eid-ul-Fitr
+09-02|Eid-ul-Fitr
+09-03|Eid-ul-Fitr
+11-07|Eid-ul-Azha
+11-08|Eid-ul-Azha
+11-09|Allama Iqbal Day
+12-05|Ashura (9-10 Muharram)
+12-06|Ashura (9-10 Muharram)
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2012: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 29 OF 2011)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-29-of-2011'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 02 OF 2012)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-02-of-2012'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 05 OF 2012)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-05-of-2012'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 08 OF 2012)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-08-of-2012'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 13 OF 2012)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-13-of-2012'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 17 OF 2012)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-17-of-2012'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 19 OF 2012)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-19-of-2012'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 20 OF 2012)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-20-of-2012'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 22 OF 2012)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-22-of-2012'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 24 OF 2012)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-24-of-2012'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 25 OF 2012)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-25-of-2012'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 26 OF 2012)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-26-of-2012'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 28 OF 2012)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-28-of-2012')],
+              working=[], days="""
+02-05|Eid Milad-un-Nabi
+02-05|Kashmir Day
+03-23|Pakistan Day
+05-01|Labour Day
+08-14|Independence Day
+08-20|Eid-ul-Fitr
+08-21|Eid-ul-Fitr
+08-22|Eid-ul-Fitr
+09-21|Youm-e-Ishq-e-Rasool (one-off public holiday, protest against anti-Islam film)
+10-26|Eid-ul-Azha
+10-27|Eid-ul-Azha
+10-28|Eid-ul-Azha
+10-29|Eid-ul-Azha
+11-09|Allama Iqbal Day
+11-24|Ashura (9-10 Muharram)
+11-25|Ashura (9-10 Muharram)
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2013: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 29 OF 2012)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-29-of-2012'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 01 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-01-of-2013'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 02 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-02-of-2013'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 06 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-06-of-2013'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 10 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-10-of-2013'), ('SBP General Elections 2013 - Closure Of Bank Branches (BPRD CIRCULAR LETTER NO 13 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-13-of-2013'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 15 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-15-of-2013'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 16 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-16-of-2013'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 20 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-20-of-2013'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 21 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-21-of-2013'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 24 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-24-of-2013'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 25 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-25-of-2013'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 26 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-26-of-2013'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 28 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-28-of-2013'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 33 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-33-of-2013')],
+              working=[], days="""
+01-25|Eid Milad-un-Nabi
+02-05|Kashmir Day
+03-23|Pakistan Day
+05-01|Labour Day
+08-08|Eid-ul-Fitr
+08-09|Eid-ul-Fitr
+08-10|Eid-ul-Fitr
+08-14|Independence Day
+10-15|Eid-ul-Azha
+10-16|Eid-ul-Azha
+10-17|Eid-ul-Azha
+10-18|Eid-ul-Azha
+11-09|Allama Iqbal Day
+11-14|Ashura (9-10 Muharram)
+11-15|Ashura (9-10 Muharram)
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2014: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 36 OF 2013)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-36-of-2013'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 01 OF 2014)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-01-of-2014'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 03 OF 2014)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-03-of-2014'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 10 OF 2014)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-10-of-2014'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 13 OF 2014)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-13-of-2014'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 21 OF 2014)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-21-of-2014'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 26 OF 2014)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-26-of-2014'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 24 OF 2014)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-24-of-2014'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 30 OF 2014)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-30-of-2014'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 32 OF 2014)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-32-of-2014'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 33 OF 2014)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-33-of-2014'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 38 OF 2014)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-38-of-2014')],
+              working=[], days="""
+01-14|Eid Milad-un-Nabi
+02-05|Kashmir Day
+03-23|Pakistan Day
+05-01|Labour Day
+07-29|Eid-ul-Fitr
+07-30|Eid-ul-Fitr
+07-31|Eid-ul-Fitr
+08-01|Eid-ul-Fitr
+08-14|Independence Day
+10-06|Eid-ul-Azha
+10-07|Eid-ul-Azha
+10-08|Eid-ul-Azha
+11-03|Ashura (9-10 Muharram)
+11-04|Ashura (9-10 Muharram)
+11-09|Allama Iqbal Day
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2015: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 39 OF 2014)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-39-of-2014'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 01 OF 2015)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-01-of-2015'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 05 OF 2015)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-05-of-2015'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 08 OF 2015)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-08-of-2015'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 11 OF 2015)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-11-of-2015'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 16 OF 2015)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-16-of-2015'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 19 OF 2015)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-19-of-2015'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 21 OF 2015)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-21-of-2015'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 25 OF 2015)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-25-of-2015'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 29 OF 2015)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-29-of-2015'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 30 OF 2015)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-30-of-2015'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 35 OF 2015)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-35-of-2015'), ('SBP press release: Public Holiday (Eid-ul-Fitr 17-21 July 2015)', 'https://www.sbp.org.pk/press/2015/Public-Holiday-14-Jul-15.pdf'), ('Govt sticks to decision cancelling public holiday on Iqbal Day (ARY News; reproduces MoI 2015 lists as images)', 'https://arynews.tv/govt-restores-public-holiday-on-iqbal-day'), ('SBP, KSE, banks to remain open on Iqbal Day (Daily Pakistan)', 'https://en.dailypakistan.com.pk/06-Nov-2015/sbp-kse-banks-to-remain-open-on-iqbal-day'), ('Iqbal Day: LHC to hear plea against holiday abolition (Express Tribune)', 'https://tribune.com.pk/story/989040/iqbal-day-lhc-to-hear-plea-against-holiday-abolition')],
+              working=[], days="""
+01-04|Eid Milad-un-Nabi
+02-05|Kashmir Day
+03-23|Pakistan Day
+05-01|Labour Day
+07-17|Eid-ul-Fitr
+07-18|Eid-ul-Fitr
+07-19|Eid-ul-Fitr
+07-20|Eid-ul-Fitr
+07-21|Eid-ul-Fitr
+08-14|Independence Day
+09-24|Eid-ul-Azha
+09-25|Eid-ul-Azha
+09-26|Eid-ul-Azha
+10-23|Ashura (9-10 Muharram)
+10-24|Ashura (9-10 Muharram)
+12-24|Eid Milad-un-Nabi
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2016: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 36 OF 2015)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-36-of-2015'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 03 OF 2016)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-03-of-2016'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 09 OF 2016)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-09-of-2016'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 14 OF 2016)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-14-of-2016'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 16 OF 2016)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-16-of-2016'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 21 OF 2016)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-21-of-2016'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 23 OF 2016)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-23-of-2016'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 26 OF 2016)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-26-of-2016'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 30 OF 2016)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-30-of-2016'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 32 OF 2016)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-32-of-2016'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 36 OF 2016)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-36-of-2016'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 37 OF 2016)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-37-of-2016'), ('PID PR No. 201: Eid-ul-Fitr public holidays 5-8 July 2016 (notification of Ministry of Interior)', 'https://pid.gov.pk/site/press_detail/4277'), ('No public holiday on Iqbal Day: Interior Ministry (Daily Pakistan; quotes 2015 cancellation text)', 'https://en.dailypakistan.com.pk/08-Nov-2016/no-public-holiday-on-iqbal-day-interior-ministry'), ('Interior ministry declines declaring November 9 public holiday (Express Tribune)', 'https://tribune.com.pk/story/1224195/interior-ministry-declines-declaring-november-9-public-holiday')],
+              working=[], days="""
+02-05|Kashmir Day
+03-23|Pakistan Day
+05-01|Labour Day
+07-05|Eid-ul-Fitr
+07-06|Eid-ul-Fitr
+07-07|Eid-ul-Fitr
+07-08|Eid-ul-Fitr
+08-14|Independence Day
+09-12|Eid-ul-Azha
+09-13|Eid-ul-Azha
+09-14|Eid-ul-Azha
+10-11|Ashura (9-10 Muharram)
+10-12|Ashura (9-10 Muharram)
+12-12|Eid Milad-un-Nabi
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2017: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 39 OF 2016)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-39-of-2016'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 02 OF 2017)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-02-of-2017'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 05 OF 2017)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-05-of-2017'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 12 OF 2017)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-12-of-2017'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 17 OF 2017)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-17-of-2017'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 19 OF 2017)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-19-of-2017'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 21 OF 2017)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-21-of-2017'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 24 OF 2017)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-24-of-2017'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 25 OF 2017)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-25-of-2017'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 26 OF 2017)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-26-of-2017'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 30 OF 2017)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-30-of-2017'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 35 OF 2017)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-35-of-2017'), ('Ministry of Interior circular: Public and Optional Holidays for the Year 2017 (Scribd copy of the signed circular, OCR text)', 'https://www.scribd.com/document/363604510/holidays-2017-pdf'), ('PID PR No. 213: Ashura public holidays 30 Sep - 1 Oct 2017', 'https://pid.gov.pk/site/press_detail/5354')],
+              working=[], days="""
+02-05|Kashmir Day
+03-23|Pakistan Day
+05-01|Labour Day
+06-26|Eid-ul-Fitr
+06-27|Eid-ul-Fitr
+06-28|Eid-ul-Fitr
+08-14|Independence Day
+09-01|Eid-ul-Azha
+09-02|Eid-ul-Azha
+09-03|Eid-ul-Azha
+09-04|Eid-ul-Azha
+09-30|Ashura (9-10 Muharram)
+10-01|Ashura (9-10 Muharram)
+12-01|Eid Milad-un-Nabi
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2018: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 36 OF 2017)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-36-of-2017'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 01 OF 2018)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-01-of-2018'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 03 OF 2018)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-03-of-2018'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 05 OF 2018)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-05-of-2018'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 07 OF 2018)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-07-of-2018'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 09 OF 2018)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-09-of-2018'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 10 OF 2018)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-10-of-2018'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 11 OF 2018)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-11-of-2018'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 12 OF 2018)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-12-of-2018'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 13 OF 2018)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-13-of-2018'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 14 OF 2018)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-14-of-2018'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 21 OF 2018)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-21-of-2018'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 25 OF 2018)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-25-of-2018'), ('Ministry of Interior circular dated 26-01-2018: Public and Optional Holidays for 2018 (blog transcription)', 'https://meashfd.blogspot.com/2018/01/public-and-optional-holidays-for.html'), ('PID PR No. 101: Ashura public holidays 20-21 Sep 2018 (press release of Ministry of Interior)', 'https://pid.gov.pk/site/press_detail/9193'), ('No holiday on November 9, clarifies interior ministry (Daily Pakistan)', 'https://en.dailypakistan.com.pk/?p=98687')],
+              working=[], days="""
+02-05|Kashmir Day
+03-23|Pakistan Day
+05-01|Labour Day
+06-15|Eid-ul-Fitr
+06-16|Eid-ul-Fitr
+06-17|Eid-ul-Fitr
+06-18|Eid-ul-Fitr
+07-25|General Election 2018 (polling day; public holiday notified by ECP)
+08-14|Independence Day
+08-21|Eid-ul-Azha
+08-22|Eid-ul-Azha
+08-23|Eid-ul-Azha
+09-20|Ashura (9-10 Muharram)
+09-21|Ashura (9-10 Muharram)
+11-21|Eid Milad-un-Nabi
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2019: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 26 OF 2018)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-26-of-2018'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 01 OF 2019)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-01-of-2019'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 19 OF 2019)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-19-of-2019'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 03 OF 2019)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-03-of-2019'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 07 OF 2019)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-07-of-2019'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 10 OF 2019)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-10-of-2019'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 14 OF 2019)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-14-of-2019'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 17 OF 2019)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-17-of-2019'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 20 OF 2019)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-20-of-2019'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 24 OF 2019)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-24-of-2019'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 27 OF 2019)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-27-of-2019'), ('List of public holidays for 2019 released by interior ministry (Dawn)', 'https://www.dawn.com/news/1456437'), ('Govt releases list of public holidays for year 2019 (Geo)', 'https://www.geo.tv/latest/227155-govt-releases-list-of-public-holidays-for-year-2019')],
+              working=[], days="""
+02-05|Kashmir Day
+03-23|Pakistan Day
+05-01|Labour Day
+06-04|Eid-ul-Fitr
+06-05|Eid-ul-Fitr
+06-06|Eid-ul-Fitr
+06-07|Eid-ul-Fitr
+08-12|Eid-ul-Azha
+08-13|Eid-ul-Azha
+08-14|Eid-ul-Azha
+08-14|Independence Day
+08-15|Eid-ul-Azha
+09-09|Ashura (9-10 Muharram)
+09-10|Ashura (9-10 Muharram)
+11-10|Eid Milad-un-Nabi
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2020: dict(confidence='secondary', docs=[('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 28 OF 2019)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-28-of-2019'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 05 OF 2020)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-05-of-2020'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 07 OF 2020)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-07-of-2020'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 21 OF 2020)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-21-of-2020'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 22 OF 2020)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-22-of-2020'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 23 OF 2020)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-23-of-2020'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 35 OF 2020)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-35-of-2020'), ('SBP Bank Holiday (BPRD CIRCULAR LETTER NO 27 OF 2020)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-27-of-2020'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 38 OF 2020)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-38-of-2020'), ('SBP Public Holidays (BPRD CIRCULAR LETTER NO 39 OF 2020)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-39-of-2020'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 46 OF 2020)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-46-of-2020'), ('SBP Public Holiday (BPRD CIRCULAR LETTER NO 50 OF 2020)', 'https://www.sbp.org.pk/circulars/bprd-circular-letter-no-50-of-2020'), ('Public holidays 2020 in Pakistan list released (Dunya News; MoI list dated 5 Dec 2019)', 'https://dunyanews.tv/en/Pakistan/523771-Public-holidays-2020-in-Pakistan-list-released')],
+              working=[], days="""
+02-05|Kashmir Day
+03-23|Pakistan Day
+05-01|Labour Day
+05-22|Eid-ul-Fitr
+05-23|Eid-ul-Fitr
+05-24|Eid-ul-Fitr
+05-25|Eid-ul-Fitr
+05-26|Eid-ul-Fitr
+05-27|Eid-ul-Fitr
+07-31|Eid-ul-Azha
+08-01|Eid-ul-Azha
+08-02|Eid-ul-Azha
+08-14|Independence Day
+08-29|Ashura (9-10 Muharram)
+08-30|Ashura (9-10 Muharram)
+10-30|Eid Milad-un-Nabi
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2021: dict(confidence='secondary', docs=[('Public and optional holidays for the year 2021 (Ministry of Interior notification, reported)', 'https://web.archive.org/web/2021id_/https://propakistani.pk/2020/12/12/govt-announces-public-holidays-for-2021/'), ('Interior ministry announces 5-day Eid holidays (Eid-ul-Fitr 10-15 May 2021)', 'https://arynews.tv/en/interior-notifies-eid/'), ('Interior ministry issues notification of three-day holiday on Eidul Adha (20-22 July 2021)', 'https://dunyanews.tv/amp/english/610460.php'), ('SBP BPRD Circular Letter: banks closed 18-19 Aug 2021 (9-10 Muharram 1443)', 'https://web.archive.org/web/2023id_/https://www.sbp.org.pk/bprd/2021/CL27.htm'), ('Cabinet Division press release: Eid Milad-un-Nabi 19 Oct 2021', 'https://web.archive.org/web/20211112194913id_/https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/Press_Release.pdf'), ('Cabinet Division press release: 20 Dec 2021 local holiday in Islamabad (17th Extraordinary OIC CFM session)', 'https://web.archive.org/web/20211221201616id_/https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/public-holiday-20-12-2021002.pdf')],
+              working=[], days="""
+02-05|Kashmir Day
+03-23|Pakistan Day
+05-01|Labour Day
+05-10|Eid-ul-Fitr (COVID-extended block)
+05-11|Eid-ul-Fitr (COVID-extended block)
+05-12|Eid-ul-Fitr (COVID-extended block)
+05-13|Eid-ul-Fitr (COVID-extended block)
+05-14|Eid-ul-Fitr (COVID-extended block)
+05-15|Eid-ul-Fitr (COVID-extended block)
+07-20|Eid-ul-Azha
+07-21|Eid-ul-Azha
+07-22|Eid-ul-Azha
+08-14|Independence Day
+08-18|Ashura (9 Muharram)
+08-19|Ashura (10 Muharram)
+10-19|Eid Milad-un-Nabi
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2022: dict(confidence='primary', docs=[('Circular: Public and optional holidays for the year 2022', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/public-holidays-year-2022-E.pdf'), ('Press release: Eid-ul-Fitr 2-5 May 2022', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/PressRelease-27-04-2022-C.pdf'), ('Press release: Eid-ul-Azha 8-12 July 2022', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/Press-Release-Eid-ul-Azha-04-07-22(1).pdf'), ('Press release: Ashura 8-9 August 2022', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/PF_Ashura_01.pdf'), ('SBP BPRD Circular Letter: banks closed Sunday 9 Oct 2022 (12 Rabi-ul-Awwal 1444)', 'https://web.archive.org/web/2023id_/https://www.sbp.org.pk/bprd/2022/CL28.htm'), ('Circular: restoration of Allama Iqbal Day public holiday (9 Nov 2022)', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/Iqbal_Day.pdf'), ('Press release: local holidays 22 and 24 March 2022 in Islamabad (48th OIC CFM)', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/press-release-10-03-2022.pdf'), ('Press release: local holidays 21 Mar (twin cities) and 22 Mar (Rawalpindi) 2022', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/Press%20Release-twin-cities.pdf'), ('Press release: 25 July 2022 holiday for federal offices in Karachi and Hyderabad divisions (monsoon rains)', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/press-release-public-holiday-karachi-hyderabad-25-07-22.pdf')],
+              working=[], days="""
+02-05|Kashmir Day
+03-23|Pakistan Day
+05-01|Labour Day
+05-02|Eid-ul-Fitr
+05-03|Eid-ul-Fitr
+05-04|Eid-ul-Fitr
+05-05|Eid-ul-Fitr
+07-08|Eid-ul-Azha
+07-09|Eid-ul-Azha
+07-10|Eid-ul-Azha
+07-11|Eid-ul-Azha
+07-12|Eid-ul-Azha
+08-08|Ashura (9 Muharram)
+08-09|Ashura (10 Muharram)
+08-14|Independence Day
+10-09|Eid Milad-un-Nabi
+11-09|Allama Iqbal Day (restored)
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2023: dict(confidence='primary', docs=[('Circular: Public and optional holidays for the year 2023', 'https://www.cabinet.gov.pk/SiteImage/Misc/files/Holidays/public-holidays-year-2023.pdf'), ('Press release: Eid-ul-Fitr 21-25 April 2023', 'https://www.cabinet.gov.pk/SiteImage/Misc/files/Holidays/Eid-Holidays-Notice.pdf'), ('Press release (supersedes 20 Jun order): Eid-ul-Azha 28-30 Jun (5-day offices) / 28 Jun-1 Jul (6-day offices) 2023', 'https://www.cabinet.gov.pk/SiteImage/Misc/files/Holidays/N-22-06-2023.pdf'), ('Press release: Ashura 28-29 July 2023', 'https://www.cabinet.gov.pk/SiteImage/Misc/files/Ashura-Notification-20-07-23.pdf'), ('Press release: Eid Milad-un-Nabi 29 Sep 2023', 'https://cabinet.gov.pk/SiteImage/Misc/files/Press%20Release/Press-Release-21-09-23.pdf'), ('Press release: Allama Iqbal Day 9 Nov 2023', 'https://cabinet.gov.pk/SiteImage/Misc/files/Press%20Release/PR-031123.pdf')],
+              working=[], days="""
+02-05|Kashmir Day
+03-23|Pakistan Day
+04-21|Eid-ul-Fitr
+04-22|Eid-ul-Fitr
+04-23|Eid-ul-Fitr
+04-24|Eid-ul-Fitr
+04-25|Eid-ul-Fitr
+05-01|Labour Day
+06-28|Eid-ul-Azha
+06-29|Eid-ul-Azha
+06-30|Eid-ul-Azha
+07-28|Ashura (9 Muharram)
+07-29|Ashura (10 Muharram)
+08-14|Independence Day
+09-29|Eid Milad-un-Nabi
+11-09|Allama Iqbal Day
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2024: dict(confidence='primary', docs=[('Circular: Public and optional holidays for the year 2024', 'https://www.cabinet.gov.pk/SiteImage/Misc/files/Circular-Holiday-2024.pdf'), ('Press release: Kashmir Solidarity Day 5 Feb 2024', 'https://www.cabinet.gov.pk/SiteImage/Misc/files/Press%20Release/Press-Release-KSD.pdf'), ('Press release: Eid-ul-Fitr 10-12 Apr (5-day) / 10-13 Apr (6-day) 2024', 'https://www.cabinet.gov.pk/SiteImage/Misc/files/PR-%20Eid-%20Noti.pdf'), ('Press release: Youm-e-Takbeer 28 May 2024 declared public holiday (modifying 2024 list)', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/28-5-24.pdf'), ('Press release: Eid-ul-Azha 17-19 June 2024', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/EidulAzha.pdf'), ('Press release: Ashura 16-17 July 2024', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/ashura-pr-2024.pdf'), ('Press release: Eid Milad-un-Nabi 17 Sep 2024', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/EMNH6924.pdf'), ('Press release: closed holidays 14-16 Oct 2024 in ICT and Rawalpindi (SCO CHG summit)', 'https://cabinet.gov.pk/SiteImage/Misc/files/Press%20Release/SCO-Holiday.pdf'), ('Press release: Allama Iqbal Day 9 Nov 2024', 'https://cabinet.gov.pk/SiteImage/Misc/files/Press%20Release/Public%20Holiday%20-%20Allama%20Iqbal%20Day%20.pdf'), ('Election Commission of Pakistan Notification No. F.2(1)/2024-Cord-Vol.III: public holiday on 8 February 2024 (general election), for the Gazette of Pakistan Extraordinary Part III', 'https://ecp.gov.pk/storage/uploads/lcLQ5RYLJW2Ge4nlOy1FYn3l6YxISa0Bui57EMGS.pdf')],
+              working=[], days="""
+02-05|Kashmir Day
+02-08|General Election 2024 (polling day)
+03-23|Pakistan Day
+04-10|Eid-ul-Fitr
+04-11|Eid-ul-Fitr
+04-12|Eid-ul-Fitr
+05-01|Labour Day
+05-28|Youm-e-Takbeer
+06-17|Eid-ul-Azha
+06-18|Eid-ul-Azha
+06-19|Eid-ul-Azha
+07-16|Ashura (9 Muharram)
+07-17|Ashura (10 Muharram)
+08-14|Independence Day
+09-17|Eid Milad-un-Nabi
+11-09|Allama Iqbal Day
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2025: dict(confidence='primary', docs=[('Circular: Public and optional holidays for the year 2025', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/Public-Holidays-2025.pdf'), ('Press release: Kashmir Solidarity Day 5 Feb 2025', 'https://cabinet.gov.pk/SiteImage/Misc/files/Press%20Release/Kashmir-Day-4-2-25.pdf'), ('Press release: Eid-ul-Fitr 31 Mar-2 Apr 2025', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/Eid-ul-Fitr%202025%20Holidays%20-%2019-03-2025.pdf'), ('Press release: Eid-ul-Azha 6-9 June 2025', 'https://cabinet.gov.pk/SiteImage/Misc/files/Press%20Release/Eid-ul-Azha-Holidays-02_06_25.pdf'), ('Press release: Ashura 5-6 July 2025', 'https://cabinet.gov.pk/SiteImage/Misc/files/Press%20Release/Ashura-Holidays-2025.pdf'), ('Press release: Eid Milad-un-Nabi 6 Sep 2025', 'https://cabinet.gov.pk/SiteImage/Misc/files/Press%20Release/Eid-Milad-un-Nabi-2025.pdf'), ('Clarification: Friday 26 Dec 2025 is a working day', 'https://cabinet.gov.pk/SiteImage/Misc/files/Press%20Release/clarification.pdf'), ('Notification (supersedes clarification): closed holiday 26 Dec 2025 within ICT', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/Public-Holiday-26-12-2025.pdf'), ('Press release: Youm-e-Istehsal 5 Aug 2025 - one minute silence (no holiday)', 'https://cabinet.gov.pk/SiteImage/Misc/files/Press%20Release.pdf'), ('Press release: Black Day 27 Oct 2025 - one minute silence (no holiday)', 'https://cabinet.gov.pk/SiteImage/Misc/files/Press%20Release/PR-27-10-25.pdf'), ('No public holiday on May 16 for Youm-e-Tashakur, government confirms', 'https://tribune.com.pk/story/2546046/no-public-holiday-on-may-16-for-youm-e-tashakur-government-confirms')],
+              working=[], days="""
+02-05|Kashmir Day
+03-23|Pakistan Day
+03-31|Eid-ul-Fitr
+04-01|Eid-ul-Fitr
+04-02|Eid-ul-Fitr
+05-01|Labour Day
+05-28|Youm-e-Takbeer
+06-06|Eid-ul-Azha
+06-07|Eid-ul-Azha
+06-08|Eid-ul-Azha
+06-09|Eid-ul-Azha
+07-05|Ashura (9 Muharram)
+07-06|Ashura (10 Muharram)
+08-14|Independence Day
+09-06|Eid Milad-un-Nabi
+11-09|Allama Iqbal Day
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+    2026: dict(confidence='primary', docs=[('Circular: Public and optional holidays for the year 2026', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/2026/Public-Holidays-2026.pdf'), ('Press release: Kashmir Solidarity Day 5 Feb 2026', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/2026/public-holiday-5-feb-2026.pdf'), ('Notification: Eid-ul-Fitr 20-21 March 2026', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/EidulFitr%202026.pdf'), ('Notification: ICT federal offices closed 9 Apr 2026; 10 Apr closed under four-day workweek arrangements', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/2026/lh8426.pdf'), ('Notification: Eid-ul-Azha 26-28 May 2026', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/2026/Eid-ul-Azha-holidays-Notification-20_05_2026.pdf'), ('Notification: Ashura 25-26 June 2026', 'https://cabinet.gov.pk/SiteImage/Misc/files/Press%20Release/Notification_Ashura%20Public%20Holiday%2C%202026.pdf'), ('Notification: Eid Milad-un-Nabi 26 Aug 2026', 'https://cabinet.gov.pk/SiteImage/Misc/files/Press%20Release/Notification-Eid-Milad-un-Nabi-2026.pdf'), ('Press release: Allama Iqbal Day 9 Nov 2026', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/2026/Notification%20for%20Allama%20Iqbal%20Day_05-11-2026.pdf'), ('Notification: Red Zone Islamabad offices work from home 27 Nov 2026 (not a holiday)', 'https://cabinet.gov.pk/SiteImage/Misc/files/Holidays/Work-from-Home-Red-Zone-27-11-26.pdf')],
+              working=[], days="""
+02-05|Kashmir Day
+03-20|Eid-ul-Fitr
+03-21|Eid-ul-Fitr
+03-23|Pakistan Day
+05-01|Labour Day
+05-26|Eid-ul-Azha
+05-27|Eid-ul-Azha
+05-28|Eid-ul-Azha
+05-28|Youm-e-Takbeer
+06-25|Ashura (9 Muharram)
+06-26|Ashura (10 Muharram)
+08-14|Independence Day
+08-26|Eid Milad-un-Nabi
+11-09|Allama Iqbal Day
+12-25|Quaid-e-Azam Day / Christmas
+"""),
+}
+
+BD_LAST_LIST, PK_LAST_LIST = 2027, 2026
+BD_GAPS_SECONDARY = (2009,)   # no list found
+
+# Fixed days: (month, day, name, [(from, to), ...]) with years inclusive.
+BD_FIXED = [
+    (2, 21, "Shaheed Day and International Mother Language Day", [(1972, None)]),
+    (3, 17, "Birthday of Sheikh Mujibur Rahman", [(1997, 2001), (2010, 2024)]),
+    (3, 26, "Independence and National Day", [(1972, None)]),
+    (4, 14, "Bengali New Year", [(1972, None)]),
+    (5, 1, "May Day", [(1972, None)]),
+    (8, 5, "July Mass Uprising Day", [(2025, None)]),     # Cabinet Division প্রজ্ঞাপন 2 Jul 2025
+    (8, 15, "National Mourning Day", [(1996, 2001), (2008, 2023)]),  # cancelled 2002; HC 2008; MoPA 13 Aug 2024
+    (11, 7, "National Revolution and Solidarity Day", [(2002, 2007), (2026, None)]),  # MoPA 7 Oct 2026
+    (12, 16, "Victory Day", [(1972, None)]),
+    (12, 25, "Christmas Day", [(1972, None)]),
+]
+PK_FIXED = [
+    (2, 5, "Kashmir Day", [(1990, None)]),
+    (3, 23, "Pakistan Day", [(1947, None)]),
+    (5, 1, "Labour Day", [(1947, None)]),
+    (5, 28, "Youm-e-Takbeer", [(2025, None)]),        # yearly lists 2025, 2026 (2024: one-off press release)
+    (8, 14, "Independence Day", [(1947, None)]),
+    (11, 9, "Allama Iqbal Day", [(1947, 2014), (2022, None)]),  # MoI 4 Nov 2015 cancelled; Cabinet Div. 8 Nov 2022
+    (12, 25, "Quaid-e-Azam Day / Christmas", [(1947, None)]),
+]
+BD_WEEKENDS = [(None, (5,)), ((1997, 6, 1), (5, 6)), ((2001, 11, 10), (5,)), ((2005, 9, 9), (5, 6))]
+PK_WEEKENDS = [(None, (7,)), ((2010, 4, 24), (6, 7)), ((2010, 11, 27), (7,)), ((2011, 10, 15), (6, 7))]
+
+
+def _fixed(table, year):
+    return [(date(year, m, d), name) for m, d, name, eras in table
+            if any(a <= year and (b is None or year <= b) for a, b in eras)]
+
+
+def _listed(lists, year):
+    return [(date(year, int(l[:2]), int(l[3:5])), l[6:]) for l in lists[year]["days"].strip().splitlines()]
+
+
+def _tabular_block(year, month, day, offsets, name):
+    """Days OFFSETS after each tabular MONTH/DAY of the Hijri years that touch YEAR."""
+    out = []
+    for y in (year - 1, year):
+        for d0 in islamic_dates_in_year(y, month, day):
+            out += [(d0 + timedelta(days=k), name) for k in offsets if (d0 + timedelta(days=k)).year == year]
+    return out
+
+
+def bd_holidays(year: int) -> list[tuple[date, str]]:
+    if year in BD_LISTS:
+        return _listed(BD_LISTS, year) + _fixed(BD_FIXED, year)
+    assert year > BD_LAST_LIST, year
+    days = _fixed(BD_FIXED, year)
+    days += _tabular_block(year, 10, 1, [0], "Eid-ul-Fitr (estimated)")
+    days += _tabular_block(year, 12, 10, [0], "Eid-ul-Adha (estimated)")
+    days += _tabular_block(year, 3, 12, [0], "Eid-e-Milad-un-Nabi (estimated)")
+    for y in (year, year + 1):   # Jumatul Bida: the last Friday of Ramadan
+        for eid in islamic_dates_in_year(y, 10, 1):
+            k = (eid.weekday() - 4) % 7 or 7
+            if (eid - timedelta(days=k)).year == year:
+                days.append((eid - timedelta(days=k), "Jumatul Bida (estimated)"))
+    return days
+
+
+def pk_holidays(year: int) -> list[tuple[date, str]]:
+    if year in PK_LISTS:
+        return _listed(PK_LISTS, year) + _fixed(PK_FIXED, year)
+    assert year > PK_LAST_LIST, year
+    days = _fixed(PK_FIXED, year)
+    days += _tabular_block(year, 10, 1, [0, 1, 2], "Eid-ul-Fitr (estimated)")
+    days += _tabular_block(year, 12, 10, [0, 1, 2], "Eid-ul-Azha (estimated)")
+    days += _tabular_block(year, 1, 9, [0, 1], "Ashura (estimated)")
+    days += _tabular_block(year, 3, 12, [0], "Eid Milad-un-Nabi (estimated)")
+    return days
+
+
+def bd_working_days(year: int) -> list[date]:
+    return [date.fromisoformat(w) for w in BD_LISTS.get(year, {}).get("working", [])]
+
+
+def bdpk_consistency_check(lists, fixed, label) -> None:
+    """Every fixed day of an era is in each list year's transcription, and
+    no list holds a fixed day outside its era."""
+    gaps = 0
+    for year, spec in sorted(lists.items()):
+        listed = {d for d, _ in _listed(lists, year)}
+        for d, name in _fixed(fixed, year):
+            if d not in listed:
+                gaps += 1
+                print(f"  {label} {year}: fixed day {d} {name!r} is not in the list transcription")
+    print(f"{label}: fixed days by era checked against {len(lists)} list years, {gaps} not listed")
+
+
+def _bdpk_sources(lists, first, last) -> list[tuple[str, str, str]]:
+    out, seen = [], set()
+    for year in range(first, last + 1):
+        for title, uri in lists.get(year, {}).get("docs", []):
+            if uri not in seen:
+                seen.add(uri)
+                out.append((f"{title} ({year})", uri, ""))
+    return out
+
+
+BD_NOTE = (
+    "Public holidays of government offices in Bangladesh: the general (সাধারণ ছুটি) and executive-order "
+    "(নির্বাহী আদেশে ছুটি) days of each year's holiday list (Ministry of Public Administration) at their final dates, "
+    "with the amendments and Eid notices; optional holidays and the hill-district Chaitra Sankranti are left out. "
+    "Holidays on the Friday-Saturday weekend are listed (no substitute is given). :working-days are Saturdays a "
+    "notice made working days. 2028-2040 are provisional: the fixed days of each era and tabular estimates of "
+    "Eid-ul-Fitr, Eid-ul-Adha, Eid-e-Milad-un-Nabi and Jumatul Bida; the executive-order days, set yearly, and the "
+    "Hindu and Buddhist days are not estimated.")
+BD_SECONDARY_NOTE = (
+    "LOWER CONFIDENCE. 2002-2008 and 2010-2012 from the bank-holiday lists Bangladesh Bank circulated (Ministry of "
+    "Finance notifications under the Negotiable Instruments Act s. 25, which then matched the government list) "
+    "and news; 2009 has no list (:gaps).")
+PK_NOTE = (
+    "Federal public holidays of Pakistan: the yearly Cabinet Division circular and the notifications that fix "
+    "the Eid, Ashura and Milad days after the Ruet-e-Hilal sighting, at the declared dates (2022-2026); "
+    "optional, minorities' and bank holidays, days for one city or for six-day-week offices only are left out. "
+    "2027-2040 are provisional: the fixed days and tabular estimates of Eid-ul-Fitr and Eid-ul-Azha (three days "
+    "each), Ashura (9-10 Muharram) and Eid Milad-un-Nabi.")
+PK_SECONDARY_NOTE = (
+    "LOWER CONFIDENCE. 2004-2021 from the State Bank of Pakistan closure circulars (which cite the Ministry of "
+    "Interior notifications), Press Information Department releases and news.")
+
+
 # --- registry and writer --------------------------------------------------
 
 COUNTRIES = {
@@ -5925,6 +7170,24 @@ COUNTRIES = {
                sources=VN_SOURCES, note=VN_NOTE,
                python=lambda years: __import__("holidays").VN(years=years),
                crosscheck=vn_consistency_check),
+    "BD": dict(name="Bangladesh (government offices)", first=2013, build=bd_holidays, working=bd_working_days,
+               working_label="কর্মদিবস (office open)", weekends=BD_WEEKENDS,
+               sources=lambda: _bdpk_sources(BD_LISTS, 2013, LAST), note=BD_NOTE,
+               python=lambda years: __import__("holidays").BD(years=years),
+               crosscheck=lambda days: bdpk_consistency_check(BD_LISTS, BD_FIXED, "BD")),
+    "BD-SECONDARY": dict(name="Bangladesh government offices (secondary sources)", country="BD", first=2002, last=2012,
+                         gaps=BD_GAPS_SECONDARY, file="bd-secondary-holiday-gold.sexp", confidence="secondary",
+                         build=bd_holidays, working=bd_working_days, working_label="কর্মদিবস (office open)",
+                         weekends=BD_WEEKENDS, sources=lambda: _bdpk_sources(BD_LISTS, 2002, 2012),
+                         note=BD_SECONDARY_NOTE, python=lambda years: __import__("holidays").BD(years=years)),
+    "PK": dict(name="Pakistan (federal)", first=2022, build=pk_holidays, weekends=PK_WEEKENDS,
+               sources=lambda: _bdpk_sources(PK_LISTS, 2022, LAST), note=PK_NOTE,
+               python=lambda years: __import__("holidays").PK(years=years),
+               crosscheck=lambda days: bdpk_consistency_check(PK_LISTS, PK_FIXED, "PK")),
+    "PK-SECONDARY": dict(name="Pakistan federal (secondary sources)", country="PK", first=2004, last=2021,
+                         file="pk-secondary-holiday-gold.sexp", confidence="secondary", build=pk_holidays,
+                         weekends=PK_WEEKENDS, sources=lambda: _bdpk_sources(PK_LISTS, 2004, 2021),
+                         note=PK_SECONDARY_NOTE, python=lambda years: __import__("holidays").PK(years=years)),
     "CN": dict(name="China", first=CN_FIRST_PRIMARY, build=cn_holidays, working=cn_working_days,
                working_label="上班", sources=lambda: _cn_sources(CN_FIRST_PRIMARY, CN_LAST_NOTICE_YEAR),
                note=CN_NOTE, python=lambda years: __import__("holidays").CN(years=years, language="zh_CN"),
@@ -5989,6 +7252,10 @@ def build(cc: str) -> None:
     ]
     if gaps:
         lines.insert(lines.index(" :sources"), f" :gaps ({' '.join(str(g) for g in gaps)})")
+    if spec.get("weekends"):
+        eras = " ".join("(" + ("nil" if start is None else "(" + " ".join(map(str, start)) + ")") + " "
+                        + " ".join(map(str, days)) + ")" for start, days in spec["weekends"])
+        lines.insert(lines.index(" :sources"), f" :weekends ({eras})")
     if spec.get("confidence"):
         lines.insert(lines.index(" :sources"), f" :confidence :{spec['confidence']}")
     for title, uri, text in sources:
@@ -6004,6 +7271,8 @@ def build(cc: str) -> None:
         lines.append(" :working-days")
         lines.append(" (")
         for year in range(first, last + 1):
+            if year in gaps:
+                continue
             for d in spec["working"](year):
                 lines.append(f"  ({d.year} {d.month} {d.day} {lisp_string(spec.get('working_label', '補行上班'))})")
         lines.append(" )")
