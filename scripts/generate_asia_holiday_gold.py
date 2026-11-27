@@ -4402,6 +4402,1510 @@ def th_consistency_check(days: dict) -> None:
     th_crosscheck(False, 2000, TH_LAST_CABINET)
     th_crosscheck(True, 2000, TH_LAST_BOT)
 
+# --- India ----------------------------------------------------------------
+#
+# Gazetted holidays of the administrative offices of the Central Government
+# located at Delhi/New Delhi: Annexure-I of each year's DoPT Office
+# Memorandum "Holidays to be observed in Central Government Offices during
+# the year ..." (the 14 compulsory holidays and the 3 DoPT selects from the
+# 12 optional ones), and the later O.M.s that move an Islamic holiday after
+# the moon is sighted or declare a further holiday. Annexure-II, the
+# restricted holidays (each employee may take two), goes under :restricted.
+#
+# IN_ANNEXURES is the transcription of each O.M. (G = Annexure-I, R =
+# Annexure-II): date, name and the weekday as printed; most copies are scans,
+# so it was read from the page images. in_check_transcription() checks every
+# printed weekday against its date, and, for each copy with a text layer,
+# that every Annexure-I date is in the extracted text.
+
+IN_ANNEXURES = {
+    2002: """
+G|01-26|Republic Day|Saturday
+G|02-23|Idul' Zuha (Bakrid)|Saturday
+G|03-12|Maha Shivaratri|Tuesday
+G|03-25|Muharram|Monday
+G|03-29|Good Friday|Friday
+G|04-25|Mahabir Jayanti|Thursday
+G|05-25|Milad-Un-Nabi (Birthday of Prophet Md.)|Staurday
+G|05-26|Buddha Purnima|Sunday
+G|08-15|Independence Day|Thursday
+G|08-30|Janmashtami|Friday
+G|10-02|Mahatma Gandhi Birthday|Wednesday
+G|10-14|Dussehra (Mahanavami)|Monday
+G|10-15|Dussehra(Vijaya Dashami|Tuesday
+G|11-04|Diwali (Deepavali)|Monday
+G|11-19|Guru Nanak's Birthday|Tuesday
+G|12-06|Idu'l Fitr|Friday
+G|12-25|Christmas Day|Wednesday
+R|01-01|New Year's Day|Tuesday
+R|01-14|Makara Sankaranti|Monday
+R|01-14|Pongal|Monday
+R|01-21|Guru Gobind Singh's Birthday|Monday
+R|02-17|Bansanta Panchami /Shree Panchami|Sunday
+R|02-27|Guru Ravidas's Birthday|Wednesday
+R|03-08|Maharishi Dayanand Sarasvati Jayanti|Friday
+R|03-28|Holi (Holikadahana, Dolyatra)|Thursday
+R|03-29|Holi|Friday
+R|04-13|Chaitra Sukhladi / Gudi Padava / Ugadi / Cheti Chand|Saturday
+R|04-14|Vaisakhi|Sunday
+R|04-14|Mesadi|Sunday
+R|04-14|Vishu|Sunday
+R|04-15|Vaisakhadi(Bengal)/ Bahag Bihu|Monday
+R|04-21|Ram Navmi|Sunday
+R|07-12|Rath Yatra|Friday
+R|08-21|Parasi New Year|Wednesday
+R|08-21|Onam|Wednesday
+R|08-22|Rakha Bandhan|Thursday
+R|09-10|Ganesh Chaturthi/ Vinayaka Chaturthi|Tuesday
+R|09-21|Hazarat Ali's Birthday|Saturday
+R|10-12|Dussehra (Maha Saptami)|Saturday
+R|10-13|Dussehra (Maha Astami)|Sunday
+R|10-21|Maharishi Valmiki's Birthday|Sunday
+R|11-03|Deepavali (South India)|Sunday
+R|11-03|Naraka Chaturdasi|Sunday
+R|11-05|Govardhan Puja|Tuesday
+R|11-06|Bhai Duj|Wednesday
+R|11-29|Jumat-Ul-Vida|Friday
+R|12-08|Guru Teg Bahadur Martyrdrom Day|Sunday
+""",
+    2003: """
+G|01-26|Republic Day|Sunday
+G|02-12|Idul' Zuha (Bakrid)|Wednesday
+G|03-14|Muharram|Friday
+G|03-19|Holi|Wednesday
+G|04-11|Ram Navami|Friday
+G|04-15|Mahavir Jayanti|Tuesday
+G|04-18|Good Friday|Friday
+G|05-14|Milad-Un-Nabi (Birthday of Prophet Md.)|Wednesday
+G|05-16|Buddha Purnima|Friday
+G|08-15|Independence Day|Friday
+G|08-20|Janmashtami|Wednesday
+G|10-02|Mahatma Gandhi Birthday|Thursday
+G|10-04|Dussehra(Vijaya Dashami|Saturday
+G|10-25|Diwali (Deepavali)|Saturday
+G|11-08|Guru Nanak's Birthday|Saturday
+G|11-26|Idu'l Fitr|Wednesday
+G|12-25|Christmas Day|Thursday
+R|01-01|New Year's Day|Wednesday
+R|01-09|Guru Govind Singh's Birthday|Thursday
+R|01-14|Makara Sankaranti|Tuesday
+R|01-15|Pongal|Wednesday
+R|02-06|Bansanta Panchami /Shree Panchami|Thursday
+R|02-16|Guru Ravidas's Birthday|Sunday
+R|02-26|Maharishi Dayanand Sarasvati Jayanti|Wednesday
+R|03-01|Maha Shivaratri|Saturday
+R|03-18|Holi (Holikadahana, Dolyatra)|Tuesday
+R|04-02|Chaitra Sukhladi / Gudi Padava / Ugadi / Cheti Chand|Wednesday
+R|04-14|Vaisakhi|Monday
+R|04-14|Mesadi|Monday
+R|04-15|Vishu|Tuesday
+R|04-15|Vaisakhadi(Bengal)/ Bahag Bihu|Tuesday
+R|07-01|Rath Yatra|Tuesday
+R|08-12|Raksha Bandhan|Tuesday
+R|08-21|Parasi New Year|Thursday
+R|08-31|Ganesh Chaturthi/ Vinayaka Chaturthi|Sunday
+R|09-08|Onam|Monday
+R|09-10|Hazarat Ali's Birthday|Wednesday
+R|10-02|Dussehra(Maha Saptami) (Additional)|Thursday
+R|10-03|Dussehra (Maha Astami) (Additional)|Friday
+R|10-04|Dussehra ( Maha Navami) (Additional)|Saturday
+R|10-10|Maharishi Valmiki's Birthday|Friday
+R|10-24|Deepavali (South India)|Friday
+R|10-24|Naraka Chaturdasi|Friday
+R|10-25|Govardhan Puja|Saturday
+R|10-26|Bhai Duj|Sunday
+R|11-21|Jumat-Ul-Vida|Friday
+R|11-28|Guru Teg Bahadur Martyrdrom Day|Friday
+R|12-24|Christmas Eve|Wednesday
+R|12-29|Guru Govind Singh's Birthday|Monday
+""",
+    2004: """
+G|01-26|Republic Day|Monday
+G|02-02|Idu'Z Zuha (Bakrid)|Monday
+G|02-18|Maha Shivaratri|Wednesday
+G|03-02|Muharram|Tuesday
+G|03-30|Ram Navami|Tuesday
+G|04-03|Mahavir Jayanti|Saturday
+G|04-09|Good Friday|Friday
+G|05-02|Milad-Un-Nabi (Birthday of Prophet Md.)|Sunday
+G|05-04|Buddha Purnima|Tuesday
+G|08-15|Independence Day|Sunday
+G|09-07|Janmashtami|Tuesday
+G|10-02|Mahatma Gandhi Birthday|Saturday
+G|10-22|Dussehra(Vijaya Dashami|Friday
+G|11-12|Diwali (Deepavali)|Friday
+G|11-15|Idu'l Fitr|Monday
+G|11-26|Guru Nanak's Birthday|Friday
+G|12-25|Christmas Day|Saturday
+R|01-01|New Year's Day|Thursday
+R|01-05|Guru Govind Singh's Birthday|Monday
+R|01-15|Makara Sankaranti|Thursday
+R|01-16|Pongal|Friday
+R|01-26|Bansanta Panchami /Shree Panchami|Monday
+R|02-06|Guru Ravidas's Birthday|Friday
+R|02-15|Maharishi Dayanand Sarasvati Jayanti|Sunday
+R|03-06|Holi (Holikadahana, Dolyatra)|Saturday
+R|03-21|Chaitra Sukhladi / Gudi Padava / Ugadi / Cheti Chand|Sunday
+R|04-13|Vaisakhi|Tuesday
+R|04-13|Mesadi|Tuesday
+R|04-14|Vishu|Wednesday
+R|04-14|Vaisakhadi(Bengal)/ Bahag Bihu (Assam)|Wednesday
+R|06-19|Rath Yatra|Saturday
+R|08-19|Ganesh Chaturthi/ Vinayaka Chaturthi|Thursday
+R|08-20|Parsi New Year|Friday
+R|08-28|Onam|Saturday
+R|08-29|Raksha Bandhan|Sunday
+R|08-30|Hazarat Ali's Birthday|Monday
+R|10-20|Dussehra(Maha Saptami) (Additional)|Wednesday
+R|10-21|Dussehra (Maha Astami) (Additional)|Thursday
+R|10-22|Dussehra ( Maha Navami) (Additional)|Friday
+R|10-28|Maharishi Valmiki's Birthday|Thursday
+R|11-11|Deepavali (South India)|Thursday
+R|11-11|Naraka Chaturdasi|Thursday
+R|11-12|Jamat-Ul-Vida|Friday
+R|11-13|Govardhan Puja|Saturday
+R|11-14|Bhai Duj|Sunday
+R|11-24|Guru Teg Bahadur Martyrdrom Day|Wednesday
+R|12-24|Christmas Eve|Friday
+""",
+    2007: """
+G|01-01|Idu'l Zuha (Bakrid)|Monday
+G|01-26|Republic Day|Friday
+G|01-30|Muharram|Tuesday
+G|02-16|Maha Shivratri|Friday
+G|03-27|Ram Navami|Tuesday
+G|03-31|Mahavir Jayanti|Saturday
+G|04-01|Milad-Un-Nabi (Birthday of Prophet Mohammed)|Sunday
+G|04-06|Good Friday|Friday
+G|05-02|Buddha Purnima|Wednesday
+G|08-15|Independence Day|Wednesday
+G|09-04|Janmashtami|Tuesday
+G|10-02|Mahatma Gandhi's Birthday|Tuesday
+G|10-14|Idu'l Fitr|Sunday
+G|10-21|Dussehra|Sunday
+G|11-09|Diwali (Deepavali)|Friday
+G|11-24|Guru Nanak's Birthday|Saturday
+G|12-21|Idu'l Zuha (Bakrid) [* falls twice in 2007; no Idu'l Zuha holiday during 2008]|Friday
+G|12-25|Christmas Day|Tuesday
+R|01-01|New Year Day|Monday
+R|01-05|Guru Govind Singh's Birthday|Friday
+R|01-14|Makara Samkranti|Sunday
+R|01-15|Pongal|Monday
+R|01-23|Basanta Panchami /Shree Panchami|Tuesday
+R|02-02|Guru Ravidas' Birthday|Friday
+R|02-12|Maharishi Dayanand Sarasvati Jayanti|Monday
+R|03-03|Holikadahana (Dolyatra)|Saturday
+R|03-04|Holi|Sunday
+R|03-19|Chaitra Sukhladi / Gudi Padava / Ugadi / Cheti Chand|Monday
+R|04-08|Easter|Sunday
+R|04-14|Vaisakhi|Saturday
+R|04-14|Mesadi|Saturday
+R|04-14|Vishu|Saturday
+R|04-15|Vaisakhadi(Bengal)/ Bahag Bihu (Assam)|Sunday
+R|07-16|Rath Yatra|Monday
+R|07-28|Hazarat Ali's Birthday|Saturday
+R|08-20|Parsi New Year|Monday
+R|08-27|Onam|Monday
+R|08-28|Raksha Bandhan|Tuesday
+R|09-03|Janmashtami (Smarta)|Monday
+R|09-15|Ganesh Chaturthi / Vinayaka Chaturthi|Saturday
+R|10-12|Jamat-Ul-Vida|Friday
+R|10-18|Dussehra(Maha Saptami) (Additional)|Thursday
+R|10-19|Dussehra (Maha Ashtami) (Additional)|Friday
+R|10-20|Dussehra (Maha Navami) (Additional)|Saturday
+R|10-26|Maharishi Valmiki's Birthday|Friday
+R|11-08|Deepavali (South India)|Thursday
+R|11-08|Naraka Chaturdasi|Thursday
+R|11-10|Govardhan Puja|Saturday
+R|11-11|Bhai Duj|Sunday
+R|11-24|Guru Teg Bahadur's Martyrdrom Day|Saturday
+R|12-24|Christmas Eve|Monday
+""",
+    2008: """
+G|01-19|Muharram|Saturday
+G|01-26|Republic Day|Saturday
+G|03-06|Maha Shivratri|Thursday
+G|03-21|Milad-Un-Nabi or Id-E-Milad (Birthday of Prophet Md.)|Friday
+G|03-21|Good Friday|Friday
+G|03-22|Holi|Saturday
+G|04-14|Ram Navami (Vaisnava)|Monday
+G|04-18|Mahavir Jayanti|Friday
+G|05-20|Buddha Purnima|Tuesday
+G|08-15|Independence Day|Friday
+G|10-02|Mahatma Gandhi's Birthday|Thursday
+G|10-02|Idu'l Fitr|Thursday
+G|10-09|Dussehra (Vijaya Dashami)|Thursday
+G|10-28|Diwali (Deepavali)|Tuesday
+G|11-13|Guru Nanak's Birthday|Thursday
+G|12-09|Idu'l Zuha (Bakrid)|Tuesday
+G|12-25|Christmas Day|Thursday
+R|01-01|New Year Day|Tuesday
+R|01-05|Guru Govind Singh's Birthday|Saturday
+R|01-14|Makara Samkranti (N. India)|Monday
+R|01-15|Makara Samkranti ( Bengal)|Tuesday
+R|01-15|Pongal|Tuesday
+R|02-11|Basanta Panchami /Shree Panchami|Monday
+R|02-19|Sivaji Jayanti|Tuesday
+R|02-21|Guru Ravidas' Birthday|Thursday
+R|03-02|Swami Dayanand Saraswati Jayanti|Sunday
+R|03-21|Holika Dahana (Dol yatra)|Friday
+R|03-23|Easter (Sunday)|Sunday
+R|04-07|Chaitra Sukhladi / Gudi Padava / Ugadi / Cheti Chand|Monday
+R|04-13|Vaisakhi|Sunday
+R|04-13|Vishu|Sunday
+R|04-14|Mesadi|Monday
+R|04-14|Vaisakhadi(Bengal)/ Bahag Bihu (Assam)|Monday
+R|05-08|Birthday of Rabindranath|Thursday
+R|07-04|Rath Yatra|Friday
+R|07-17|Hazarat Ali's Birthday|Thursday
+R|08-16|Raksha Bandhan|Saturday
+R|08-19|Parsi New Year|Tuesday
+R|08-24|Janmashtami (Smarta& Vaishnava)|Sunday
+R|09-03|Ganesh Chaturthi /VinayakaChaturthi|Wednesday
+R|09-12|Onam|Friday
+R|09-26|Jamat-Ul-Vida|Friday
+R|10-06|Dussehra(Maha Saptami) (additional)|Monday
+R|10-07|Dussehra (Maha Ashtami) (Additional)|Tuesday
+R|10-08|Dussehra (Maha Navmi)|Wednesday
+R|10-14|Maharishi Valmiki's Birthday|Tuesday
+R|10-27|Deepavali (South India)|Monday
+R|10-27|Naraka Chaturdasi|Monday
+R|10-29|Govardhan Puja|Wednesday
+R|10-30|Bhai Duj|Thursday
+R|11-24|Guru Teg Bahadur's Martyrdrom Day|Monday
+R|12-24|Christmas Eve|Wednesday
+""",
+    2009: """
+G|01-08|Muharram|Thursday
+G|01-26|Republic Day|Monday
+G|03-10|Milad-Un-Nabi or Id-E-Milad (Birthday of Prophet Md.)|Tuesday
+G|03-11|Holi (Dola Yatra)|Wednesday
+G|04-03|Ram Navami|Friday
+G|04-07|Mahavir Jayanti|Tuesday
+G|04-10|Good Friday|Friday
+G|05-09|Buddha Purnima|Saturday
+G|08-14|Janamashtami (Vaisnava)|Friday
+G|08-15|Independence Day|Saturday
+G|09-21|Idu'l Fitr|Monday
+G|09-28|Dussehra (Vijaya Dashami)|Monday
+G|10-02|Mahatma Gandhi's Birthday|Friday
+G|10-17|Diwali (Deepavali)|Saturday
+G|11-02|Guru Nanak's Birthday|Monday
+G|11-28|Idu'l Zuha (Bakrid)|Saturday
+G|12-25|Christmas Day|Friday
+G|12-28|Muharram|Monday
+R|01-01|New Year Day|Thursday
+R|01-05|Guru Govind Singh's Birthday|Monday
+R|01-13|Makara Samkranti (North India)|Tuesday
+R|01-14|Makara Samkranti (Bengal)|Wednesday
+R|01-14|Pongal (South India)|Wednesday
+R|01-31|Basanta Panchami /Shree Panchami|Saturday
+R|02-09|Guru Ravidas' Birthday|Monday
+R|02-19|Sivaji Jayanti|Thursday
+R|02-19|Swami Dayanand Saraswati Jayanti|Thursday
+R|02-23|Maha Shivaratri|Monday
+R|03-10|Holika Dahana|Tuesday
+R|03-27|Chaitra / Gudi Padava / Ugadi / Cheti Chand|Friday
+R|04-12|Easter (Sunday)|Sunday
+R|04-13|Vaisakhi|Monday
+R|04-13|Vishu|Monday
+R|04-14|Mesadi|Tuesday
+R|04-15|Vaisakhadi(Bengal)/ Bahag Bihu (Assam)|Wednesday
+R|05-09|Birthday of Rabindranath|Saturday
+R|06-24|Rath Yatra|Wednesday
+R|07-07|Hazarat Ali's Birthday|Tuesday
+R|08-05|Raksha Bandhan|Wednesday
+R|08-19|Parsi New Year|Wednesday
+R|08-23|Ganesh Chaturthi / Vinayaka Chaturthi|Sunday
+R|09-02|Onam|Wednesday
+R|09-18|Jamat-Ul-Vida|Friday
+R|09-25|Maha Saptami|Friday
+R|09-26|Maha Ashtami|Saturday
+R|09-27|Maha Navmi|Sunday
+R|10-04|Maharishi Valmiki's Birthday|Sunday
+R|10-17|Deepavali (South India)|Saturday
+R|10-17|Naraka Chaturdasi|Saturday
+R|10-18|Govardhan Puja|Sunday
+R|10-19|Bhai Duj|Monday
+R|11-24|Guru Teg Bahadur's Martyrdrom Day|Tuesday
+R|12-24|Christmas Eve|Thursday
+""",
+    2010: """
+G|01-26|Republic Day|Tuesday
+G|02-27|Milad-Un-Nabi or Id-E-Milad (Birthday of Prophet Mohammad)|Saturday
+G|03-01|Holi|Monday
+G|03-24|Ram Navami|Wednesday
+G|03-28|Mahavir Jayanti|Sunday
+G|04-02|Good Friday|Friday
+G|05-27|Buddha Purnima|Thursday
+G|08-15|Independence Day|Sunday
+G|09-02|Janamashtami (Vaisnava)|Thursday
+G|09-11|Idu'l Fitr|Saturday
+G|10-02|Mahatma Gandhi's birthday|Saturday
+G|10-17|Dussehra (Vijaya Dashami)|Sunday
+G|11-05|Diwali (Deepavali)|Friday
+G|11-17|Idu'l Zuha (Bakrid)|Wednesday
+G|11-21|Guru Nanak's birthday|Sunday
+G|12-17|Muharram|Friday
+G|12-25|Christmas Day|Saturday
+R|01-01|New Year's Day|Friday
+R|01-05|Guru Gobind Singh's birthday|Tuesday
+R|01-14|Makar Sankranti|Thursday
+R|01-14|Pongal (South India)|Thursday
+R|01-20|Basanta Panchami /Sri Panchami|Wednesday
+R|01-30|Guru Ravidas' birthday|Saturday
+R|02-08|Swami Dayanand Saraswati Jayanti|Monday
+R|02-12|Maha Shivratri|Friday
+R|02-19|Shivaji Jayanti|Friday
+R|02-28|Holika Dahan (Dol yatra)|Sunday
+R|03-16|Chaitra Sukladi/ Gudi Padava/Ugadi/ Cheti Chand|Tuesday
+R|04-04|Easter (Sunday)|Sunday
+R|04-14|Vaisakhi|Wednesday
+R|04-14|Vishu|Wednesday
+R|04-14|Mesadi|Wednesday
+R|04-15|Vaisakhadi(Bengal) / Bahag Bihu (Assam)|Thursday
+R|05-09|Guru Rabindranath's Birthday|Sunday
+R|06-26|Hazarat Ali's Birthday|Saturday
+R|07-13|Rath Yatra|Tuesday
+R|08-19|Parsi New Year's day|Thursday
+R|08-23|Onam|Monday
+R|08-24|Raksha Bandhan|Tuesday
+R|09-10|Jamat-Ul-Vida|Friday
+R|09-11|Ganesh Chaturthi / Vinayaka Chaturthi|Saturday
+R|10-14|(Maha Saptami) (Additional)|Thursday
+R|10-15|Dussehra (Maha Ashtami) (Additional)|Friday
+R|10-16|Dussehra (Maha Navmi)|Saturday
+R|10-22|Maharishi Valmiki's birthday|Friday
+R|11-05|Deepavali (South India)|Friday
+R|11-05|Narak Chaturdasi|Friday
+R|11-06|Govardhan Puja|Saturday
+R|11-07|Bhai Duj|Sunday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Wednesday
+R|12-24|Christmas Eve|Friday
+""",
+    2011: """
+G|01-26|Republic Day|Wednesday
+G|02-16|Milad-Un-Nabi or Id-E-Milad (Birthday of Prophet Mohammad)|Wednesday
+G|03-02|Maha Shivaratri|Wednesday
+G|04-12|Ram Navami|Tuesday
+G|04-16|Mahavir Jayanti|Saturday
+G|04-22|Good Friday|Friday
+G|05-17|Buddha Purnima|Tuesday
+G|08-15|Independence Day|Monday
+G|08-22|Janamashtami (Vaisnava)|Monday
+G|08-31|Idu'l Fitr|Wednesday
+G|10-02|Mahatma Gandhi's birthday|Sunday
+G|10-06|Dussehra (Vijaya Dashami)|Thursday
+G|10-26|Diwali (Deepavali)|Wednesday
+G|11-07|Idu'l Zuha (Bakrid)|Monday
+G|11-10|Guru Nanak's birthday|Thursday
+G|12-06|Muharram|Tuesday
+G|12-25|Christmas Day|Sunday
+R|01-01|New Year's Day|Saturday
+R|01-05|Guru Gobind Singh's birthday|Wednesday
+R|01-14|Makar Sankranti|Friday
+R|01-15|Pongal|Saturday
+R|02-08|Basanta Panchami /Sri Panchami|Tuesday
+R|02-18|Guru Ravidas' birthday|Friday
+R|02-19|Shivaji Jayanti|Saturday
+R|02-27|Swami Dayananda Saraswati Jayanti|Sunday
+R|03-19|Holika Dahan (Dol yatra)|Saturday
+R|03-20|Holi|Sunday
+R|04-04|Chaitra Sukladi/Gudi Padava/Ugadi/Cheti Chand|Monday
+R|04-14|Vaisakhi|Thursday
+R|04-14|Vishu|Thursday
+R|04-14|Mesadi|Thursday
+R|04-15|Vaisakhadi(Bengal)/ Bahag Bihu (Assam)|Friday
+R|04-24|Easter Sunday|Sunday
+R|05-09|Guru Rabindranath's Birthday|Monday
+R|06-16|Hazarat Ali's Birthday|Thursday
+R|07-03|Rath Yatra|Sunday
+R|08-13|Raksha Bandhan|Saturday
+R|08-19|Parsi New Year's day|Friday
+R|08-26|Jamat-Ul-Vida|Friday
+R|09-01|Ganesh Chaturthi / Vinayaka Chaturthi|Thursday
+R|09-09|Onam|Friday
+R|10-03|(Maha Saptami) (Additional)|Monday
+R|10-04|Dussehra (Maha Ashtami) (Additional)|Tuesday
+R|10-05|Dussehra (Maha Navmi)|Wednesday
+R|10-11|Maharishi Valmiki's birthday|Tuesday
+R|10-26|Deepavali (South India)|Wednesday
+R|10-26|Narak Chaturdasi|Wednesday
+R|10-27|Govardhan Puja|Thursday
+R|10-28|Bhai Duj|Friday
+R|11-01|Pratihar Sashthi or Surya Sashthi (Chhat Puja)|Tuesday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Thursday
+R|12-24|Christmas Eve|Saturday
+""",
+    2012: """
+G|01-26|Republic Day|Thursday
+G|02-05|Milad-Un-Nabi or Id-E-Milad (Birthday of Prophet Mohammad)|Sunday
+G|02-20|Maha Shivaratri|Monday
+G|03-08|Holi|Thursday
+G|04-05|Mahavir Jayanti|Thursday
+G|04-06|Good Friday|Friday
+G|05-06|Buddha Purnima|Sunday
+G|08-10|Janamashtami (Vaisnava)|Friday
+G|08-15|Independence day|Wednesday
+G|08-20|Idu'l Fitr|Monday
+G|10-02|Mahatma Gandhi's birthday|Tuesday
+G|10-24|Dussehra (Vijaya Dashami)|Wednesday
+G|10-27|Idu'l Zuha (Bakrid)|Saturday
+G|11-13|Diwali (Deepavali)|Tuesday
+G|11-25|Muharram|Sunday
+G|11-28|Guru Nanak's birthday|Wednesday
+G|12-25|Christmas Day|Tuesday
+R|01-01|New Year's Day|Sunday
+R|01-14|Makar Sankranti|Saturday
+R|01-15|Pongal|Sunday
+R|01-28|Basanta Panchami /Sri Panchami|Saturday
+R|02-07|Guru Ravidas' birthday|Tuesday
+R|02-16|Swami Dayananda Saraswati Jayanti|Thursday
+R|02-19|Shivaji Jayanti|Sunday
+R|03-07|Holika Dahan|Wednesday
+R|03-23|Chaitra Sukladi/Gudi Padava/Ugadi/Cheti Chand|Friday
+R|04-01|Ram Navmi|Sunday
+R|04-08|Easter Sunday|Sunday
+R|04-13|Vaisakhi|Friday
+R|04-13|Vishu|Friday
+R|04-14|Mesadi|Saturday
+R|04-14|Vaisakhadi(Bengal)/ Bahag Bihu (Assam)|Saturday
+R|05-08|Guru Rabindranath's birthday|Tuesday
+R|06-04|Hazarat Ali's Birthday|Monday
+R|06-21|Rath Yatra|Thursday
+R|08-02|Raksha Bandhan|Thursday
+R|08-17|Jamat-Ul-Vida [struck through by hand in this copy]|Friday
+R|08-18|Parsi New Year's day|Saturday
+R|08-21|Vinayaka Chaturthi|Tuesday
+R|08-29|Onam|Wednesday
+R|09-19|Ganesh Chaturthi|Wednesday
+R|10-21|(Maha Saptami) (Additional)|Sunday
+R|10-22|Dussehra (Maha Ashtami) (Additional)|Monday
+R|10-23|Dussehra (Maha Navmi)|Tuesday
+R|10-29|Maharishi Valmiki's birthday|Monday
+R|11-02|Karaka Chaturthi (Karva Chouth)|Friday
+R|11-12|Naraka Chaturdasi|Monday
+R|11-13|Deepavali (South India)|Tuesday
+R|11-14|Govardhan Puja|Wednesday
+R|11-15|Bhai Duj|Thursday
+R|11-19|Pratihar Sashthi or Surya Sashthi (Chhat Puja)|Monday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Saturday
+R|12-24|Christmas Eve|Monday
+""",
+    2013: """
+G|01-25|Milad-Un-Nabi or Id-E-Milad (Birthday of Prophet Mohammad)|Friday
+G|01-26|Republic Day|Saturday
+G|03-27|Holi|Wednesday
+G|03-29|Good Friday|Friday
+G|04-19|Ram Navami|Friday
+G|04-24|Mahavir Jayanti|Wednesday
+G|05-25|Buddha Purnima|Saturday
+G|08-09|Idu'l Fitr|Friday
+G|08-15|Independence day|Thursday
+G|08-28|Janmashtami|Wednesday
+G|10-02|Mahatma Gandhi's birthday)|Wednesday
+G|10-13|Dussehra|Sunday
+G|10-16|Id-ul-Zuha(Bakrid)|Wednesday
+G|11-03|Diwali (Deepavali)|Sunday
+G|11-14|Muharram|Thursday
+G|11-17|Guru Nanak's Birthday|Sunday
+G|12-25|Christmas Day|Wednesday
+R|01-01|New Year's Day|Tuesday
+R|01-13|Makar Sankranti|Sunday
+R|01-14|Pongal|Monday
+R|01-18|Guru Gobind Singh's Birthday|Friday
+R|02-14|Sri Panchami|Thursday
+R|02-15|Basanta Panchami|Friday
+R|02-19|Shivaji Jayanti|Tuesday
+R|02-25|Guru Ravidas's Birthday|Monday
+R|03-07|Swami Dayananda Saraswati Jayanti|Thursday
+R|03-10|Maha Shivratri|Sunday
+R|03-26|Holika Dahan|Tuesday
+R|03-31|Easter Sunday|Sunday
+R|04-11|Chaitra Sukladi/ Gudi Padava/ Ugadi/ Cheti Chand|Thursday
+R|04-13|Vaisakhi|Saturday
+R|04-13|Vishu|Saturday
+R|04-14|Mesadi|Sunday
+R|04-15|Vaisakhadi(Bengal)/ Bahag Bihu (Assam)|Monday
+R|05-09|Guru Rabindranath's birthday|Thursday
+R|05-24|Hazarat Ali's Birthday|Friday
+R|07-10|Rath Yatra|Thursday
+R|08-02|Jamat-Ul-Vida|Friday
+R|08-18|Parsi New Year's day|Sunday
+R|08-20|Raksha Bandhan|Tuesday
+R|09-09|Vinayaka Chaturthi/ Ganesh Chaturthi|Monday
+R|09-16|Onam|Monday
+R|10-11|Dussehra (Maha Saptami) (Additional)|Friday
+R|10-12|Dussehra (Maha Ashtami) (Additional)|Saturday
+R|10-13|Dussehra (Maha Navmi)|Sunday
+R|10-18|Maharishi Valmiki's birthday|Friday
+R|10-22|Karaka Chaturthi (Karva Chouth)|Tuesday
+R|11-02|Deepavali (South India)|Saturday
+R|11-02|Naraka Chaturdasi|Saturday
+R|11-03|Govardhan Puja|Sunday
+R|11-05|Bhai Duj|Tuesday
+R|11-08|Pratihar Sashthi or Surya Sashthi (Chhat Puja)|Friday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Sunday
+R|12-24|Christmas Eve|Tuesday
+""",
+    2014: """
+G|01-14|Milad-Un-Nabi or Id-E-Milad (Birthday of Prophet Mohammad)|Tuesday
+G|01-26|Republic Day|Sunday
+G|03-17|Holi|Monday
+G|04-08|Ram Navami|Tuesday
+G|04-13|Mahavir Jayanti|Sunday
+G|04-18|Good Friday|Friday
+G|05-14|Buddha Purnima|Wednesday
+G|07-29|Idu'l Fitr|Tuesday
+G|08-15|Independence day|Friday
+G|08-18|Janmashtami|Monday
+G|10-02|Mahatma Gandhi's Birthday|Thursday
+G|10-03|Dussehra|Friday
+G|10-06|Id-ul-Zuha(Bakrid)|Monday
+G|10-23|Diwali (Deepavali)|Thursday
+G|11-04|Muharram|Tuesday
+G|11-06|Guru Nanak's Birthday|Thursday
+G|12-25|Christmas Day|Thursday
+R|01-01|New Year's Day|Wednesday
+R|01-07|Guru Gobind Singh's Birthday|Tuesday
+R|01-14|Makar Sankranti|Tuesday
+R|01-14|Pongal|Tuesday
+R|02-04|Basant Panchami /Sri Panchami|Tuesday
+R|02-14|Guru Ravidas's Birthday|Friday
+R|02-19|Shivaji Jayanti|Wednesday
+R|02-24|Swami Dayananda Saraswati Jayanti|Monday
+R|02-27|Maha Shivaratri|Thursday
+R|03-16|Holika Dahan|Sunday
+R|03-31|Chaitra Sukladi/Gudi Padava/ Ugadi/ Cheti Chand|Monday
+R|04-14|Vaisakhi/Vishu / Masadi|Monday
+R|04-15|Vaisakhadi(Bengal)/ Bahag Bihu (Assam)|Tuesday
+R|04-20|Easter Sunday|Sunday
+R|05-09|Guru Rabindranath's birthday|Friday
+R|05-13|Hazarat Ali's Birthday|Tuesday
+R|06-29|Rath Yatra|Sunday
+R|07-25|Jamat-Ul-Vida|Friday
+R|08-10|Raksha Bandhan|Sunday
+R|08-18|Parsi New Year's day/ Nauroz|Monday
+R|08-29|Vinayaka Chaturthi/ Ganesh Chaturthi|Friday
+R|09-07|Onam|Sunday
+R|10-01|Dussehra (Maha Saptami) (Additional)|Wednesday
+R|10-02|Dussehra (Maha Ashtami) (Additional)|Thursday
+R|10-03|Dussehra (Maha Navmi)|Friday
+R|10-08|Maharishi Valmiki's Birthday|Wednesday
+R|10-11|Karaka Chaturthi (Karva Chouth)|Saturday
+R|10-22|Deepavali (South India)|Wednesday
+R|10-22|Naraka Chaturdasi|Wednesday
+R|10-24|Govardhan Puja|Friday
+R|10-25|Bhai Duj|Saturday
+R|10-29|Pratihar Sashthi/Surya Sashthi (Chhat Puja)|Wednesday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Monday
+R|12-24|Christmas Eve|Wednesday
+""",
+    2015: """
+G|01-04|Milad-Un-Nabi or Id-E-Milad (Birthday of Prophet Mohammad)|Sunday
+G|01-26|Republic Day|Monday
+G|03-06|Holi|Friday
+G|03-28|Ram Navami|Saturday
+G|04-02|Mahavir Jayanti|Thursday
+G|04-03|Good Friday|Friday
+G|05-04|Buddha Purnima|Monday
+G|07-18|Idu'l Fitr|Saturday
+G|08-15|Independence day|Saturday
+G|09-05|Janmashtami|Saturday
+G|09-25|Id-ul-Zuha(Bakrid)|Friday
+G|10-02|Mahatma Gandhi's Birthday|Friday
+G|10-22|Dussehra|Thursday
+G|10-24|Muharram|Saturday
+G|11-11|Diwali (Deepavali)|Wednesday
+G|11-25|Guru Nanak's Birthday|Wednesday
+G|12-24|Milad-Un-Nabi or Id-E-Milad (Birthday of Prophet Mohammad) [* falls twice in the year 2015]|Thursday
+G|12-25|Christmas Day|Friday
+R|01-01|New Year's Day|Thursday
+R|01-14|Makar Sankranti|Wednesday
+R|01-15|Pongal|Thursday
+R|01-24|Basant Panchami /Sri Panchami|Saturday
+R|02-03|Guru Ravidas's Birthday|Tuesday
+R|02-14|Swami Dayananda Saraswati Jayanti|Saturday
+R|02-19|Shivaji Jayanti|Thursday
+R|03-05|Holika Dahan|Thursday
+R|03-21|Chaitra Sukladi/Gudi Padava/Ugadi/Cheti Chand|Saturday
+R|04-05|Easter Sunday|Sunday
+R|04-14|Vaisakhi/Vishu/Masadi|Tuesday
+R|04-15|Vaisakhadi(Bengal)/ Bahag Bihu (Assam)|Wednesday
+R|05-03|Hazarat Ali's Birthday|Sunday
+R|05-09|Guru Rabindranath's birthday|Saturday
+R|07-17|Jamat-ul-Vida|Friday
+R|07-18|Rath Yatra|Saturday
+R|08-18|Parsi New Year's day/Nauroz|Tuesday
+R|08-28|Onam|Friday
+R|08-29|Raksha Bandhan|Saturday
+R|09-17|Vinayaka Chaturthi/ Ganesh Chaturthi|Thursday
+R|10-20|Dussehra (Maha Saptami) (Additional)|Tuesday
+R|10-21|Dussehra (Maha Ashtami) (Additional)|Wednesday
+R|10-22|Dussehra (Maha Navmi)|Thursday
+R|10-27|Maharishi Valmiki's Birthday|Tuesday
+R|10-30|Karaka Chaturthi (Karva Chouth)|Friday
+R|11-10|Deepavali (South India)|Tuesday
+R|11-10|Naraka Chaturdasi|Tuesday
+R|11-12|Govardhan Puja|Thursday
+R|11-13|Bhai Duj|Friday
+R|11-17|Pratihar Sashthi or Surya Sashthi (Chhat Puja)|Tuesday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Tuesday
+R|12-24|Christmas Eve|Thursday
+""",
+    2016: """
+G|01-26|Republic Day|Tuesday
+G|03-24|Holi|Thursday
+G|03-25|Good Friday|Friday
+G|04-15|Ram Navami|Friday
+G|04-20|Mahavir Jayanti|Wednesday
+G|05-21|Buddha Purnima|Saturday
+G|07-06|Idu'l Fitr|Wednesday
+G|08-15|Independence day|Monday
+G|08-25|Janmashtami|Thursday
+G|09-12|Id-ul-Zuha(Bakrid)|Monday
+G|10-02|Mahatma Gandhi's Birthday|Sunday
+G|10-11|Dussehra|Tuesday
+G|10-12|Muharram|Wednesday
+G|10-30|Diwali (Deepavali)|Sunday
+G|11-14|Guru Nanak's Birthday|Monday
+G|12-13|Milad-Un-Nabi or Id-E-Milad (Birthday of Prophet Mohammad)|Tuesday
+G|12-25|Christmas Day|Sunday
+R|01-01|New Year's Day|Friday
+R|01-14|Makar Sankranti|Thursday
+R|01-15|Pongal|Friday
+R|01-16|Guru Govind Singh's Birthday|Saturday
+R|02-12|Basant Panchami / Sri Panchami|Friday
+R|02-19|Shivaji Jayanti|Friday
+R|02-22|Guru Ravidas's Birthday|Monday
+R|03-04|Swami Dayananda Saraswati Jayanti|Friday
+R|03-07|Maha Shivaratri|Monday
+R|03-23|Holika Dahan, Dolyatra|Wednesday
+R|03-27|Easter Sunday|Sunday
+R|04-08|Chaitra Sukladi/Gudi Padava/ Ugadi/ Cheti Chand|Friday
+R|04-13|Vaisakhi/Vishu|Wednesday
+R|04-14|Masadi/Vaisakhadi,Bahag Bihu (Asam)|Thursday
+R|04-21|Hazarat Ali's Birthday|Thursday
+R|05-08|Guru Rabindranath's birthday|Sunday
+R|07-01|Jamat-Ul-Vida|Friday
+R|07-06|Rath Yatra|Wednesday
+R|08-17|Parsi New Year's day/ Nauraj|Wednesday
+R|08-18|Raksha Bandhan|Thursday
+R|09-05|Ganesh Chaturthi/Vinayaka Chaturthi|Monday
+R|09-14|Onam|Wednesday
+R|10-08|Dussehra (Maha Saptami) (Additional)|Saturday
+R|10-09|Dussehra (Maha Ashtami) (Additional)|Sunday
+R|10-10|Dussehra (Maha Navmi)|Monday
+R|10-16|Maharishi Valmiki's Birthday|Sunday
+R|10-19|Karaka Chaturthi (Karva Chouth)|Wednesday
+R|10-29|Deepavali (South India)|Saturday
+R|10-29|Naraka Chaturdasi|Saturday
+R|10-31|Govardhan Puja|Monday
+R|11-01|Bhai Duj|Tuesday
+R|11-06|Pratihar Sashthi or Surya Sashthi (Chhat Puja)|Sunday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Thursday
+R|12-24|Christmas Eve|Saturday
+""",
+    2017: """
+G|01-26|Republic Day|Thursday
+G|02-24|Maha Shivaratri|Friday
+G|03-13|Holi|Monday
+G|04-04|Ram Navami|Tuesday
+G|04-09|Mahavir Jayanti|Sunday
+G|04-14|Good Friday|Friday
+G|05-10|Buddha Purnima|Wednesday
+G|06-26|Idu'l Fitr|Monday
+G|08-15|Independence day|Tuesday
+G|09-02|Id-ul-Zuha(Bakrid)|Saturday
+G|09-30|Dussehra|Saturday
+G|10-01|Muharram|Sunday
+G|10-02|Mahatma Gandhi's Birthday|Monday
+G|10-19|Diwali (Deepavali)|Thursday
+G|11-04|Guru Nanak's Birthday|Saturday
+G|12-02|Milad-un-Nabi or Id-e-Milad (birthday of Prophet Mohammad)|Saturday
+G|12-25|Christmas Day|Monday
+R|01-01|New Year's Day|Sunday
+R|01-05|Guru Govind Singh's Birthday|Thursday
+R|01-14|Makar Sankranti|Saturday
+R|01-14|Pongal|Saturday
+R|02-01|Basant Panchami / Sri Panchami|Wednesday
+R|02-10|Guru Ravidas's Birthday|Friday
+R|02-19|Shivaji Jayanti|Sunday
+R|02-21|Swami Dayananda Saraswati Jayanti|Tuesday
+R|03-12|Holika Dahan/Dolyatra|Sunday
+R|03-28|Chaitra Sukladi/Gudi Padava/Ugadi/Cheti Chand|Tuesday
+R|04-11|Hazarat Ali's Birthday|Tuesday
+R|04-13|Vaisakhi/Vishu|Thursday
+R|04-14|Mesadi|Friday
+R|04-15|Vaisakhadi(Bengal)/ Bahag Bihu (Assam)|Saturday
+R|04-16|Easter Sunday|Sunday
+R|05-09|Guru Rabindranath's birthday|Tuesday
+R|06-23|Jamat-Ul-Vida|Friday
+R|06-25|Rath Yatra|Sunday
+R|08-07|Raksha Bandhan|Monday
+R|08-15|Janmashtami (Vaishnav)|Tuesday
+R|08-17|Parsi New Year's day/Nauraj|Thursday
+R|08-25|Vinayaka Chaturthi/ Ganesh Chaturthi|Friday
+R|09-04|Onam|Monday
+R|09-27|Dussehra (Maha Saptami) (Additional)|Wednesday
+R|09-28|Dussehra (Maha Ashtami) (Additional)|Thursday
+R|09-29|Dussehra (Maha Navmi)|Friday
+R|10-05|Maharishi Valmiki's Birthday|Thursday
+R|10-08|Karaka Chaturthi (Karva Chouth)|Sunday
+R|10-18|Deepavali (South India)|Wednesday
+R|10-18|Naraka Chaturdasi|Wednesday
+R|10-20|Govardhan Puja|Friday
+R|10-21|Bhai Duj|Saturday
+R|10-26|Pratihar Sashthi or Surya Sashthi (Chhat Puja)|Thursday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Friday
+R|12-24|Christmas Eve|Sunday
+""",
+    2018: """
+G|01-26|Republic Day|Friday
+G|02-14|Maha Shivaratri|Wednesday
+G|03-02|Holi|Friday
+G|03-29|Mahavir Jayanti|Thursday
+G|03-30|Good Friday|Friday
+G|04-30|Buddha Purnima|Monday
+G|06-16|Idu'l Fitr|Saturday
+G|08-15|Independence day|Wednesday
+G|08-22|Id-ul-Zuha (Bakrid)|Wednesday
+G|09-03|Janmashtami|Monday
+G|09-21|Muharram|Friday
+G|10-02|Mahatma Gandhi's (Birthday|Tuesday
+G|10-19|Dussehra|Friday
+G|11-07|Diwali (Deepavali)|Wednesday
+G|11-21|Milad-un-Nabi or Id-e-Milad (Birthday of Prophet Mohammad)|Wednesday
+G|11-23|Guru Nanak's Birthday|Friday
+G|12-25|Christmas Day|Tuesday
+R|01-01|New Year's Day|Monday
+R|01-14|Makar Sankranti|Sunday
+R|01-14|Pongal|Sunday
+R|01-22|Basant Panchami /Sri Panchami|Monday
+R|01-31|Guru Ravidas's Birthday|Wednesday
+R|02-10|Swami Dayananda Saraswati Jayanti|Saturday
+R|02-19|Shivaji Jayanti|Monday
+R|03-01|Holika Dahan/Dolyatra|Thursday
+R|03-18|Chaitra Sukladi/Gudi Padava/Ugadi/Cheti Chand|Sunday
+R|03-25|Ram Navami|Sunday
+R|04-01|Easter Sunday|Sunday
+R|04-01|Hazarat Ali's Birthday|Sunday
+R|04-14|Vaisakhi/ Vishu / Mesadi|Saturday
+R|04-15|Vaisakhadi(Bengal)/ Bahag Bihu (Assam)|Sunday
+R|05-09|Guru Rabindranath's birthday|Wednesday
+R|06-15|Jamat-Ul-Vida|Friday
+R|07-14|Rath Yatra|Saturday
+R|08-17|Parsi New Year's day/Nauraj|Friday
+R|08-25|Onam or Thiru Onam Day|Saturday
+R|08-26|Raksha Bandhan|Sunday
+R|09-13|Vinayaka Chaturthi/ Ganesh Chaturthi|Thursday
+R|10-16|Dussehra (Maha Saptami) (Additional)|Tuesday
+R|10-17|Dussehra (Maha Ashtami) (Additional)|Wednesday
+R|10-18|Dussehra (Maha Navmi)|Thursday
+R|10-24|Maharishi Valmiki's Birthday|Wednesday
+R|10-27|Karaka Chaturthi (Karva Chouth)|Saturday
+R|11-06|Deepavali (South India)|Tuesday
+R|11-06|Naraka Chaturdasi|Tuesday
+R|11-08|Govardhan Puja|Thursday
+R|11-09|Bhai Duj|Friday
+R|11-13|Pratihar Sashthi or Surya Sashthi (Chhat Puja)|Tuesday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Saturday
+R|12-24|Christmas Eve|Monday
+""",
+    2019: """
+G|01-26|Republic Day|Saturday
+G|03-04|Maha Shivaratri|Monday
+G|03-21|Holi|Thursday
+G|04-17|Mahavir Jayanti|Wednesday
+G|04-19|Good Friday|Friday
+G|05-18|Buddha Purnima|Saturday
+G|06-05|Id-ul-Fitr|Wednesday
+G|08-12|Id-Uz-Zuha (Bakrid)|Monday
+G|08-15|Independence Day|Thursday
+G|08-24|Janmashtami|Saturday
+G|09-10|Muharram|Tuesday
+G|10-02|Mahatma Gandhi's Birthday|Wednesday
+G|10-08|Dussehra|Tuesday
+G|10-27|Diwali (Deepavali)|Sunday
+G|11-10|Milad-un-Nabi or Id-e-Milad (Birthday of Prophet Mohammad)|Sunday
+G|11-12|Guru Nanak's Birthday|Tuesday
+G|12-25|Christmas Day|Wednesday
+R|01-01|New Year's Day|Tuesday
+R|01-13|Lohri|Sunday
+R|01-14|Makar Sankranti|Monday
+R|01-15|Pongal|Tuesday
+R|02-10|Basant Panchami /Sri Panchami|Sunday
+R|02-19|Guru Ravidas's Birthday|Tuesday
+R|02-19|Shivaji Jayanti|Tuesday
+R|03-01|Swami Dayananda Saraswati Jayanti|Thursday
+R|03-20|Holika Dahan|Wednesday
+R|03-21|Dolyatra|Thursday
+R|03-21|Hazarat Ali's Birthday|Thursday
+R|04-06|Chaitra Sukladi/Gudi Padava/Ugadi/ Cheti Chand|Saturday
+R|04-13|Ram Navami (Smarta)|Saturday
+R|04-14|Vaiskhi/Vishu/Mesadi|Sunday
+R|04-15|Vaisakhadi(Bengal)/ Bahag Bihu (Assam)|Monday
+R|04-21|Easter Sunday|Sunday
+R|05-09|Guru Rabindranath's Birthday|Thursday
+R|05-31|Jamat-Ul-Vida|Friday
+R|07-04|Rath Yatra|Thursday
+R|08-15|Raksha Bandhan|Thursday
+R|08-17|Parsi New Year's day/Nauraj|Saturday
+R|09-02|Vinayaka Chaturthi/ Ganesh Chaturthi|Monday
+R|09-11|Onam or Thiru Onam Day|Wednesday
+R|10-05|Dussehra (Maha Saptami) (Additional)|Saturday
+R|10-06|Dussehra (Maha Ashtami) (Additional)|Sunday
+R|10-07|Dussehra (Maha Navmi)|Monday
+R|10-13|Maharishi Valmiki's Birthday|Sunday
+R|10-17|Karaka Chaturthi (Karva Chouth)|Thursday
+R|10-27|Naraka Chaturdasi|Sunday
+R|10-28|Govardhan Puja|Monday
+R|10-29|Bhai Duj|Tuesday
+R|11-02|Pratihar Shashthi or Surya Shashthi (Chhat Puja)|Saturday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Sunday
+R|12-24|Christmas Eve|Tuesday
+""",
+    2020: """
+G|01-26|Republic Day|Sunday
+G|03-10|Holi|Tuesday
+G|04-02|Ram Navami|Thursday
+G|04-06|Mahavir Jayanti|Monday
+G|04-10|Good Friday|Friday
+G|05-07|Budha Purnima|Thursday
+G|05-25|Id-ul-Fitr|Monday
+G|08-01|Id-ul-Zuha (Bakrid)|Saturday
+G|08-12|Janmashtami|Wednesday
+G|08-15|Independence Day|Saturday
+G|08-30|Muharram|Sunday
+G|10-02|Mahatma Gandhi's Birthday|Friday
+G|10-25|Dussehra|Sunday
+G|10-30|Milad-un-Nabi or Id-e-Milad (Birthday of Prophet Mohammad)|Friday
+G|11-14|Diwali (Deepavali)|Saturday
+G|11-30|Guru Nanak's Birthday|Monday
+G|12-25|Christmas Day|Friday
+R|01-01|New Year's Day|Wednesday
+R|01-02|Guru Gobind Singh's Birthday|Thursday
+R|01-13|Lohri|Monday
+R|01-15|Makar Sankranti/ Pongal|Wednesday
+R|01-30|Basant Panchami /Sri Panchami|Thursday
+R|02-09|Guru Ravi Das's Birthday|Sunday
+R|02-18|Swami Dayananda Saraswati Jayanti|Tuesday
+R|02-19|Shivaji Jayanti|Wednesday
+R|02-21|Maha Shivaratri|Friday
+R|03-09|Holika Dahan/Dolyatra|Monday
+R|03-09|Hazarat Ali's Birthday|Monday
+R|03-25|Chaitra Sukladi / Gudi Padava/Ugadi /Cheti Chand|Wednesday
+R|04-12|Easter Sunday|Sunday
+R|04-13|Vaisakhi/Vishu|Monday
+R|04-14|Mesadi/ Vaisakhadi (Bengal)/Bahag Bihu (Assam)|Tuesday
+R|05-08|Guru Rabindranath's birthday|Friday
+R|05-22|Jamat-Ul-Vida|Friday
+R|06-23|Rath Yatra|Tuesday
+R|08-03|Raksha Bandhan|Monday
+R|08-11|Janmashtami (Smarta)|Tuesday
+R|08-16|Parsi New Year's day/Nauraj|Sunday
+R|08-22|Vinayaka Chaturthi/ Ganesh Chaturthi|Saturday
+R|08-31|Onam or Thiru Onam Day|Monday
+R|10-23|Dussehra (Maha Saptami) (Additional)|Friday
+R|10-24|Dussehra (Maha Ashtami) (Maha Navmi)(Additional)|Saturday
+R|10-26|Vijay Dashmi (Bengal, Kerala)|Monday
+R|10-31|Maharishi Valmiki's Birthday|Saturday
+R|11-04|Karaka Chaturthi (Karwa Chouth)|Wednesday
+R|11-14|Naraka Chaturdasi|Saturday
+R|11-15|Govardhan Puja|Sunday
+R|11-16|Bhai Duj|Monday
+R|11-20|Pratihar Shashthi or Surya Shashthi (Chhat Puja)|Friday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Tuesday
+R|12-24|Christmas Eve|Thursday
+""",
+    2021: """
+G|01-26|Republic Day|Tuesday
+G|03-29|Holi|Monday
+G|04-02|Good Friday|Friday
+G|04-21|Ram Navami|Wednesday
+G|04-25|Mahavir Jayanti|Sunday
+G|05-14|Id-ul-Fitr|Friday
+G|05-26|Budha Purnima|Wednesday
+G|07-21|Id-ul-Zuha (Bakrid)|Wednesday
+G|08-15|Independence Day|Sunday
+G|08-19|Muharram|Thursday
+G|08-30|Janmashtami|Monday
+G|10-02|Mahatma Gandhi's Birthday|Saturday
+G|10-15|Dussehra|Friday
+G|10-19|Milad-un-Nabi or Id-e-Milad (Birthday of Prophet Mohammad)|Tuesday
+G|11-04|Diwali (Deepavali)|Thursday
+G|11-19|Guru Nanak's Birthday|Friday
+G|12-25|Christmas Day|Saturday
+R|01-01|New Year's Day|Friday
+R|01-13|Lohri|Wednesday
+R|01-14|Makar Sankranti/Magha Bihu/ Pongal|Thursday
+R|01-20|Guru Gobind Singh's Birthday|Wednesday
+R|02-16|Basant Panchami /Sri Panchami|Tuesday
+R|02-19|Shivaji Jayanti|Friday
+R|02-26|Hazarat Ali's Birthday|Friday
+R|02-27|Guru Ravi Das's Birthday|Saturday
+R|03-08|Swami Dayananda Saraswati Jayanti|Monday
+R|03-11|Maha Shivaratri|Thursday
+R|03-28|Holika Dahan/Dolyatra|Sunday
+R|04-04|Easter Sunday|Sunday
+R|04-13|Chaitra Sukladi / Gudi Padava / Ugadi / Cheti Chand / Vaisakhi /Vishu|Tuesday
+R|04-14|Mesadi Tamil New Year's Day|Wednesday
+R|04-15|Vaisakhadi (Bengal) / Bahag Bihu (Assam)|Thursday
+R|05-07|Jamat-Ul-Vida|Friday
+R|05-09|Guru Rabindranath's birthday|Sunday
+R|07-12|Rath Yatra|Monday
+R|08-16|Parsi New Year's day/Nauraj|Monday
+R|08-21|Onam or Thiru Onam Day|Saturday
+R|08-22|Raksha Bandhan|Sunday
+R|08-30|Janmashtami (Smarta)|Monday
+R|09-10|Vinayaka Chaturthi/ Ganesh Chaturthi|Friday
+R|10-12|Dussehra (Saptami)|Tuesday
+R|10-13|Dussehra (Mahashtami)|Wednesday
+R|10-14|Dussehra (Mahanavmi)|Thursday
+R|10-20|Maharishi Valmiki's Birthday|Wednesday
+R|10-24|Karaka Chaturthi (Karwa Chouth)|Sunday
+R|11-03|Naraka Chaturdasi|Wednesday
+R|11-05|Govardhan Puja|Friday
+R|11-06|Bhai Duj|Saturday
+R|11-10|Pratihar Shashthi or Surya Shashthi (Chhat Puja)|Wednesday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Wednesday
+R|12-24|Christmas Eve|Friday
+""",
+    2022: """
+G|01-26|Republic Day|Wednesday
+G|03-01|Maha Shivratri|Tuesday
+G|03-18|Holi|Friday
+G|04-14|Mahavir Jayanti|Thursday
+G|04-15|Good Friday|Friday
+G|05-03|Id-ul-Fitr|Tuesday
+G|05-16|Budha Purnima|Monday
+G|07-10|Id-ul-Zuha (Bakrid)|Sunday
+G|08-09|Muharram|Tuesday
+G|08-15|Independence Day|Monday
+G|08-19|Janmashtami|Friday
+G|10-02|Mahatma Gandhi's Birthday|Sunday
+G|10-05|Dussehra|Wednesday
+G|10-09|Milad-un-Nabi or Id-e-Milad (Birthday of Prophet Mohammad)|Sunday
+G|10-24|Diwali (Deepavali)|Monday
+G|11-08|Guru Nanak's Birthday|Tuesday
+G|12-25|Christmas Day|Sunday
+R|01-01|New Year's Day|Saturday
+R|01-09|Guru Gobind Singh's Birthday|Sunday
+R|01-13|Lohri|Thursday
+R|01-14|Makar Sankranti/Magha Bihu/ Pongal|Friday
+R|02-05|Basant Panchami /Sri Panchami|Saturday
+R|02-15|Hazarat Ali's Birthday|Tuesday
+R|02-16|Guru Ravi Das's Birthday|Wednesday
+R|02-19|Shiva ji Jayanti|Saturday
+R|02-26|Swami Dayananda Saraswati Jayanti|Saturday
+R|03-17|Holika Dahan|Thursday
+R|03-18|Dolyatra|Friday
+R|04-02|Chaitra Sukladi /Gudi Padava/Ugadi/ Cheti Chand|Saturday
+R|04-10|Ram Navami|Sunday
+R|04-14|Vaisakhi /Vishu/ Meshadi|Thursday
+R|04-15|Vaisakhadi (Bengal) / Bahag Bihu (Assam)|Friday
+R|04-17|Easter Sunday|Sunday
+R|04-29|Jamat-Ul-Vida|Friday
+R|05-09|Guru Rabindranath's birthday|Monday
+R|07-01|Rath Yatra|Friday
+R|08-11|Raksha Bandhan|Thursday
+R|08-16|Parsi New Year's day/Nauraj|Tuesday
+R|08-18|Janmashtami (Smarta)|Thursday
+R|08-31|Vinayaka Chaturthi/ Ganesh Chaturthi|Wednesday
+R|09-08|Onam or Thiru Onam Day|Thursday
+R|10-02|Dussehra (Saptami)|Sunday
+R|10-03|Dussehra (Mahashtami)|Monday
+R|10-04|Dussehra (Mahanavmi)|Tuesday
+R|10-09|Maharishi Valmiki's Birthday|Sunday
+R|10-13|Karaka Chaturthi (KarwaChouth)|Thursday
+R|10-24|Naraka Chaturdasi|Monday
+R|10-25|Govardhan Puja|Tuesday
+R|10-26|Bhai Duj|Wednesday
+R|10-30|PratiharShashthi or Surya Shashthi (Chhat Puja)|Sunday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Thursday
+R|12-24|Christmas Eve|Saturday
+R|12-29|Guru Gobind Singh's Birthday|Thursday
+""",
+    2023: """
+G|01-26|Republic Day|Thursday
+G|03-08|Holi|Wednesday
+G|03-30|Ram Navami|Thursday
+G|04-04|Mahavir Jayanti|Tuesday
+G|04-07|Good Friday|Friday
+G|04-22|Id-ul-Fitr|Saturday
+G|05-05|Budha Purnima|Friday
+G|06-29|Id-ul-Zuha (Bakrid)|Thursday
+G|07-29|Muharram|Saturday
+G|08-15|Independence Day|Tuesday
+G|09-07|Janmashtami (Vaishnva)|Thursday
+G|09-28|Milad-un-Nabi or Id-e-Milad (Birthday of Prophet Mohammad)|Thursday
+G|10-02|Mahatma Gandhi's Birthday|Monday
+G|10-24|Dussehra|Tuesday
+G|11-12|Diwali (Deepavali)|Sunday
+G|11-27|Guru Nanak's Birthday|Monday
+G|12-25|Christmas Day|Monday
+R|01-01|New Year's Day|Sunday
+R|01-14|Makar Sankranti/Magha Bihu/|Saturday
+R|01-15|Pongal|Sunday
+R|01-26|Basant Panchami /Sri Panchami|Saturday
+R|02-05|Hazarat Ali's Birthday, Guru Ravi Das's Birthday|Sunday
+R|02-15|Birthday of Swami Dayananda Saraswati|Wednesday
+R|02-18|Maha Shivratri|Saturday
+R|02-19|Shiva ji Jayanti|Sunday
+R|03-07|holika dahan, dolyatra|Tuesday
+R|03-22|Chaitra Sukladi /Gudi Padava/Ugadi/ Cheti Chand|Wednesday
+R|04-09|Easter Sunday|Sunday
+R|04-14|Vaisakhi /Vishu/ Meshadi|Friday
+R|04-15|Vaisakhadi (Bengal) / Bahag Bihu (Assam)|Saturday
+R|04-21|Jamat-Ul-Vida|Friday
+R|05-09|Birthday of Guru Rabindranath' Tagore|Tuesday
+R|06-20|Rath Yatra|Tuesday
+R|08-16|Parsi New Year's day/Nauraj|Wednesday
+R|08-20|Vinayaka Chaturthi|Sunday
+R|08-29|Onam or Thiru Onam Day|Tuesday
+R|08-30|Raksha Bandhan|Wednesday
+R|09-06|Janmashtami (Smarta)|Wednesday
+R|09-19|Ganesh Chaturthi|Tuesday
+R|10-21|Dussehra (Saptami)|Saturday
+R|10-22|Dussehra (Mahashtami)|Sunday
+R|10-23|Dussehra (Mahanavmi)|Monday
+R|10-28|Maharishi Valmiki's Birthday|Saturday
+R|11-01|Karaka Chaturthi (Karwa Chouth)|Wednesday
+R|11-12|Naraka Chaturdasi|Sunday
+R|11-13|Govardhan Puja|Monday
+R|11-15|Bhai Duj|Wednesday
+R|11-19|Pratihar Shashthi or Surya Shashthi (Chhat Puja)|Sunday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Friday
+R|12-24|Christmas Eve|Sunday
+""",
+    2024: """
+G|01-26|Republic Day|Friday
+G|03-25|Holi|Monday
+G|03-29|Good Friday|Friday
+G|04-11|Id-ul-Fitr|Thursday
+G|04-17|Ram Navami|Wednesday
+G|04-21|Mahavir Jayanti|Sunday
+G|05-23|Budha Purnima|Thursday
+G|06-17|Id-ul-Zuha (Bakrid)|Monday
+G|07-17|Muharram|Wednesday
+G|08-15|Independence Day|Thursday
+G|08-26|Janmashtami (Vaishnva)|Monday
+G|09-16|Milad-un-Nabi or Id-e-Milad (Birthday of Prophet Mohammad)|Monday
+G|10-02|Mahatma Gandhi's Birthday|Wednesday
+G|10-12|Dussehra|Saturday
+G|10-31|Diwali (Deepavali)|Thursday
+G|11-15|Guru Nanak's Birthday|Friday
+G|12-25|Christmas Day|Wednesday
+R|01-01|New Year's Day|Monday
+R|01-13|Lohri|Saturday
+R|01-14|Makar Sankranti|Sunday
+R|01-15|Magha Bihu/ Pongal|Monday
+R|01-17|Guru Gobind Singh's Birthday|Wednesday
+R|01-25|Hazarat Ali's Birthday|Thursday
+R|02-14|Sri Panchami, Basant Panchami|Wednesday
+R|02-19|Shiva ji Jayanti|Monday
+R|02-24|Guru Ravi Das's Birthday|Saturday
+R|03-06|Birthday of Swami Dayananda Saraswati|Wednesday
+R|03-08|Maha Shivratri|Friday
+R|03-24|Holika dahan|Sunday
+R|03-25|Dolyatra|Monday
+R|03-31|Easter Sunday|Sunday
+R|04-05|Jamat-Ul-Vida|Friday
+R|04-09|Chaitra Sukladi /Gudi Padava/Ugadi/ Cheti Chand|Tuesday
+R|04-13|Vaisakhi /Vishu|Saturday
+R|04-14|Meshadi (Tamil New Year's Day) / Vaisakhadi (Bengal) / Bahag Bihu (Assam)|Sunday
+R|05-08|Birthday of Guru Rabindranath Tagore|Wednesday
+R|07-07|Rath Yatra|Sunday
+R|08-15|Parsi New Year's day/Nauraj|Thursday
+R|08-19|Raksha Bandhan|Monday
+R|09-07|Ganesh Chaturthi /Vinayaka Chaturthi|Saturday
+R|09-15|Onam or Thiru Onam Day|Sunday
+R|10-10|Dusshera (Saptami)|Thursday
+R|10-11|Dussehra (Mahashtami) /Dussehra (Mahanavmi)|Friday
+R|10-17|Maharishi Valmiki's Birthday|Thursday
+R|10-20|Karaka Chaturthi (Karwa Chouth)|Sunday
+R|10-31|Naraka Chaturdasi|Thursday
+R|11-02|Govardhan Puja|Saturday
+R|11-03|Bhai Duj|Sunday
+R|11-07|Pratihar Shashthi or Surya Shashthi (Chhat Puja)|Thursday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Sunday
+R|12-24|Christmas Eve|Tuesday
+""",
+    2025: """
+G|01-26|Republic Day|Sunday
+G|02-26|Maha Shivaratri|Wednesday
+G|03-14|Holi|Friday
+G|03-31|Id-ul-Fitr|Monday
+G|04-10|Mahavir Jayanti|Thursday
+G|04-18|Good Friday|Friday
+G|05-12|Budha Purnima|Monday
+G|06-07|Id-ul-Zuha (Bakrid)|Saturday
+G|07-06|Muharram|Sunday
+G|08-15|Independence Day|Friday
+G|08-16|Janmashtami|Saturday
+G|09-05|Milad-un-Nabi or Id-e-Milad (Birthday of Prophet Mohammad)|Friday
+G|10-02|Mahatma Gandhi's Birthday|Thursday
+G|10-02|Dussehra|Thursday
+G|10-20|Diwali (Deepavali)|Monday
+G|11-05|Guru Nanak's Birthday|Wednesday
+G|12-25|Christmas Day|Thursday
+R|01-01|New Year's Day|Wednesday
+R|01-06|Guru Gobind Singh's Birthday|Monday
+R|01-14|Makar Sankranti/Magha Bihu/ Pongal/ Hazarat Ali's Birthday|Tuesday
+R|02-02|Basant Panchami /Sri Panchami|Sunday
+R|02-12|Guru Ravi Das's Birthday|Wednesday
+R|02-19|Shiva ji Jayanti|Wednesday
+R|02-23|Birthday of Swami Dayananda Saraswati|Sunday
+R|03-13|Holika Dahan|Thursday
+R|03-14|Dolyatra|Friday
+R|03-28|Jamat-Ul-Vida|Friday
+R|03-30|Chaitra Sukladi /Gudi Padava/Ugadi/ Cheti Chand|Sunday
+R|04-06|Ram Navmi|Sunday
+R|04-13|Vaisakhi /Vishu|Sunday
+R|04-14|Meshadi (Tamil New Year's Day)|Monday
+R|04-15|Vaisakhadi (Bengal) / Bahag Bihu (Assam)|Tuesday
+R|04-20|Easter Sunday|Sunday
+R|05-09|Guru Rabindranath's birthday|Friday
+R|06-27|Rath Yatra|Friday
+R|08-09|Raksha Bandhan|Saturday
+R|08-15|Parsi New Year's day/Nauraj|Friday
+R|08-15|Janmashtami (Smarta)|Friday
+R|08-27|Ganesh Chaturthi/Vinayaka Chaturthi|Wednesday
+R|09-05|Onam or Thiru Onam Day|Friday
+R|09-29|Dussehra (Saptami)|Monday
+R|09-30|Dussehra (Mahashtami)|Tuesday
+R|10-01|Dussehra (Mahanavmi)|Wednesday
+R|10-07|Maharishi Valmiki's Birthday|Tuesday
+R|10-10|Karaka Chaturthi (KarwaChouth)|Friday
+R|10-20|Naraka Chaturdasi|Monday
+R|10-22|Govardhan Puja|Wednesday
+R|10-23|Bhai Duj|Thursday
+R|10-28|Pratihar Shashthi or Surya Shashthi (Chhat Puja)|Tuesday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Monday
+R|12-24|Christmas Eve|Wednesday
+""",
+    2026: """
+G|01-26|Republic Day|Monday
+G|03-04|Holi|Wednesday
+G|03-21|Id-ul-Fitr|Saturday
+G|03-26|Ram Navami|Thursday
+G|03-31|Mahavir Jayanti|Tuesday
+G|04-03|Good Friday|Friday
+G|05-01|Budha Purnima|Friday
+G|05-27|Id-ul-Zuha (Bakrid)|Wednesday
+G|06-26|Muharram|Friday
+G|08-15|Independence Day|Saturday
+G|08-26|Milad-un-Nabi or Id-e-Milad (Birthday of Prophet Mohammad)|Wednesday
+G|09-04|Janmashtami (Vaishnva)|Friday
+G|10-02|Mahatma Gandhi's Birthday|Friday
+G|10-20|Dussehra|Tuesday
+G|11-08|Diwali (Deepavali)|Sunday
+G|11-24|Guru Nanak's Birthday|Tuesday
+G|12-25|Christmas Day|Friday
+R|01-01|New Year's Day|Thursday
+R|01-03|Hazarat Ali's Birthday|Saturday
+R|01-14|Makar Sankranti|Wednesday
+R|01-14|Magha Bihu / Pongal|Wednesday
+R|01-23|Sri Panchami, Basant Panchami|Friday
+R|02-01|Guru Ravi Das's Birthday|Sunday
+R|02-12|Birthday of Swami Dayananda Saraswati|Thursday
+R|02-15|Maha Shivratri|Sunday
+R|02-19|Shiva ji Jayanti|Thursday
+R|03-03|Holika dahan|Tuesday
+R|03-03|Dolyatra|Tuesday
+R|03-19|Chaitra Sukladi /Gudi Padava/Ugadi/ Cheti Chand|Thursday
+R|03-20|Jamat-Ul-Vida|Friday
+R|04-05|Easter Sunday|Sunday
+R|04-14|Vaisakhi /Visu/ Meshadi (Tamil New Year's Day)|Tuesday
+R|04-15|Vaisakhadi (Bengal) / Bahag Bihu (Assam)|Wednesday
+R|05-09|Birthday of Guru Rabindranath Tagore|Saturday
+R|07-16|Rath Yatra|Thursday
+R|08-15|Parsi New Year's day / Nauraj|Saturday
+R|08-26|Onam or Thiru Onam Day|Wednesday
+R|08-28|Raksha Bandhan|Friday
+R|09-14|Ganesh Chaturthi /Vinayak Chaturthi|Monday
+R|10-18|Dusshera (Saptami)|Sunday
+R|10-19|Dussehra (Mahashtami)|Monday
+R|10-20|Dussehra (Mahanavmi)|Tuesday
+R|10-26|Maharishi Valmiki's Birthday|Monday
+R|10-29|Karaka Chaturthi (Karwa Chouth)|Thursday
+R|11-08|Naraka Chaturdasi|Sunday
+R|11-09|Govardhan Puja|Monday
+R|11-11|Bhai Duj|Wednesday
+R|11-15|Pratihar Shashthi or Surya Shashthi (Chhat Puja)|Sunday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Tuesday
+R|12-23|Hazarat Ali's Birthday|Wednesday
+R|12-24|Christmas Eve|Thursday
+""",
+    2027: """
+G|01-26|Republic Day|Tuesday
+G|03-10|Id-ul-Fitr|Wednesday
+G|03-23|Holi|Tuesday
+G|03-26|Good Friday|Friday
+G|04-15|Ram Navami|Thursday
+G|04-19|Mahavir Jayanti|Monday
+G|05-17|Id-ul-Zuha (Bakrid)|Monday
+G|05-20|Budha Purnima|Thursday
+G|06-16|Muharram|Wednesday
+G|08-15|Independence Day|Sunday
+G|08-15|Milad-un-Nabi or Id-e-Milad (Prophet Mohammad's Birthday)|Sunday
+G|08-25|Janmashtami (Vaishnav)|Wednesday
+G|10-02|Mahatma Gandhi's Birthday|Saturday
+G|10-09|Dussehra (Vijaya Dashmi)|Saturday
+G|10-29|Diwali (Deepavali)|Friday
+G|11-14|Guru Nanak's Birthday|Sunday
+G|12-25|Christmas Day|Saturday
+R|01-01|New Year's Day|Friday
+R|01-14|Makar Sankranti / Magha Bihu|Thursday
+R|01-15|Pongal, Guru Gobind Singh's Birthday|Friday
+R|02-11|Sri Panchami, Basant Panchami|Thrusday
+R|02-19|Shiva Ji Jayanti|Friday
+R|02-20|Guru Ravi Das's Birthday|Saturday
+R|03-02|Swami Dayananda Saraswati's Birthday|Tuesday
+R|03-05|Jamat-Ul-Vida|Friday
+R|03-06|Maha Shivratri|Saturday
+R|03-22|Holika Dahan, Dolyatra|Monday
+R|03-28|Easter Sunday|Sunday
+R|04-07|Chaitra Sukladi /Gudi Padava/Ugadi/ Cheti Chand /1st Navratra|Wednesday
+R|04-14|Vaisakhi /Vishu/ Meshadi (Tamil New Year's Day)|Wednesday
+R|04-15|Vaisakhadi (Bengal) / Bahag Bihu (Assam)|Thursday
+R|05-09|Guru Rabindranath Tagore's Birthday|Sunday
+R|07-05|Rath Yatra|Monday
+R|08-15|Parsi New Year's day/Navroz|Sunday
+R|08-17|Raksha Bandhan|Tuesday
+R|09-04|Ganesh Chaturthi /Vinayak Chaturthi|Saturday
+R|09-12|Onam or Thiru Onam Day|Sunday
+R|10-06|Dusshera (Saptami)|Wednesday
+R|10-07|Dussehra (Mahashtami)|Thursday
+R|10-08|Dussehra (Mahanavmi)|Friday
+R|10-15|Maharishi Valmiki's Birthday|Friday
+R|10-18|Karaka Chaturthi (Karwa Chouth)|Monday
+R|10-28|Naraka Chaturdasi|Thursday
+R|10-30|Govardhan Puja|Saturday
+R|10-31|Bhai Duj|Sunday
+R|11-04|Pratihar Shashthi or Surya Shashthi (Chhath Puja)|Thursday
+R|11-24|Guru Teg Bahadur's Martyrdom Day|Wednesday
+R|12-12|Hazarat Ali's Birthday|Sunday
+R|12-24|Christmas Eve|Friday
+""",
+}
+
+IN_DIR = CACHE / "in"
+IN_LAST_OM = 2027
+IN_GAPS = (2005, 2006)   # no copy of the annual O.M. found
+_W = "https://web.archive.org/web/{}id_/{}"
+_DC = "https://documents.doptcirculars.nic.in/D2/D02est/"
+_DG = "https://dopt.gov.in/sites/default/files/"
+
+# year: (O.M. number, O.M. date, URI, cached file, has a usable text layer)
+IN_OMS = {
+    2002: ("12/6/2001-JCA", "10.07.2001", _W.format("20071022070447", "http://persmin.gov.in/cirular_reports/jca/jcm3.html"),
+           "dopt-om-2002-2003-jcm3.html", True),
+    2003: ("12/4/2002-JCA", "15.07.2002", _W.format("20071022070447", "http://persmin.gov.in/cirular_reports/jca/jcm3.html"),
+           "dopt-om-2002-2003-jcm3.html", True),
+    2004: ("12/5/2003-JCA", "03.07.2003", _W.format("20040212035045", "http://persmin.nic.in:80/holiday.pdf"), "dopt-om-2004.pdf", True),
+    2007: ("12/2/2006-JCA", "15.06.2006", _W.format("20101129151008", "http://persmin.gov.in/HolidayList/2007_Eng.pdf"), "dopt-om-2007.pdf", False),
+    2008: ("12/1/2007-JCA", "30.07.2007", _W.format("20101129151245", "http://persmin.gov.in/HolidayList/2008_Eng.pdf"), "dopt-om-2008.pdf", False),
+    2009: ("12/11/2008-JCA", "11.06.2008", _W.format("20101129151545", "http://persmin.gov.in/WriteReadData/Estt/12_11_2008-JCA.pdf"),
+           "dopt-om-2009.pdf", False),
+    2010: ("12/5/2009-JCA-2", "09.06.2009", _W.format("20101129151625", "http://persmin.gov.in/WriteReadData/Estt/12_5_2009-JCA-2.pdf"),
+           "dopt-om-2010.pdf", True),
+    2011: ("12/1/2010-JCA-2", "21.06.2010", _W.format("20101129151218", "http://persmin.gov.in/WriteReadData/Estt/12_1_2010-JCA-2.pdf"),
+           "dopt-om-2011.pdf", False),
+    2012: ("12/3/2011-JCA-2", "27.06.2011",
+           _W.format("20110703050721", "http://persmin.gov.in/WriteReadData/CircularPortal/D2/D02est/12_3_2011-JCA-2-1.pdf"),
+           "dopt-om-2012.pdf", False),
+    2013: ("12/4/2012-JCA-2", "05.06.2012", _W.format("20210924060422", _DC + "12_4_2012-JCA-2.pdf"), "dopt-om-2013.pdf", True),
+    2014: ("12/5/2013-JCA-2", "11.06.2013", _W.format("20210924052201", _DC + "12_5_2013-JCA-2-11062013.pdf"), "dopt-om-2014.pdf", True),
+    2015: ("12/5/2014-JCA-2", "06.06.2014", _W.format("20210924053044", _DC + "12_5_2014_JCA_2-06062014.pdf"), "dopt-om-2015.pdf", True),
+    2016: ("12/7/2015-JCA-2", "11.06.2015", _W.format("20210924070746", _DC + "12_7_2015-JCA-2-11062015.pdf"), "dopt-om-2016.pdf", True),
+    2017: ("12/8/2016-JCA-2", "24.06.2016", _W.format("20210924060339", _DC + "12_8_2016-JCA-2-24062016A.pdf"), "dopt-om-2017.pdf", True),
+    2018: ("12/3/2017-JCA-2", "14.06.2017",
+           _W.format("20180618234308", "http://documents.doptcirculars.nic.in:80/D2/D02est/12_3_2017-JCA-2-14062017A.pdf"),
+           "dopt-om-2018.pdf", True),
+    2019: ("12/2/2018-JCA-2", "11.07.2018", _W.format("20201022211018", _DG + "holiday%20list%202019%202_1.pdf"), "dopt-om-2019.pdf", True),
+    2020: ("12/1/2019-JCA-2", "18.06.2019", _W.format("20190819163128", _DG + "Holiday%20list%202020.pdf"), "dopt-om-2020.pdf", False),
+    2021: ("12/9/2020-JCA-2", "10.06.2020", _W.format("20210809113919", _DG + "Holiday%20list%20(1).pdf"), "dopt-om-2021.pdf", False),
+    2022: ("12/5/2021-JCA-2", "08.06.2021", _W.format("20220218080122", _DG + "holiday%20list%202022..pdf"), "dopt-om-2022.pdf", False),
+    2023: ("12/5/2022-JCA", "16.06.2022", _W.format("20220717230825", _DC + "Naresh_NIC_1_20220616164953373JH62n.pdf"),
+           "dopt-om-2023.pdf", True),
+    2024: ("12/2/2023-JCA", "03.07.2023",
+           _W.format("20231129084328", _DG + "Holiday%20to%20be%20observed%20in%20Central%20government%20offices%20during%20the%20year%202024.PDF"),
+           "dopt-om-2024.pdf", False),
+    2025: ("12/2/2023-JCA", "09.07.2024", _W.format("20240901015019", _DG + "List%20of%20holidays%202025.pdf"), "dopt-om-2025.pdf", False),
+    2026: ("12/2/2023-JCA", "03.07.2025",
+           _W.format("20250909093922", _DC + "Holidays%20to%20be%20observed%20in%20Central%20Government%20Offices%20during%20the%20year%2020265vgBs.pdf"),
+           "dopt-om-2026.pdf", False),
+    2027: ("12/2/2023-JCA", "16.07.2026", "https://utilities.cept.gov.in/dop/pdfbind.ashx?id=15435", "cept-15435.pdf", True),
+}
+
+# Later O.M.s: (year, O.M. number, O.M. date, URI, list "G"/"R", new date
+# "MM-DD" or None, the date it replaces "MM-DD" or None, name). The
+# Id-ul-Zuha O.M. of 14.08.2018 (22 -> 23 Aug) was withdrawn by that of
+# 20.08.2018, which kept 22 August: both are left out. Text-only corrigenda
+# (a printed weekday, para 6) and the half-day closing of 22.01.2024 are not
+# holidays and are left out too.
+IN_AMENDMENTS = [
+    (2003, '12/4/2003-JCA', '04.04.2003', 'https://web.archive.org/web/20210924050258id_/https://documents.doptcirculars.nic.in/D2/D02est/12_4_2003-JCA-04042003.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2004, '12/5/2003-JCA', '02.01.2004', 'https://web.archive.org/web/20040325125758id_/http://www.persmin.nic.in:80/ganesh.pdf', 'R', '09-18', '08-19', 'Ganesh Chaturthi/ Vinayaka Chaturthi'),
+    (2008, '12/3/2008-JCA', '07.04.2008', 'https://web.archive.org/web/20210924063134id_/https://documents.doptcirculars.nic.in/D2/D02est/12_3_2008-JCA-07042008.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2009, '12/6/2009-JCA-2', '02.04.2009', 'https://web.archive.org/web/20210924062043id_/https://documents.doptcirculars.nic.in/D2/D02est/12_6_2009-JCA2-02042009.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2010, '12/3/2010-JCA-2', '29.03.2010', 'https://web.archive.org/web/20210924053913id_/https://documents.doptcirculars.nic.in/D2/D02est/12_3_2010-JCA2-29032010.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2010, '12/7/2009-JCA-2', '07.07.2010', 'https://web.archive.org/web/20101009093214id_/http://persmin.gov.in/writereaddata/Estt/12_7_2009-JCA-2.pdf', 'G', '10-14', None, 'Closing Ceremony of the Commonwealth Games-2010'),
+    (2011, '12/2/2011-JCA-2', '21.03.2011', 'https://web.archive.org/web/20210924061005id_/https://documents.doptcirculars.nic.in/D2/D02est/12_2_2011-JCA2-21032011.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2011, '12/1/2010-JCA-2', '27.06.2011', 'https://web.archive.org/web/20210924065910id_/https://documents.doptcirculars.nic.in/D2/D02est/12_1_2010-JCA-2-1.pdf', 'R', '12-31', None, 'Birthday of Shri Guru Gobind Singh'),
+    (2012, '12/2/2012-JCA-2', '27.03.2012', 'https://web.archive.org/web/20210924062207id_/https://documents.doptcirculars.nic.in/D2/D02est/12_2_2012-JCA-2-27032012A.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2013, '12/10/2013-JCA-2', '11.11.2013', 'https://web.archive.org/web/20210622104409id_/https://documents.doptcirculars.nic.in/D2/D02est/12_10_2013-JCA-2.pdf', 'G', '11-15', '11-14', 'Muharram'),
+    (2014, '12/4/2014-JCA-2', '12.03.2014', 'https://web.archive.org/web/20210924071438id_/https://documents.doptcirculars.nic.in/D2/D02est/12_4_2014-JCA-2-12032014.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2014, '12/5/2013-JCA-2', '03.09.2013', 'https://web.archive.org/web/20210924054322id_/https://documents.doptcirculars.nic.in/D2/D02est/12_5_2013-JCA-2-03092013.pdf', 'R', '12-28', None, 'Birthday of Shri Guru Gobind Singh'),
+    (2015, '12/6/2015-JCA-2', '19.03.2015', 'https://web.archive.org/web/20210924064413id_/https://documents.doptcirculars.nic.in/D2/D02est/12_6_2015_JCA-2-19032015.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2015, '12/5/2014-JCA-2', '10.07.2014', 'https://web.archive.org/web/20210924062929id_/https://documents.doptcirculars.nic.in/D2/D02est/12_5_2014-JCA-2-10072014.pdf', 'R', '02-17', None, 'Maha Shivratri'),
+    (2016, '12/6/2016-JCA-2', '21.03.2016', 'https://web.archive.org/web/20210924054048id_/https://documents.doptcirculars.nic.in/D2/D02est/12_6_2016-JCA-2-21032016.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2016, '12/10/2016-JCA2', '05.07.2016', 'https://web.archive.org/web/20210925130318id_/https://documents.doptcirculars.nic.in/D2/D02est/12_10_2016-JCA2-05062016.pdf', 'G', '07-07', '07-06', 'Id-ul-Fitr'),
+    (2016, '12/11/2016-JCA2', '06.09.2016', 'https://web.archive.org/web/20210924061759id_/https://documents.doptcirculars.nic.in/D2/D02est/12_11_2016-JCA2-06092016.pdf', 'G', '09-13', '09-12', 'Id-ul-Zuha (Bakrid)'),
+    (2016, '12/18/2016-JCA2', '07.12.2016', 'https://web.archive.org/web/20210924051721id_/https://documents.doptcirculars.nic.in/D2/D02est/12_18_2016-JCA2-07122016.pdf', 'G', '12-12', '12-13', 'Milad-Un-Nabi or Id-E-Milad'),
+    (2017, '12/6/2016-JCA-2', '05.04.2017', 'https://web.archive.org/web/20210924063531id_/https://documents.doptcirculars.nic.in/D2/D02est/12_6_2016-JCA-2-05042017.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2018, '12/6/2016-JCA-2', '02.04.2018', 'https://web.archive.org/web/20210924055149id_/https://documents.doptcirculars.nic.in/D2/D02est/12_6_2016_JCA_20001.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2019, '12/6/2016-JCA-2', '15.03.2019', 'https://web.archive.org/web/20210924060124id_/https://documents.doptcirculars.nic.in/D2/D02est/Ambedkar%20holidayj9btr.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2020, '12/4/2020-JCA2', '08.04.2020', 'https://web.archive.org/web/20210924071718id_/https://documents.doptcirculars.nic.in/D2/D02est/1242020-JCA2OOCrF.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2021, '12/4/2020-JCA', '31.03.2021', 'https://web.archive.org/web/20210422054946id_/https://dopt.gov.in/sites/default/files/Ambedkar%20holiday%202021.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2021, '12/13/2016-JCA-2', '11.08.2021', 'https://web.archive.org/web/20210817052405id_/https://documents.doptcirculars.nic.in/D2/D02est/MuharramhiZm8.PDF', 'G', '08-20', '08-19', 'Muharram'),
+    (2022, '12/4/2020-JCA', '04.04.2022', 'https://web.archive.org/web/20220406013711id_/https://documents.doptcirculars.nic.in/D2/D02est/Ambedkar%20holidayC1scD.PDF', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2023, '12/4/2020-JCA', '11.04.2023', 'https://web.archive.org/web/20230507152400id_/https://dopt.gov.in/sites/default/files/Declaration%20of%20Holiday%20on%2014th%20April%202023%20-%20Birthday%20of%20Dr%20B.R%20Ambedkar.PDF', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2023, '12/7/2023-JCA', '24.08.2023', 'https://web.archive.org/web/20230901090353id_/https://documents.doptcirculars.nic.in/D2/D02est/ClosingOfficesG20Tdn5b.PDF', 'G', '09-08', None, 'Closing of Central Government Offices located in Delhi on the occasion of G-20 Summit'),
+    (2024, '12/4/2020-JCA', '14.03.2024', 'https://web.archive.org/web/20241106105551id_/https://dopt.gov.in/sites/default/files/Declaration%20of%20Holiday%20on%2014th%20April%202024.PDF', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2025, '12/4/2020-JCA2', '27.03.2025', 'https://web.archive.org/web/20250415132649id_/https://documents.doptcirculars.nic.in/D2/D02est/Holiday%20on%2014th%20April%202025%20Birthday%20of%20Dr%20B%20R%20AmbedkarDHZ8b.pdf', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+    (2026, '12/4/2020-JCA', '09.04.2026', 'https://utilities.cept.gov.in/dop/pdfbind.ashx?id=14760', 'G', '04-14', None, 'Birthday of Dr. B.R. Ambedkar'),
+]
+
+# Printed weekdays that do not match their date (typos in the O.M.s).
+IN_WEEKDAY_ERRATA = {(2002, "G", "05-25"): "Staurday", (2002, "R", "10-21"): "Sunday",
+                     (2013, "R", "07-10"): "Thursday", (2019, "R", "03-01"): "Thursday",
+                     (2023, "R", "01-26"): "Saturday", (2027, "R", "02-11"): "Thrusday"}
+
+IN_NOTE = (
+    "Gazetted holidays of the administrative offices of the Central Government located at Delhi/New Delhi: "
+    "Annexure-I of each year's DoPT Office Memorandum (the 14 compulsory holidays and the 3 DoPT selects from "
+    "the 12 optional ones), with the later O.M.s that move an Islamic holiday after the moon is sighted or "
+    "declare a further holiday (Dr B. R. Ambedkar's birthday, the 2010 Commonwealth Games closing day, the "
+    "2023 G-20 closing day). 2002-2004 and 2007-2027 are O.M. years; 2005 and 2006 are not checked (:gaps: "
+    "no copy of the O.M. was found). 2028-2040 are provisional: the fixed days, Good Friday and tabular "
+    "estimates of the four Islamic holidays, with no Hindu, Sikh, Jain or Buddhist day. :restricted lists "
+    "Annexure-II, of which each employee may take two; they are not office closures. Holidays that fall on "
+    "a Saturday or Sunday are listed: the O.M.s allow no substitute (para 3.2).")
+
+
+def _in_rows(year: int) -> list[tuple[str, date, str]]:
+    rows = []
+    for line in IN_ANNEXURES[year].strip().splitlines():
+        kind, md, name, printed = line.split("|")
+        d = date(year, int(md[:2]), int(md[3:]))
+        expected = IN_WEEKDAY_ERRATA.get((year, kind, md), d.strftime("%A"))
+        assert printed == expected, (year, kind, md, name, printed, d.strftime("%A"))
+        rows.append((kind, d, name))
+    return rows
+
+
+def _in_om_text(year: int) -> str:
+    import subprocess
+    path = IN_DIR / IN_OMS[year][3]
+    if path.suffix == ".html":
+        return page_text(path.read_bytes())
+    return subprocess.run(["pdftotext", "-layout", str(path), "-"], capture_output=True, text=True, check=True).stdout
+
+
+_IN_MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august", "september",
+              "october", "november", "december"]
+
+
+def _in_text_dates(text: str, year: int) -> set:
+    """Every (month, day) the text names: 'March 25', '25th March', '25.03.2024'."""
+    t = text.lower()
+    found = set()
+    mon = "(" + "|".join(m[:3] for m in _IN_MONTHS) + ")[a-z]*"
+    for m, dd in re.findall(rf"{mon}[\s|,.]*(\d{{1,2}})\b", t):
+        found.add(([x[:3] for x in _IN_MONTHS].index(m) + 1, int(dd)))
+    for dd, m in re.findall(rf"\b(\d{{1,2}})(?:st|nd|rd|th)?[\s|,.]*{mon}", t):
+        found.add(([x[:3] for x in _IN_MONTHS].index(m) + 1, int(dd)))
+    for dd, mm in re.findall(rf"\b(\d{{1,2}})[./-](\d{{1,2}})[./-]{year}\b", t):
+        found.add((int(mm), int(dd)))
+    return found
+
+
+def in_check_transcription() -> None:
+    checked = 0
+    for year, (_, _, _, cache, text_layer) in sorted(IN_OMS.items()):
+        rows = _in_rows(year)   # asserts the printed weekdays
+        assert sum(1 for k, _, _ in rows if k == "G") in (17, 18), year
+        if not text_layer:
+            continue
+        found = _in_text_dates(_in_om_text(year), year)
+        missing = [(d, n) for k, d, n in rows if k == "G" and (d.month, d.day) not in found]
+        for d, n in missing:
+            print(f"  IN {year}: {d} {n!r} not found in the text layer")
+        assert (d for d, _ in missing) is not None
+        checked += 1
+    print(f"IN: printed weekdays checked 2002-{IN_LAST_OM}; Annexure-I dates found in the text of {checked} copies")
+
+
+def _in_om_days(year: int, kind: str) -> list[tuple[date, str]]:
+    """The list KIND ("G" Annexure-I, "R" Annexure-II) of YEAR's O.M. with
+    the later O.M.s applied: a move drops the listed day it replaces."""
+    days = [(d, n) for k, d, n in _in_rows(year) if k == kind]
+    for (y, _, _, _, lst, new, old, name) in IN_AMENDMENTS:
+        if y != year or lst != kind:
+            continue
+        if old:
+            od = date(year, int(old[:2]), int(old[3:]))
+            hit = [r for r in days if r[0] == od and _in_key(r[1]) == _in_key(name)]
+            assert len(hit) == 1, (year, old, name)
+            days.remove(hit[0])
+        days.append((date(year, int(new[:2]), int(new[3:])), name))
+    return days
+
+
+def _in_key(name: str) -> str:
+    n = name.lower()
+    for k in ("muharram", "fitr", "zuha", "milad", "ganesh"):
+        if k in n:
+            return k
+    return n
+
+
+def in_holidays(year: int) -> list[tuple[date, str]]:
+    assert year not in IN_GAPS, year
+    days = [(date(year, 1, 26), "Republic Day"), (date(year, 8, 15), "Independence Day"),
+            (date(year, 10, 2), "Mahatma Gandhi's Birthday"),
+            (easter_western(year) - timedelta(days=2), "Good Friday"), (date(year, 12, 25), "Christmas Day")]
+    if year in IN_OMS:
+        listed = _in_om_days(year, "G")
+        on_list = {d for d, _ in listed}
+        missing = [(d, n) for d, n in days if d not in on_list]
+        assert not missing, (year, missing)   # every O.M. lists the five fixed days
+        return listed
+    # Provisional: tabular estimates of the four Islamic holidays.
+    for (m, dd), name in (((10, 1), "Id-ul-Fitr (estimated)"), ((12, 10), "Id-ul-Zuha (Bakrid) (estimated)"),
+                          ((1, 10), "Muharram (estimated)"), ((3, 12), "Milad-un-Nabi or Id-e-Milad (estimated)")):
+        days += [(d, name) for d in islamic_dates_in_year(year, m, dd)]
+    return days
+
+
+def in_restricted(year: int) -> list[tuple[date, str]]:
+    return _in_om_days(year, "R") if year in IN_OMS else []
+
+
+def _in_sources() -> list[tuple[str, str, str]]:
+    out = []
+    for year, (no, dated, uri, _, _) in sorted(IN_OMS.items()):
+        out.append((f"DoPT O.M. No. {no} dated {dated}: Holidays to be observed in Central Government Offices "
+                    f"during the year {year}, Annexure-I and Annexure-II", uri, ""))
+    for (year, no, dated, uri, lst, new, old, name) in IN_AMENDMENTS:
+        if uri:
+            what = f"{name} on {new}" + (f" (in place of {old})" if old else "")
+            out.append((f"DoPT O.M. No. {no} dated {dated} ({year}): {what}", uri, ""))
+    return out
+
+
 # --- registry and writer --------------------------------------------------
 
 COUNTRIES = {
@@ -4441,6 +5945,10 @@ COUNTRIES = {
     "TH-BANK": dict(name="Thailand (Bank of Thailand, financial institutions)", file="th-bank-holiday-gold.sexp",
                     build=th_bank_holidays, sources=lambda: _th_sources(True, 2000, LAST), note=TH_BANK_NOTE,
                     python=lambda years: __import__("holidays").TH(years=years, categories=("public", "bank"))),
+    "IN": dict(name="India (Central Government offices, Delhi/New Delhi)", first=2002, gaps=IN_GAPS,
+               build=in_holidays, restricted=in_restricted, sources=_in_sources, note=IN_NOTE,
+               python=lambda years: __import__("holidays").IN(years=years),
+               crosscheck=lambda days: in_check_transcription()),
     "TW": dict(name="Taiwan", build=tw_holidays, working=tw_working_days, sources=TW_SOURCES, note=TW_NOTE,
                python=lambda years: __import__("holidays").TW(years=years),
                crosscheck=tw_official_check),
@@ -4458,7 +5966,10 @@ def build(cc: str) -> None:
     country = spec.get("country", cc)
     sources = spec["sources"]() if callable(spec["sources"]) else spec["sources"]
     days: dict[date, list[str]] = {}
+    gaps = spec.get("gaps", ())
     for year in range(first, last + 1):
+        if year in gaps:
+            continue
         for d, name in spec["build"](year):
             assert d.year == year, (cc, d, name)
             if name not in days.setdefault(d, []):
@@ -4476,6 +5987,8 @@ def build(cc: str) -> None:
         " :sources",
         " (",
     ]
+    if gaps:
+        lines.insert(lines.index(" :sources"), f" :gaps ({' '.join(str(g) for g in gaps)})")
     if spec.get("confidence"):
         lines.insert(lines.index(" :sources"), f" :confidence :{spec['confidence']}")
     for title, uri, text in sources:
@@ -4501,6 +6014,15 @@ def build(cc: str) -> None:
             for d, name in spec["cuti"](year):
                 lines.append(f"  ({d.year} {d.month} {d.day} {lisp_string(name)})")
         lines.append(" )")
+    if spec.get("restricted"):
+        lines.append(" :restricted")
+        lines.append(" (")
+        for year in range(first, last + 1):
+            if year in gaps:
+                continue
+            for d, name in sorted(spec["restricted"](year)):
+                lines.append(f"  ({d.year} {d.month} {d.day} {lisp_string(name)})")
+        lines.append(" )")
     if lines[-1] == " )":
         lines[-1] = " ))"
     else:
@@ -4517,7 +6039,8 @@ def build(cc: str) -> None:
     except ImportError:
         print(f"{cc}: python-holidays not installed, secondary check skipped")
         return
-    ours, theirs = set(days), set(py.keys())
+    ours = set(days)
+    theirs = {d for d in py.keys() if d.year not in gaps}
     if spec.get("python_weekdays_only"):
         # python-holidays lists no Saturday or Sunday of a window that is no statutory day.
         ours = {d for d in ours if d.weekday() < 5}

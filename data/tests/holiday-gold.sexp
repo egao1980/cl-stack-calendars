@@ -208,9 +208,10 @@
  ("IN" 2026 12 25 t nil)
  ("IN" 1948 1 26 nil nil)
  ("IN" 1950 1 26 t nil)
- (("IN" 2024) 2024 11 1 t nil)
+ (("IN" 2024) 2024 10 31 t nil) ; DoPT O.M. 03.07.2023: Diwali 31 October (#42)
+ (("IN" 2024) 2024 11 1 nil nil)
  (("IN" 2024) 2024 3 25 t nil)
- ("IN" 2024 11 1 t nil) ; registered "IN" carries every DoPT year (#14)
+ ("IN" 2024 10 31 t nil) ; registered "IN" carries every DoPT year (#14)
 
  ;; --- Russia ТК ---
  ("RU" 2004 11 7 t nil)

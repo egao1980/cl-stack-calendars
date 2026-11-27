@@ -15,30 +15,44 @@
       (destructuring-bind (y m d name) row
         (setf (gethash (format nil "~4,'0d-~2,'0d-~2,'0d" y m d) table) name)))))
 
+(defun %holiday-gold-weekend-p (gold date)
+  "True when DATE is a weekend day by GOLD's :WEEKENDS, a list of eras
+(START DAY…) in order, START a (Y M D) or NIL and each DAY an ISO weekday
+(1 Monday … 7 Sunday); without :WEEKENDS, Saturday and Sunday."
+  (let ((days '(6 7)))
+    (loop for (start . era-days) in (getf gold :weekends)
+          when (or (null start) (>= date (apply #'make-date start)))
+            do (setf days era-days))
+    (and (member (date-day-of-week date) days) t)))
+
 (defun %holiday-gold-mismatches (gold calendar-for-year &key (from (getf gold :from))
                                       (to (getf gold :to)))
   "Every (ISO KIND GOLD OURS) where the calendar disagrees with GOLD in
-FROM..TO. CALENDAR-FOR-YEAR maps a year to the calendar to ask. A business
-day is a Monday–Friday that is no holiday, or a day GOLD lists under
-:WORKING-DAYS (a Saturday or Sunday made a working day by decree)."
+FROM..TO, leaving out the years GOLD lists under :GAPS (no source).
+CALENDAR-FOR-YEAR maps a year to the calendar to ask. A business day is a
+day that is no holiday and no weekend day (%HOLIDAY-GOLD-WEEKEND-P), or a
+day GOLD lists under :WORKING-DAYS (a Saturday or Sunday made a working day
+by decree)."
   (let ((days (%holiday-gold-days gold))
         (working (%holiday-gold-days (list :days (getf gold :working-days))))
+        (gaps (getf gold :gaps))
         (bad '()))
     (loop for year from from to to
-          for cal = (funcall calendar-for-year year)
-          do (loop for date = (make-date year 1 1) then (+ date 1)
-                   while (= (date-year date) year)
-                   do (let* ((gold-holiday (and (gethash (suite-date-iso date) days) t))
-                             (gold-business (or (and (gethash (suite-date-iso date) working) t)
-                                                (and (not gold-holiday)
-                                                     (<= (date-day-of-week date) 5))))
-                             (holiday (and (holiday-p cal date) t))
-                             (business (and (business-day-p cal date) t)))
-                        (unless (eq gold-holiday holiday)
-                          (push (list (suite-date-iso date) :holiday gold-holiday holiday) bad))
-                        (unless (eq gold-business business)
-                          (push (list (suite-date-iso date) :business gold-business business)
-                                bad)))))
+          unless (member year gaps)
+            do (loop with cal = (funcall calendar-for-year year)
+                     for date = (make-date year 1 1) then (+ date 1)
+                     while (= (date-year date) year)
+                     do (let* ((gold-holiday (and (gethash (suite-date-iso date) days) t))
+                               (gold-business (or (and (gethash (suite-date-iso date) working) t)
+                                                  (and (not gold-holiday)
+                                                       (not (%holiday-gold-weekend-p gold date)))))
+                               (holiday (and (holiday-p cal date) t))
+                               (business (and (business-day-p cal date) t)))
+                          (unless (eq gold-holiday holiday)
+                            (push (list (suite-date-iso date) :holiday gold-holiday holiday) bad))
+                          (unless (eq gold-business business)
+                            (push (list (suite-date-iso date) :business gold-business business)
+                                  bad)))))
     (nreverse bad)))
 
 (defun %report-holiday-gold (label bad)
