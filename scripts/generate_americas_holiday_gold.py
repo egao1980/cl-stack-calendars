@@ -501,6 +501,329 @@ def au_official_check(days: dict) -> None:
           f"({len(national)} days) except 2022-09-22 (dataset predates the declaration)")
 
 
+# --- Mexico ---------------------------------------------------------------
+#
+# LFT text: Cámara de Diputados consolidated PDF (última reforma DOF 14-05-2026),
+# read from the Wayback copy web.archive.org/web/20261114035538id_/https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf
+# (diputados.gob.mx refuses connections from here). DOF 17-01-2006 decree read
+# from web.archive.org/web/20061109151610id_/http://www.ordenjuridico.gob.mx/Federal/PE/APF/APC/STPS/Decretos/2006/17012006(1).pdf
+
+MX_SOURCES = [
+    ("Ley Federal del Trabajo art. 74 (texto vigente, última reforma DOF 14-05-2026)",
+     "https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf",
+     "Son días de descanso obligatorio: I. 1o. de enero; II. primer lunes de febrero en conmemoración "
+     "del 5 de febrero; III. tercer lunes de marzo en conmemoración del 21 de marzo; IV. 1o. de mayo; "
+     "V. 16 de septiembre; VI. tercer lunes de noviembre en conmemoración del 20 de noviembre; VII. 1o. "
+     "de octubre de cada seis años, cuando corresponda a la transmisión del Poder Ejecutivo Federal "
+     "(fracción reformada DOF 30-09-2024); VIII. 25 de diciembre; IX. el que determinen las leyes "
+     "electorales para la jornada electoral. Artículo reformado DOF 22-12-1987, 17-01-2006."),
+    ("Decreto por el que se reforma el artículo 74 de la LFT (DOF 17-01-2006)",
+     "https://www.ordenjuridico.gob.mx/Federal/PE/APF/APC/STPS/Decretos/2006/17012006(1).pdf",
+     "Fracciones II, III y VI pasan a primer lunes de febrero, tercer lunes de marzo y tercer lunes de "
+     "noviembre; fracción VII: 1o. de diciembre de cada seis años. Transitorio primero: vigor al día "
+     "siguiente de su publicación. Transitorio segundo: por la conmemoración en 2006 del natalicio de "
+     "Benito Juárez, la fracción III tendrá vigencia a partir del año 2007 (2006: 21 de marzo)."),
+    ("Decreto por el que se reforma la fracción VII del artículo 74 de la LFT (DOF 30-09-2024)",
+     "https://gaceta.diputados.gob.mx/PDF/66/2024/sep/DOF30sep2024-Art74LeyFedTrabajo.pdf",
+     "VII. El 1o. de octubre de cada seis años, cuando corresponda a la transmisión del Poder Ejecutivo "
+     "Federal. Vigor al día siguiente de su publicación (1 Oct 2024)."),
+    ("Constitución art. 83 (reforma DOF 10-02-2014, transitorio décimo quinto)",
+     "https://www.diputados.gob.mx/LeyesBiblio/pdf/CPEUM.pdf",
+     "El Presidente entrará a ejercer su encargo el 1o. de octubre; el periodo 2018-2024 terminará el "
+     "30 de septiembre de 2024. Inauguraciones: 1 dic 2000, 2006, 2012, 2018; 1 oct 2024, 2030, 2036."),
+]
+
+MX_NOTE = (
+    "Días de descanso obligatorio of LFT art. 74 (every worker). Not included: fr. IX election days "
+    "(federal and local ordinary elections are held on Sundays, so they never change business-day "
+    "status), and bank-only days (CNBV: Jueves/Viernes Santo, 2 Nov, 12 Dec), which are not LFT days. "
+    "Mexico publishes no official machine-readable list; the days are the LFT text and its DOF "
+    "decrees applied to each year."
+)
+
+
+def nth_monday(year: int, month: int, n: int) -> date:
+    first = date(year, month, 1)
+    return first + timedelta(days=(7 - first.weekday()) % 7 + 7 * (n - 1))
+
+
+def mx_holidays(year: int) -> list[tuple[date, str]]:
+    monday = year >= 2006  # DOF 17-01-2006, in force 18 Jan 2006
+    out = [
+        (date(year, 1, 1), "Año Nuevo"),
+        (nth_monday(year, 2, 1) if monday else date(year, 2, 5), "Día de la Constitución"),
+        # Transitorio segundo: fracción III from 2007; 21 March 2006 is the bicentennial.
+        (nth_monday(year, 3, 3) if year >= 2007 else date(year, 3, 21), "Natalicio de Benito Juárez"),
+        (date(year, 5, 1), "Día del Trabajo"),
+        (date(year, 9, 16), "Día de la Independencia"),
+        (nth_monday(year, 11, 3) if monday else date(year, 11, 20), "Día de la Revolución"),
+        (date(year, 12, 25), "Navidad"),
+    ]
+    if year % 6 == 2:  # 2000, 2006, ..., 2036
+        out.append((date(year, 10, 1) if year >= 2024 else date(year, 12, 1),
+                    "Transmisión del Poder Ejecutivo Federal"))
+    return out
+
+
+# --- Peru -----------------------------------------------------------------
+#
+# Texts: leyes.congreso.gob.pe (DL 713 scan; consolidated "TXM" texts of the
+# later laws), read 2026-11-27.
+
+CONGRESO = "https://leyes.congreso.gob.pe/Documentos/"
+
+PE_SOURCES = [
+    ("Decreto Legislativo 713 (El Peruano 1991-11-08) art. 6", CONGRESO + "DecretosLegislativos/00713.pdf",
+     "Feriados: Año Nuevo 1 ene; Jueves Santo y Viernes Santo (movibles); Día del Trabajo 1 may; "
+     "San Pedro y San Pablo 29 jun; Fiestas Patrias 28 y 29 jul; Santa Rosa de Lima 30 ago; "
+     "Combate de Angamos 8 oct; Todos los Santos 1 nov; Inmaculada Concepción 8 dic; Navidad 25 dic."),
+    ("Ley 26331 (El Peruano 1994-06-23), art. 7 del DL 713", "https://docs.peru.justia.com/federales/leyes/26331-jun-22-1994.pdf",
+     "Los feriados se celebran en la fecha respectiva (no se trasladan al lunes)."),
+    ("Ley 31381 (El Peruano 2021-12-31)", CONGRESO + "2021_2026/ADLP/Texto_Consolidado/31381-TXM.pdf",
+     "Incorpora el 9 de diciembre, Batalla de Ayacucho, como feriado nacional (desde 2022)."),
+    ("Ley 31530 (El Peruano 2022-07-26)", CONGRESO + "2021_2026/ADLP/Texto_Consolidado/31530-TXM.pdf",
+     "Incorpora el 6 de agosto, Batalla de Junín, como feriado nacional (desde 2022)."),
+    ("Ley 31822 (El Peruano 2023-07-08)", CONGRESO + "2021_2026/ADLP/Texto_Consolidado/31822-TXM.pdf",
+     "23 de julio, Día de la Fuerza Aérea del Perú, feriado nacional (modifica art. 6 del DL 713; desde 2023)."),
+    ("Ley 31788 (El Peruano 2023-06-15)", CONGRESO + "2021_2026/ADLP/Texto_Consolidado/31788-TXM.pdf",
+     "7 de junio, Batalla de Arica y Día de la Bandera, feriado nacional; published after 7 Jun 2023, "
+     "so first observed 2024."),
+    ("gob.pe Feriados históricos 2018-2025 (official list)", "https://www.gob.pe/feriados/historicos?year=2025",
+     "Nacionales lists for 2018, 2019 and 2021-2025 (2017 and 2020 are incomplete there) agree with this fixture except the listed overrides "
+     "(días no laborables, Domingo de Resurrección, Inti Raymi, 2022's missing 1 January)."),
+]
+
+PE_NOTE = (
+    "Feriados of DL 713 art. 6 and the later laws in :sources (every worker, public and private), on "
+    "their own dates. Not included: días no laborables declared by Decreto Supremo (public sector; "
+    "private sector by agreement, e.g. DS 151-2022-PCM, DS 042-2025-PCM), including the APEC 2016 and "
+    "2024 days in Lima and Callao, which are not feriados; Easter Sunday; regional days (Inti Raymi, "
+    "Cusco). Ley 30002 (2013) concerns teachers' pay, not feriados."
+)
+
+
+def pe_holidays(year: int) -> list[tuple[date, str]]:
+    e = easter(year)
+    out = [
+        (date(year, 1, 1), "Año Nuevo"),
+        (e - timedelta(days=3), "Jueves Santo"),
+        (e - timedelta(days=2), "Viernes Santo"),
+        (date(year, 5, 1), "Día del Trabajo"),
+        (date(year, 6, 29), "San Pedro y San Pablo"),
+        (date(year, 7, 28), "Fiestas Patrias"),
+        (date(year, 7, 29), "Fiestas Patrias"),
+        (date(year, 8, 30), "Santa Rosa de Lima"),
+        (date(year, 10, 8), "Combate de Angamos"),
+        (date(year, 11, 1), "Todos los Santos"),
+        (date(year, 12, 8), "Inmaculada Concepción"),
+        (date(year, 12, 25), "Navidad"),
+    ]
+    if year >= 2022:
+        out.append((date(year, 8, 6), "Batalla de Junín"))
+        out.append((date(year, 12, 9), "Batalla de Ayacucho"))
+    if year >= 2023:
+        out.append((date(year, 7, 23), "Día de la Fuerza Aérea del Perú"))
+    if year >= 2024:
+        out.append((date(year, 6, 7), "Batalla de Arica y Día de la Bandera"))
+    return out
+
+
+PE_OFFICIAL_YEARS = (2018, 2019, 2021, 2022, 2023, 2024, 2025)
+PE_OVERRIDES = {
+    date(2018, 4, 1): "gob.pe only: Domingo de Resurrección, not a DL 713 feriado.",
+    date(2019, 4, 21): "gob.pe only: Domingo de Resurrección, not a DL 713 feriado.",
+    date(2018, 6, 24): "gob.pe only: Inti Raymi, a Cusco regional day.",
+    date(2022, 1, 1): "gold only: DL 713 art. 6; the gob.pe 2022 page leaves it out.",
+    date(2022, 12, 9): "gold only: Ley 31381 feriado; the gob.pe 2022 page calls it a día no laborable.",
+}
+
+
+def pe_official_check(days: dict) -> None:
+    import html as htmlmod
+    import re
+    import urllib.request
+    months = {m: i + 1 for i, m in enumerate(
+        "enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre diciembre".split())}
+    cache = Path.home() / ".cache" / "cl-stack-calendars" / "pe-gob-feriados"
+    cache.mkdir(parents=True, exist_ok=True)
+    diff_all = set()
+    for year in PE_OFFICIAL_YEARS:
+        f = cache / f"{year}.html"
+        if not f.exists():
+            url = f"https://www.gob.pe/feriados/historicos?year={year}"
+            f.write_bytes(urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"}),
+                                                 timeout=60).read())
+        page = f.read_bytes().decode("utf-8", "replace")
+        national = page.split("Nacionales:", 1)[1].split("<h2", 1)[0]
+        listed = {}
+        for d, m, name in re.findall(r"<strong[^>]*>\w+ (\d{1,2}) de (\w+)</strong><span[^>]*>([^<]*)</span>", national):
+            name = htmlmod.unescape(name)
+            if "no laborable" in name.lower():
+                continue
+            listed[date(year, months[m.lower()], int(d))] = name
+        assert listed, f"gob.pe {year}: nothing parsed"
+        gold = {d for d in days if d.year == year}
+        diff_all |= set(listed) ^ gold
+    unexplained = sorted(d for d in diff_all if d not in PE_OVERRIDES)
+    assert not unexplained, unexplained
+    assert set(PE_OVERRIDES) <= diff_all, sorted(set(PE_OVERRIDES) - diff_all)
+    print(f"  PE {PE_OFFICIAL_YEARS}: gob.pe agrees except {len(diff_all)} listed overrides "
+          f"(días no laborables left out)")
+
+
+# --- Brazil ---------------------------------------------------------------
+#
+# Texts: planalto.gov.br (Presidência da República), read 2026-11-27.
+
+PLANALTO = "https://www.planalto.gov.br/ccivil_03/"
+
+BR_SOURCES = [
+    ("Lei nº 662/1949 art. 1 (redação da Lei nº 10.607/2002, DOU 2002-12-20)", PLANALTO + "leis/l0662.htm",
+     "São feriados nacionais os dias 1º de janeiro, 21 de abril, 1º de maio, 7 de setembro, 2 de "
+     "novembro, 15 de novembro e 25 de dezembro. Art. 3º: os pontos facultativos não suspendem o "
+     "horário escolar nem os serviços forenses e notariais."),
+    ("Lei nº 10.607/2002", PLANALTO + "leis/2002/l10607.htm",
+     "Dá nova redação ao art. 1º da Lei 662/1949 (adds 21 de abril and 2 de novembro to its text) and "
+     "revokes Lei nº 1.266/1950."),
+    ("Lei nº 1.266/1950 (revogada em 2002)", PLANALTO + "leis/l1266.htm",
+     "Art. 1º: feriado nacional o dia de eleições gerais; art. 3º: feriado nacional o dia 21 de abril."),
+    ("Lei nº 6.802/1980", PLANALTO + "leis/l6802.htm",
+     "É declarado feriado nacional o dia 12 de outubro, para culto público e oficial a Nossa Senhora "
+     "Aparecida, Padroeira do Brasil."),
+    ("Lei nº 9.093/1995", PLANALTO + "leis/l9093.htm",
+     "Art. 1º: feriados civis: os declarados em lei federal; a data magna do Estado; centenário do "
+     "Município. Art. 2º: feriados religiosos, declarados em lei municipal, em número não superior a "
+     "quatro, neste incluída a Sexta-Feira da Paixão."),
+    ("Lei nº 14.759/2023 (DOU 2023-12-22)", PLANALTO + "_ato2023-2026/2023/lei/l14759.htm",
+     "Fica declarado feriado nacional o dia 20 de novembro, Dia Nacional de Zumbi e da Consciência "
+     "Negra. Vigor na data de sua publicação: first observed 2024."),
+    ("Portarias anuais de feriados nacionais e pontos facultativos (MPOG/ME/MGI), 2005-2026",
+     "https://www.in.gov.br/web/dou/-/portaria-mgi-n-11.460-de-29-de-dezembro-de-2025-678388627",
+     "Federal executive list for the federal administration. 19 portarias (2005, 2007, 2008, 2011-2026; "
+     "2019-2026 from the DOU on in.gov.br) agree with this fixture on every feriado nacional except "
+     "Paixão de Cristo 2008, 2011 and 2012 (ponto facultativo there). Carnaval, Quarta-feira de Cinzas, "
+     "Corpus Christi, Dia do Servidor and 24/31 December are pontos facultativos in every year."),
+    ("Lei nº 4.737/1965 (Código Eleitoral) art. 380", PLANALTO + "leis/l4737compilado.htm",
+     "Será feriado nacional o dia em que se realizarem eleições de data fixada pela Constituição "
+     "Federal: always a Sunday (CF art. 77, 28, 29), so not in this fixture."),
+]
+
+BR_NOTE = (
+    "Feriados nacionais. Paixão de Cristo (Good Friday) is a religious holiday under Lei 9.093/1995 "
+    "art. 2, declared by municipal law; the yearly federal portarias list it as a feriado nacional "
+    "(2005, 2007, 2013-2026) and as a ponto facultativo in 2008, 2011 and 2012. It is here every year: "
+    "Lei 9.093 names it and the corpus, banks and later portarias keep it. 2 November is in the Lei 662/1949 text only from Lei 10.607/2002 (DOU 2002-12-20); "
+    "it was kept nationally before (the portarias list it, the law ratified it), so it is here from "
+    "2000. Not included: Carnaval (Monday and Tuesday), Quarta-feira de Cinzas (until 14h), Corpus "
+    "Christi, Dia do Servidor Público, 24 and 31 December (from 14h): these are federal pontos "
+    "facultativos (optional days off for federal staff, Lei 662 art. 3), not holidays; state and "
+    "municipal holidays; election days (Código Eleitoral art. 380, always a Sunday)."
+)
+
+
+def br_holidays(year: int) -> list[tuple[date, str]]:
+    e = easter(year)
+    out = [
+        (date(year, 1, 1), "Confraternização Universal"),
+        (e - timedelta(days=2), "Paixão de Cristo"),
+        (date(year, 4, 21), "Tiradentes"),
+        (date(year, 5, 1), "Dia Mundial do Trabalho"),
+        (date(year, 9, 7), "Independência do Brasil"),
+        (date(year, 10, 12), "Nossa Senhora Aparecida"),
+        (date(year, 11, 2), "Finados"),
+        (date(year, 11, 15), "Proclamação da República"),
+        (date(year, 12, 25), "Natal"),
+    ]
+    if year >= 2024:
+        out.append((date(year, 11, 20), "Dia Nacional de Zumbi e da Consciência Negra"))
+    return out
+
+
+# Official check: the yearly federal portaria (MPOG / ME / MGI) "divulga os dias de
+# feriados nacionais e estabelece os dias de ponto facultativo". Frozen below: the
+# days each one classifies as "feriado nacional" (MM-DD), transcribed from the text.
+# 2019-2026 are the DOU pages on in.gov.br (pinned Wayback copies), 2016 a scan of
+# the DOU page; the other years are transcriptions on legisweb / normasbrasil
+# (no reachable government copy). 2006, 2009 and 2010: no text found.
+BR_PORTARIAS = {
+    2005: ('Portaria SE/MP nº 1.080, de 21 de dezembro de 2004',
+           'https://www.normasbrasil.com.br/norma/portaria-1080-2004_187085.html',
+           'unofficial transcription', "01-01 03-25 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2007: ('Portaria SE/MP nº 740, de 27 de dezembro de 2006',
+           'https://www.normasbrasil.com.br/norma/portaria-740-2006_197539.html',
+           'unofficial transcription', "01-01 04-06 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2008: ('Portaria SE/MP nº 855, de 26 de dezembro de 2007',
+           'https://www.normasbrasil.com.br/norma/portaria-855-2007_202989.html',
+           'unofficial transcription', "01-01 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2011: ('Portaria SE/MP nº 735, de 1º de dezembro de 2010',
+           'https://www.normasbrasil.com.br/norma/resolucao-735-2010_112053.html',
+           'unofficial transcription', "01-01 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2012: ('Portaria MP nº 595, de 22 de dezembro de 2011',
+           'https://www.normasbrasil.com.br/norma/portaria-595-2011_233484.html',
+           'unofficial transcription', "01-01 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2013: ('Portaria MP nº 3, de 3 de janeiro de 2013',
+           'https://www.legisweb.com.br/legislacao/?id=249528',
+           'unofficial transcription', "01-01 03-29 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2014: ('Portaria MP nº 2, de 3 de janeiro de 2014',
+           'https://www.normasbrasil.com.br/norma/portaria-2-2014_264087.html',
+           'unofficial transcription', "01-01 04-18 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2015: ('Portaria MP nº 15, de 3 de fevereiro de 2015',
+           'https://www.legisweb.com.br/legislacao/?id=280813',
+           'unofficial transcription', "01-01 04-03 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2016: ('Portaria MP nº 630, de 31 de dezembro de 2015',
+           'https://www2.dti.ufv.br/ccs_noticias/files/anexos/phpcqPy6J_24587.pdf',
+           'DOU scan (ufv.br)', "01-01 03-25 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2017: ('Portaria MP nº 369, de 29 de novembro de 2016',
+           'https://www.legisweb.com.br/legislacao/?id=332406',
+           'unofficial transcription', "01-01 04-14 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2018: ('Portaria MP nº 468, de 22 de dezembro de 2017',
+           'https://itapina.ifes.edu.br/images/arquivo_em_pdf/Portaria_468_2017_Feriados_Nacionais.pdf',
+           'retyped copy (ifes.edu.br)', "01-01 03-30 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2019: ('Portaria MP nº 442, de 27 de dezembro de 2018',
+           'https://web.archive.org/web/20190106083717id_/http://www.in.gov.br:80/materia/-/asset_publisher/Kujrw0TZC2Mb/content/id/57219246',
+           'DOU (in.gov.br, Wayback copy)', "01-01 04-19 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2020: ('Portaria ME nº 679, de 30 de dezembro de 2019',
+           'https://web.archive.org/web/20200227171304id_/http://www.in.gov.br:80/web/dou/-/portaria-n-679-de-30-de-dezembro-de-2019-236173164',
+           'DOU (in.gov.br, Wayback copy)', "01-01 04-10 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2021: ('Portaria ME nº 430, de 30 de dezembro de 2020',
+           'https://web.archive.org/web/20210119191458id_/https://www.in.gov.br/web/dou/-/portaria-n-430-de-30-de-dezembro-de-2020-297214729',
+           'DOU (in.gov.br, Wayback copy)', "01-01 04-02 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2022: ('Portaria ME nº 14.817, de 20 de dezembro de 2021',
+           'https://web.archive.org/web/20211223021155id_/https://www.in.gov.br/web/dou/-/portaria-me-n-14.817-de-20-de-dezembro-de-2021-369345454',
+           'DOU (in.gov.br, Wayback copy)', "01-01 04-15 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2023: ('Portaria ME nº 11.090, de 27 de dezembro de 2022',
+           'https://web.archive.org/web/20230124195548id_/https://www.in.gov.br/web/dou/-/portaria-me-n-11.090-de-27-de-dezembro-de-2022-454503426',
+           'DOU (in.gov.br, Wayback copy)', "01-01 04-07 04-21 05-01 09-07 10-12 11-02 11-15 12-25"),
+    2024: ('Portaria MGI nº 8.617, de 26 de dezembro de 2023',
+           'https://web.archive.org/web/20240504074553id_/https://www.in.gov.br/web/dou/-/portaria-mgi-n-8.617-de-26-de-dezembro-de-2023-533937211',
+           'DOU (in.gov.br, Wayback copy)', "01-01 03-29 04-21 05-01 09-07 10-12 11-02 11-15 11-20 12-25"),
+    2025: ('Portaria MGI nº 9.783, de 27 de dezembro de 2024',
+           'https://web.archive.org/web/20250403223606id_/https://www.in.gov.br/web/dou/-/portaria-mgi-n-9.783-de-27-de-dezembro-de-2024-604395869',
+           'DOU (in.gov.br, Wayback copy)', "01-01 04-18 04-21 05-01 09-07 10-12 11-02 11-15 11-20 12-25"),
+    2026: ('Portaria MGI nº 11.460, de 29 de dezembro de 2025',
+           'https://web.archive.org/web/20251230123128id_/https://in.gov.br/web/dou/-/portaria-mgi-n-11.460-de-29-de-dezembro-de-2025-678388627',
+           'DOU (in.gov.br, Wayback copy)', "01-01 04-03 04-21 05-01 09-07 10-12 11-02 11-15 11-20 12-25"),
+}
+
+BR_PORTARIA_OVERRIDES = {
+    date(2008, 3, 21): "gold only: the 2008 portaria classes Paixão de Cristo as ponto facultativo.",
+    date(2011, 4, 22): "gold only: the 2011 portaria classes Paixão de Cristo as ponto facultativo.",
+    date(2012, 4, 6): "gold only: the 2012 portaria classes Paixão de Cristo as ponto facultativo.",
+}
+
+
+def br_official_check(days: dict) -> None:
+    diff = set()
+    for year, (_, _, _, listed) in BR_PORTARIAS.items():
+        official = {date(year, int(md[:2]), int(md[3:])) for md in listed.split()}
+        diff |= official ^ {d for d in days if d.year == year}
+    unexplained = sorted(d for d in diff if d not in BR_PORTARIA_OVERRIDES)
+    assert not unexplained, unexplained
+    assert set(BR_PORTARIA_OVERRIDES) <= diff, sorted(set(BR_PORTARIA_OVERRIDES) - diff)
+    print(f"  BR {len(BR_PORTARIAS)} portarias ({min(BR_PORTARIAS)}-{max(BR_PORTARIAS)}): feriados "
+          f"nacionais agree except {len(diff)} listed overrides (Paixão de Cristo 2008, 2011, 2012)")
+
+
 COUNTRIES = {
     "CO": dict(name="Colombia", build=co_holidays, sources=CO_SOURCES, note=CO_NOTE,
                python=lambda years: __import__("holidays").CO(years=years)),
@@ -512,6 +835,14 @@ COUNTRIES = {
     "AU": dict(name="Australia (national)", build=au_holidays, sources=AU_SOURCES, note=AU_NOTE,
                python=lambda years: __import__("holidays").AU(years=years),
                crosscheck=au_official_check),
+    "MX": dict(name="Mexico", build=mx_holidays, sources=MX_SOURCES, note=MX_NOTE,
+               python=lambda years: __import__("holidays").MX(years=years)),
+    "BR": dict(name="Brazil", build=br_holidays, sources=BR_SOURCES, note=BR_NOTE,
+               python=lambda years: __import__("holidays").BR(years=years),
+               crosscheck=br_official_check),
+    "PE": dict(name="Peru", build=pe_holidays, sources=PE_SOURCES, note=PE_NOTE,
+               python=lambda years: __import__("holidays").PE(years=years),
+               crosscheck=pe_official_check),
 }
 
 

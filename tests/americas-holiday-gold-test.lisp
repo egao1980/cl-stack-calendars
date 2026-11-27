@@ -228,3 +228,97 @@ Carmen before 2007, 31 Oct before 2008 and no Ley 19.668 moves."
        (2022 9 22 t)))
   (ok (eq holiday (and (holiday-p (find-calendar "AU") (make-date y m d)) t))
       (format nil "AU ~d-~2,'0d-~2,'0d ~:[no holiday~;holiday~]" y m d holiday)))
+
+;;; --- Mexico (#19) ------------------------------------------------------------
+
+(defparameter *mx-holiday-gold* (load-holiday-gold "MX"))
+
+(deftest mx-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *mx-holiday-gold* "MX"))
+
+(deftest mx-registered-calendar-matches-gold
+  "find-calendar \"MX\" is the LFT art. 74 días de descanso obligatorio on every day 2000–2040."
+  (let ((mx (find-calendar "MX")))
+    (%report-holiday-gold "MX" (%holiday-gold-mismatches *mx-holiday-gold* (constantly mx)))))
+
+(deftest-parametrize mx-lft-days
+    ((y m d holiday) :rows
+     '(;; Transmisión del Poder Ejecutivo Federal: 1 Dec to 2018, 1 Oct from 2024
+       ;; (LFT art. 74 fr. VII, reformada DOF 30-09-2024).
+       (2000 12 1 t) (2006 12 1 t) (2012 12 1 t) (2018 12 1 t)
+       (2024 10 1 t) (2030 10 1 t) (2036 10 1 t)
+       (2024 12 2 nil) (2030 12 2 nil) (2019 12 2 nil) (2025 10 1 nil)
+       ;; DOF 17-01-2006: Monday moves from 2006, but fr. III only from 2007
+       ;; (transitorio segundo, Juárez bicentennial): 2006-03-21 stays.
+       (2005 2 5 t) (2006 2 6 t) (2006 2 5 nil) (2006 3 21 t) (2006 3 20 nil)
+       (2007 3 19 t) (2007 3 21 nil) (2006 11 20 t) (2007 11 19 t) (2007 11 20 nil)
+       ;; Bank-only days are not LFT days.
+       (2025 4 17 nil) (2025 4 18 nil) (2025 11 2 nil) (2025 12 12 nil)))
+  (ok (eq holiday (and (holiday-p (find-calendar "MX") (make-date y m d)) t))
+      (format nil "MX ~d-~2,'0d-~2,'0d ~:[no holiday~;holiday~]" y m d holiday)))
+
+(deftest mx-corpus-inauguration-day
+  "The corpus country-calendar \"MX\" has the 1 October inauguration day from 2024."
+  (let ((mx (country-calendar "MX")))
+    (dolist (y '(2024 2030 2036))
+      (ok (holiday-p mx (make-date y 10 1)) (format nil "corpus MX ~d-10-01" y))
+      (ng (holiday-p mx (make-date y 12 1)) (format nil "corpus MX ~d-12-01" y)))
+    (ok (holiday-p mx (make-date 2018 12 1)))))
+
+;;; --- Peru (#19) --------------------------------------------------------------
+
+(defparameter *pe-holiday-gold* (load-holiday-gold "PE"))
+
+(deftest pe-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *pe-holiday-gold* "PE"))
+
+(deftest pe-registered-calendar-matches-gold
+  "find-calendar \"PE\" is the DL 713 art. 6 feriados plus Leyes 31381, 31530, 31822 and 31788 on every day 2000–2040."
+  (let ((pe (find-calendar "PE")))
+    (%report-holiday-gold "PE" (%holiday-gold-mismatches *pe-holiday-gold* (constantly pe)))))
+
+(deftest pe-country-calendar-matches-gold
+  "country-calendar \"PE\" defers to the starter: the corpus lists Easter Sunday."
+  (let ((pe (country-calendar "PE")))
+    (ok (eq :normative (calendar-provenance pe)))
+    (%report-holiday-gold "country-calendar PE"
+                          (%holiday-gold-mismatches *pe-holiday-gold* (constantly pe)))))
+
+(deftest-parametrize pe-feriados
+    ((y m d holiday) :rows
+     '(;; Ley 31381: 9 December from 2022; Ley 31530: 6 August from 2022.
+       (2021 12 9 nil) (2022 12 9 t) (2021 8 6 nil) (2022 8 6 t)
+       ;; Ley 31822: 23 July from 2023; Ley 31788 (published 2023-06-15): 7 June from 2024.
+       (2022 7 23 nil) (2023 7 23 t) (2023 6 7 nil) (2024 6 7 t) (2025 6 7 t)
+       ;; Feriados stay on their date (Ley 26331); no Monday moves.
+       (2025 6 30 nil) (2024 12 9 t)
+       ;; Easter Sunday and días no laborables (DS 042-2025-PCM: 2 Jan 2026) are not feriados.
+       (2025 4 20 nil) (2026 1 2 nil) (2024 11 15 nil)))
+  (ok (eq holiday (and (holiday-p (find-calendar "PE") (make-date y m d)) t))
+      (format nil "PE ~d-~2,'0d-~2,'0d ~:[no holiday~;holiday~]" y m d holiday)))
+
+;;; --- Brazil (#19) ------------------------------------------------------------
+
+(defparameter *br-holiday-gold* (load-holiday-gold "BR"))
+
+(deftest br-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *br-holiday-gold* "BR"))
+
+(deftest br-registered-calendar-matches-gold
+  "find-calendar \"BR\" is the feriados nacionais (Lei 662/1949, 6.802/1980, 10.607/2002, 14.759/2023) on every day 2000–2040."
+  (let ((br (find-calendar "BR")))
+    (%report-holiday-gold "BR" (%holiday-gold-mismatches *br-holiday-gold* (constantly br)))))
+
+(deftest-parametrize br-feriados-nacionais
+    ((y m d holiday) :rows
+     '(;; Corpus Christi and Carnaval are pontos facultativos, not feriados.
+       (2025 6 19 nil) (2026 6 4 nil) (2025 3 3 nil) (2025 3 4 nil) (2026 2 17 nil)
+       ;; Paixão de Cristo is listed as feriado nacional by every federal portaria.
+       (2025 4 18 t) (2026 4 3 t)
+       ;; Lei 14.759/2023: Consciência Negra from 2024.
+       (2023 11 20 nil) (2024 11 20 t) (2025 11 20 t)
+       ;; Dia do Servidor Público (ponto facultativo) is no holiday.
+       (2025 10 28 nil)
+       (2000 11 2 t) (2025 10 12 t)))
+  (ok (eq holiday (and (holiday-p (find-calendar "BR") (make-date y m d)) t))
+      (format nil "BR ~d-~2,'0d-~2,'0d ~:[no holiday~;holiday~]" y m d holiday)))
