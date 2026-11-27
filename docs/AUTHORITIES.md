@@ -79,7 +79,7 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `HU` | Munkaszüneti napok | Nagypéntek from 2017 |
 | `DK` | Danske helligdage | Store bededag abolished from 2024 |
 | `FI` `IE` `HR` `LT` `SI` `LV` `EE` `LU` `MT` | National statutes (starter-eu.lisp) | Eras for Brigid 2023, HR 2020 reform, LT Vėlinės 2020, LU Europe Day 2019 |
-| `country-calendar` | [date-holidays](https://github.com/commenthol/date-holidays) CC BY-SA 3.0 | 206 jurisdictions + stubs; years 2000–2040 public/bank |
+| `country-calendar` | [date-holidays](https://github.com/commenthol/date-holidays) CC BY-SA 3.0 | 206 jurisdictions + 6 empty stubs; years 2000–2040 public/bank; outside them (and for stubs) `holiday-p` signals `calendar-out-of-range` unless `:strict nil` |
 
 Hand-maintained starters beat `country-calendar` when both exist (prefer `japan-holidays-calendar` / `china-holidays-calendar` / `russian-holidays-calendar` / `us-federal-holidays-calendar` over corpus `"JP"` / `"CN"` / `"RU"` / `"US"`).
 
@@ -95,7 +95,9 @@ Registered via `register-subnational-calendars` as `COMPOSITE-CALENDAR` union mo
 
 ### Corpus-inferred territory starters
 
-Codes in `data/countries/` without hand starters (e.g. `ABH`, `NCY`, `OST`, `PMR`, `PS`, `SOL`) get normative `RULE-CALENDAR` starters at load via `register-corpus-inferred-territory-starters` — fixed + Easter rules inferred from corpus recurrence.
+Codes in `data/countries/` that have corpus days but no hand starter (e.g. `AD`, `IS`) get a `RULE-CALENDAR` at load via `register-corpus-inferred-territory-starters`. Its fixed and Easter rules are inferred from recurrence in the corpus. They are **not** normative: each rule's `:authority` says "Corpus-inferred … not checked against a statute". Since 0.10.0 the rules and the calendar's `calendar-coverage` are bounded to the corpus years (2000–2040), and `holiday-p` outside them signals `calendar-out-of-range`.
+
+The six **stubs** (`ABH`, `NCY`, `OST`, `PMR`, `PS`, `SOL`) have `:days ()`. They get **no** inferred starter, so `(find-calendar "PS" :errorp nil)` is NIL. `(country-calendar "PS")` has `country-calendar-stub-p` true and `calendar-coverage` `:none`, and its `holiday-p` signals `calendar-out-of-range`. `(country-calendar "PS" :strict nil)` answers NIL instead.
 
 ## Sunrise / sunset–bound rules (lat/lon)
 

@@ -28,6 +28,10 @@ year compute equal maps, and the later write wins."
    ;; Replaced (never cleared in place) when a SETF accessor changes inputs.
    (cache :initform (%make-calendar-cache) :accessor %rule-calendar-cache)
    (rules :initarg :rules :initform nil :accessor calendar-rules)
+   ;; Years the rules are known to hold, (FROM . TO), for data-derived rule
+   ;; calendars (corpus-inferred starters); NIL = unbounded statute rules.
+   (coverage :initarg :coverage :initform nil :reader %rule-calendar-coverage)
+   (strict :initarg :strict :initform t :reader calendar-strict-p)
    ;; 祝日法第3条第3項 (and analogues): insert weekdays sandwiched by holidays.
    (sandwich-holidays-p :initarg :sandwich-holidays-p :initform nil
                         :accessor calendar-sandwich-holidays-p)
@@ -233,6 +237,15 @@ Returns CALENDAR."
         (when name
           (return-from holiday-p (values t (unless (eq name t) name))))))
     (values nil nil)))
+
+(defmethod calendar-coverage ((calendar rule-calendar))
+  (%rule-calendar-coverage calendar))
+
+(defmethod holiday-p :around ((calendar rule-calendar) date)
+  (if (%rule-calendar-coverage calendar)
+      (call-with-coverage calendar date (calendar-strict-p calendar)
+                          (lambda () (call-next-method)))
+      (call-next-method)))
 
 ;;; --- DEFINE-CALENDAR DSL -----------------------------------------------
 

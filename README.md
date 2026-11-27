@@ -19,6 +19,24 @@ Substitute days do not depend on the order of the rules (since 0.6.0). Every nom
 
 A `:computed` rule may yield several dates per year (since 0.7.0). Its COMPUTE may return NIL, a DATE or a list of DATEs. The Hijri helpers the starters use (`eid-al-fitr`, `eid-al-adha`, `islamic-new-year-date`, `mawlid-date` and `islamic-date-in-gregorian-year`, all shadowing datetime-protocol's) are occurrence-aware: a COMPUTE that calls them runs once per occurrence of that Hijri date in the Gregorian year. So the second Eid of years such as 2000, 2006, 2033 and 2039 is kept, and `(+ (eid-al-adha y) 2)`-style blocks that start in late December run on into January. Dates are tabular (Kuwaiti arithmetic), and sighting or Umm al-Qura countries can differ by a day.
 
+### Data coverage
+
+`(calendar-coverage cal)` gives the years a calendar has data for:
+
+- NIL for statute-rule calendars, which are unbounded;
+- `(2000 . 2040)` for `country-calendar` and corpus-inferred starters;
+- `:none` for an empty stub (`country-calendar-stub-p`).
+
+Since 0.10.0, `holiday-p` outside the coverage signals `calendar-out-of-range`, a `calendar-error` with the readers `calendar-out-of-range-calendar`, `-date` and `-coverage`. So `holidays-between` and `business-days-between` signal too. It offers two restarts: `use-value` returns a value for `holiday-p`, and `continue` treats the date as not a holiday.
+
+```lisp
+(handler-bind ((calendar-out-of-range #'continue))     ; old behaviour, per call
+  (business-days-between (country-calendar "DE") (make-date 2040 12 1) (make-date 2041 2 1)))
+(holiday-p (country-calendar "DE" :strict nil) (make-date 2041 10 3)) ; => NIL, no signal
+```
+
+Corpus-inferred starters no longer extrapolate: their rules run only over the corpus years, and their `:authority` says they are inferred.
+
 ### Caching and threads
 
 Since 0.9.1 a `rule-calendar` builds each year's holiday map once and keeps it, together with its working-day and suppressed-date sets, in a per-instance synchronized table (`:synchronized t` on SBCL). Queries from several threads are safe. As an example, `holidays-between` over 41 years of KR now takes milliseconds; it used to take about a minute. A `setf` of any rule-calendar accessor (`calendar-rules`, `calendar-transfers`, `calendar-working-days`, `calendar-suppressed-dates`, `calendar-weekend-days`, the sandwich and furikae settings) drops the cache. After changing a rule struct or a list in place, call `(clear-calendar-cache cal)`.
@@ -61,7 +79,9 @@ Normative starters (prefer over `country-calendar` corpus): `japan-holidays-cale
   (holiday-p cal (make-date 2026 1 9))   ; decree transfer
   (business-day-p cal (make-date 2024 4 27))) ; compensatory Saturday when :year 2024
 
-;; 212 country/territory calendars (2000–2040 public+bank), incl. TW/XK/EH + stubs
+;; 212 country/territory codes: 206 with data (2000–2040 public+bank), incl.
+;; TW/XK/EH, plus 6 empty stubs (ABH NCY OST PMR PS SOL). Outside 2000–2040, and
+;; for a stub, holiday-p signals CALENDAR-OUT-OF-RANGE (see below).
 (list-country-calendars)
 (holiday-p (country-calendar "DE") (make-date 2024 10 3))
 (holiday-p (country-calendar "TW") (make-date 2024 2 10))

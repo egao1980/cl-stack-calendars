@@ -73,6 +73,40 @@ human-readable NAME. Returned by HOLIDAYS-BETWEEN."))
 holiday for CALENDAR, independent of weekend status. Every concrete calendar
 kind must implement this."))
 
+;;; --- data coverage -------------------------------------------------------
+
+(defgeneric calendar-coverage (calendar)
+  (:documentation "The years CALENDAR has holiday data for: NIL when it is not
+bounded (rule calendars built from statute), (FROM-YEAR . TO-YEAR) for a
+data-derived calendar, or :NONE for an empty stub. A strict calendar signals
+CALENDAR-OUT-OF-RANGE from HOLIDAY-P outside its coverage."))
+
+(defmethod calendar-coverage ((calendar holiday-calendar))
+  nil)
+
+(defun date-covered-p (coverage date)
+  "True when DATE lies inside COVERAGE (see CALENDAR-COVERAGE)."
+  (cond ((null coverage) t)
+        ((eq coverage :none) nil)
+        (t (<= (car coverage) (date-year date) (cdr coverage)))))
+
+(defun call-with-coverage (calendar date strict thunk)
+  "Call THUNK (HOLIDAY-P's body) when DATE is covered or STRICT is NIL.
+Otherwise signal CALENDAR-OUT-OF-RANGE, with USE-VALUE (return that value)
+and CONTINUE (not a holiday) restarts."
+  (let ((coverage (calendar-coverage calendar)))
+    (if (or (not strict) (date-covered-p coverage date))
+        (funcall thunk)
+        (restart-case (error 'calendar-out-of-range
+                             :calendar calendar :date date :coverage coverage)
+          (use-value (value)
+            :report "Return a value for HOLIDAY-P."
+            :interactive (lambda () (list (read)))
+            (values value nil))
+          (continue ()
+            :report "Treat the date as not a holiday."
+            (values nil nil))))))
+
 (defgeneric business-day-p (calendar date)
   (:documentation "True when DATE is neither a weekend day nor a holiday for
 CALENDAR."))
