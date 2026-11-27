@@ -74,6 +74,20 @@ def page_text(raw: bytes) -> str:
     return re.sub(r"\s*\n\s*", "|", t)
 
 
+def easter_western(year: int) -> date:
+    """Gregorian Easter Sunday (Meeus/Jones/Butcher)."""
+    a, b, c = year % 19, year // 100, year % 100
+    d, e = b // 4, b % 4
+    f = (b + 8) // 25
+    g = (b - f + 1) // 3
+    h = (19 * a + b - d - g + 15) % 30
+    i, k = c // 4, c % 4
+    l = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * l) // 451
+    month = (h + l - 7 * m + 114) // 31
+    return date(year, month, (h + l - 7 * m + 114) % 31 + 1)
+
+
 def first_weekday_on_or_after(d: date, weekday: int) -> date:
     """WEEKDAY is Python's (Monday 0 ... Sunday 6)."""
     return d + timedelta(days=(weekday - d.weekday()) % 7)
@@ -350,12 +364,235 @@ def kr_official_check(days: dict) -> None:
     print(f"  KR 2021-2028: KASI 달력자료 agrees except {len(diff)} listed overrides")
 
 
+
+# --- Hong Kong ------------------------------------------------------------
+#
+# General Holidays Ordinance (Cap. 149), Schedule as replaced by 35 of 1998
+# s. 4 and amended by 23 of 2011 s. 3, and its s. 6(2) (two general holidays
+# on one day: the next day that is not itself a general holiday). Lunar
+# dates and Ching Ming (the "Bright & Clear" solar term) come from the Hong
+# Kong Observatory Gregorian-Lunar Calendar Conversion Tables. Checked
+# against the yearly gazetted lists: info.gov.hk 1999-2006 and gov.hk
+# 2007-2027 (Wayback copies), and the 1823 calendar JSON 2025-2027.
+
+CAP149 = "https://www.elegislation.gov.hk/hk/cap149"
+HKO_TABLE = "https://www.hko.gov.hk/en/gts/time/calendar/text/files/T{y}e.txt"
+HK_1823 = "https://www.1823.gov.hk/common/ical/en.json"
+
+HK_SOURCES = [
+    ("General Holidays Ordinance (Cap. 149), Schedule (replaced 35 of 1998 s. 4; amended 23 of 2011 s. 3)", CAP149,
+     "(a) every Sunday; (b) the first day of January (or if that day is a Sunday, then the following day); "
+     "(c)-(e) Lunar New Year's Day, the second and the third day of Lunar New Year (or if that day is a Sunday, "
+     "then the fourth day of Lunar New Year); (f) Ching Ming Festival (Sunday: the following day); (g) Good "
+     "Friday; (h) the day following Good Friday; (i) Easter Monday; (j) Labour Day, the first day of May; (k) "
+     "the Birthday of the Buddha, the eighth day of the fourth lunar month; (l) Tuen Ng Festival; (m) HKSAR "
+     "Establishment Day, 1 July; (n) National Day, 1 October; (o) the day following the Chinese Mid-Autumn "
+     "Festival (or if that day is a Sunday, then the second day following that Festival); (p) Chung Yeung "
+     "Festival; (q) Christmas Day (or if that day is a Sunday, then the second weekday after Christmas Day); "
+     "(r) the first weekday after Christmas Day. (j)-(n), (p): Sunday gives the following day. Before 23 of "
+     "2011, a Sunday among the three Lunar New Year days gave the day preceding Lunar New Year's Day, and a "
+     "Sunday day-following-Mid-Autumn gave the day of the festival (lists 2002, 2009)."),
+    ("General Holidays Ordinance (Cap. 149) s. 6(2) (replaced 35 of 1998 s. 3)", CAP149,
+     "Subject to subsection (3), if in any year two general holidays fall on the same day, the next following "
+     "day that is not itself a general holiday is to be observed as an additional general holiday in that year."),
+    ("L.N. 191 of 1999; 9 of 2015 s. 2(a) (Cap. 149 editorial notes)", CAP149,
+     "31 December 1999 appointed an additional general holiday; 3 September 2015 (70th anniversary of the "
+     "victory of the Chinese people's War of Resistance) a general holiday for 2015."),
+    ("Hong Kong Observatory, Gregorian-Lunar Calendar Conversion Tables",
+     "https://www.hko.gov.hk/en/gts/time/conversion.htm",
+     "Lunar months and days, and the 24 solar terms (Ching Ming = 'Bright & Clear'), T1999e.txt-T2041e.txt."),
+    ("General holidays for 1999-2006 (info.gov.hk, Wayback)", "https://www.info.gov.hk/info/holiday_e.htm",
+     "The gazetted lists, e.g. 2003: 'As the second day of the Lunar New Year falls on a Sunday, the day "
+     "preceding the Lunar New Year's Day will be designated as an additional general holiday.'"),
+    ("General holidays for 2007-2027 (gov.hk)", "https://www.gov.hk/en/about/abouthk/holiday/2027.htm",
+     "The yearly gazetted lists (2007-2026 from Wayback captures, 2027 live)."),
+    ("1823 general holidays calendar (JSON)", HK_1823, "General holidays 2025-2027."),
+]
+
+HK_NOTE = (
+    "General holidays of Cap. 149 (Schedule (b)-(r) and s. 6(2)), plus the additional days appointed by "
+    "resolution. Sundays are general holidays but are not listed; a scheduled day that falls on a Sunday "
+    "is listed on its own date and its substitute too. Lunar dates and Ching Ming are the Hong Kong "
+    "Observatory's. Checked day by day against the gazetted lists 1999-2027."
+)
+
+HK_ADDITIONAL = {
+    date(2015, 9, 3): "70th anniversary of the victory of the Chinese people's War of Resistance",
+}
+
+
+def hko_days(year: int) -> dict:
+    """{date: (lunar month, lunar day, leap?, solar term)} of the HKO table of YEAR.
+    A month name that repeats the month before it is the leap month."""
+    raw = cached(f"hk/hko-T{year}e.txt", HKO_TABLE.format(y=year), 10000).decode("latin-1")
+    out, month, leap, day = {}, None, False, None
+    row = re.compile(r"^(\d{4})/(\d+)/(\d+)\s+(\d+(?:\w\w Lunar Month)?)\s+\w+day\s*(.*)$", re.I)
+    for line in raw.splitlines():
+        m = row.match(line.strip())
+        if not m:
+            continue
+        d = date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+        cell, term = m.group(4), m.group(5).strip()
+        if cell.lower().endswith("lunar month"):
+            n = int(re.match(r"\d+", cell).group())
+            leap = n == month
+            month, day = n, 1
+        else:
+            day = int(cell)
+        if month is not None:
+            out[d] = (month, day, leap, term)
+    return out
+
+
+def hk_lunar(year: int, month: int, day: int) -> date:
+    """The Gregorian date in YEAR of the non-leap lunar MONTH/DAY (HKO)."""
+    hits = []
+    for y in (year - 1, year, year + 1):
+        for d, (m, dd, leap, _) in hko_days(y).items():
+            if d.year == year and m == month and dd == day and not leap:
+                hits.append(d)
+    assert len(hits) == 1, (year, month, day, hits)
+    return hits[0]
+
+
+def hk_ching_ming(year: int) -> date:
+    hits = [d for d, v in hko_days(year).items() if v[3] == "Bright & Clear"]
+    assert len(hits) == 1, (year, hits)
+    return hits[0]
+
+
+def hk_holidays(year: int) -> list[tuple[date, str]]:
+    sunday = lambda d: d.weekday() == 6
+    lny = hk_lunar(year, 1, 1)
+    easter = easter_western(year)
+    mid_autumn = hk_lunar(year, 8, 15)
+    xmas = date(year, 12, 25)
+    out: list[tuple[date, str]] = []
+    taken: set = set()
+
+    def add(d, name):
+        out.append((d, name))
+        taken.add(d)
+
+    def scheduled(d, name, sunday_gives=None):
+        add(d, name)
+        if sunday(d):
+            pending.append((sunday_gives or (d + timedelta(days=1)), f"The day following {name}"))
+
+    pending: list = []
+    scheduled(date(year, 1, 1), "The first day of January")
+    lny_names = ["Lunar New Year's Day", "The second day of Lunar New Year", "The third day of Lunar New Year"]
+    for i, name in enumerate(lny_names):
+        add(lny + timedelta(days=i), name)
+    if any(sunday(lny + timedelta(days=i)) for i in range(3)):
+        if year >= 2012:  # 23 of 2011 s. 3
+            add(lny + timedelta(days=3), "The fourth day of Lunar New Year")
+        else:
+            add(lny - timedelta(days=1), "The day preceding Lunar New Year's Day")
+    scheduled(hk_ching_ming(year), "Ching Ming Festival")
+    add(easter - timedelta(days=2), "Good Friday")
+    add(easter - timedelta(days=1), "The day following Good Friday")
+    add(easter + timedelta(days=1), "Easter Monday")
+    scheduled(date(year, 5, 1), "Labour Day")
+    scheduled(hk_lunar(year, 4, 8), "The Birthday of the Buddha")
+    scheduled(hk_lunar(year, 5, 5), "Tuen Ng Festival")
+    scheduled(date(year, 7, 1), "Hong Kong Special Administrative Region Establishment Day")
+    scheduled(date(year, 10, 1), "National Day")
+    following = mid_autumn + timedelta(days=1)
+    if not sunday(following):
+        add(following, "The day following the Chinese Mid-Autumn Festival")
+    elif year >= 2012:  # 23 of 2011 s. 3
+        add(following + timedelta(days=1), "The second day following the Chinese Mid-Autumn Festival")
+    else:  # before 23 of 2011: the day of the festival (2002, 2009 lists)
+        add(mid_autumn, "Chinese Mid-Autumn Festival")
+    scheduled(hk_lunar(year, 9, 9), "Chung Yeung Festival")
+    # (q), (r): a weekday is any day but Sunday.
+    weekdays_after = [xmas + timedelta(days=n) for n in range(1, 4) if not sunday(xmas + timedelta(days=n))]
+    add(xmas, "Christmas Day")
+    add(weekdays_after[0], "The first weekday after Christmas Day")
+    if sunday(xmas):
+        add(weekdays_after[1], "The second weekday after Christmas Day")
+    for d, name in HK_ADDITIONAL.items():
+        if d.year == year:
+            add(d, name)
+    # Sunday substitutes, then s. 6(2) for two general holidays on one day.
+    counts: dict = {}
+    for d, _ in out:
+        counts[d] = counts.get(d, 0) + 1
+    for d, name in pending:
+        counts[d] = counts.get(d, 0) + 1
+        out.append((d, name))
+        taken.add(d)
+    for d in sorted(counts):
+        for _ in range(counts[d] - 1):
+            s = d + timedelta(days=1)
+            while s in taken or sunday(s):
+                s += timedelta(days=1)
+            taken.add(s)
+            out.append((s, "Additional general holiday (Cap. 149 s. 6(2))"))
+    return out
+
+
+HK_MONTHS = {m: i + 1 for i, m in enumerate(
+    ["january", "february", "march", "april", "may", "june", "july", "august", "september",
+     "october", "november", "december"])}
+
+
+def hk_official_days() -> dict[int, set]:
+    """The gazetted general holidays (Sundays left out) of each year 2000-2027:
+    info.gov.hk (2000-2006) and gov.hk (2007-2027) pages, cached from Wayback."""
+    out = {}
+    for y in range(2000, 2028):
+        rel = f"hk/info-{y}.html" if y <= 2006 else f"hk/govhk-{y}.html"
+        raw = (CACHE / rel).read_bytes()
+        t = page_text(raw)
+        i = t.find("Every Sunday")
+        assert i > 0, rel
+        end = min(k for k in (t.find('"', i), t.find("General holidays for", i), t.find("Remarks", i), len(t))
+                  if k > 0)
+        body = t[i:end]
+        found = set()
+        for m in re.finditer(r"\|(?:(\d{1,2})\s*([A-Za-z]+)|([A-Za-z]+)\s*(\d{1,2}))\|(\w+day)", body):
+            day, month = (m.group(1), m.group(2)) if m.group(1) else (m.group(4), m.group(3))
+            d = date(y, next(v for k, v in HK_MONTHS.items() if k.startswith(month.lower()[:3])), int(day))
+            assert d.strftime("%A") == m.group(5), (rel, d, m.group(5))
+            if d.weekday() != 6:
+                found.add(d)
+        out[y] = found
+    return out
+
+
+def hk_1823_days() -> set:
+    raw = cached("hk/1823-en.json", HK_1823, 1000)
+    events = json.loads(raw.decode("utf-8-sig"))["vcalendar"][0]["vevent"]
+    days = {date(int(e["dtstart"][0][:4]), int(e["dtstart"][0][4:6]), int(e["dtstart"][0][6:]))
+            for e in events}
+    return {d for d in days if d.weekday() != 6}
+
+
+def hk_official_check(days: dict) -> None:
+    official = hk_official_days()
+    diff = set()
+    for year, listed in official.items():
+        ours = {d for d in days if d.year == year and d.weekday() != 6}
+        for d in sorted(listed ^ ours):
+            print(f"  HK {d} {'official only' if d in listed else 'gold only: ' + str(days[d])}")
+        diff |= listed ^ ours
+    j = hk_1823_days()
+    jd = j ^ {d for d in days if d.year in (2025, 2026, 2027) and d.weekday() != 6}
+    print(f"  HK 2000-2027: {len(diff)} differences with the gazetted lists; 1823 JSON 2025-2027: {len(jd)}")
+    assert not diff and not jd, (sorted(diff), sorted(jd))
+
+
 # --- registry and writer --------------------------------------------------
 
 COUNTRIES = {
     "KR": dict(name="South Korea", build=kr_holidays, sources=KR_SOURCES, note=KR_NOTE,
                python=lambda years: __import__("holidays").KR(years=years),
                crosscheck=kr_official_check),
+    "HK": dict(name="Hong Kong", build=hk_holidays, sources=HK_SOURCES, note=HK_NOTE,
+               python=lambda years: __import__("holidays").HK(years=years, categories=("public", "optional")),
+               crosscheck=hk_official_check),
 }
 
 

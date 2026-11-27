@@ -111,3 +111,48 @@ each three-day 설날 and 추석 (#39 item 7)."
   (ng (kr-provisional-year-p 2027))
   (ok (kr-provisional-year-p 2028))
   (ok (kr-provisional-year-p 2040)))
+
+;;; --- Hong Kong (#41) -------------------------------------------------------
+
+(defparameter *hk-holiday-gold* (load-holiday-gold "HK"))
+
+(deftest hk-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *hk-holiday-gold* "HK"))
+
+(deftest hk-registered-calendar-matches-gold
+  "find-calendar \"HK\" agrees with Cap. 149 and the HKO lunar tables on every
+day 2000–2040 (the gold is checked against the gazetted lists 2000–2027)."
+  (let ((hk (find-calendar "HK")))
+    (%report-holiday-gold "HK" (%holiday-gold-mismatches *hk-holiday-gold* (constantly hk)))))
+
+(deftest hk-country-calendar-matches-gold
+  (let ((hk (country-calendar "HK")))
+    (ok (eq :normative (calendar-provenance hk)))
+    (%report-holiday-gold "country-calendar HK"
+                          (%holiday-gold-mismatches *hk-holiday-gold* (constantly hk)))))
+
+(deftest hk-cap149-schedule-2024
+  "The six general holidays #41 found missing, and the fourth day of Lunar
+New Year for the Sunday 2024-02-11."
+  (let ((hk (find-calendar "HK")))
+    (dolist (ymd '((2024 3 30) (2024 4 4) (2024 5 15) (2024 6 10) (2024 9 18) (2024 10 11)
+                   (2024 2 13)))
+      (ok (holiday-p hk (apply #'make-date ymd)) (format nil "~{~d-~2,'0d-~2,'0d~}" ymd)))))
+
+(deftest hk-substitutes-by-era
+  "Cap. 149 Schedule before and after 23 of 2011, and s. 6(2)."
+  (let ((hk (find-calendar "HK")))
+    (flet ((holiday (y m d) (holiday-p hk (make-date y m d))))
+      (ok (holiday 2010 2 13) "LNY on a Sunday before 2012: the day preceding")
+      (ng (holiday 2010 2 17))
+      (ok (holiday 2013 2 13) "LNY on a Sunday from 2012: the fourth day")
+      (ng (holiday 2013 2 9))
+      (ok (holiday 2009 10 3) "day following Mid-Autumn on a Sunday before 2012: the festival")
+      (ng (holiday 2009 10 5))
+      (ok (holiday 2014 9 9) "Mid-Autumn 2014-09-08: the day following")
+      (ok (holiday 2010 4 6) "Ching Ming on Easter Monday: s. 6(2)")
+      (ok (holiday 2015 4 7) "Ching Ming Sunday, its substitute on Easter Monday: s. 6(2)")
+      (ok (holiday 2022 12 27) "Christmas on a Sunday: the second weekday after")
+      (ok (holiday 2020 12 26) "the first weekday after Christmas may be a Saturday")
+      (ok (holiday 2015 9 3) "one-off 2015 general holiday")
+      (ok (holiday 2033 10 3) "National Day and Chung Yeung on Saturday 2033-10-01: s. 6(2)"))))
