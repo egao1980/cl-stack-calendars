@@ -1032,6 +1032,239 @@ def ph_holidays(year: int) -> list[tuple[date, str]]:
     return ph_statutory(year)
 
 
+# --- Indonesia ------------------------------------------------------------
+#
+# Hari libur nasional: the SKB 3 Menteri (Menteri Agama, Menteri
+# Ketenagakerjaan, Menteri PAN-RB) of each year 2000-2027 with its amendments,
+# and the Keppres that made election days national holidays. Cuti bersama
+# (collective leave, mandatory for ASN only) are kept apart, in :cuti-bersama.
+# Years after 2027 are provisional: the fixed and Easter days, with the
+# moveable days estimated the way the starter does (tabular Islamic
+# calendar; Imlek, Waisak = lunar 4/15 and Nyepi from the HKO tables).
+
+ID_NOTE = (
+    "Hari libur nasional as each year's SKB 3 Menteri (and amendments, and the election-day Keppres) set "
+    "them, 2000-2027. Cuti bersama are not hari libur: they are listed under :cuti-bersama (the "
+    "calendar with :cuti-bersama t). 2028-2040 are provisional: fixed and Easter days, moveable days "
+    "estimated (perkiraan)."
+)
+
+ID_SOURCES = [
+    ("SKB 3 Menteri tentang Hari Libur Nasional dan Cuti Bersama, 2014-2027 (JDIH Kemnaker)",
+     "https://jdih.kemnaker.go.id/peraturan/detail/3089",
+     "Keputusan Bersama Menteri Agama, Menteri Ketenagakerjaan dan Menteri PAN-RB of each year and every "
+     "amending SKB (2020: four, 2021: two, 2022: two, 2023: two); e.g. SKB 1205/2026, 3/2026, 2/2026 "
+     "(2026-09-15) for 2027. Lampiran I: hari libur nasional; lampiran II: cuti bersama."),
+    ("SKB 3 Menteri 2005-2013 (menkokesra.go.id, depag.go.id / kemenag.go.id; Wayback copies)",
+     "https://www.kemenkopmk.go.id/index.php/node/6444",
+     "E.g. SKB Menag No. 362/2004, Menakertrans KEP.119/MEN/VII/2004 (2005); No. 1/2009 (2010)."),
+    ("Keputusan Presiden: hari pemungutan suara sebagai hari libur nasional",
+     "https://web.archive.org/web/20250413192447/https://peraturan.bpk.go.id/Details/55580/keppres-no-26-tahun-2004",
+     "Pemilu 2009, 2014, 2019, 2024 (Keppres 10/2024); Pilkada serentak 2015, 2017, 2018, 2020, 2024 "
+     "(Keppres 33/2024)."),
+    ("Keppres No. 19/2002 (Imlek, from 2003); Keppres No. 24/2013 (Hari Buruh, from 2014); Keppres No. "
+     "24/2016 (Hari Lahir Pancasila, from 2017); Keppres No. 8/2024 (Kebangkitan Yesus Kristus)",
+     "https://setkab.go.id/pemerintah-tetapkan-hari-libur-nasional-dan-cuti-bersama-tahun-2025/",
+     "The fixed days of the starter's rules and their first years."),
+]
+
+# The SKB 3 Menteri of each year 2005-2027 with its amendments (and the election-day
+# Keppres): every hari libur nasional and every cuti bersama as finally in force. Texts:
+# jdih.kemnaker.go.id, setkab.go.id, kemenkopmk.go.id, setneg.go.id, peraturan.bpk.go.id
+# (Wayback copies where gone). 2000-2004 have no primary text found (no gold).
+ID_SKB = {
+    2005: {
+        "instrument": 'SKB Menag No. 362/2004, Menakertrans No. KEP.119/MEN/VII/2004, MenPAN No. SKB/02/M.PAN/7/2004 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2005 (2004-07-19)',
+        "urls": ['https://web.archive.org/web/20090816054808/http://www.menkokesra.go.id:80/pdf/libur0506.pdf', 'https://web.archive.org/web/20040816101954/http://www.depag.go.id:80/hariliburnas.php'],
+        "libur": [('2005-01-01', 'Tahun Baru Masehi'), ('2005-01-21', 'Idul Adha 1425 Hijriah'), ('2005-02-09', 'Tahun Baru Imlek 2556'), ('2005-02-10', 'Tahun Baru 1426 Hijriah'), ('2005-03-11', 'Hari Raya Nyepi'), ('2005-03-25', 'Wafat Yesus Kristus'), ('2005-04-22', 'Maulid Nabi Muhammad SAW yang diperingati hari Kamis tanggal 21 April'), ('2005-05-05', 'Kenaikan Yesus Kristus'), ('2005-05-24', 'Hari raya Waisak'), ('2005-08-17', 'Hari Kemerdekaan RI'), ('2005-09-02', "Isra Mi'raj Nabi Muhammad SAW yang diperingati hari Kamis tanggal 1 September"), ('2005-11-03', 'Idul Fitri 1 Syawal 1426 Hijriah'), ('2005-11-04', 'Idul Fitri 1 Syawal 1426 Hijriah'), ('2005-12-25', 'Hari Raya Natal')],
+        "cuti": [('2005-11-02', 'Cuti Bersama'), ('2005-11-05', 'Cuti Bersama'), ('2005-11-07', 'Cuti Bersama (7 dan 8 November fakultatif)'), ('2005-11-08', 'Cuti Bersama (7 dan 8 November fakultatif)')],
+    },
+    2006: {
+        "instrument": 'SKB Menag No. 407/2005, Menakertrans No. KEP.185/MEN/VII/2005, MenPAN No. SKB/02/M.PAN/7/2005 tentang Hari-hari Libur Nasional dan Cuti Bersama Tahun 2006 (2005-07-29)',
+        "amendments": ['SKB Menag No. 10/2006, Menakertrans No. KEP.132/MEN/III/2006, MenPAN No. 01/M.PAN/3/2006 (2006-03-22): adds cuti bersama 31 Mar, 26 May, 18 Aug'],
+        "urls": ['https://web.archive.org/web/20090816054808/http://www.menkokesra.go.id:80/pdf/libur0506.pdf', 'https://web.archive.org/web/20060609043751/http://menkokesra.go.id/file/skb_libur.pdf'],
+        "libur": [('2006-01-01', 'Tahun Baru Masehi'), ('2006-01-10', 'Idul Adha 1426 Hijriyah'), ('2006-01-29', 'Tahun Baru Imlek 2557'), ('2006-01-31', 'Tahun Baru 1427 Hijriyah'), ('2006-03-30', 'Hari Raya Nyepi'), ('2006-04-10', 'Maulid Nabi Muhammad SAW yang diperingati hari Selasa tanggal 11 April'), ('2006-04-14', 'Wafat Yesus Kristus'), ('2006-05-13', 'Hari Raya Waisak'), ('2006-05-25', 'Kenaikan Yesus Kristus'), ('2006-08-17', 'Hari Kemerdekaan RI'), ('2006-08-21', "Isra' Mi'raj Nabi Muhammad SAW"), ('2006-10-24', 'Idul Fitri 1 Syawal 1427 Hijriyah'), ('2006-10-25', 'Idul Fitri 1 Syawal 1427 Hijriyah'), ('2006-12-25', 'Hari Raya Natal'), ('2006-12-31', 'Idul Adha 1427 Hijriyah')],
+        "cuti": [('2006-03-31', 'Cuti bersama'), ('2006-05-26', 'Cuti bersama'), ('2006-08-18', 'Cuti bersama'), ('2006-10-23', 'Cuti bersama'), ('2006-10-26', 'Cuti bersama'), ('2006-10-27', 'Cuti bersama')],
+    },
+    2007: {
+        "instrument": 'SKB Menag No. 481/2006, Menakertrans No. KEP.281/MEN/VII/2006, MenPAN No. SKB/03/M.PAN/7/2006 tentang Hari-hari Libur Nasional dan Cuti Bersama Tahun 2007 (2006-07-24)',
+        "amendments": ['SKB Menag No. 97/2007, Menakertrans No. KEP.326/MEN/X/2007, MenPAN No. SKB/10/M.PAN/10/2007 (2007-10-01): cuti Idul Fitri extended to 12, 15-19 Oct; adds 26 Dec and 31 Dec'],
+        "urls": ['https://web.archive.org/web/20060901152018/http://menkokesra.go.id/pdf/libur2007.pdf', 'https://web.archive.org/web/20071124194232/http://www.menkokesra.go.id/pdf/skb_libur_2007_perubahan.pdf', 'https://web.archive.org/web/20080828061148/http://www.depag.go.id:80/index.php?a=artikel&id2=libur2007'],
+        "libur": [('2007-01-01', 'Tahun Baru Masehi'), ('2007-01-20', 'Tahun Baru 1428 Hijriyah'), ('2007-02-18', 'Tahun Baru Imlek 2558'), ('2007-03-19', 'Hari Raya Nyepi Tahun Baru Saka 1929'), ('2007-03-31', 'Maulid Nabi Muhammad SAW'), ('2007-04-06', 'Wafat Yesus Kristus'), ('2007-05-17', 'Kenaikan Yesus Kristus'), ('2007-06-01', 'Hari Raya Waisak'), ('2007-08-11', "Isra' Mi'raj Nabi Muhammad SAW"), ('2007-08-17', 'Hari Kemerdekaan RI'), ('2007-10-13', 'Idul Fitri 1 Syawal 1428 Hijriyah'), ('2007-10-14', 'Idul Fitri 1 Syawal 1428 Hijriyah'), ('2007-12-20', 'Idul Adha 1428 Hijriyah'), ('2007-12-25', 'Hari Raya Natal')],
+        "cuti": [('2007-05-18', 'Cuti Bersama menyambung hari libur Kenaikan Yesus Kristus'), ('2007-10-12', 'Cuti Bersama sebelum dan sesudah Hari Raya Idul Fitri 1 Syawal 1428 Hijriyah'), ('2007-10-15', 'Cuti Bersama sebelum dan sesudah Hari Raya Idul Fitri 1 Syawal 1428 Hijriyah'), ('2007-10-16', 'Cuti Bersama sebelum dan sesudah Hari Raya Idul Fitri 1 Syawal 1428 Hijriyah'), ('2007-10-17', 'Cuti Bersama sebelum dan sesudah Hari Raya Idul Fitri 1 Syawal 1428 Hijriyah'), ('2007-10-18', 'Cuti Bersama sebelum dan sesudah Hari Raya Idul Fitri 1 Syawal 1428 Hijriyah'), ('2007-10-19', 'Cuti Bersama sebelum dan sesudah Hari Raya Idul Fitri 1 Syawal 1428 Hijriyah'), ('2007-12-21', 'Cuti Bersama menyambung hari libur Hari Raya Idul Adha'), ('2007-12-24', 'Cuti Bersama sebelum Natal'), ('2007-12-26', 'Cuti Bersama sesudah Natal'), ('2007-12-31', 'Cuti bersama menyambut Tahun Baru 2008')],
+    },
+    2008: {
+        "instrument": 'SKB Menag No. 55/2007, Menakertrans No. KEP.222/MEN/V/2007, MenPAN No. SKB/03/M.PAN/5/2007 tentang Hari-hari Libur Nasional dan Cuti Bersama Tahun 2008 (2007-05-30)',
+        "amendments": ['SKB perubahan (Menakertrans 1/MEN/2008 per press reports), 2008-02-05: deletes cuti bersama 8 Feb, 2 May, 19 May'],
+        "urls": ['https://web.archive.org/web/20071124194229/http://www.menkokesra.go.id/pdf/skb_libur_thn2008.pdf', 'https://web.archive.org/web/20080815121633/http://www.depag.go.id:80/index.php?a=artikel&id2=libur2008'],
+        "libur": [('2008-01-01', 'Tahun Baru Masehi'), ('2008-01-10', 'Tahun Baru 1429 Hijriyah'), ('2008-02-07', 'Tahun Baru Imlek 2559'), ('2008-03-07', 'Hari Raya Nyepi Tahun Baru Saka 1930'), ('2008-03-20', 'Maulid Nabi Muhammad SAW'), ('2008-03-21', 'Wafat Yesus Kristus'), ('2008-05-01', 'Kenaikan Yesus Kristus'), ('2008-05-20', 'Hari Raya Waisak Tahun 2552'), ('2008-07-30', "Isra' Mi'raj Nabi Muhammad SAW"), ('2008-08-18', 'Hari Kemerdekaan RI yang diperingati pada hari Minggu tanggal 17 Agustus 2008'), ('2008-10-01', 'Idul Fitri 1 Syawal 1429 Hijriyah'), ('2008-10-02', 'Idul Fitri 1 Syawal 1429 Hijriyah'), ('2008-12-08', 'Idul Adha 1429 Hijriyah'), ('2008-12-25', 'Hari Raya Natal'), ('2008-12-29', 'Tahun Baru 1430 Hijriyah')],
+        "cuti": [('2008-01-11', 'Cuti bersama menyambung hari libur Tahun Baru 1429 Hijriyah'), ('2008-09-29', 'Cuti bersama sebelum dan sesudah Hari Raya Idul Fitri 1 Syawal 1429 Hijriyah'), ('2008-09-30', 'Cuti bersama sebelum dan sesudah Hari Raya Idul Fitri 1 Syawal 1429 Hijriyah'), ('2008-10-03', 'Cuti bersama sebelum dan sesudah Hari Raya Idul Fitri 1 Syawal 1429 Hijriyah'), ('2008-12-26', 'Cuti bersama menyambung hari libur Hari Raya Natal')],
+    },
+    2009: {
+        "instrument": 'SKB Menag No. 4/2008, Menakertrans No. KEP.115/MEN/VI/2008, MenPAN No. SKB/06/M.PAN/6/2008 tentang Hari-hari Libur Nasional dan Cuti Bersama Tahun 2009 (2008-06-09)',
+        "amendments": ['Keppres 7/2009 (9 Apr 2009 Pemilu legislatif libur nasional)', 'Keppres 17/2009 (8 Jul 2009 Pilpres libur nasional)'],
+        "urls": ['https://web.archive.org/web/20090219203451/http://www.menkokesra.go.id:80/pdf/skb_libur_thn2009.pdf', 'https://web.archive.org/web/2010/http://kemenag.go.id/file/dokumen/LIBUR2009.pdf', 'https://web.archive.org/web/2010/http://kemenag.go.id/file/dokumen/Kepres7th09.pdf', 'https://web.archive.org/web/20250413192539/https://peraturan.bpk.go.id/Details/55369/keppres-no-17-tahun-2009'],
+        "libur": [('2009-01-01', 'Tahun Baru Masehi'), ('2009-01-26', 'Tahun Baru Imlek 2560'), ('2009-03-09', 'Maulid Nabi Muhammad SAW'), ('2009-03-26', 'Hari Raya Nyepi Tahun Baru Saka 1931'), ('2009-04-09', 'Hari Pemungutan Suara Pemilihan Umum Anggota DPR, DPD dan DPRD'), ('2009-04-10', 'Wafat Yesus Kristus'), ('2009-05-09', 'Hari Raya Waisak Tahun 2553'), ('2009-05-21', 'Kenaikan Yesus Kristus'), ('2009-07-08', 'Hari Pemungutan Suara Pemilihan Umum Presiden dan Wakil Presiden'), ('2009-07-20', "Isra' Mi'raj Nabi Muhammad SAW"), ('2009-08-17', 'Hari Kemerdekaan RI'), ('2009-09-21', 'Idul Fitri 1 Syawal 1430 Hijriyah'), ('2009-09-22', 'Idul Fitri 1 Syawal 1430 Hijriyah'), ('2009-11-27', 'Idul Adha 1430 Hijriyah'), ('2009-12-18', 'Tahun Baru 1431 Hijriyah'), ('2009-12-25', 'Hari Raya Natal')],
+        "cuti": [('2009-01-02', 'Cuti Bersama Tahun Baru Masehi'), ('2009-09-18', 'Cuti Bersama Idul Fitri'), ('2009-09-23', 'Cuti Bersama Idul Fitri'), ('2009-12-24', 'Cuti Bersama Natal')],
+    },
+    2010: {
+        "instrument": 'SKB Menag No. 1/2009, Menakertrans No. KEP.227/MEN/VIII/2009, MenPAN No. SKB/13/M.PAN/8/2009 tentang Hari-hari Libur Nasional dan Cuti Bersama Tahun 2010 (2009-08-07)',
+        "urls": ['https://web.archive.org/web/20100202163124/http://www.menkokesra.go.id:80/pdf/skb_libur_thn2010.pdf', 'https://web.archive.org/web/2010/http://kemenag.go.id/file/dokumen/HariLiburCuti2010rev3.pdf'],
+        "libur": [('2010-01-01', 'Tahun Baru Masehi'), ('2010-02-14', 'Tahun Baru Imlek 2561'), ('2010-02-26', 'Maulid Nabi Muhammad SAW'), ('2010-03-16', 'Hari Raya Nyepi Tahun Baru Saka 1932'), ('2010-04-02', 'Wafat Yesus Kristus'), ('2010-05-13', 'Kenaikan Yesus Kristus'), ('2010-05-28', 'Hari Raya Waisak Tahun 2554'), ('2010-07-10', "Isra' Mi'raj Nabi Muhammad SAW"), ('2010-08-17', 'Hari Kemerdekaan RI'), ('2010-09-10', 'Idul Fitri 1 Syawal 1431 Hijriyah'), ('2010-09-11', 'Idul Fitri 1 Syawal 1431 Hijriyah'), ('2010-11-17', 'Idul Adha 1431 Hijriyah'), ('2010-12-07', 'Tahun Baru 1432 Hijriyah'), ('2010-12-25', 'Hari Raya Natal')],
+        "cuti": [('2010-09-09', 'Cuti Bersama Idul Fitri'), ('2010-09-13', 'Cuti Bersama Idul Fitri'), ('2010-12-24', 'Cuti Bersama Hari Raya Natal')],
+    },
+    2011: {
+        "instrument": 'SKB Menag No. 2/2010, Menakertrans No. KEP.110/MEN/VI/2010, MenPAN-RB No. SKB/07/M.PAN-RB/06/2010 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2011 (2010-06-15)',
+        "amendments": ['SKB 3 Menteri (decided 2011-05-13): cuti bersama Senin 16 Mei 2011 (before Waisak)', "SKB 3 Menteri (~2011-05-20, cited as '.../RB/5/2011 tanggal 20 Mei 2011'): cuti bersama Jumat 3 Juni 2011"],
+        "urls": ['https://web.archive.org/web/2011/http://kemenag.go.id/file/dokumen/HrLibur2011.pdf', 'https://web.archive.org/web/20101024204833/http://www.menkokesra.go.id:80/content/cuti-bersama-pns-2011-sebanyak-empat-hari', 'https://web.archive.org/web/20110516070219/http://www.menkokesra.go.id:80/content/libur-16-mei-diputuskan-jumat-pagi', 'https://web.archive.org/web/20110526233004/http://www.menkokesra.go.id:80/content/3-juni-cuti-bersama-2011', 'https://web.archive.org/web/20111226120324/http://kemenag.go.id/file/dokumen/SEcutibersama11.pdf'],
+        "libur": [('2011-01-01', 'Tahun Baru Masehi'), ('2011-02-03', 'Tahun Baru Imlek 2562'), ('2011-02-15', 'Maulid Nabi Muhammad SAW'), ('2011-03-05', 'Hari Raya Nyepi Tahun Baru Saka 1933'), ('2011-04-22', 'Wafat Yesus Kristus'), ('2011-05-17', 'Hari Raya Waisak Tahun 2555'), ('2011-06-02', 'Kenaikan Yesus Kristus'), ('2011-06-29', "Isra' Mi'raj Nabi Muhammad SAW"), ('2011-08-17', 'Hari Kemerdekaan RI'), ('2011-08-30', 'Idul Fitri 1 Syawal 1432 Hijriyah'), ('2011-08-31', 'Idul Fitri 1 Syawal 1432 Hijriyah'), ('2011-11-06', 'Idul Adha 1432 Hijriyah'), ('2011-11-27', 'Tahun Baru 1433 Hijriyah'), ('2011-12-25', 'Hari Raya Natal')],
+        "cuti": [('2011-05-16', 'Cuti Bersama (menjelang Hari Raya Waisak)'), ('2011-06-03', 'Cuti Bersama (setelah Kenaikan Yesus Kristus)'), ('2011-08-29', 'Cuti Bersama Idul Fitri 1 Syawal 1432 Hijriyah'), ('2011-09-01', 'Cuti Bersama Idul Fitri 1 Syawal 1432 Hijriyah'), ('2011-09-02', 'Cuti Bersama Idul Fitri 1 Syawal 1432 Hijriyah'), ('2011-12-26', 'Cuti Bersama Hari Raya Natal')],
+    },
+    2012: {
+        "instrument": 'SKB Menag No. 7/2011, Menakertrans No. 04/MEN/VII/2011, MenPAN-RB No. SKB/03/M.PAN-RB/07/2011 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2012 (2011-07-13)',
+        "amendments": ['SKB Menag No. 2/2012, Menakertrans No. KEP.28/MEN/I/2012, MenPAN-RB No. SKB/01/M.PAN-RB/01/2012 (2012-01-31): adds cuti bersama 31 Dec 2012'],
+        "urls": ['https://web.archive.org/web/20111014013341/http://kemenag.go.id/file/dokumen/Cutibersamadanlibur2012.pdf', 'https://web.archive.org/web/20141120225943/http://kemenag.go.id/file/dokumen/revisihariliburnas2012.pdf', 'https://web.archive.org/web/20110716070103/http://www.menkokesra.go.id:80/content/libur-nasional-dan-cuti-bersama-2012'],
+        "libur": [('2012-01-01', 'Tahun Baru Masehi'), ('2012-01-23', 'Tahun Baru Imlek 2563'), ('2012-02-05', 'Maulid Nabi Muhammad SAW'), ('2012-03-23', 'Hari Raya Nyepi Tahun Baru Saka 1934'), ('2012-04-06', 'Wafat Yesus Kristus'), ('2012-05-06', 'Hari Raya Waisak Tahun 2556'), ('2012-05-17', 'Kenaikan Yesus Kristus'), ('2012-06-17', "Isra' Mi'raj Nabi Muhammad SAW"), ('2012-08-17', 'Hari Kemerdekaan RI'), ('2012-08-19', 'Hari Raya Idul Fitri 1433 Hijriyah'), ('2012-08-20', 'Hari Raya Idul Fitri 1433 Hijriyah'), ('2012-10-26', 'Hari Raya Idul Adha 1433 Hijriyah'), ('2012-11-15', 'Tahun Baru Hijriyah 1434'), ('2012-12-25', 'Hari Raya Natal')],
+        "cuti": [('2012-05-18', 'Cuti Bersama Kenaikan Yesus Kristus'), ('2012-08-21', 'Cuti Bersama Idul Fitri 1 Syawal 1433 Hijriyah'), ('2012-08-22', 'Cuti Bersama Idul Fitri 1 Syawal 1433 Hijriyah'), ('2012-11-16', 'Cuti Bersama Tahun Baru Hijriyah 1434'), ('2012-12-24', 'Cuti Bersama Hari Raya Natal'), ('2012-12-31', 'Cuti Bersama Tahun Baru Masehi 2013')],
+    },
+    2013: {
+        "instrument": "SKB 3 Menteri tentang Hari Libur Nasional dan Cuti Bersama Tahun 2013 (signed 2012-07-19; cited by Kemenko Kesra as 'Nomor 5 Tahun 2012')",
+        "urls": ['https://web.archive.org/web/20120724040834/http://www.menkokesra.go.id:80/content/tahun2013-ada-14-hari-libur-nasional-dan-5-hari-cuti-bersama', 'https://web.archive.org/web/20120724222423/http://www.menkokesra.go.id:80/content/skb-hari-libur-nasional-dan-cuti-bersama-2013', 'https://arsip.kemenkopmk.go.id/artikel/cuti-bersama-idul-fitri-1434-h-tanggal-5-7-agustus-2013'],
+        "libur": [('2013-01-01', 'Tahun Baru 2013'), ('2013-01-24', 'Maulid Nabi Muhammad SAW'), ('2013-02-10', 'Tahun Baru Imlek 2564'), ('2013-03-12', 'Hari Raya Nyepi Tahun Baru Saka 1935'), ('2013-03-29', 'Wafat Isa Al Masih'), ('2013-05-09', 'Kenaikan Isa Almasih'), ('2013-05-25', 'Hari Raya Waisak 2557'), ('2013-06-06', "Isra Mi'raj Nabi Muhammad SAW"), ('2013-08-08', 'Hari Raya Idul Fitri 1434 H'), ('2013-08-09', 'Hari Raya Idul Fitri 1434 H'), ('2013-08-17', 'Hari Kemerdekaan RI'), ('2013-10-15', 'Hari Raya Idul Adha 1434 H'), ('2013-11-05', 'Tahun Baru 1435 H'), ('2013-12-25', 'Hari Raya Natal')],
+        "cuti": [('2013-08-05', 'Cuti Bersama Hari Raya Idul Fitri 1434 H'), ('2013-08-06', 'Cuti Bersama Hari Raya Idul Fitri 1434 H'), ('2013-08-07', 'Cuti Bersama Hari Raya Idul Fitri 1434 H'), ('2013-10-14', 'Cuti Bersama Hari Raya Idul Adha 1434 H'), ('2013-12-26', 'Cuti Bersama Hari Raya Natal')],
+    },
+    2014: {
+        "instrument": 'SKB 3 Menteri (Menag, Menakertrans, MenPAN-RB) tentang Hari Libur Nasional dan Cuti Bersama Tahun 2014 (signed 2013-08-21)',
+        "amendments": ['Keppres 14/2014 (9 Apr 2014 Pemilu legislatif libur nasional)', 'Keppres 24/2014 (9 Jul 2014 Pilpres libur nasional)'],
+        "urls": ['https://web.archive.org/web/20130905085338/http://www.menkokesra.go.id:80/content/skb-hari-libur-nasional-dan-cuti-bersama-tahun-2014-ditandatangani', 'https://jdih.kemnaker.go.id/peraturan/detail/522', 'https://jdih.kemnaker.go.id/peraturan/detail/533', 'https://jdih.kemnaker.go.id/peraturan/detail/425'],
+        "libur": [('2014-01-01', 'Tahun Baru 2014'), ('2014-01-14', 'Maulid Nabi Muhammad SAW'), ('2014-01-31', 'Tahun Baru Imlek 2565 Kongzili'), ('2014-03-31', 'Nyepi Tahun Baru Saka 1936'), ('2014-04-09', 'Hari Pemungutan Suara Pemilu Anggota DPR, DPD dan DPRD'), ('2014-04-18', 'Wafat Isa Al Masih'), ('2014-05-01', 'Hari Buruh Internasional'), ('2014-05-15', 'Hari Raya Waisak 2558'), ('2014-05-27', "Isra' Mi'raj Nabi Muhammad SAW"), ('2014-05-29', 'Kenaikan Isa Al Masih'), ('2014-07-09', 'Hari Pemungutan Suara Pemilu Presiden dan Wakil Presiden'), ('2014-07-28', 'Hari Raya Idul Fitri 1435 Hijriah'), ('2014-07-29', 'Hari Raya Idul Fitri 1435 Hijriah'), ('2014-08-17', 'Hari Kemerdekaan RI'), ('2014-10-05', 'Hari Raya Idul Adha 1435 Hijriah'), ('2014-10-25', 'Tahun Baru Islam 1436 Hijriah'), ('2014-12-25', 'Hari Raya Natal')],
+        "cuti": [('2014-07-30', 'Cuti Bersama Hari Raya Idul Fitri 1435 Hijriah'), ('2014-07-31', 'Cuti Bersama Hari Raya Idul Fitri 1435 Hijriah'), ('2014-08-01', 'Cuti Bersama Hari Raya Idul Fitri 1435 Hijriah'), ('2014-12-26', 'Cuti Bersama Hari Raya Natal')],
+    },
+    2015: {
+        "instrument": 'SKB Menag No. 05/2014, Menakertrans No. 3/SKB/MEN/V/2014, MenPAN-RB No. 02/SKB/MENPAN/V/2014 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2015 (May 2014)',
+        "amendments": ['SKB Menag No. 16/2014, Menakertrans No. 310/2014, MenPAN-RB No. 07/SKB/MENPAN-RB/09/2014 (Sep 2014): adds libur Maulid 1437 H on 24 Dec 2015 and drops cuti bersama Natal 24 Dec', 'Keppres 25/2015 (2015-11-23): Pilkada serentak 9 Dec 2015 libur nasional'],
+        "urls": ['https://jdih.kemnaker.go.id/peraturan/detail/532', 'https://jdih.kemnaker.go.id/peraturan/detail/549', 'https://jdih.kemnaker.go.id/peraturan/detail/1181', 'https://setkab.go.id/sukseskan-pilkada-serentak-pemerintah-tetapkan-9-desember-2015-sebagai-hari-libur-nasional/'],
+        "libur": [('2015-01-01', 'Tahun Baru 2015'), ('2015-01-03', 'Maulid Nabi Muhammad SAW 1436 H'), ('2015-02-19', 'Tahun Baru Imlek 2566 Kongzili'), ('2015-03-21', 'Hari Raya Nyepi Tahun Baru Saka 1937'), ('2015-04-03', 'Wafat Isa Almasih'), ('2015-05-01', 'Hari Buruh Internasional'), ('2015-05-14', 'Kenaikan Yesus Kristus'), ('2015-05-16', 'Isra Mikraj Nabi Muhammad SAW'), ('2015-06-02', 'Hari Raya Waisak 2559'), ('2015-07-17', 'Hari Raya Idul Fitri 1436 Hijriyah'), ('2015-07-18', 'Hari Raya Idul Fitri 1436 Hijriyah'), ('2015-08-17', 'Hari Kemerdekaan RI'), ('2015-09-24', 'Hari Raya Idul Adha 1436 Hijriyah'), ('2015-10-14', 'Tahun Baru 1437 Hijriyah'), ('2015-12-09', 'Hari Pemungutan Suara Pemilihan Kepala Daerah Serentak'), ('2015-12-24', 'Maulid Nabi Muhammad SAW 1437 H'), ('2015-12-25', 'Hari Raya Natal')],
+        "cuti": [('2015-07-16', 'Cuti Bersama Hari Raya Idul Fitri 1436 Hijriyah'), ('2015-07-20', 'Cuti Bersama Hari Raya Idul Fitri 1436 Hijriyah'), ('2015-07-21', 'Cuti Bersama Hari Raya Idul Fitri 1436 Hijriyah')],
+    },
+    2016: {
+        "instrument": 'SKB Menag No. 150/2015, Menaker No. 2/SKB/MEN/VI/2015, MenPAN-RB No. 01/2015 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2016 (2015-06-25)',
+        "urls": ['https://jdih.kemnaker.go.id/peraturan/detail/619', 'https://setkab.go.id/jadi-hari-libur-nasional-inilah-keppres-penetapan-1-juni-sebagai-hari-lahir-pancasila/'],
+        "libur": [('2016-01-01', 'Tahun Baru 2016 Masehi'), ('2016-02-08', 'Tahun Baru Imlek 2567 Kongzili'), ('2016-03-09', 'Hari Raya Nyepi Tahun Baru Saka 1938'), ('2016-03-25', 'Wafat Isa Al-Masih'), ('2016-05-01', 'Hari Buruh Internasional'), ('2016-05-05', 'Kenaikan Yesus Kristus'), ('2016-05-06', 'Isra Mikraj Nabi Muhammad SAW'), ('2016-05-22', 'Hari Raya Waisak 2560'), ('2016-07-06', 'Hari Raya Idul Fitri 1437 Hijriyah'), ('2016-07-07', 'Hari Raya Idul Fitri 1437 Hijriyah'), ('2016-08-17', 'Hari Kemerdekaan Republik Indonesia'), ('2016-09-12', 'Hari Raya Idul Adha 1437 Hijriyah'), ('2016-10-02', 'Tahun Baru Islam 1438 Hijriyah'), ('2016-12-12', 'Maulid Nabi Muhammad SAW'), ('2016-12-25', 'Hari Raya Natal')],
+        "cuti": [('2016-07-04', 'Cuti Bersama Hari Raya Idul Fitri 1437 Hijriyah'), ('2016-07-05', 'Cuti Bersama Hari Raya Idul Fitri 1437 Hijriyah'), ('2016-07-08', 'Cuti Bersama Hari Raya Idul Fitri 1437 Hijriyah'), ('2016-12-26', 'Cuti Bersama Hari Raya Natal')],
+    },
+    2017: {
+        "instrument": 'SKB Menag No. 135/2016, Menaker No. SKB 109/2016, MenPAN-RB No. 01/SKB/MENPANRB/04/2016 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2017 (2016-04-14)',
+        "amendments": ['SKB Menag No. 684/2016, Menaker No. 302/2016, MenPAN-RB No. SKB/02/MENPAN-RB/11/2016 (2016-11-21): adds libur 1 Jun (Hari Lahir Pancasila); cuti bersama 2 Jan, 27-30 Jun, 26 Dec (23 Jun dropped)', 'Keppres 3/2017 (2017-02-10): Pilkada serentak 15 Feb 2017 libur nasional', 'Keppres 18/2017 (2017-06-15): cuti bersama PNS 23, 27-30 Jun and 26 Dec 2017 (re-adds 23 Jun)', 'Keppres 10/2017 (2017-04-13): 19 Apr 2017 Pilkada DKI putaran II - libur only in DKI Jakarta (not national, excluded)'],
+        "urls": ['https://jdih.kemnaker.go.id/peraturan/detail/1232', 'https://jdih.kemnaker.go.id/peraturan/detail/1360', 'https://jdih.kemnaker.go.id/peraturan/detail/1438', 'https://jdih.kemnaker.go.id/peraturan/detail/1444', 'https://setkab.go.id/tidak-kurangi-hak-cuti-tahunan-presiden-jokowi-tetapkan-23-juni-sebagai-cuti-bersama-idul-fitri/', 'https://setkab.go.id/selain-tambah-libur-bersama-sehari-pemerintah-juga-tambah-cuti-bersama-2017-dua-hari/'],
+        "libur": [('2017-01-01', 'Tahun Baru 2017 Masehi'), ('2017-01-28', 'Tahun Baru Imlek 2568 Kongzili'), ('2017-02-15', 'Hari Pemungutan Suara Pemilihan Kepala Daerah Serentak'), ('2017-03-28', 'Hari Raya Nyepi Tahun Baru Saka 1939'), ('2017-04-14', 'Wafat Isa Al Masih'), ('2017-04-24', 'Isra Mikraj Nabi Muhammad SAW'), ('2017-05-01', 'Hari Buruh Internasional'), ('2017-05-11', 'Hari Raya Waisak 2561'), ('2017-05-25', 'Kenaikan Isa Al Masih'), ('2017-06-01', 'Hari Lahir Pancasila'), ('2017-06-25', 'Hari Raya Idul Fitri 1438 Hijriyah'), ('2017-06-26', 'Hari Raya Idul Fitri 1438 Hijriyah'), ('2017-08-17', 'Hari Kemerdekaan Republik Indonesia'), ('2017-09-01', 'Hari Raya Idul Adha 1438 Hijriyah'), ('2017-09-21', 'Tahun Baru Islam 1439 Hijriyah'), ('2017-12-01', 'Maulid Nabi Muhammad SAW'), ('2017-12-25', 'Hari Raya Natal')],
+        "cuti": [('2017-01-02', 'Cuti Bersama Tahun Baru 2017 Masehi'), ('2017-06-23', 'Cuti Bersama Hari Raya Idul Fitri 1438 Hijriyah (Keppres 18/2017, PNS)'), ('2017-06-27', 'Cuti Bersama Hari Raya Idul Fitri 1438 Hijriyah'), ('2017-06-28', 'Cuti Bersama Hari Raya Idul Fitri 1438 Hijriyah'), ('2017-06-29', 'Cuti Bersama Hari Raya Idul Fitri 1438 Hijriyah'), ('2017-06-30', 'Cuti Bersama Hari Raya Idul Fitri 1438 Hijriyah'), ('2017-12-26', 'Cuti Bersama Hari Raya Natal')],
+    },
+    2018: {
+        "instrument": 'SKB Menag No. 707/2017, Menaker No. 256/2017, MenPAN-RB No. 01/SKB/MENPAN-RB/09/2017 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2018',
+        "amendments": ['SKB Menag No. 223/2018, Menaker No. 46/2018, MenPAN-RB No. 13/2018 (2018-04-18): cuti Idul Fitri 11-14, 18-20 Jun', 'Keppres 13/2018 (2018-06-04): cuti bersama PNS (same dates)', 'Keppres 15/2018 (2018-06-25): Pilkada serentak 27 Jun 2018 libur nasional'],
+        "urls": ['https://jdih.kemnaker.go.id/peraturan/detail/1507', 'https://jdih.kemnaker.go.id/peraturan/detail/1545', 'https://jdih.kemnaker.go.id/peraturan/detail/1554', 'https://setkab.go.id/libur-mulai-11-20-juni-cuti-bersama-lebaran-2018-tambah-3-hari/'],
+        "libur": [('2018-01-01', 'Tahun Baru 2018 Masehi'), ('2018-02-16', 'Tahun Baru Imlek 2569 Kongzili'), ('2018-03-17', 'Hari Raya Nyepi Tahun Baru Saka 1940'), ('2018-03-30', 'Wafat Isa Al Masih'), ('2018-04-14', 'Isra Mikraj Nabi Muhammad SAW'), ('2018-05-01', 'Hari Buruh Internasional'), ('2018-05-10', 'Kenaikan Isa Al Masih'), ('2018-05-29', 'Hari Raya Waisak 2562'), ('2018-06-01', 'Hari Lahir Pancasila'), ('2018-06-15', 'Hari Raya Idul Fitri 1439 Hijriyah'), ('2018-06-16', 'Hari Raya Idul Fitri 1439 Hijriyah'), ('2018-06-27', 'Hari Pemungutan Suara Pemilihan Kepala Daerah Serentak'), ('2018-08-17', 'Hari Kemerdekaan Republik Indonesia'), ('2018-08-22', 'Hari Raya Idul Adha 1439 Hijriyah'), ('2018-09-11', 'Tahun Baru Islam 1440 Hijriyah'), ('2018-11-20', 'Maulid Nabi Muhammad SAW'), ('2018-12-25', 'Hari Raya Natal')],
+        "cuti": [('2018-06-11', 'Cuti Bersama Hari Raya Idul Fitri 1439 Hijriyah'), ('2018-06-12', 'Cuti Bersama Hari Raya Idul Fitri 1439 Hijriyah'), ('2018-06-13', 'Cuti Bersama Hari Raya Idul Fitri 1439 Hijriyah'), ('2018-06-14', 'Cuti Bersama Hari Raya Idul Fitri 1439 Hijriyah'), ('2018-06-18', 'Cuti Bersama Hari Raya Idul Fitri 1439 Hijriyah'), ('2018-06-19', 'Cuti Bersama Hari Raya Idul Fitri 1439 Hijriyah'), ('2018-06-20', 'Cuti Bersama Hari Raya Idul Fitri 1439 Hijriyah'), ('2018-12-24', 'Cuti Bersama Hari Raya Natal')],
+    },
+    2019: {
+        "instrument": 'SKB Menag No. 617/2018, Menaker No. 262/2018, MenPAN-RB No. 16/2018 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2019 (2018-11-02)',
+        "amendments": ['Keppres 10/2019 (2019-04-08): Pemilu 17 Apr 2019 libur nasional', 'Keppres 13/2019 (2019-05-27): cuti bersama PNS (same dates)'],
+        "urls": ['https://jdih.kemnaker.go.id/peraturan/detail/1570', 'https://setkab.go.id/ditandatangani-3-menteri-inilah-jadwal-libur-nasional-dan-cuti-bersama-2019/', 'https://setkab.go.id/sukseskan-pemilu-2019-presiden-jokowi-tetapkan-17-april-jadi-hari-libur-nasional/'],
+        "libur": [('2019-01-01', 'Tahun Baru 2019 Masehi'), ('2019-02-05', 'Tahun Baru Imlek 2570 Kongzili'), ('2019-03-07', 'Hari Raya Nyepi Tahun Baru Saka 1941'), ('2019-04-03', 'Isra Mikraj Nabi Muhammad SAW'), ('2019-04-17', 'Hari Pemungutan Suara Pemilihan Umum'), ('2019-04-19', 'Wafat Isa Al Masih'), ('2019-05-01', 'Hari Buruh Internasional'), ('2019-05-19', 'Hari Raya Waisak 2563'), ('2019-05-30', 'Kenaikan Isa Al Masih'), ('2019-06-01', 'Hari Lahir Pancasila'), ('2019-06-05', 'Hari Raya Idul Fitri 1440 Hijriyah'), ('2019-06-06', 'Hari Raya Idul Fitri 1440 Hijriyah'), ('2019-08-11', 'Hari Raya Idul Adha 1440 Hijriyah'), ('2019-08-17', 'Hari Kemerdekaan Republik Indonesia'), ('2019-09-01', 'Tahun Baru Islam 1441 Hijriyah'), ('2019-11-09', 'Maulid Nabi Muhammad SAW'), ('2019-12-25', 'Hari Raya Natal')],
+        "cuti": [('2019-06-03', 'Cuti Bersama Hari Raya Idul Fitri 1440 Hijriyah'), ('2019-06-04', 'Cuti Bersama Hari Raya Idul Fitri 1440 Hijriyah'), ('2019-06-07', 'Cuti Bersama Hari Raya Idul Fitri 1440 Hijriyah'), ('2019-12-24', 'Cuti Bersama Hari Raya Natal')],
+    },
+    2020: {
+        "instrument": 'SKB Menag No. 728/2019, Menaker No. 213/2019, MenPAN-RB No. 01/2019 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2020',
+        "amendments": ['Perubahan I: SKB No. 174/2020, 01/2020, 01/2020 (2020-03-09): cuti +28, 29 May, 21 Aug, 30 Oct', 'Perubahan II: SKB No. 391/2020, 02/2020, 02/2020 (2020-04-09): Idul Fitri cuti 26-29 May moved to 28-31 Dec; +28 Oct', 'Perubahan III: SKB No. 440/2020, 03/2020, 03/2020 (2020-05-20): deletes 22 May', 'Keppres 17/2020 (2020-08-18): cuti bersama ASN', 'Keppres 22/2020 (2020-11-27): Pilkada serentak 9 Dec 2020 libur nasional', 'Perubahan IV: SKB No. 744/2020, 05/2020, 06/2020 (2020-12-01): deletes 28, 29, 30 Dec'],
+        "urls": ['https://jdih.kemnaker.go.id/peraturan/detail/1611', 'https://jdih.kemnaker.go.id/peraturan/detail/1647', 'https://jdih.kemnaker.go.id/peraturan/detail/1655', 'https://jdih.kemnaker.go.id/peraturan/detail/1661', 'https://jdih.kemnaker.go.id/peraturan/detail/1702', 'https://jdih.kemnaker.go.id/peraturan/detail/1701', 'https://setkab.go.id/pemerintah-keluarkan-skb-3-menteri-hapus-tiga-hari-cuti-bersama-2020/'],
+        "libur": [('2020-01-01', 'Tahun Baru 2020 Masehi'), ('2020-01-25', 'Tahun Baru Imlek 2571 Kongzili'), ('2020-03-22', 'Isra Mikraj Nabi Muhammad SAW'), ('2020-03-25', 'Hari Suci Nyepi Tahun Baru Saka 1942'), ('2020-04-10', 'Wafat Isa Al Masih'), ('2020-05-01', 'Hari Buruh Internasional'), ('2020-05-07', 'Hari Raya Waisak 2564'), ('2020-05-21', 'Kenaikan Isa Al Masih'), ('2020-05-24', 'Hari Raya Idul Fitri 1441 Hijriyah'), ('2020-05-25', 'Hari Raya Idul Fitri 1441 Hijriyah'), ('2020-06-01', 'Hari Lahir Pancasila'), ('2020-07-31', 'Hari Raya Idul Adha 1441 Hijriyah'), ('2020-08-17', 'Hari Kemerdekaan Republik Indonesia'), ('2020-08-20', 'Tahun Baru Islam 1442 Hijriyah'), ('2020-10-29', 'Maulid Nabi Muhammad SAW'), ('2020-12-09', 'Hari Pemungutan Suara Pemilihan Kepala Daerah Serentak'), ('2020-12-25', 'Hari Raya Natal')],
+        "cuti": [('2020-08-21', 'Cuti Bersama Tahun Baru Islam 1442 Hijriyah'), ('2020-10-28', 'Cuti Bersama Maulid Nabi Muhammad SAW'), ('2020-10-30', 'Cuti Bersama Maulid Nabi Muhammad SAW'), ('2020-12-24', 'Cuti Bersama Hari Raya Natal'), ('2020-12-31', 'Pengganti Cuti Bersama Hari Raya Idul Fitri 1441 Hijriah')],
+    },
+    2021: {
+        "instrument": 'SKB Menag No. 642/2020, Menaker No. 4/2020, MenPAN-RB No. 4/2020 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2021 (2020-09-10)',
+        "amendments": ['Perubahan I: SKB No. 281/2021, 1/2021, 1/2021 (2021-02-22): deletes cuti 12 Mar, 17-19 May, 27 Dec', 'Keppres 7/2021 (2021-04-09): cuti bersama ASN 12 May, 24 Dec', 'Perubahan II: SKB No. 712/2021, 1/2021, 3/2021 (2021-06-18): 1 Muharram 10->11 Aug, Maulid 19->20 Oct, deletes cuti 24 Dec'],
+        "urls": ['https://jdih.kemnaker.go.id/peraturan/detail/1682', 'https://jdih.kemnaker.go.id/peraturan/detail/1726', 'https://jdih.kemnaker.go.id/peraturan/detail/1843', 'https://setkab.go.id/inilah-perubahan-hari-libur-nasional-dan-cuti-bersama-tahun-2021/'],
+        "libur": [('2021-01-01', 'Tahun Baru 2021 Masehi'), ('2021-02-12', 'Tahun Baru Imlek 2572 Kongzili'), ('2021-03-11', 'Isra Mikraj Nabi Muhammad SAW'), ('2021-03-14', 'Hari Suci Nyepi Tahun Baru Saka 1943'), ('2021-04-02', 'Wafat Isa Al Masih'), ('2021-05-01', 'Hari Buruh Internasional'), ('2021-05-13', 'Hari Raya Idul Fitri 1442 Hijriah'), ('2021-05-13', 'Kenaikan Isa Al Masih'), ('2021-05-14', 'Hari Raya Idul Fitri 1442 Hijriah'), ('2021-05-26', 'Hari Raya Waisak 2565'), ('2021-06-01', 'Hari Lahir Pancasila'), ('2021-07-20', 'Hari Raya Idul Adha 1442 Hijriah'), ('2021-08-11', 'Tahun Baru Islam 1443 Hijriah'), ('2021-08-17', 'Hari Kemerdekaan Republik Indonesia'), ('2021-10-20', 'Maulid Nabi Muhammad SAW'), ('2021-12-25', 'Hari Raya Natal')],
+        "cuti": [('2021-05-12', 'Cuti Bersama Hari Raya Idul Fitri 1442 Hijriah')],
+    },
+    2022: {
+        "instrument": 'SKB Menag No. 963/2021, Menaker No. 3/2021, MenPAN-RB No. 4/2021 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2022 (2021-09-22)',
+        "amendments": ['Perubahan I: SKB No. 375/2022, 1/2022, 1/2022 (2022-04-07): sets cuti bersama 29 Apr, 4-6 May', 'Keppres 4/2022: cuti bersama ASN (same dates)', 'Perubahan II: SKB No. 678/2022, 2/2022, 2/2022 (2022-07-07): Idul Adha 1443 H 9 Jul -> 10 Jul'],
+        "urls": ['https://jdih.kemnaker.go.id/peraturan/detail/1919', 'https://jdih.kemnaker.go.id/peraturan/detail/2171', 'https://jdih.kemnaker.go.id/peraturan/detail/2200', 'https://setkab.go.id/inilah-skb-3-menteri-perubahan-hari-libur-nasional-dan-cuti-bersama-tahun-2022/'],
+        "libur": [('2022-01-01', 'Tahun Baru 2022 Masehi'), ('2022-02-01', 'Tahun Baru Imlek 2573 Kongzili'), ('2022-02-28', 'Isra Mikraj Nabi Muhammad SAW'), ('2022-03-03', 'Hari Suci Nyepi Tahun Baru Saka 1944'), ('2022-04-15', 'Wafat Isa Al Masih/Wafat Yesus Kristus'), ('2022-05-01', 'Hari Buruh Internasional'), ('2022-05-02', 'Hari Raya Idul Fitri 1443 Hijriah'), ('2022-05-03', 'Hari Raya Idul Fitri 1443 Hijriah'), ('2022-05-16', 'Hari Raya Waisak 2566 BE'), ('2022-05-26', 'Kenaikan Isa Al Masih/Kenaikan Yesus Kristus'), ('2022-06-01', 'Hari Lahir Pancasila'), ('2022-07-10', 'Hari Raya Idul Adha 1443 Hijriah'), ('2022-07-30', 'Tahun Baru Islam 1444 Hijriah'), ('2022-08-17', 'Hari Kemerdekaan Republik Indonesia'), ('2022-10-08', 'Maulid Nabi Muhammad SAW'), ('2022-12-25', 'Hari Raya Natal')],
+        "cuti": [('2022-04-29', 'Cuti Bersama Hari Raya Idul Fitri 1443 Hijriah'), ('2022-05-04', 'Cuti Bersama Hari Raya Idul Fitri 1443 Hijriah'), ('2022-05-05', 'Cuti Bersama Hari Raya Idul Fitri 1443 Hijriah'), ('2022-05-06', 'Cuti Bersama Hari Raya Idul Fitri 1443 Hijriah')],
+    },
+    2023: {
+        "instrument": 'SKB Menag No. 1066/2022, Menaker No. 3/2022, MenPAN-RB No. 3/2022 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2023 (2022-10-11)',
+        "amendments": ['Perubahan I: SKB No. 327/2023, 1/2023, 1/2023 (2023-03-29): Idul Fitri cuti 21, 24-26 Apr -> 19-21, 24-25 Apr', 'Perubahan II: SKB No. 624/2023, 2/2023, 2/2023 (2023-06-16): + cuti Iduladha 28 and 30 Jun', 'Keppres 24/2022, Keppres 8/2023 and a June 2023 Keppres: cuti bersama ASN'],
+        "urls": ['https://jdih.kemnaker.go.id/peraturan/detail/2242', 'https://jdih.kemnaker.go.id/peraturan/detail/2300', 'https://jdih.kemnaker.go.id/peraturan/detail/2329', 'https://setkab.go.id/pemerintah-terbitkan-skb-perubahan-libur-nasional-dan-cuti-bersama-2023-2/'],
+        "libur": [('2023-01-01', 'Tahun Baru 2023 Masehi'), ('2023-01-22', 'Tahun Baru Imlek 2574 Kongzili'), ('2023-02-18', 'Isra Mikraj Nabi Muhammad saw.'), ('2023-03-22', 'Hari Suci Nyepi Tahun Baru Saka 1945'), ('2023-04-07', 'Wafat Isa Almasih'), ('2023-04-22', 'Hari Raya Idulfitri 1444 Hijriah'), ('2023-04-23', 'Hari Raya Idulfitri 1444 Hijriah'), ('2023-05-01', 'Hari Buruh Internasional'), ('2023-05-18', 'Kenaikan Isa Almasih'), ('2023-06-01', 'Hari Lahir Pancasila'), ('2023-06-04', 'Hari Raya Waisak 2567 BE'), ('2023-06-29', 'Hari Raya Iduladha 1444 Hijriah'), ('2023-07-19', 'Tahun Baru Islam 1445 Hijriah'), ('2023-08-17', 'Hari Kemerdekaan RI'), ('2023-09-28', 'Maulid Nabi Muhammad saw.'), ('2023-12-25', 'Hari Raya Natal')],
+        "cuti": [('2023-01-23', 'Cuti Bersama Tahun Baru Imlek 2574 Kongzili'), ('2023-03-23', 'Cuti Bersama Hari Suci Nyepi Tahun Baru Saka 1945'), ('2023-04-19', 'Cuti Bersama Hari Raya Idulfitri 1444 Hijriah'), ('2023-04-20', 'Cuti Bersama Hari Raya Idulfitri 1444 Hijriah'), ('2023-04-21', 'Cuti Bersama Hari Raya Idulfitri 1444 Hijriah'), ('2023-04-24', 'Cuti Bersama Hari Raya Idulfitri 1444 Hijriah'), ('2023-04-25', 'Cuti Bersama Hari Raya Idulfitri 1444 Hijriah'), ('2023-06-02', 'Cuti Bersama Hari Raya Waisak 2567 BE'), ('2023-06-28', 'Cuti Bersama Hari Raya Iduladha 1444 Hijriah'), ('2023-06-30', 'Cuti Bersama Hari Raya Iduladha 1444 Hijriah'), ('2023-12-26', 'Cuti Bersama Hari Raya Natal')],
+    },
+    2024: {
+        "instrument": 'SKB Menag No. 855/2023, Menaker No. 3/2023, MenPAN-RB No. 4/2023 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2024 (2023-09-12)',
+        "amendments": ['Keppres 8/2024 tentang Hari-Hari Libur (2024-01-29): consolidates holiday Keppres (revokes Keppres 251/1967, 148/1968, 10/1971, 3/1983); Kebangkitan Yesus Kristus (Paskah) formally a holiday; Isa Almasih -> Yesus Kristus', 'Keppres 7/2024: cuti bersama ASN 2024', 'Keppres 10/2024 (2024-02-06): Pemilu 14 Feb 2024 libur nasional', 'SKB Menag No. 236/2024, Menaker No. 1/2024, MenPAN-RB No. 2/2024 (2024-02-26): nomenclature change only', 'Keppres 33/2024: Pilkada serentak 27 Nov 2024 libur nasional'],
+        "urls": ['https://jdih.kemnaker.go.id/peraturan/detail/2365', 'https://jdih.kemnaker.go.id/peraturan/detail/2460', 'https://jdih.kemnaker.go.id/peraturan/detail/2453', 'https://jdih.kemnaker.go.id/peraturan/detail/2457', 'https://jdih.kemnaker.go.id/peraturan/detail/2596', 'https://setkab.go.id/inilah-skb-3-menteri-libur-nasional-dan-cuti-bersama-2024/', 'https://setkab.go.id/inilah-isi-keppres-nomor-8-tahun-2024-tentang-hari-hari-libur/'],
+        "libur": [('2024-01-01', 'Tahun Baru 2024 Masehi'), ('2024-02-08', 'Isra Mikraj Nabi Muhammad S.A.W.'), ('2024-02-10', 'Tahun Baru Imlek 2575 Kongzili'), ('2024-02-14', 'Hari Pemungutan Suara Pemilihan Umum Tahun 2024'), ('2024-03-11', 'Hari Suci Nyepi (Tahun Baru Saka 1946)'), ('2024-03-29', 'Wafat Yesus Kristus'), ('2024-03-31', 'Kebangkitan Yesus Kristus (Paskah)'), ('2024-04-10', 'Hari Raya Idul Fitri 1445 Hijriah'), ('2024-04-11', 'Hari Raya Idul Fitri 1445 Hijriah'), ('2024-05-01', 'Hari Buruh Internasional'), ('2024-05-09', 'Kenaikan Yesus Kristus'), ('2024-05-23', 'Hari Raya Waisak 2568 BE'), ('2024-06-01', 'Hari Lahir Pancasila'), ('2024-06-17', 'Hari Raya Idul Adha 1445 Hijriah'), ('2024-07-07', '1 Muharam Tahun Baru Islam 1446 Hijriah'), ('2024-08-17', 'Proklamasi Kemerdekaan'), ('2024-09-16', 'Maulid Nabi Muhammad S.A.W.'), ('2024-11-27', 'Hari Pemungutan Suara Pemilihan Gubernur, Bupati, dan Wali Kota Serentak'), ('2024-12-25', 'Kelahiran Yesus Kristus')],
+        "cuti": [('2024-02-09', 'Cuti Bersama Tahun Baru Imlek 2575 Kongzili'), ('2024-03-12', 'Cuti Bersama Hari Suci Nyepi (Tahun Baru Saka 1946)'), ('2024-04-08', 'Cuti Bersama Hari Raya Idul Fitri 1445 Hijriah'), ('2024-04-09', 'Cuti Bersama Hari Raya Idul Fitri 1445 Hijriah'), ('2024-04-12', 'Cuti Bersama Hari Raya Idul Fitri 1445 Hijriah'), ('2024-04-15', 'Cuti Bersama Hari Raya Idul Fitri 1445 Hijriah'), ('2024-05-10', 'Cuti Bersama Kenaikan Yesus Kristus'), ('2024-05-24', 'Cuti Bersama Hari Raya Waisak 2568 BE'), ('2024-06-18', 'Cuti Bersama Hari Raya Idul Adha 1445 Hijriah'), ('2024-12-26', 'Cuti Bersama Kelahiran Yesus Kristus')],
+    },
+    2025: {
+        "instrument": 'SKB Menag No. 1017/2024, Menaker No. 2/2024, MenPAN-RB No. 2/2024 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2025 (2024-10-14)',
+        "amendments": ['Keppres 2/2025: cuti bersama ASN 2025', 'SKB Menag No. 933/2025, Menaker No. 1/2025, MenPAN-RB No. 3/2025 (2025-08-07): adds cuti bersama 18 Aug 2025 (HUT ke-80 RI)'],
+        "urls": ['https://jdih.kemnaker.go.id/peraturan/detail/2569', 'https://jdih.kemnaker.go.id/peraturan/detail/2712', 'https://setkab.go.id/pemerintah-tetapkan-hari-libur-nasional-dan-cuti-bersama-tahun-2025/'],
+        "libur": [('2025-01-01', 'Tahun Baru 2025 Masehi'), ('2025-01-27', 'Isra Mikraj Nabi Muhammad S.A.W.'), ('2025-01-29', 'Tahun Baru Imlek 2576 Kongzili'), ('2025-03-29', 'Hari Suci Nyepi (Tahun Baru Saka 1947)'), ('2025-03-31', 'Idul Fitri 1446 Hijriah'), ('2025-04-01', 'Idul Fitri 1446 Hijriah'), ('2025-04-18', 'Wafat Yesus Kristus'), ('2025-04-20', 'Kebangkitan Yesus Kristus (Paskah)'), ('2025-05-01', 'Hari Buruh Internasional'), ('2025-05-12', 'Hari Raya Waisak 2569 BE'), ('2025-05-29', 'Kenaikan Yesus Kristus'), ('2025-06-01', 'Hari Lahir Pancasila'), ('2025-06-06', 'Idul Adha 1446 Hijriah'), ('2025-06-27', '1 Muharam Tahun Baru Islam 1447 Hijriah'), ('2025-08-17', 'Proklamasi Kemerdekaan'), ('2025-09-05', 'Maulid Nabi Muhammad S.A.W.'), ('2025-12-25', 'Kelahiran Yesus Kristus')],
+        "cuti": [('2025-01-28', 'Cuti Bersama Tahun Baru Imlek 2576 Kongzili'), ('2025-03-28', 'Cuti Bersama Hari Suci Nyepi (Tahun Baru Saka 1947)'), ('2025-04-02', 'Cuti Bersama Idul Fitri 1446 Hijriah'), ('2025-04-03', 'Cuti Bersama Idul Fitri 1446 Hijriah'), ('2025-04-04', 'Cuti Bersama Idul Fitri 1446 Hijriah'), ('2025-04-07', 'Cuti Bersama Idul Fitri 1446 Hijriah'), ('2025-05-13', 'Cuti Bersama Hari Raya Waisak 2569 BE'), ('2025-05-30', 'Cuti Bersama Kenaikan Yesus Kristus'), ('2025-06-09', 'Cuti Bersama Idul Adha 1446 Hijriah'), ('2025-08-18', 'Cuti Bersama Proklamasi Kemerdekaan'), ('2025-12-26', 'Cuti Bersama Kelahiran Yesus Kristus')],
+    },
+    2026: {
+        "instrument": 'SKB Menag No. 1497/2025, Menaker No. 2/2025, MenPAN-RB No. 5/2025 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2026 (2025-09-19)',
+        "amendments": ['Keppres 42/2025: cuti bersama ASN 2026'],
+        "urls": ['https://www.kemenkopmk.go.id/pemerintah-tetapkan-17-hari-libur-nasional-dan-8-hari-cuti-bersama-tahun-2026', 'https://jdih.kemnaker.go.id/peraturan/detail/2723'],
+        "libur": [('2026-01-01', 'Tahun Baru 2026 Masehi'), ('2026-01-16', 'Isra Mikraj Nabi Muhammad SAW'), ('2026-02-17', 'Tahun Baru Imlek 2577 Kongzili'), ('2026-03-19', 'Hari Suci Nyepi (Tahun Baru Saka 1948)'), ('2026-03-21', 'Hari Raya Idul Fitri 1447 H'), ('2026-03-22', 'Hari Raya Idul Fitri 1447 H'), ('2026-04-03', 'Wafat Yesus Kristus'), ('2026-04-05', 'Hari Kebangkitan Yesus Kristus (Paskah)'), ('2026-05-01', 'Hari Buruh Internasional'), ('2026-05-14', 'Kenaikan Yesus Kristus'), ('2026-05-27', 'Hari Raya Idul Adha 1447 H'), ('2026-05-31', 'Hari Raya Waisak 2570 BE'), ('2026-06-01', 'Hari Lahir Pancasila'), ('2026-06-16', '1 Muharam 1448 H (Tahun Baru Islam)'), ('2026-08-17', 'Hari Proklamasi Kemerdekaan'), ('2026-08-25', 'Maulid Nabi Muhammad SAW'), ('2026-12-25', 'Kelahiran Yesus Kristus')],
+        "cuti": [('2026-02-16', 'Cuti Bersama Tahun Baru Imlek 2577 Kongzili'), ('2026-03-18', 'Cuti Bersama Hari Suci Nyepi (Tahun Baru Saka 1948)'), ('2026-03-20', 'Cuti Bersama Hari Raya Idul Fitri 1447 H'), ('2026-03-23', 'Cuti Bersama Hari Raya Idul Fitri 1447 H'), ('2026-03-24', 'Cuti Bersama Hari Raya Idul Fitri 1447 H'), ('2026-05-15', 'Cuti Bersama Kenaikan Yesus Kristus'), ('2026-05-28', 'Cuti Bersama Idul Adha 1447 H'), ('2026-12-24', 'Cuti Bersama Kelahiran Yesus Kristus')],
+    },
+    2027: {
+        "instrument": 'SKB Menag No. 1205/2026, Menaker No. 3/2026, MenPAN-RB No. 2/2026 tentang Hari Libur Nasional dan Cuti Bersama Tahun 2027 (2026-09-15)',
+        "urls": ['https://www.kemenkopmk.go.id/index.php/node/6444', 'https://setneg.go.id/baca/index/inilah_skb_3_menteri_libur_nasional_dan_cuti_bersama_2027', 'https://jdih.kemnaker.go.id/peraturan/detail/3089'],
+        "libur": [('2027-01-01', 'Tahun Baru 2027 Masehi'), ('2027-01-05', 'Isra Mikraj Nabi Muhammad saw.'), ('2027-02-06', 'Tahun Baru Imlek 2578 Kongzili'), ('2027-03-08', 'Hari Suci Nyepi (Tahun Baru Saka 1949)'), ('2027-03-10', 'Idulfitri 1448 Hijriah'), ('2027-03-11', 'Idulfitri 1448 Hijriah'), ('2027-03-26', 'Wafat Yesus Kristus'), ('2027-03-28', 'Hari Kebangkitan Yesus Kristus (Paskah)'), ('2027-05-01', 'Hari Buruh Internasional'), ('2027-05-06', 'Kenaikan Yesus Kristus'), ('2027-05-17', 'Iduladha 1448 Hijriah'), ('2027-05-20', 'Hari Raya Waisak 2571 BE'), ('2027-06-01', 'Hari Lahir Pancasila'), ('2027-06-06', '1 Muharam Tahun Baru Islam 1449 Hijriah'), ('2027-08-15', 'Maulid Nabi Muhammad SAW'), ('2027-08-17', 'Proklamasi Kemerdekaan'), ('2027-12-25', 'Kelahiran Yesus Kristus (Natal)'), ('2027-12-26', 'Isra Mikraj Nabi Muhammad saw.')],
+        "cuti": [('2027-02-05', 'Cuti Bersama Tahun Baru Imlek 2578 Kongzili'), ('2027-03-09', 'Cuti Bersama Hari Raya Idulfitri 1448 Hijriah'), ('2027-03-12', 'Cuti Bersama Hari Raya Idulfitri 1448 Hijriah'), ('2027-03-15', 'Cuti Bersama Hari Raya Idulfitri 1448 Hijriah'), ('2027-03-25', 'Cuti Bersama Wafat Yesus Kristus'), ('2027-05-18', 'Cuti Bersama Iduladha 1448 H'), ('2027-05-19', 'Cuti Bersama Waisak 2571 BE'), ('2027-12-24', 'Cuti Bersama Kelahiran Yesus Kristus (Natal)')],
+    },
+}
+
+
+def id_estimated(year: int) -> list[tuple[date, str]]:
+    """The starter's days for a year no SKB covers."""
+    easter = easter_western(year)
+    out = [(date(year, 1, 1), "Tahun Baru Masehi"), (date(year, 5, 1), "Hari Buruh Internasional"),
+           (date(year, 6, 1), "Hari Lahir Pancasila"), (date(year, 8, 17), "Hari Kemerdekaan RI"),
+           (date(year, 12, 25), "Hari Raya Natal"), (easter - timedelta(days=2), "Wafat Isa Almasih"),
+           (easter, "Kebangkitan Isa Almasih"), (easter + timedelta(days=39), "Kenaikan Isa Almasih"),
+           (hk_lunar(year, 1, 1), "Tahun Baru Imlek (perkiraan)"),
+           (hk_lunar(year, 4, 15), "Hari Raya Waisak (perkiraan)")]
+    starts = [hk_lunar(year, 2, 1), hk_lunar(year, 3, 1)]
+    nyepi = next((d for d in starts if date(year, 3, 2) <= d <= date(year, 4, 15)), None)
+    if nyepi:
+        out.append((nyepi + timedelta(days=1), "Hari Suci Nyepi (perkiraan)"))
+    for m, d, name, extra in ((7, 27, "Isra Mikraj Nabi Muhammad", 0), (10, 1, "Idul Fitri", 0),
+                              (10, 1, "Idul Fitri", 1), (12, 10, "Idul Adha", 0), (1, 1, "Tahun Baru Islam", 0),
+                              (3, 12, "Maulid Nabi Muhammad", 0)):
+        for x in islamic_dates_in_year(year, m, d):
+            x += timedelta(days=extra)
+            if x.year == year:
+                out.append((x, f"{name} (perkiraan)"))
+    return out
+
+
+def id_holidays(year: int) -> list[tuple[date, str]]:
+    if year in ID_SKB:
+        return [(date.fromisoformat(d), n) for d, n in ID_SKB[year]["libur"]]
+    return id_estimated(year)
+
+
+def id_cuti(year: int) -> list[tuple[date, str]]:
+    return [(date.fromisoformat(d), n) for d, n in ID_SKB.get(year, {}).get("cuti", [])]
+
+
 # --- registry and writer --------------------------------------------------
 
 COUNTRIES = {
@@ -1041,6 +1274,8 @@ COUNTRIES = {
     "HK": dict(name="Hong Kong", build=hk_holidays, sources=HK_SOURCES, note=HK_NOTE,
                python=lambda years: __import__("holidays").HK(years=years, categories=("public", "optional")),
                crosscheck=hk_official_check),
+    "ID": dict(name="Indonesia", first=2005, build=id_holidays, cuti=id_cuti, sources=ID_SOURCES, note=ID_NOTE,
+               python=lambda years: __import__("holidays").ID(years=years)),
     "PH": dict(name="Philippines", build=ph_holidays, sources=PH_SOURCES, note=PH_NOTE,
                python=lambda years: __import__("holidays").PH(years=years)),
     "TW": dict(name="Taiwan", build=tw_holidays, working=tw_working_days, sources=TW_SOURCES, note=TW_NOTE,
@@ -1055,21 +1290,22 @@ def lisp_string(s: str) -> str:
 
 def build(cc: str) -> None:
     spec = COUNTRIES[cc]
+    first = spec.get("first", FIRST)
     days: dict[date, list[str]] = {}
-    for year in range(FIRST, LAST + 1):
+    for year in range(first, LAST + 1):
         for d, name in spec["build"](year):
             assert d.year == year, (cc, d, name)
             if name not in days.setdefault(d, []):
                 days[d].append(name)
     lines = [
-        f";; {spec['name']} national holidays {FIRST}-{LAST}: external gold for {cc}.",
+        f";; {spec['name']} national holidays {first}-{LAST}: external gold for {cc}.",
         f";; Regenerate: uv run --no-project --with holidays==0.109 python -I "
         f"scripts/generate_asia_holiday_gold.py {cc}",
         ";; :days lists every holiday as (YEAR MONTH DAY NAME); any other day is not one.",
         "(",
         f" :country {lisp_string(cc)}",
         f" :generated {lisp_string(GENERATED)}",
-        f" :from {FIRST} :to {LAST}",
+        f" :from {first} :to {LAST}",
         f" :note {lisp_string(spec['note'])}",
         " :sources",
         " (",
@@ -1086,9 +1322,16 @@ def build(cc: str) -> None:
     if spec.get("working"):
         lines.append(" :working-days")
         lines.append(" (")
-        for year in range(FIRST, LAST + 1):
+        for year in range(first, LAST + 1):
             for d in spec["working"](year):
                 lines.append(f"  ({d.year} {d.month} {d.day} \"補行上班\")")
+        lines.append(" )")
+    if spec.get("cuti"):
+        lines.append(" :cuti-bersama")
+        lines.append(" (")
+        for year in range(first, LAST + 1):
+            for d, name in spec["cuti"](year):
+                lines.append(f"  ({d.year} {d.month} {d.day} {lisp_string(name)})")
         lines.append(" )")
     lines.append(")")
     out = ROOT / "data" / "tests" / f"{cc.lower()}-holiday-gold.sexp"
@@ -1099,7 +1342,7 @@ def build(cc: str) -> None:
 
     # Secondary check only.
     try:
-        py = spec["python"](range(FIRST, LAST + 1))
+        py = spec["python"](range(first, LAST + 1))
     except ImportError:
         print(f"{cc}: python-holidays not installed, secondary check skipped")
         return

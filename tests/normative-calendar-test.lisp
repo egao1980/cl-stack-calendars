@@ -399,18 +399,22 @@ and 26 December 2025 are not in it (the old data had them, #41)."
     (ok (holiday-p cal (make-date 1946 8 17)))))
 
 (deftest indonesia-cuti-bersama-corpus
-  "SKB cuti bersama encoded 2002–2026."
-  (ok (id-notice-for-year 2002))
+  "SKB 3 Menteri encoded 2005–2027 (data/id/skb.sexp, #41)."
+  (ok (id-notice-for-year 2005))
   (ok (id-notice-for-year 2014))
   (ok (id-notice-for-year 2025))
-  (ok (id-notice-for-year 2026))
-  (ok (>= (length (id-cuti-bersama)) 25)))
+  (ok (id-notice-for-year 2027))
+  (ng (id-notice-for-year 2004))
+  (ok (= (length (id-cuti-bersama)) 23)))
 
 (deftest indonesia-cuti-bersama-2025
-  (let ((cal (indonesia-holidays-calendar :year 2025))
+  "Cuti bersama are not hari libur nasional: only :CUTI-BERSAMA T adds them (#41)."
+  (let ((cal (indonesia-holidays-calendar :year 2025 :cuti-bersama t))
+        (libur (indonesia-holidays-calendar :year 2025))
         (bare (make-instance 'indonesia-holidays-calendar)))
     (ok (holiday-p cal (make-date 2025 1 28)))
     (ok (holiday-p cal (make-date 2025 4 7)))
+    (ng (holiday-p libur (make-date 2025 1 28)))
     (ng (holiday-p bare (make-date 2025 1 28)))))
 
 (deftest korea-temporary-holidays-corpus

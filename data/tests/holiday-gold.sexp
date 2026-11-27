@@ -249,7 +249,7 @@
  ("ID" 2016 6 1 nil nil)
  ("ID" 2017 6 1 t nil)
  ("ID" 1946 8 17 t nil)
- (("ID" 2025) 2025 1 28 t nil)
+ (("ID" 2025) 2025 1 29 t nil) ; Tahun Baru Imlek (2025-01-28 is cuti bersama, not in "ID", #41)
  ("PH" 2003 8 21 nil nil)
  ("PH" 2004 8 21 t nil)
  ("PH" 1986 2 25 t nil)

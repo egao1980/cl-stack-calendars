@@ -47,9 +47,9 @@ day is a Monday–Friday that is no holiday, or a day GOLD lists under
         do (ok nil (format nil "~a ~{~a ~a gold ~a ours ~a~}" label row)))
   (ok (null bad) (format nil "~a: ~d disagreements with the gold" label (length bad))))
 
-(defun %check-holiday-gold-shape (gold code)
+(defun %check-holiday-gold-shape (gold code &key (from 2000))
   (ok (string= code (getf gold :country)))
-  (ok (= 2000 (getf gold :from)))
+  (ok (= from (getf gold :from)))
   (ok (= 2040 (getf gold :to)))
   (ok (getf gold :sources))
   (ok (every (lambda (s) (getf s :uri)) (getf gold :sources))))

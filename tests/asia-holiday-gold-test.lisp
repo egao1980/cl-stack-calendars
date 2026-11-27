@@ -255,3 +255,61 @@ years after 2027 are provisional)."
 (deftest ph-provisional-years
   (ng (ph-provisional-year-p 2026))
   (ok (ph-provisional-year-p 2027)))
+
+;;; --- Indonesia (#41) -------------------------------------------------------
+
+(defparameter *id-holiday-gold* (load-holiday-gold "ID"))
+
+(defun %id-gold-with-cuti ()
+  "The ID gold with its :CUTI-BERSAMA rows counted as days off."
+  (list* :days (append (getf *id-holiday-gold* :days) (getf *id-holiday-gold* :cuti-bersama))
+         *id-holiday-gold*))
+
+(deftest id-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *id-holiday-gold* "ID" :from 2005)
+  (ok (getf *id-holiday-gold* :cuti-bersama)))
+
+(deftest id-registered-calendar-matches-gold
+  "find-calendar \"ID\" holds the hari libur nasional of every SKB 3 Menteri
+2005–2027 on every day, and the estimates of 2028–2040."
+  (let ((id (find-calendar "ID")))
+    (%report-holiday-gold "ID" (%holiday-gold-mismatches *id-holiday-gold* (constantly id)))))
+
+(deftest id-year-calendars-match-gold
+  (%report-holiday-gold "ID :year"
+                        (%holiday-gold-mismatches *id-holiday-gold*
+                                                  (lambda (y) (indonesia-holidays-calendar :year y)))))
+
+(deftest id-cuti-bersama-calendar-matches-gold
+  "(indonesia-holidays-calendar :cuti-bersama t) adds exactly the SKB cuti bersama."
+  (%report-holiday-gold "ID :cuti-bersama"
+                        (%holiday-gold-mismatches (%id-gold-with-cuti)
+                                                  (lambda (y) (indonesia-holidays-calendar :year y :cuti-bersama t)))))
+
+(deftest id-country-calendar-matches-gold
+  (let ((id (country-calendar "ID")))
+    (ok (eq :normative (calendar-provenance id)))
+    (%report-holiday-gold "country-calendar ID"
+                          (%holiday-gold-mismatches *id-holiday-gold* (constantly id)))))
+
+(deftest id-issue-41-days
+  (let ((id (find-calendar "ID")))
+    (flet ((holiday (y m d) (holiday-p id (make-date y m d))))
+      (ok (holiday 2024 2 8) "Isra Mikraj")
+      (ok (holiday 2024 3 11) "Nyepi")
+      (ok (holiday 2024 5 9) "Kenaikan")
+      (ok (holiday 2024 5 23) "Waisak")
+      (ok (holiday 2024 7 7) "Tahun Baru Islam per SKB, not the tabular 07-08")
+      (ng (holiday 2024 7 8))
+      (ok (holiday 2022 5 2) "Idul Fitri per SKB")
+      (ok (holiday 2022 5 3))
+      (ng (holiday 2022 5 4))
+      (ok (holiday 2024 2 14) "Pemilu 2024")
+      (ok (holiday 2024 11 27) "Pilkada serentak 2024")
+      (ok (holiday 2027 3 10) "SKB 2027")
+      (ng (holiday 2024 2 9) "cuti bersama is not a hari libur")
+      (ng (holiday 2016 6 1) "Pancasila from 2017"))))
+
+(deftest id-provisional-years
+  (ng (id-provisional-year-p 2027))
+  (ok (id-provisional-year-p 2028)))
