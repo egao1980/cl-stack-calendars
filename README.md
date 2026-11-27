@@ -13,7 +13,7 @@ Statute-named `:observed` (prefer these):
 | `:us-federal-in-lieu` | 5 U.S.C. § 6103(b) + EO 11582 § 3(a) |
 | `:uk-proclamation-substitute` | BFDA 1971 + Royal Proclamations / [gov.uk](https://www.gov.uk/bank-holidays) |
 | `:jp-furikae` | 祝日法 Art. 3(2) — **Sunday only** |
-| `:ru-tk-112-transfer` | ТК РФ ст. 112 ч. 2 (except 1–8 Jan) |
+| `:ru-tk-112-transfer` | ТК РФ ст. 112 ч. 2 (1–8 Jan exempt from 2013); a decree under ч. 5 that moves the day cancels the automatic transfer |
 
 Substitute days do not depend on the order of the rules (since 0.6.0). Every nominal holiday of every rule, in the year and the years either side, is claimed first. Substitutes are then placed in date order (ties by name), and each skips weekend days, claimed days and earlier substitutes, also across 31 Dec / 1 Jan. A substitute never swallows another holiday, and `:us-federal-in-lieu` walks past a claimed Friday instead of dropping the holiday. Two rules on the same date keep that one day, and `holiday-p` reports both names joined with `"; "`, sorted.
 
@@ -106,6 +106,13 @@ Since 0.8.0 a wrapper keeps its constituents' weekends and their working-day ove
 `calendar-weekend-days` is the union or intersection of the constituents' lists. With `:weekend-days`, that plain list replaces the constituents' weekends and their working-day overrides. An empty calendar list, or an unknown mode, signals `calendar-error`. A `versioned-calendar` delegates `holiday-p`, `weekend-day-p`, `business-day-p` and `calendar-weekend-days` to `(calendar-as-of c)`, its newest snapshot.
 
 Russian/USSR: `(russian-holidays-calendar)` (and `find-calendar "RU"`) = ТК eras + every decree transfer; `:year 2026` keeps only that year's; `(ussr-holidays-calendar)` for late-Soviet fixed days.
+
+Since 0.14.0 (#13) RU matches the official production calendar on every day 2000–2027, holiday and business status both (`tests/russian-production-gold-test.lisp`, gold in `data/tests/ru-production-calendar-gold.sexp`):
+
+- A weekend holiday moves to the next working day (ТК ст. 112 ч. 2). January holidays did so too until 2012; the 1–8 January exemption starts in 2013 (ФЗ от 23.04.2012 № 35-ФЗ).
+- A Government decree that moves such a rest day elsewhere (ч. 5) cancels the automatic transfer: 2013-02-25, 2014-02-24, 2019-02-25, 2025-02-24 and 2025-03-10 are working days. In `data/ru/transfers.sexp` FROM is the Monday the decree cancels; the engine also accepts the holiday itself as FROM, as the 2019 and 2025 decree texts word it.
+- Decrees run through 2027 (Постановление Правительства РФ от 17.09.2026 № 1187). For later years `(ru-provisional-year-p 2028)` is true: the calendar applies the ТК holidays and the automatic ч. 2 transfers only, so a future decree can still move days. `(ru-last-decree-year)` gives the last decree year.
+- `(country-calendar "RU")` defers to this starter (`normative-country-calendar`, provenance `:normative`). The date-holidays dump for RU had no 2–5 January from 2005, no ст. 112 transfers or decrees, and 4 November before 2005; the file ships unchanged but is no longer consulted. `*country-calendar-normative*` lists the deferring codes.
 
 Normative starters (prefer over `country-calendar` corpus): `japan-holidays-calendar` (祝日法 + Tokyo equinoxes), `(china-holidays-calendar :year 2026)` (放假办法 + Beijing lunar + 调休), `india-holidays-calendar`, `germany-holidays-calendar` / `france-holidays-calendar` / `italy-holidays-calendar` / `spain-holidays-calendar` / `netherlands-holidays-calendar` / `belgium-holidays-calendar` / `austria-holidays-calendar` / `poland-holidays-calendar` / `sweden-holidays-calendar`, plus `target-calendar` (ECB). See [`docs/AUTHORITIES.md`](docs/AUTHORITIES.md).
 

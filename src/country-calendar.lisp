@@ -68,13 +68,64 @@ unless the calendar was loaded with :STRICT NIL."))
       (setf (gethash (date-rd (make-date y m d)) table)
             (cons name (or type :public))))))
 
+(defparameter *country-calendar-normative*
+  '(("RU" . russian-holidays-calendar))
+  "Corpus codes whose COUNTRY-CALENDAR defers to a hand starter: alist CODE →
+starter constructor. The date-holidays dump for these codes is known to be
+wrong (RU: no 2–5 January from 2005, no ТК ст. 112 transfers or decrees,
+4 November before 2005; egao1980/cl-stack-calendars#13). The corpus file stays
+as shipped; its days are no longer consulted.")
+
+(defclass normative-country-calendar (country-holiday-calendar)
+  ((normative :initarg :normative :reader country-calendar-normative
+              :documentation "The hand starter calendar that answers every query."))
+  (:documentation "A COUNTRY-CALENDAR for a code in *COUNTRY-CALENDAR-NORMATIVE*.
+It keeps the corpus metadata (code, name, source, year range) but answers
+HOLIDAY-P, BUSINESS-DAY-P, weekends and coverage from the normative starter,
+and reports :NORMATIVE provenance."))
+
+(defun %normative-country-starter (code constructor weekend-days)
+  "The starter calendar for CODE: the registered one, or a fresh one from
+CONSTRUCTOR when WEEKEND-DAYS overrides its weekend."
+  (if weekend-days
+      (let ((cal (funcall constructor)))
+        (setf (calendar-weekend-days cal) weekend-days)
+        cal)
+      (find-calendar code)))
+
+(defmethod holiday-p ((calendar normative-country-calendar) date)
+  (holiday-p (country-calendar-normative calendar) date))
+
+(defmethod business-day-p ((calendar normative-country-calendar) date)
+  (business-day-p (country-calendar-normative calendar) date))
+
+(defmethod weekend-day-p ((calendar normative-country-calendar) date)
+  (weekend-day-p (country-calendar-normative calendar) date))
+
+(defmethod weekend-days-on ((calendar normative-country-calendar) date)
+  (weekend-days-on (country-calendar-normative calendar) date))
+
+(defmethod calendar-weekend-days ((calendar normative-country-calendar))
+  (calendar-weekend-days (country-calendar-normative calendar)))
+
+(defmethod holidays-between ((calendar normative-country-calendar) start end)
+  (holidays-between (country-calendar-normative calendar) start end))
+
+(defmethod calendar-coverage ((calendar normative-country-calendar))
+  (calendar-coverage (country-calendar-normative calendar)))
+
+(defmethod calendar-provenance ((calendar normative-country-calendar))
+  "The hand starter answers: its provenance (:NORMATIVE for RU)."
+  (calendar-provenance (country-calendar-normative calendar)))
+
 (defun load-country-calendar (code &key weekend-days (strict t))
   "Load (or return cached) COUNTRY-HOLIDAY-CALENDAR for CODE (e.g. \"DE\", \"TW\", \"XK\").
 WEEKEND-DAYS (a weekday list or an era list) overrides the country's weekend
 from COUNTRY-WEEKEND-DAYS. STRICT (default T) makes HOLIDAY-P signal
 CALENDAR-OUT-OF-RANGE outside the corpus years and for stubs; STRICT NIL
 answers NIL there instead. The cache is keyed on CODE, WEEKEND-DAYS and
-STRICT."
+STRICT. A code in *COUNTRY-CALENDAR-NORMATIVE* gives a
+NORMATIVE-COUNTRY-CALENDAR, which answers from the hand starter."
   (let* ((cc (string-upcase code))
          (key (list cc weekend-days (and strict t)))
          (cached (gethash key *country-calendar-cache*)))
@@ -83,17 +134,21 @@ STRICT."
                (table (make-hash-table :test #'eql))
                (years (%plist-get plist :years))
                (days (%plist-get plist :days))
-               (cal (make-instance 'country-holiday-calendar
-                                   :code cc
-                                   :name (or (%plist-get plist :name) cc)
-                                   :source (%plist-get plist :source)
-                                   :license (%plist-get plist :license)
-                                   :note (%plist-get plist :note)
-                                   :year-range years
-                                   :stub-p (null days)
-                                   :strict strict
-                                   :weekend-days (or weekend-days (country-weekend-days cc))
-                                   :holidays table)))
+               (normative (cdr (assoc cc *country-calendar-normative* :test #'string=)))
+               (cal (apply #'make-instance
+                           (if normative 'normative-country-calendar 'country-holiday-calendar)
+                           :code cc
+                           :name (or (%plist-get plist :name) cc)
+                           :source (%plist-get plist :source)
+                           :license (%plist-get plist :license)
+                           :note (%plist-get plist :note)
+                           :year-range years
+                           :stub-p (null days)
+                           :strict strict
+                           :weekend-days (or weekend-days (country-weekend-days cc))
+                           :holidays table
+                           (when normative
+                             (list :normative (%normative-country-starter cc normative weekend-days))))))
           (%ingest-country-days table days)
           (setf (gethash key *country-calendar-cache*) cal)
           cal))))

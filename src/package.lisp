@@ -430,6 +430,8 @@
    #:calendar-provenance
    #:calendar-corpus-agreement
    #:corpus-derived-calendar
-   #:*corpus-inference-min-agreement*))
+   #:*corpus-inference-min-agreement*
+   #:ru-last-decree-year
+   #:ru-provisional-year-p))
 
 (in-package #:cl-stack-calendars)

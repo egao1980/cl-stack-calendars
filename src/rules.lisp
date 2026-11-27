@@ -41,10 +41,20 @@
      :uri ("https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html"))
     (:ru-tk-112-transfer
      :implements (:ru-tk-112-transfer)
-     :authority ("Трудовой кодекс РФ ст. 112 ч. 2 — при совпадении выходного и нерабочего праздничного дня выходной переносится на следующий рабочий день, за исключением праздников 1–8 января (их переносит Правительство РФ)")
+     ;; ч. 5: a decree that moves the weekend day itself replaces the ч. 2 transfer.
+     :decree-cancels-substitute t
+     :authority ("Трудовой кодекс РФ ст. 112 ч. 2 — при совпадении выходного и нерабочего праздничного дня выходной переносится на следующий после праздничного рабочий день; с 2013 г. (ФЗ от 23.04.2012 № 35-ФЗ) — за исключением выходных, совпадающих с праздниками 1–8 января"
+                 "Трудовой кодекс РФ ст. 112 ч. 5 — Правительство РФ переносит выходные дни нормативным актом; перенесённый постановлением выходной не переносится повторно по ч. 2")
      :uri ("http://www.consultant.ru/document/cons_doc_LAW_34683/")))
   "Normative observance policies. Prefer these over mechanical primitives in
-starter calendars; primitives exist only as implementation atoms.")
+starter calendars; primitives exist only as implementation atoms.
+:DECREE-CANCELS-SUBSTITUTE T means a calendar transfer whose FROM is the
+nominal date or its substitute day replaces the substitute.")
+
+(defun observed-policy-decree-cancels-substitute-p (observed)
+  "True when a decree transfer from a holiday or its substitute day cancels the
+substitute that OBSERVED would place (see *OBSERVED-POLICIES*)."
+  (getf (cdr (assoc observed *observed-policies*)) :decree-cancels-substitute))
 
 (defstruct (fixed-holiday-rule (:include holiday-rule))
   "A holiday on a fixed MONTH/DAY every year (e.g. Christmas), optionally
@@ -198,10 +208,13 @@ accounting period (so a Saturday New Year's Day leaves Dec 31 open)."
     (otherwise observed)))
 
 (defun ru-new-year-holiday-block-p (date)
-  "ТК РФ ст. 112: нерабочие праздничные дни 1–8 января исключены из
-автоматического переноса выходного на следующий рабочий день —
-их переносит Правительство РФ отдельным постановлением."
-  (and (= (date-month date) 1)
+  "ТК РФ ст. 112 ч. 2 (ред. ФЗ от 23.04.2012 № 35-ФЗ, с 2013 г.): выходные,
+совпадающие с нерабочими праздничными днями 1–8 января, исключены из
+автоматического переноса на следующий рабочий день — их переносит
+Правительство РФ постановлением (ч. 5). До 2013 г. январские праздники,
+выпавшие на выходной, переносились по общему правилу ч. 2 (КЗоТ ст. 65)."
+  (and (>= (date-year date) 2013)
+       (= (date-month date) 1)
        (<= 1 (date-day date) 8)))
 
 (defun apply-bridge-days (dates weekend-days bridge)
