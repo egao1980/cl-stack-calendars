@@ -28,6 +28,9 @@
     (ok (holiday-p cal (make-date 2024 2 17)))))
 
 (deftest country-stub-palestine-empty
+  "A stub has no data: strict HOLIDAY-P signals, :STRICT NIL answers NIL (#32)."
   (let ((cal (country-calendar "PS")))
-    (ng (holiday-p cal (make-date 2024 1 1)))
+    (ok (country-calendar-stub-p cal))
+    (ok (signals (holiday-p cal (make-date 2024 1 1)) 'calendar-out-of-range))
+    (ng (holiday-p (country-calendar "PS" :strict nil) (make-date 2024 1 1)))
     (ok (country-calendar-note cal))))

@@ -70,22 +70,30 @@
       (append fixed easter))))
 
 (defun make-corpus-inferred-calendar (code)
+  "A RULE-CALENDAR of fixed and Easter rules inferred from CODE's corpus, or
+NIL for a stub. The rules and the calendar's CALENDAR-COVERAGE are bounded to
+the years the corpus covers: nothing is extrapolated, and HOLIDAY-P outside
+those years signals CALENDAR-OUT-OF-RANGE."
   (let* ((cc (string-upcase code))
          (days (%corpus-days cc))
          (floor (civil-research-from-year cc))
          (infer-from (max 2000 floor))
          (rules (when days (infer-rules-from-corpus cc :from-year infer-from)))
          (plist (when (data-file-exists-p (%country-data-path cc))
-                  (%load-country-plist cc))))
+                  (%load-country-plist cc)))
+         (infer-to (or (cdr (getf plist :years)) 2040)))
     (when rules
       (dolist (rule rules)
-        (setf (holiday-rule-from rule) floor)
+        (setf (holiday-rule-from rule) infer-from
+              (holiday-rule-to rule) infer-to)
         (setf (holiday-rule-authority rule)
-              (format nil "Corpus-inferred statutory rule — ~a"
-                      (or (and plist (getf plist :source)) "date-holidays"))))
+              (format nil "Corpus-inferred from ~a, ~d–~d (recurrence only; not checked against a statute)"
+                      (or (and plist (getf plist :source)) "date-holidays")
+                      infer-from infer-to)))
       (make-instance 'rule-calendar
                      :name (or (and plist (getf plist :name)) cc)
                      :weekend-days (country-weekend-days cc)
+                     :coverage (cons infer-from infer-to)
                      :rules rules))))
 
 (defun register-corpus-inferred-territory-starters ()

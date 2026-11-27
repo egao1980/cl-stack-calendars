@@ -408,6 +408,14 @@
    #:weekend-era-source
    #:calendar-weekend-eras
    #:weekend-days-at
-   #:clear-calendar-cache))
+   #:clear-calendar-cache
+   #:calendar-out-of-range
+   #:calendar-out-of-range-calendar
+   #:calendar-out-of-range-date
+   #:calendar-out-of-range-coverage
+   #:calendar-coverage
+   #:country-calendar-stub-p
+   #:calendar-strict-p
+   #:date-covered-p))
 
 (in-package #:cl-stack-calendars)

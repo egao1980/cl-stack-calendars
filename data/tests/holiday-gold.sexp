@@ -307,7 +307,7 @@
  ("TW-CORPUS" 2024 1 1 t nil)
  ("TW-CORPUS" 2024 2 10 t nil)
  ("XK-CORPUS" 2024 2 17 t nil)
- ("PS-CORPUS" 2024 1 1 nil nil)
+ ;; PS is a stub: strict holiday-p signals calendar-out-of-range (tests/coverage-test.lisp)
 
  ;; subnational composites
  ("US-CA" 2026 1 1 t nil)
