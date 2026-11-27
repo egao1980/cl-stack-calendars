@@ -654,7 +654,7 @@ data/np/gazette-holidays.sexp. Without YEAR, every year in the file applies
 data/lk/poya-days.sexp. Without YEAR (the registered \"LK\" calendar) the file
 is not applied: its Poya dates are new-moon dates, not the full-moon Poya days
 the gazettes appoint (2024 Vesak is listed as 1 May; it was 23 May), so all
-years of it would make the calendar worse (#14 follow-up)."
+years of it would make the calendar worse (#61)."
   (let ((tr (or transfers
                 (when year (lk-poya-transfers-for-year year)))))
     (make-instance 'sri-lanka-holidays-calendar :transfers tr)))

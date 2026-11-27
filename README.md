@@ -52,7 +52,7 @@ Since 0.12.0 a calendar found by code carries every year of its data file. Befor
 | `CL` | `data/cl/transfers.sexp` | Fiestas Patrias bridge days, 2 January, bank 31 December |
 | `CO` | `data/co/transfers.sexp` | nothing: the file is empty, since Colombia decrees no "puentes" |
 
-`LK` is the exception: `data/lk/poya-days.sexp` lists new-moon dates rather than Poya days. So `find-calendar "LK"` and `(sri-lanka-holidays-calendar)` leave it out, and only `:year N` applies it.
+`LK` is the exception: `data/lk/poya-days.sexp` lists new-moon dates rather than Poya days. So `find-calendar "LK"` and `(sri-lanka-holidays-calendar)` leave it out, and only `:year N` applies it (#61).
 
 Registered data calendars are built on first lookup (`register-calendar-constructor`). `clear-data-caches` and `set-data-root` rebuild them. `(make-instance 'russian-holidays-calendar)` still gives the statute rules alone. A decree transfer is named only in the year map of its own date, so a rule holiday keeps its name: CN 2026-01-01 is 元旦, not 调休.
 

@@ -75,7 +75,7 @@ a new one cannot ship without the sweep."
   "The registered LK applies no poya-days.sexp day: 2024-01-03 and
 2024-05-02 (new moons the file calls Poya Day and Day after Vesak Poya) are
 not holidays. The real Poya days (2024-01-25 Duruthu, 2024-05-23 Vesak) are
-not in the file either (follow-up)."
+not in the file either (#61)."
   (dolist (day '((2024 1 3) (2024 5 2)))
     (let ((date (apply #'make-date day)))
       (ng (holiday-p (find-calendar "LK") date))

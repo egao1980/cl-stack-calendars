@@ -7,7 +7,7 @@
 ;;;; State Funeral 2022. Sources: the London Gazette notice of each proclamation
 ;;;; (England, Wales and Northern Ireland) and gov.uk bank-holidays.json
 ;;;; (2012–2028, live and archived; data/tests/external-gold.sexp).
-;;;; Not yet in this file: the 1973, 1977 and 1981 royal days and the
+;;;; Not yet in this file (#63): the 1973, 1977 and 1981 royal days and the
 ;;;; 1999-12-31 Millennium bank holiday.
 
 (
