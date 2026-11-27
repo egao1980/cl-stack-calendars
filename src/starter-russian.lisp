@@ -130,7 +130,8 @@ Each FROM weekend is also recorded as a compensatory WORKING day."
    :authority "ТК РФ ст. 112 (8 марта)")
   (:fixed "Праздник Весны и Труда" 5 1 :from 1992
    :observed :ru-tk-112-transfer
-   :authority "ТК РФ ст. 112 (1 мая)")
+   :authority ("ТК РФ ст. 112 (1 мая)"
+               "Пост. Правительства РФ от 22.04.1994 № 351 — 1 мая 1994 (вс) → 3 мая 1994 нерабочий (2 мая сам праздник): https://base.garant.ru/102939/"))
   (:fixed "Праздник Весны и Труда" 5 2 :from 1992 :to 2004
    :observed :ru-tk-112-transfer
    :authority "ТК РФ ст. 112 (2 мая — до ФЗ-201)")

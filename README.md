@@ -15,6 +15,8 @@ Statute-named `:observed` (prefer these):
 | `:jp-furikae` | 祝日法 Art. 3(2) — **Sunday only** |
 | `:ru-tk-112-transfer` | ТК РФ ст. 112 ч. 2 (except 1–8 Jan) |
 
+Substitute days do not depend on the order of the rules (since 0.6.0). Every nominal holiday of every rule, in the year and the years either side, is claimed first. Substitutes are then placed in date order (ties by name), and each skips weekend days, claimed days and earlier substitutes, also across 31 Dec / 1 Jan. A substitute never swallows another holiday, and `:us-federal-in-lieu` walks past a claimed Friday instead of dropping the holiday. Two rules on the same date keep that one day, and `holiday-p` reports both names joined with `"; "`, sorted.
+
 Russian/USSR: `(russian-holidays-calendar :year 2026)` = ТК eras + decree transfers; `(ussr-holidays-calendar)` for late-Soviet fixed days.
 
 Normative starters (prefer over `country-calendar` corpus): `japan-holidays-calendar` (祝日法 + Tokyo equinoxes), `(china-holidays-calendar :year 2026)` (放假办法 + Beijing lunar + 调休), `india-holidays-calendar`, `germany-holidays-calendar` / `france-holidays-calendar` / `italy-holidays-calendar` / `spain-holidays-calendar` / `netherlands-holidays-calendar` / `belgium-holidays-calendar` / `austria-holidays-calendar` / `poland-holidays-calendar` / `sweden-holidays-calendar`, plus `target-calendar` (ECB). See [`docs/AUTHORITIES.md`](docs/AUTHORITIES.md).
