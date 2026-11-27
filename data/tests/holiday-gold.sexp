@@ -257,8 +257,12 @@
  (("PH" 2025) 2025 4 11 nil nil) ; not in Proc. 727 (#41)
  (("PH" 2025) 2025 2 25 nil nil) ; EDSA a special working day (#41)
  ("TH" 2025 4 13 t nil)
- (("TH" 2025) 2025 4 12 t nil)
- (("TH" 2025) 2025 4 16 t nil)
+ (("TH" 2025) 2025 4 12 nil nil) ; a Saturday; the Cabinet 2568 overview has no 12 April (#40)
+ (("TH" 2025) 2025 4 15 t nil)
+ (("TH" 2025) 2025 4 16 t nil) ; substitute for Sunday 13 April
+ ("TH-BANK" 2025 4 16 nil nil) ; BOT 2568: no Songkran substitute
+ ("TH-BANK" 2026 5 1 t nil) ; Labour Day, banks only (#40)
+ ("TH" 2026 5 1 nil nil)
  (("MY" 2025) 2025 2 11 nil nil) ; not in the 2025 list, Warta No. 17852 (#40)
  (("SG" 2025) 2025 5 12 t nil)
  (("SG" 2025) 2025 10 20 t nil)

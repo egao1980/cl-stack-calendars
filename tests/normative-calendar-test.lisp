@@ -260,8 +260,10 @@ and 26 December 2025 are not in it (the old data had them, #41)."
     (ng (holiday-p cal (make-date 2025 12 26)))))
 
 (deftest thailand-songkran-2025
+  "Songkran 2025: Sunday 13 April gives one substitute after the run,
+Wednesday 16 (Cabinet overview 2568). Saturday 12 April is no holiday (#40)."
   (let ((cal (thailand-holidays-calendar :year 2025)))
-    (ok (holiday-p cal (make-date 2025 4 12)))
+    (ng (holiday-p cal (make-date 2025 4 12)))
     (ok (holiday-p cal (make-date 2025 4 16)))
     (ok (holiday-p cal (make-date 2025 4 13)))))
 
