@@ -43,24 +43,98 @@ SUPPRESSED-DATES remove rule holidays relocated by proclamation."))
 (defun %suppressed-date-p (calendar date)
   (find date (calendar-suppressed-dates calendar) :test #'=))
 
+(defun %rule-calendar-observed-p (calendar)
+  "True when some rule of CALENDAR can place a substitute day. The furikae
+chain pass replaces per-rule observance, so it never does."
+  (and (not (calendar-furikae-chain-p calendar))
+       (some #'rule-observed (calendar-rules calendar))))
+
+(defun %rule-year-entries (calendar year)
+  "Every rule valid in YEAR as a list (RULE NOMINAL KEEP-P DIRECTION YEAR),
+where KEEP-P and DIRECTION come from OBSERVANCE-MOVES."
+  (let ((weekend-days (calendar-weekend-days calendar))
+        (observe-p (%rule-calendar-observed-p calendar)))
+    (loop for rule in (calendar-rules calendar)
+          for nominal = (rule-nominal-date rule year)
+          when (and nominal (rule-valid-at-p rule nominal))
+            collect (let ((observed
+                            (and observe-p
+                                 (%observed-applies-at-p (rule-observed-from rule) nominal)
+                                 (rule-observed rule))))
+                      (multiple-value-bind (keep direction)
+                          (observance-moves nominal observed weekend-days)
+                        (list rule nominal keep direction year))))))
+
+(defun %rule-entry-name (rule)
+  (or (holiday-rule-name rule) t))
+
+(defun %substitute-entry< (a b)
+  "Placement order for substitutes: by nominal date, then by rule name."
+  (let ((da (second a)) (db (second b)))
+    (if (= da db)
+        (and (string< (princ-to-string (%rule-entry-name (first a)))
+                      (princ-to-string (%rule-entry-name (first b))))
+             t)
+        (< da db))))
+
+(defun %observe-rule-entries (calendar year)
+  "Pairs (DATE . NAME) for the rule occurrences whose nominal date is in YEAR.
+
+Two passes, so the result is the same for any order of the rules:
+
+1. Every kept nominal date in YEAR-1 .. YEAR+1 is claimed (the adjacent years
+   only when a rule has an OBSERVED policy, so a Dec 31 and a Jan 1
+   substitute cannot take the same day).
+2. Substitutes are placed in nominal-date order (ties by name). Each one skips
+   weekend days, every claimed day and every substitute placed before it.
+
+Two rules on the same nominal date both keep it; HOLIDAY-P then reports both
+names. :BRIDGE extras are added last and claim nothing."
+  (let* ((weekend-days (calendar-weekend-days calendar))
+         (years (if (%rule-calendar-observed-p calendar)
+                    (list (1- year) year (1+ year))
+                    (list year)))
+         (entries (loop for y in years append (%rule-year-entries calendar y)))
+         (claimed (make-hash-table :test #'eql))
+         (dates-by-entry (make-hash-table :test #'eq))
+         (pairs '()))
+    (flet ((claim (d) (setf (gethash (date-rd d) claimed) t))
+           (claimedp (d) (values (gethash (date-rd d) claimed)))
+           (emit (entry d)
+             (when (and (= (fifth entry) year) (not (%suppressed-date-p calendar d)))
+               (push d (gethash entry dates-by-entry))
+               (push (cons d (%rule-entry-name (first entry))) pairs))))
+      (dolist (e entries)
+        (when (and (third e) (not (%suppressed-date-p calendar (second e))))
+          (claim (second e))
+          (emit e (second e))))
+      (dolist (e (stable-sort (remove-if-not #'fourth entries) #'%substitute-entry<))
+        (let ((d (place-substitute (second e) (fourth e) weekend-days #'claimedp)))
+          (claim d)
+          (emit e d)))
+      (dolist (e entries)
+        (let ((bridge (rule-bridge (first e)))
+              (dates (gethash e dates-by-entry)))
+          (when (and bridge dates)
+            (dolist (d (set-difference (apply-bridge-days dates weekend-days bridge)
+                                       dates :test #'=))
+              (emit e d))))))
+    pairs))
+
+(defun %merge-holiday-names (names)
+  "One holiday name for coinciding holidays: the distinct string NAMES,
+sorted and joined with \"; \", or T when none of them is a string."
+  (let ((strings (sort (remove-duplicates (remove-if-not #'stringp names)
+                                          :test #'string=)
+                       #'string<)))
+    (if strings (format nil "~{~a~^; ~}" strings) t)))
+
 (defun %rule-calendar-year-map (calendar year)
   "Hash-table RD → holiday name for all RULE occurrences in YEAR, applying
-exclusive observance, optional sandwich days, and decree TRANSFERS whose
-TO date falls in YEAR (or adjacent for Dec 31 ↔ Jan moves)."
-  (let ((weekend-days (calendar-weekend-days calendar))
-        (claimed '())
-        (pairs '()))
-    (dolist (rule (calendar-rules calendar))
-      (let ((dates (if (calendar-furikae-chain-p calendar)
-                       ;; Nominals only — Art. 3(2) chain runs after sandwich.
-                       (let ((nom (rule-nominal-date rule year)))
-                         (when (and nom (rule-valid-at-p rule nom))
-                           (list nom)))
-                       (rule-occurrences rule year weekend-days claimed))))
-        (dolist (d dates)
-          (unless (%suppressed-date-p calendar d)
-            (push (cons d (or (holiday-rule-name rule) t)) pairs)
-            (push d claimed)))))
+observance substitutes (independent of rule order, see
+%OBSERVE-RULE-ENTRIES), optional sandwich days, and decree TRANSFERS whose TO
+date falls in YEAR (or adjacent for Dec 31 ↔ Jan moves)."
+  (let ((pairs (%observe-rule-entries calendar year)))
     (when (and (calendar-sandwich-holidays-p calendar)
                (let ((sf (calendar-sandwich-from calendar)))
                  (cond ((null sf) t)
@@ -76,16 +150,22 @@ TO date falls in YEAR (or adjacent for Dec 31 ↔ Jan moves)."
                      pairs
                      (%as-date (calendar-furikae-from calendar))
                      (%as-date (calendar-furikae-chain-from calendar))))))
-    (dolist (tr (calendar-transfers calendar))
-      (let ((to (calendar-transfer-to tr)))
-        (when (and to
-                   (<= (1- year) (date-year to) (1+ year))
-                   (not (%suppressed-date-p calendar to)))
-          (push (cons to (or (calendar-transfer-name tr) "перенос выходного")) pairs)
-          (push to claimed))))
-    (let ((map (make-hash-table :test #'eql)))
+    (let ((names (make-hash-table :test #'eql))
+          (map (make-hash-table :test #'eql)))
       (dolist (pair pairs)
-        (setf (gethash (date-rd (car pair)) map) (cdr pair)))
+        (push (cdr pair) (gethash (date-rd (car pair)) names)))
+      (maphash (lambda (rd day-names)
+                 (setf (gethash rd map) (%merge-holiday-names day-names)))
+               names)
+      ;; Decree transfers name a day only when no rule already does.
+      (dolist (tr (calendar-transfers calendar))
+        (let ((to (calendar-transfer-to tr)))
+          (when (and to
+                     (<= (1- year) (date-year to) (1+ year))
+                     (not (%suppressed-date-p calendar to)))
+            (unless (gethash (date-rd to) map)
+              (setf (gethash (date-rd to) map)
+                    (or (calendar-transfer-name tr) "перенос выходного"))))))
       map)))
 
 (defmethod holiday-p ((calendar rule-calendar) date)

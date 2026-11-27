@@ -172,29 +172,6 @@ be 1-5, or -1 for the last occurrence in the month."
         while (weekendp d weekend-days)
         finally (return d)))
 
-(defun shift-backward-past-weekend (date weekend-days)
-  "DATE, or the first preceding day that is not a WEEKEND-DAYS weekday."
-  (loop for d = date then (- d 1)
-        while (weekendp d weekend-days)
-        finally (return d)))
-
-(defun shift-nearest-past-weekend (date weekend-days)
-  "Sat→Fri, Sun→Mon for a contiguous Sat/Sun weekend (5 U.S.C. § 6103(b) +
-EO 11582 § 3(a) for a Monday–Friday basic workweek)."
-  (if (not (weekendp date weekend-days))
-      date
-      (let ((previous (- date 1)))
-        (if (not (weekendp previous weekend-days))
-            previous
-            (shift-forward-past-weekend date weekend-days)))))
-
-(defun shift-forward-past-weekend-and-claimed (date weekend-days claimed)
-  "First day >= DATE that is neither a weekend day nor in CLAIMED (list of dates)."
-  (loop for d = (shift-forward-past-weekend date weekend-days) then (+ d 1)
-        unless (or (weekendp d weekend-days)
-                   (member d claimed :test #'=))
-          return d))
-
 (defun last-weekday-of-month-p (date weekend-days)
   "True when DATE is the last non-WEEKEND-DAYS day of its month."
   (/= (date-month (shift-forward-past-weekend (+ date 1) weekend-days))
@@ -224,18 +201,6 @@ accounting period (so a Saturday New Year's Day leaves Dec 31 open)."
   (and (= (date-month date) 1)
        (<= 1 (date-day date) 8)))
 
-(defun apply-move-observed (date observed weekend-days claimed)
-  "Single moved observance date for move-style policies."
-  (ecase observed
-    ((nil) date)
-    (:nearest-weekday (shift-nearest-past-weekend date weekend-days))
-    (:next-weekday (shift-forward-past-weekend-and-claimed date weekend-days claimed))
-    (:previous-weekday (shift-backward-past-weekend date weekend-days))
-    (:monday
-     (if (weekendp date weekend-days)
-         (shift-forward-past-weekend-and-claimed date weekend-days claimed)
-         date))))
-
 (defun apply-bridge-days (dates weekend-days bridge)
   "Extend DATES only when an AUTHORITY-cited :BRIDGE is present."
   (ecase bridge
@@ -249,45 +214,71 @@ accounting period (so a Saturday New Year's Day leaves Dec 31 open)."
              (4 (push (+ d 1) extra)))))
        (remove-duplicates (append dates (nreverse extra)) :test #'=)))))
 
+(defun observance-moves (nominal observed weekend-days)
+  "How the (possibly statute-named) OBSERVED policy treats NOMINAL.
+Returns (values KEEP-NOMINAL-P DIRECTION): KEEP-NOMINAL-P is true when NOMINAL
+itself stays a holiday; DIRECTION is NIL (no substitute), :FORWARD or
+:BACKWARD (one substitute placed by PLACE-SUBSTITUTE). A pure function of the
+policy and the weekday: it never looks at other rules or their order."
+  (let ((weekend (weekendp nominal weekend-days)))
+    (ecase (canonicalize-observed observed)
+      ((nil) (values t nil))
+      (:nearest-weekday
+       (cond ((not weekend) (values t nil))
+             ((weekendp (- nominal 1) weekend-days) (values nil :forward))
+             (t (values nil :backward))))
+      ((:next-weekday :monday)
+       (if weekend (values nil :forward) (values t nil)))
+      (:previous-weekday
+       (if weekend (values nil :backward) (values t nil)))
+      (:sunday-to-monday
+       ;; Sunday → following weekday; a Saturday holiday is not moved.
+       (if (sundayp nominal) (values nil :forward) (values t nil)))
+      (:nyse-rule-7-2
+       (let ((shifted (shift-nyse-rule-7-2 nominal weekend-days)))
+         (cond ((= shifted nominal) (values t nil))
+               ((< shifted nominal) (values nil :backward))
+               (t (values nil :forward)))))
+      (:substitute-next
+       (values t (and weekend :forward)))
+      (:jp-furikae
+       (values t (and (sundayp nominal) :forward)))
+      (:ru-tk-112-transfer
+       ;; ТК РФ ст. 112 ч. 2: weekend∩holiday → next workday,
+       ;; except Jan 1–8 (Government decree transfers those).
+       (values t (and weekend
+                      (not (ru-new-year-holiday-block-p nominal))
+                      :forward))))))
+
+(defparameter *substitute-search-limit* 366
+  "Most days PLACE-SUBSTITUTE walks before it gives up and signals.")
+
+(defun place-substitute (nominal direction weekend-days claimedp)
+  "The substitute day for NOMINAL: the first day after (DIRECTION :FORWARD)
+or before (:BACKWARD) NOMINAL that is neither a WEEKEND-DAYS weekday nor
+CLAIMEDP. CLAIMEDP is a predicate on dates (days already taken). Signals
+CALENDAR-ERROR when no such day lies within *SUBSTITUTE-SEARCH-LIMIT* days."
+  (let ((step (ecase direction (:forward 1) (:backward -1))))
+    (loop for k from 1 to *substitute-search-limit*
+          for d = (+ nominal (* step k))
+          unless (or (weekendp d weekend-days) (funcall claimedp d))
+            do (return-from place-substitute d))
+    (error 'calendar-error
+           :message (format nil "no free day within ~d days ~(~a~) of ~a"
+                            *substitute-search-limit* direction nominal))))
+
 (defun observe-dates (nominal observed bridge weekend-days &optional claimed)
-  "Holiday dates from NOMINAL under a (possibly statute-named) OBSERVED policy.
-CLAIMED makes exclusive next-weekday substitutes skip collisions (UK Christmas
-+ Boxing under proclamations)."
-  (let* ((policy (canonicalize-observed observed))
-         (base
-           (ecase policy
-             ((nil) (list nominal))
-             ((:nearest-weekday :next-weekday :previous-weekday :monday)
-              (list (apply-move-observed nominal policy weekend-days claimed)))
-             (:sunday-to-monday
-              ;; Sunday → following weekday; a Saturday holiday is not moved.
-              (list (if (sundayp nominal)
-                        (shift-forward-past-weekend nominal weekend-days)
-                        nominal)))
-             (:nyse-rule-7-2
-              (list (shift-nyse-rule-7-2 nominal weekend-days)))
-             (:substitute-next
-              (if (weekendp nominal weekend-days)
-                  (list nominal
-                        (shift-forward-past-weekend-and-claimed nominal weekend-days claimed))
-                  (list nominal)))
-             (:jp-furikae
-              (if (sundayp nominal)
-                  (list nominal
-                        (shift-forward-past-weekend-and-claimed nominal weekend-days claimed))
-                  (list nominal)))
-             (:ru-tk-112-transfer
-              ;; ТК РФ ст. 112 ч. 2: weekend∩holiday → next workday,
-              ;; except Jan 1–8 (Government decree transfers those).
-              (cond ((not (weekendp nominal weekend-days))
-                     (list nominal))
-                    ((ru-new-year-holiday-block-p nominal)
-                     (list nominal))
-                    (t (list nominal
-                             (shift-forward-past-weekend-and-claimed
-                              nominal weekend-days claimed)))))))
-         (bridged (apply-bridge-days base weekend-days bridge)))
-    (remove-if (lambda (d) (member d claimed :test #'=)) bridged)))
+  "Holiday dates from NOMINAL under a (possibly statute-named) OBSERVED policy,
+for one rule on its own. CLAIMED (list of dates) are days a substitute must
+skip. RULE-CALENDAR does not call this: it places every rule's substitute
+against every rule's nominal date (see %RULE-CALENDAR-YEAR-MAP)."
+  (multiple-value-bind (keep direction) (observance-moves nominal observed weekend-days)
+    (let ((base (append (when keep (list nominal))
+                        (when direction
+                          (list (place-substitute
+                                 nominal direction weekend-days
+                                 (lambda (d) (member d claimed :test #'=))))))))
+      (apply-bridge-days base weekend-days bridge))))
 
 (defun apply-sandwich-holidays (date-name-alist)
   "祝日法第3条第3項: a day whose previous and next days are both holidays
