@@ -248,12 +248,14 @@
     (ok (holiday-p bare (make-date 2024 9 20)))))
 
 (deftest philippines-proclamation-2025
+  "Proc. 727 s.2024: All Saints' Day Eve is an additional special day; 11 April
+and 26 December 2025 are not in it (the old data had them, #41)."
   (let ((cal (philippines-holidays-calendar :year 2025))
         (bare (make-instance 'philippines-holidays-calendar)))
-    (ok (holiday-p cal (make-date 2025 4 11))) ; Holy Week bridge
-    (ng (holiday-p bare (make-date 2025 4 11)))
-    (ok (holiday-p cal (make-date 2025 12 26))) ; Rizal bridge
-    (ng (holiday-p bare (make-date 2025 12 26)))))
+    (ok (holiday-p cal (make-date 2025 10 31)))
+    (ng (holiday-p bare (make-date 2025 10 31)))
+    (ng (holiday-p cal (make-date 2025 4 11)))
+    (ng (holiday-p cal (make-date 2025 12 26)))))
 
 (deftest thailand-songkran-2025
   (let ((cal (thailand-holidays-calendar :year 2025)))

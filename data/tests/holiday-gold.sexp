@@ -253,8 +253,9 @@
  ("PH" 2003 8 21 nil nil)
  ("PH" 2004 8 21 t nil)
  ("PH" 1986 2 25 t nil)
- (("PH" 2025) 2025 4 11 t nil)
- (("PH" 2025) 2025 12 26 t nil)
+ (("PH" 2025) 2025 10 31 t nil) ; Proc. 727 s.2024
+ (("PH" 2025) 2025 4 11 nil nil) ; not in Proc. 727 (#41)
+ (("PH" 2025) 2025 2 25 nil nil) ; EDSA a special working day (#41)
  ("TH" 2025 4 13 t nil)
  (("TH" 2025) 2025 4 12 t nil)
  (("TH" 2025) 2025 4 16 t nil)

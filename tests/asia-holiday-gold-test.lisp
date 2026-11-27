@@ -208,3 +208,50 @@ calendars 2000–2027)."
 (deftest tw-after-last-calendar-is-provisional
   (ng (tw-provisional-year-p 2027))
   (ok (tw-provisional-year-p 2028)))
+
+;;; --- Philippines (#41) -----------------------------------------------------
+
+(defparameter *ph-holiday-gold* (load-holiday-gold "PH"))
+
+(deftest ph-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *ph-holiday-gold* "PH"))
+
+(deftest ph-registered-calendar-matches-gold
+  "find-calendar \"PH\" agrees with EO 292 s. 26 as amended and every yearly
+proclamation 2000–2027 on every day 2000–2040 (Eid days 2027 onward and the
+years after 2027 are provisional)."
+  (let ((ph (find-calendar "PH")))
+    (%report-holiday-gold "PH" (%holiday-gold-mismatches *ph-holiday-gold* (constantly ph)))))
+
+(deftest ph-year-calendars-match-gold
+  (%report-holiday-gold "PH :year"
+                        (%holiday-gold-mismatches *ph-holiday-gold*
+                                                  (lambda (y) (philippines-holidays-calendar :year y)))))
+
+(deftest ph-country-calendar-matches-gold
+  (let ((ph (country-calendar "PH")))
+    (ok (eq :normative (calendar-provenance ph)))
+    (%report-holiday-gold "country-calendar PH"
+                          (%holiday-gold-mismatches *ph-holiday-gold* (constantly ph)))))
+
+(deftest ph-issue-41-days
+  (let ((ph (find-calendar "PH")))
+    (flet ((holiday (y m d) (holiday-p ph (make-date y m d))))
+      (ok (holiday 2024 4 10) "Eid'l Fitr 2024")
+      (ok (holiday 2024 6 17) "Eid'l Adha 2024")
+      (ok (holiday 2024 3 30) "Black Saturday")
+      (ok (holiday 2024 12 8) "Immaculate Conception (RA 10966)")
+      (ok (holiday 2024 12 31) "Last Day of the Year")
+      (ok (holiday 2024 8 23) "Ninoy Aquino Day moved by Proc. 665")
+      (ng (holiday 2024 8 21))
+      (ng (holiday 2024 2 25) "EDSA not in Proc. 368")
+      (ng (holiday 2025 2 25) "EDSA a special working day (Proc. 727)")
+      (ng (holiday 2026 2 25))
+      (ng (holiday 2027 2 25) "EDSA a special working day (Proc. 1427)")
+      (ok (holiday 2027 2 6) "Chinese New Year 2027 (Proc. 1427)")
+      (ok (holiday 2023 4 10) "Araw ng Kagitingan moved to Monday (Proc. 90)")
+      (ng (holiday 2023 4 9)))))
+
+(deftest ph-provisional-years
+  (ng (ph-provisional-year-p 2026))
+  (ok (ph-provisional-year-p 2027)))
