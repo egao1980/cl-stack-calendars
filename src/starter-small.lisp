@@ -426,23 +426,115 @@
   (:fixed "Christmas Day" 12 25 :from 1975 :authority "Public holiday")
   (:fixed "Boxing Day" 12 26 :from 1975 :authority "Public holiday"))
 
-(define-calendar hong-kong-holidays-calendar (:register "HK")
-  (:fixed "New Year's Day" 1 1 :from 1997 :authority "General holidays ordinance")
+;;; --- Hong Kong: General Holidays Ordinance (Cap. 149) ------------------
+
+(defun hk-lunar-new-year-substitute (year offset)
+  "The Lunar New Year's Day of YEAR plus OFFSET when one of the three Lunar
+New Year days is a Sunday, else NIL (Cap. 149 Schedule (c)-(e))."
+  (let ((lny (chinese-new-year-date year)))
+    (when (loop for i from 0 below 3 thereis (= 7 (date-day-of-week (+ lny i))))
+      (+ lny offset))))
+
+(defun hk-weekday-after-christmas (year n)
+  "The Nth weekday (any day but Sunday) after Christmas Day of YEAR."
+  (loop with d = (make-date year 12 25)
+        with seen = 0
+        do (setf d (+ d 1))
+           (unless (= 7 (date-day-of-week d)) (incf seen))
+        until (= seen n)
+        finally (return d)))
+
+(defun hk-mid-autumn-holiday (year)
+  "Cap. 149 Schedule (o) of YEAR: the day following the Chinese Mid-Autumn
+Festival; when that day is a Sunday, the second day following (23 of 2011,
+from 2012) or, before, the day of the festival itself."
+  (let* ((festival (zhongqiu-date year))
+         (following (+ festival 1)))
+    (cond ((/= 7 (date-day-of-week following)) following)
+          ((>= year 2012) (+ following 1))
+          (t festival))))
+
+(defparameter *hk-sunday-following-names*
+  '("The first day of January" "Ching Ming Festival" "Labour Day"
+    "The Birthday of the Buddha" "Tuen Ng Festival"
+    "Hong Kong Special Administrative Region Establishment Day"
+    "National Day" "Chung Yeung Festival")
+  "Cap. 149 Schedule items (b), (f), (j)-(n) and (p): on a Sunday, the following day.")
+
+(defun hk-cap149-pass (calendar year pairs)
+  "Cap. 149: PAIRS (DATE . NAME) of YEAR with the Sunday substitutes of the
+Schedule items in *HK-SUNDAY-FOLLOWING-NAMES* (the following day) and the
+s. 6(2) days added: when two general holidays fall on one day (a substitute
+counts), the next day that is no Sunday and no general holiday is an
+additional general holiday, one for each holiday after the first. The Lunar
+New Year, Mid-Autumn and Christmas substitutes are rules of their own."
+  (declare (ignore calendar year))
+  (let ((count (make-hash-table :test #'eql))
+        (extra '()))
+    (flet ((note (d) (incf (gethash (date-rd d) count 0))))
+      (dolist (pair pairs) (note (car pair)))
+      (dolist (pair pairs)
+        (when (and (= 7 (date-day-of-week (car pair)))
+                   (member (cdr pair) *hk-sunday-following-names* :test #'equal))
+          (let ((d (+ (car pair) 1)))
+            (note d)
+            (push (cons d (format nil "The day following ~a" (cdr pair))) extra))))
+      (dolist (rd (sort (loop for rd being the hash-keys of count collect rd) #'cl:<))
+        (loop repeat (1- (gethash rd count))
+              do (let ((d (+ (date-from-rd rd) 1)))
+                   (loop while (or (gethash (date-rd d) count) (= 7 (date-day-of-week d)))
+                         do (setf d (+ d 1)))
+                   (setf (gethash (date-rd d) count) 1)
+                   (push (cons d "Additional general holiday (Cap. 149 s. 6(2))") extra)))))
+    (append pairs (nreverse extra))))
+
+(define-calendar hong-kong-holidays-calendar (:register "HK" :observance-pass hk-cap149-pass)
+  ;; General Holidays Ordinance (Cap. 149), Schedule as replaced by 35 of
+  ;; 1998 s. 4 and amended by 23 of 2011 s. 3; Sunday substitutes and s. 6(2)
+  ;; in HK-CAP149-PASS. Lunar dates and Ching Ming at UTC+8, the zone of the
+  ;; Hong Kong Observatory conversion tables.
+  ;; https://www.elegislation.gov.hk/hk/cap149
+  (:fixed "The first day of January" 1 1 :from 1997
+   :authority "Cap. 149 Schedule (b) — the first day of January (Sunday: the following day)")
   (:computed "Lunar New Year's Day" #'chinese-new-year-date :from 1997
-   :authority "Lunar New Year (computed)")
-  (:computed "Lunar New Year Day 2"
-   (lambda (y) (let ((d (chinese-new-year-date y))) (and d (+ d 1))))
-   :from 1997 :authority "Lunar New Year")
-  (:computed "Lunar New Year Day 3"
-   (lambda (y) (let ((d (chinese-new-year-date y))) (and d (+ d 2))))
-   :from 1997 :authority "Lunar New Year")
-  (:easter "Good Friday" -2 :from 1997 :authority "General holiday")
-  (:easter "Easter Monday" 1 :from 1997 :authority "General holiday")
-  (:fixed "Labour Day" 5 1 :from 1997 :authority "General holiday")
-  (:fixed "HKSAR Establishment Day" 7 1 :from 1997 :authority "1 July 1997")
-  (:fixed "National Day" 10 1 :from 1997 :authority "PRC National Day")
-  (:fixed "Christmas Day" 12 25 :from 1997 :authority "General holiday")
-  (:fixed "Boxing Day" 12 26 :from 1997 :authority "General holiday"))
+   :authority "Cap. 149 Schedule (c) — Lunar New Year's Day (HKO)")
+  (:computed "The second day of Lunar New Year" (lambda (y) (+ (chinese-new-year-date y) 1)) :from 1997
+   :authority "Cap. 149 Schedule (d)")
+  (:computed "The third day of Lunar New Year" (lambda (y) (+ (chinese-new-year-date y) 2)) :from 1997
+   :authority "Cap. 149 Schedule (e)")
+  (:computed "The day preceding Lunar New Year's Day" (lambda (y) (hk-lunar-new-year-substitute y -1))
+   :from 1997 :to 2011
+   :authority "Cap. 149 Schedule (c)-(e) before 23 of 2011: a Sunday among the three Lunar New Year days gives the day preceding Lunar New Year's Day (info.gov.hk lists 2003, 2006, 2010)")
+  (:computed "The fourth day of Lunar New Year" (lambda (y) (hk-lunar-new-year-substitute y 3))
+   :from 2012
+   :authority "Cap. 149 Schedule (c)-(e), amended 23 of 2011 s. 3 — if that day is a Sunday, then the fourth day of Lunar New Year")
+  (:computed "Ching Ming Festival" #'qingming-date :from 1997
+   :authority "Cap. 149 Schedule (f) — Ching Ming Festival (solar term, HKO)")
+  (:easter "Good Friday" -2 :from 1997 :authority "Cap. 149 Schedule (g)")
+  (:easter "The day following Good Friday" -1 :from 1997 :authority "Cap. 149 Schedule (h)")
+  (:easter "Easter Monday" 1 :from 1997 :authority "Cap. 149 Schedule (i)")
+  (:fixed "Labour Day" 5 1 :from 1997 :authority "Cap. 149 Schedule (j) — the first day of May")
+  (:computed "The Birthday of the Buddha" (lambda (y) (chinese-lunar-date y 4 8)) :from 1999
+   :authority "Cap. 149 Schedule (k), added by 35 of 1998 — the eighth day of the fourth lunar month")
+  (:computed "Tuen Ng Festival" #'duanwu-date :from 1997 :authority "Cap. 149 Schedule (l)")
+  (:fixed "Hong Kong Special Administrative Region Establishment Day" 7 1 :from 1997
+   :authority "Cap. 149 Schedule (m) — the first day of July")
+  (:fixed "National Day" 10 1 :from 1997 :authority "Cap. 149 Schedule (n) — the first day of October")
+  (:computed "The day following the Chinese Mid-Autumn Festival" #'hk-mid-autumn-holiday :from 1997
+   :authority ("Cap. 149 Schedule (o), amended 23 of 2011 s. 3 — the day following the Chinese Mid-Autumn Festival (or if that day is a Sunday, then the second day following that Festival)"
+               "Before 23 of 2011: a Sunday day-following gave the day of the festival (gazetted lists 2002, 2009)"))
+  (:computed "Chung Yeung Festival" (lambda (y) (chinese-lunar-date y 9 9)) :from 1997
+   :authority "Cap. 149 Schedule (p) — Chung Yeung Festival, the ninth day of the ninth lunar month")
+  (:fixed "Christmas Day" 12 25 :from 1997 :authority "Cap. 149 Schedule (q)")
+  (:computed "The first weekday after Christmas Day" (lambda (y) (hk-weekday-after-christmas y 1))
+   :from 1997 :authority "Cap. 149 Schedule (r) — a weekday is any day but Sunday")
+  (:computed "The second weekday after Christmas Day"
+             (lambda (y) (when (= 7 (date-day-of-week (make-date y 12 25))) (hk-weekday-after-christmas y 2)))
+   :from 1997 :authority "Cap. 149 Schedule (q) — Christmas Day on a Sunday gives the second weekday after Christmas Day")
+  (:fixed "Additional general holiday" 12 31 :from 1999 :to 1999
+   :authority "L.N. 191 of 1999 — 31 December 1999 appointed under Cap. 149 s. 6(1)")
+  (:fixed "70th anniversary of the victory of the Chinese people's War of Resistance" 9 3 :from 2015 :to 2015
+   :authority "Cap. 149 s. 6(1); 9 of 2015 s. 2(a) — 3 September 2015 a general holiday"))
 
 (define-calendar kyrgyzstan-holidays-calendar (:register "KG")
   (:fixed "New Year's Day" 1 1 :from 1991 :authority "Public holiday")
