@@ -18,6 +18,12 @@ vacanza/holidays has no CL client; those blocks stay as a frozen dump in the sex
 
 `data/countries/` is date-holidays — **not** used as an external check.
 
+East and Southeast Asia national holidays 2000–2040 live in the same `<cc>-holiday-gold.sexp` shape, built by `scripts/generate_asia_holiday_gold.py` (refresh: `uv run --no-project --with holidays==0.109 python -I scripts/generate_asia_holiday_gold.py CC`; fetched pages are cached under `~/.cache/cl-stack-calendars/`). The script never reads the Lisp starters. Asserted by `tests/asia-holiday-gold-test.lisp` with no allowed differences.
+
+| Code | Gold source |
+|------|-------------|
+| `KR` | 「관공서의 공휴일에 관한 규정」 of each era ([law.go.kr](https://www.law.go.kr/법령/관공서의공휴일에관한규정), 대통령령 제36290호 and its 부칙; the 2017 text 제28394호 on ko.wikisource), 「공직선거법」 제34조 for the election days, the 임시공휴일 designated by the 국무회의, and KASI 음양력 변환 for 음력 1/1, 4/8 and 8/15. Checked against the KASI 달력자료 (월력요항 tables) 2021–2028: they agree except seven days where the decree wins, because the 월력요항 was published before it: 2023-05-29 (대통령령 제33448호), 2023-10-02, 2024-10-01, 2025-01-27, 2025-06-03 (임시공휴일), 2026-05-01 and 2026-07-17 (대통령령 제36290호). KASI's data.go.kr special-day API (`getRestDeInfo`) needs a service key and was not used. Python `holidays`: 0 differences. |
+
 Computed festival dates (HKO / Easter / Hebrew / tabular Eid) live in `calc-gold.sexp` — see that file's header. Refresh: `uv run scripts/generate_calc_gold.py`.
 
 NYSE sessions and early closes live in `xnys-gold.sexp` (Python [exchange_calendars](https://github.com/gerrymanoim/exchange_calendars) XNYS, Apache-2.0; dates and close times only). Range 1970–2030: before 1970 exchange_calendars has no regular holidays (pandas holiday rules start in 1970). Refresh: `uv run --no-project --with exchange_calendars python -I scripts/generate_xnys_gold.py`. Asserted by `tests/xnys-gold-test.lisp` for XNYS (1970–2030) and XNAS (1990–2030); no allowed differences.

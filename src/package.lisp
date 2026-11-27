@@ -435,6 +435,9 @@
    #:ru-provisional-year-p
    #:ar-transfers
    #:ar-notice-for-year
-   #:ar-transfers-for-year))
+   #:ar-transfers-for-year
+   #:kr-provisional-year-p
+   #:kr-election-days
+   #:calendar-observance-pass))
 
 (in-package #:cl-stack-calendars)

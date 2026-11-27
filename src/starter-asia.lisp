@@ -352,42 +352,185 @@
 (defun sg-gazette-transfers-for-year (year)
   (gazette-transfers-for-year (sg-gazette) year))
 
-(define-calendar south-korea-holidays-calendar (:register "KR" :constructor south-korea-holidays-calendar)
-  (:fixed "신정" 1 1 :from 1948
-   :authority "관공서의 공휴일에 관한 규정 — New Year")
-  (:computed "설날"
-             (lambda (y) (- (chinese-new-year-date y :zone +korea-lunisolar-zone+) 1))
-   :from 1948 :authority "설날 연휴 (전날) — 음력 KST (KASI)")
-  (:computed "설날"
-             (lambda (y) (chinese-new-year-date y :zone +korea-lunisolar-zone+))
-   :from 1948 :authority "설날 — 음력 1/1, KST (KASI)")
-  (:computed "설날"
-             (lambda (y) (+ (chinese-new-year-date y :zone +korea-lunisolar-zone+) 1))
-   :from 1948 :authority "설날 연휴 (다음날)")
-  (:fixed "삼일절" 3 1 :from 1949
-   :authority "3·1절 — Independence Movement Day")
-  (:fixed "어린이날" 5 5 :from 1975
-   :authority "어린이날 — Children's Day (public holiday from 1975)")
-  (:fixed "현충일" 6 6 :from 1956
-   :authority "현충일 — Memorial Day")
-  (:fixed "광복절" 8 15 :from 1949
-   :authority "광복절 — Liberation Day")
-  (:computed "추석"
-             (lambda (y) (- (zhongqiu-date y :zone +korea-lunisolar-zone+) 1))
-   :from 1948 :authority "추석 연휴")
+;;; --- South Korea: 대체공휴일 (규정 제3조) and 선거일 (공직선거법 제34조) ---
+
+(defparameter *kr-holiday-kinds*
+  '(("3·1절" . :national) ("광복절" . :national) ("개천절" . :national)
+    ("한글날" . :national) ("제헌절" . :national)
+    ("설날 전날" . :seol) ("설날" . :seol) ("설날 다음 날" . :seol)
+    ("추석 전날" . :chuseok) ("추석" . :chuseok) ("추석 다음 날" . :chuseok)
+    ("석가탄신일" . :buddha) ("부처님오신날" . :buddha) ("노동절" . :labor)
+    ("어린이날" . :children) ("기독탄신일" . :xmas))
+  "The 규정 제2조 item each holiday name stands for, as 제3조 refers to them:
+:NATIONAL 제2호 (국경일), :SEOL 제4호, :BUDDHA 제5호 (제6호 before 2026),
+:LABOR 제6호, :CHILDREN 제7호, :CHUSEOK 제9호, :XMAS 제10호. Any other name
+(1월 1일, 현충일, 선거일) is a 공휴일 that has no 대체공휴일.")
+
+(defun kr-substitute-kinds (date)
+  "The kinds of 규정 제3조 in force on DATE, as four values: kinds that get a
+대체공휴일 on a Saturday, on a Sunday, when two 공휴일 coincide on a weekday,
+and whether a 대체공휴일 may fall on a Saturday.
+
+- before 2013-11-05: no 대체공휴일.
+- 대통령령 제24828호 (2013. 11. 5.): 설날·추석 when they coincide with another
+  공휴일 (a Sunday is one); 어린이날 on a Saturday or another 공휴일.
+- 대통령령 제31930호 (2021. 8. 4.): 국경일 and 어린이날 on a Saturday or
+  Sunday; 설날·추석 on a Sunday; any of them on a weekday with another
+  공휴일; a Saturday 대체공휴일 moves on (제3조 ③).
+- 대통령령 제33448호 (2023. 5. 4.): adds 부처님오신날 and 기독탄신일.
+- 대통령령 제36290호 (2026. 5. 1.): adds 노동절."
+  (cond ((< date (make-date 2013 11 5)) (values '() '() '() t))
+        ((< date (make-date 2021 8 4))
+         (values '(:children) '(:seol :chuseok :children) '(:seol :chuseok :children) t))
+        (t
+         (let ((weekend (append '(:national :children)
+                                (when (>= date (make-date 2023 5 4)) '(:buddha :xmas))
+                                (when (>= date (make-date 2026 5 1)) '(:labor)))))
+           (values weekend (append weekend '(:seol :chuseok))
+                   (append weekend '(:seol :chuseok)) nil)))))
+
+(defun kr-daeche-gonghyuil-pass (calendar year pairs)
+  "관공서의 공휴일에 관한 규정 제3조: PAIRS (DATE . NAME) of YEAR with each
+대체공휴일 added. A holiday of a kind KR-SUBSTITUTE-KINDS names that falls on a
+Saturday or Sunday, or that coincides with another 공휴일 on a weekday (one
+day for each coinciding holiday after the first: 2025-05-05 gives 05-06
+only), gets the first 비공휴일 after it: a day that is no Sunday and no
+공휴일 of 제2조 — a rule day, a 임시공휴일 of CALENDAR's transfers or a
+대체공휴일 placed before it (제3조 ②) — and, from 2021-08-04, no Saturday
+(제3조 ③). Substitutes are placed in date order."
+  (let ((by-day (make-hash-table :test #'eql))
+        (taken (make-hash-table :test #'eql))
+        (extra '()))
+    (dolist (pair pairs)
+      (pushnew (cdr pair) (gethash (date-rd (car pair)) by-day) :test #'equal)
+      (setf (gethash (date-rd (car pair)) taken) t))
+    (dolist (tr (calendar-transfers calendar))
+      (let ((to (calendar-transfer-to tr)))
+        (when (and to (= (date-year to) year))
+          (setf (gethash (date-rd to) taken) t))))
+    (flet ((kind (name) (cdr (assoc name *kr-holiday-kinds* :test #'equal)))
+           (free-p (d saturday-ok)
+             (not (or (gethash (date-rd d) taken)
+                      (= (date-day-of-week d) 7)
+                      (and (= (date-day-of-week d) 6) (not saturday-ok))))))
+      (dolist (rd (sort (loop for rd being the hash-keys of by-day collect rd) #'cl:<))
+        (let* ((date (date-from-rd rd))
+               (names (gethash rd by-day))
+               (dow (date-day-of-week date)))
+          (multiple-value-bind (saturday-kinds sunday-kinds overlap-kinds saturday-ok)
+              (kr-substitute-kinds date)
+            (let ((lost (cond ((= dow 6) (count-if (lambda (n) (member (kind n) saturday-kinds)) names))
+                              ((= dow 7) (count-if (lambda (n) (member (kind n) sunday-kinds)) names))
+                              ((and (>= (length names) 2)
+                                    (some (lambda (n) (member (kind n) overlap-kinds)) names))
+                               (1- (length names)))
+                              (t 0))))
+              (loop repeat lost
+                    do (let ((d (+ date 1)))
+                         (loop until (free-p d saturday-ok)
+                               do (setf d (+ d 1)))
+                         (setf (gethash (date-rd d) taken) t)
+                         (push (cons d "대체공휴일") extra))))))))
+    (append pairs (nreverse extra))))
+
+(defparameter *kr-president-term-ends* '((2008 2 24) (2013 2 24) (2022 5 9))
+  "임기만료일 of the presidential terms that ended at term (the 2017 and 2025
+elections were 궐위선거 under 공직선거법 제35조, data/kr). From the 21st term
+(2025-06-04) a term ends on 3 June every five years from 2030.")
+
+(defvar *kr-election-base* nil
+  "A KR calendar without election days, for the 공직선거법 제34조 ② check.")
+
+(defvar *kr-in-election-check* nil)
+
+(defun kr-election-days (year)
+  "Term-expiry election days (공직선거법 제34조) whose date falls in YEAR: the
+first Wednesday on or after the 임기만료일 less 70 days (대통령), 50 days
+(국회의원, terms ending 29 May every four years from 2008) or 30 days (지방,
+30 June every four years from 2010); a week later when that Wednesday or the
+day before or after is a 공휴일 (②)."
+  (unless *kr-in-election-check*
+    (let* ((*kr-in-election-check* t)
+           (base (or *kr-election-base*
+                     (setf *kr-election-base*
+                           (make-instance 'south-korea-holidays-calendar
+                                          :transfers (all-block-transfers (kr-temporary-holidays))))))
+           (starts '()))
+      (dolist (end (append *kr-president-term-ends*
+                           (loop for y from 2030 to (+ year 1) by 5 collect (list y 6 3))))
+        (push (- (apply #'make-date end) 70) starts))
+      (when (and (>= year 2008) (zerop (mod year 4)))
+        (push (- (make-date year 5 29) 50) starts))
+      (when (and (>= year 2010) (= 2 (mod year 4)))
+        (push (- (make-date year 6 30) 30) starts))
+      (loop for start in starts
+            when (= (date-year start) year)
+              collect (let ((d (+ start (mod (- 3 (date-day-of-week start)) 7))))
+                        (if (or (holiday-p base d) (holiday-p base (- d 1)) (holiday-p base (+ d 1)))
+                            (+ d 7)
+                            d))))))
+
+(defparameter *kr-last-almanac-year* 2027
+  "The latest year with a published 월력요항 (우주항공청 공고 제2026-0078호, 관보
+2026-06-29).")
+
+(defun kr-provisional-year-p (year)
+  "True when YEAR is after the last 월력요항: its days follow the 규정 and
+공직선거법 제34조, but no 임시공휴일 can be known yet."
+  (> year *kr-last-almanac-year*))
+
+(define-calendar south-korea-holidays-calendar (:register "KR" :constructor south-korea-holidays-calendar
+                                                :observance-pass kr-daeche-gonghyuil-pass)
+  ;; 관공서의 공휴일에 관한 규정 제2조 of each era; 제3조 대체공휴일 in
+  ;; KR-DAECHE-GONGHYUIL-PASS; 제11호 임시공휴일 (and the election days before
+  ;; 제10의2호) in data/kr/temporary-holidays.sexp. Sundays are weekend days.
+  ;; https://www.law.go.kr/법령/관공서의공휴일에관한규정
+  (:fixed "1월 1일" 1 1 :from 1949 :authority "관공서의 공휴일에 관한 규정 제2조제3호 — 1월 1일")
+  (:fixed "1월 2일" 1 2 :from 1949 :to 1998
+   :authority "1월 1일~3일 (1949); 1월 2일 삭제, 대통령령 제15939호 (1999. 1. 1. 시행)")
+  (:fixed "1월 3일" 1 3 :from 1949 :to 1990
+   :authority "1월 3일 삭제, 대통령령 제13155호 (1991. 1. 1. 시행)")
+  (:computed "민속의 날" (lambda (y) (chinese-new-year-date y :zone +korea-lunisolar-zone+))
+   :from 1985 :to 1988 :authority "대통령령 제11615호 (1985. 1. 21.) — 민속의 날 (음력 1월 1일) 하루")
+  (:computed "설날 전날" (lambda (y) (- (chinese-new-year-date y :zone +korea-lunisolar-zone+) 1))
+   :from 1989 :authority "대통령령 제12616호 (1989. 2. 1.); 규정 제2조제4호 — 음력 12월 말일 (KASI)")
+  (:computed "설날" (lambda (y) (chinese-new-year-date y :zone +korea-lunisolar-zone+))
+   :from 1989 :authority "규정 제2조제4호 — 음력 1월 1일 (KASI)")
+  (:computed "설날 다음 날" (lambda (y) (+ (chinese-new-year-date y :zone +korea-lunisolar-zone+) 1))
+   :from 1989 :authority "규정 제2조제4호 — 음력 1월 2일 (KASI)")
+  (:fixed "3·1절" 3 1 :from 1949 :authority "국경일에 관한 법률; 규정 제2조제2호")
+  (:fixed "식목일" 4 5 :from 1949 :to 2005
+   :authority "식목일 삭제, 대통령령 제18893호 (2005. 6. 30. 공포·시행)")
+  (:fixed "노동절" 5 1 :from (2026 5 1)
+   :authority "대통령령 제36290호 (2026. 4. 30.) 제2조제6호 — 노동절 (2026. 5. 1. 시행)")
+  (:computed "석가탄신일" (lambda (y) (chinese-lunar-date y 4 8 :zone +korea-lunisolar-zone+))
+   :from 1975 :to 2017 :authority "대통령령 제7538호 (1975. 1. 27.) — 석가탄신일 (음력 4월 8일)")
+  (:computed "부처님오신날" (lambda (y) (chinese-lunar-date y 4 8 :zone +korea-lunisolar-zone+))
+   :from 2018 :authority "대통령령 제28394호 (2017. 10. 17.) 제2조제6호 — 부처님오신날 (음력 4월 8일)")
+  (:fixed "어린이날" 5 5 :from 1975 :authority "대통령령 제7538호 (1975. 1. 27.); 규정 제2조제7호")
+  (:fixed "현충일" 6 6 :from 1956 :authority "대통령령 제1145호 (1956. 6. 6.); 규정 제2조제8호")
+  (:fixed "제헌절" 7 17 :from 1949 :to 2007
+   :authority "국경일에 관한 법률; 대통령령 제18893호 부칙 ② — 제헌절은 2007년 12월 31일까지 공휴일")
+  (:fixed "제헌절" 7 17 :from (2026 5 11)
+   :authority "대통령령 제36290호 제2조제2호 (「국경일에 관한 법률」에 따른 국경일), 2026. 5. 11. 시행")
+  (:fixed "광복절" 8 15 :from 1949 :authority "국경일에 관한 법률; 규정 제2조제2호")
   (:computed "추석" (lambda (y) (zhongqiu-date y :zone +korea-lunisolar-zone+))
-   :from 1948 :authority "추석 — 음력 8/15, KST (KASI)")
-  (:computed "추석"
-             (lambda (y) (+ (zhongqiu-date y :zone +korea-lunisolar-zone+) 1))
-   :from 1948 :authority "추석 연휴")
-  (:fixed "개천절" 10 3 :from 1949
-   :authority "개천절 — National Foundation Day")
+   :from 1949 :authority "규정 제2조제9호 — 음력 8월 15일 (KASI)")
+  (:computed "추석 다음 날" (lambda (y) (+ (zhongqiu-date y :zone +korea-lunisolar-zone+) 1))
+   :from 1986 :authority "대통령령 제11962호 (1986. 9. 11.); 규정 제2조제9호 — 음력 8월 16일")
+  (:computed "추석 전날" (lambda (y) (- (zhongqiu-date y :zone +korea-lunisolar-zone+) 1))
+   :from 1989 :authority "대통령령 제12616호 (1989. 2. 1.); 규정 제2조제9호 — 음력 8월 14일")
+  (:fixed "국군의 날" 10 1 :from 1976 :to 1990
+   :authority "대통령령 제8235호 (1976. 9. 3.); 삭제 대통령령 제13155호 (1991. 1. 1.)")
+  (:fixed "개천절" 10 3 :from 1949 :authority "국경일에 관한 법률; 규정 제2조제2호")
   (:fixed "한글날" 10 9 :from 1949 :to 1990
-   :authority "한글날 — was public holiday; reinstated 2013")
+   :authority "한글날 삭제, 대통령령 제13155호 (1991. 1. 1. 시행)")
   (:fixed "한글날" 10 9 :from 2013
-   :authority "한글날 — reinstated as public holiday 2013")
-  (:fixed "성탄절" 12 25 :from 1949
-   :authority "기독탄신일 — Christmas"))
+   :authority "대통령령 제24273호 (2012. 12. 28.) — 국경일 중 한글날")
+  (:fixed "기독탄신일" 12 25 :from 1949 :authority "규정 제2조제10호 — 기독탄신일 (12월 25일)")
+  (:computed "선거일" #'kr-election-days :from (2006 9 6)
+   :authority ("대통령령 제19674호 (2006. 9. 6.) 규정 제2조제10의2호 — 「공직선거법」 제34조에 따른 임기만료에 의한 선거의 선거일"
+               "공직선거법 제34조 ① 대통령선거 임기만료일전 70일, 국회의원선거 50일, 지방선거 30일 이후 첫번째 수요일; ② 민속절·공휴일이거나 그 전일·다음날이 공휴일이면 그 다음주의 수요일")))
 
 ;;; Myanmar (1948)
 (define-calendar myanmar-holidays-calendar (:register "MM")
@@ -542,9 +685,11 @@ registered \"TH\" calendar); with YEAR, only that year's days."
     (make-instance 'thailand-holidays-calendar :transfers tr)))
 
 (defun south-korea-holidays-calendar (&key year transfers)
-  "ROK public holidays with the national 임시공휴일 of
+  "ROK 관공서의 공휴일 (관공서의 공휴일에 관한 규정 of each era, its 제3조
+대체공휴일 and the 공직선거법 제34조 election days) with the 임시공휴일 of
 data/kr/temporary-holidays.sexp. Without YEAR, every year in the file applies
-(the registered \"KR\" calendar); with YEAR, only that year's days."
+(the registered \"KR\" calendar); with YEAR, only that year's days. Years
+after the last 월력요항 are provisional (KR-PROVISIONAL-YEAR-P)."
   (let ((tr (or transfers
                 (if year
                     (kr-transfers-for-year year)
