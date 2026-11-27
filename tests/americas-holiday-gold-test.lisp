@@ -171,3 +171,60 @@ Carmen before 2007, 31 Oct before 2008 and no Ley 19.668 moves."
   (let ((date (make-date y m d)))
     (ok (eq holiday (and (holiday-p (find-calendar "CL") date) t))
         (format nil "CL ~d-~2,'0d-~2,'0d ~:[no holiday~;holiday~]" y m d holiday))))
+
+;;; --- Canada, federal (#17) ---------------------------------------------------
+
+(defparameter *ca-holiday-gold* (load-holiday-gold "CA"))
+
+(deftest ca-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *ca-holiday-gold* "CA"))
+
+(deftest ca-registered-calendar-matches-gold
+  "find-calendar \"CA\" is the Canada Labour Code general holidays on every day 2000–2040."
+  (let ((ca (find-calendar "CA")))
+    (%report-holiday-gold "CA" (%holiday-gold-mismatches *ca-holiday-gold* (constantly ca)))))
+
+(deftest-parametrize ca-federal-days
+    ((y m d holiday) :rows
+     '(;; Victoria Day: the first Monday immediately preceding 25 May (Holidays Act s. 4).
+       (2025 5 19 t) (2025 5 26 nil) (2026 5 18 t) (2026 5 25 nil) (2020 5 18 t) (2021 5 24 t)
+       ;; Canada Day: 2 July when 1 July is a Sunday (Holidays Act s. 2).
+       (2018 7 2 t) (2018 7 1 nil) (2029 7 2 t) (2025 7 1 t) (2025 7 2 nil)
+       ;; National Day for Truth and Reconciliation from 2021 (S.C. 2021, c. 11).
+       (2021 9 30 t) (2025 9 30 t) (2020 9 30 nil)
+       ;; Remembrance Day, Boxing Day, Thanksgiving.
+       (2025 11 11 t) (2025 12 26 t) (2025 10 13 t)
+       ;; Not federal general holidays: Easter Monday, Civic Holiday, Family Day.
+       (2025 4 21 nil) (2025 8 4 nil) (2025 2 17 nil)
+       ;; CLC s. 193(2) gives the working day before or after: no fixed substitute day.
+       (2022 1 3 nil) (2021 12 27 nil)))
+  (ok (eq holiday (and (holiday-p (find-calendar "CA") (make-date y m d)) t))
+      (format nil "CA ~d-~2,'0d-~2,'0d ~:[no holiday~;holiday~]" y m d holiday)))
+
+;;; --- Australia, national (#17) -----------------------------------------------
+
+(defparameter *au-holiday-gold* (load-holiday-gold "AU"))
+
+(deftest au-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *au-holiday-gold* "AU"))
+
+(deftest au-registered-calendar-matches-gold
+  "find-calendar \"AU\" is the national subset (Fair Work Act s. 115, every State and Territory) on every day 2000–2040."
+  (let ((au (find-calendar "AU")))
+    (%report-holiday-gold "AU" (%holiday-gold-mismatches *au-holiday-gold* (constantly au)))))
+
+(deftest-parametrize au-national-days
+    ((y m d holiday) :rows
+     '(;; No fixed 3 June and no June Monday: the King's Birthday is a state day.
+       (2025 6 3 nil) (2025 6 9 nil) (2024 6 3 nil) (2024 6 10 nil)
+       ;; Substitute days every jurisdiction gives.
+       (2025 1 27 t) (2019 1 28 t) (2022 1 3 t) (2017 1 2 t)
+       (2021 12 27 t) (2021 12 28 t) (2022 12 26 t) (2022 12 27 t) (2020 12 28 t)
+       ;; The weekend day itself stays a holiday.
+       (2022 12 25 t) (2025 1 26 t)
+       ;; Anzac Day has no national substitute.
+       (2021 4 26 nil) (2026 4 27 nil)
+       ;; National Day of Mourning for Queen Elizabeth II.
+       (2022 9 22 t)))
+  (ok (eq holiday (and (holiday-p (find-calendar "AU") (make-date y m d)) t))
+      (format nil "AU ~d-~2,'0d-~2,'0d ~:[no holiday~;holiday~]" y m d holiday)))
