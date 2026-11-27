@@ -584,6 +584,287 @@ def hk_official_check(days: dict) -> None:
     assert not diff and not jd, (sorted(diff), sorted(jd))
 
 
+# --- Taiwan ---------------------------------------------------------------
+#
+# Government-office days off (行政機關放假): the days of 紀念日及節日實施辦法 /
+# 公務人員週休二日實施辦法 art. 3 by era, and from 2025-05-28 紀念日及節日實施條例
+# arts. 4, 6 and 8; the 補假 rules (除夕/春節 from 2003, every holiday from 2015);
+# the 兒童節/清明 rule (from 2013); and the yearly 調整放假 / 補行上班 the
+# Executive Yuan decides (TW_ADJUSTMENTS). Lunar dates and 清明 are the HKO
+# tables' (UTC+8, Taiwan's zone). Checked day by day against the DGPA
+# 政府行政機關辦公日曆表 2000-2027.
+
+LAW_TW_D0020033 = "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0020033"
+LAW_TW_A0030127 = "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=A0030127"
+LAW_TW_D0020095 = "https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0020095"
+
+TW_SOURCES = [
+    ("公務人員週休二日實施辦法 第3條、第11條 (A0030127; 2001-01-01 施行; 2002-08-30, 2014-09-23 修正)", LAW_TW_A0030127,
+     "紀念日除開國紀念日、和平紀念日、國慶日外，不放假；民俗節日除夕、春節、民族掃墓節、端午節、中秋節放假（2011-04-01 增兒童節）。"
+     "2002-08-30 修正：除夕及春節逢例假日，於次一上班日補假。2014-09-23 修正（2015 年起）：放假日逢星期六於前一上班日補假，逢星期日於次一上班日補假。"),
+    ("紀念日及節日實施辦法 第5條、第5條之1 (D0020033; 2010-11-02, 2012-09-25, 2014-06-11 修正; 2025-06-06 廢止)", LAW_TW_D0020033,
+     "兒童節 4月4日 放假（2011 年起）。兒童節與民族掃墓節同一日時，於前一日放假；但逢星期四時，於後一日放假（2012-09-25 修正，2013 年起）。"
+     "第5條之1：紀念日及節日逢星期六於前一個上班日補假，逢星期日於後一個上班日補假；除夕及春節逢例假日，於後一個上班日補假（2015 年起）。"),
+    ("紀念日及節日實施條例 第4條、第6條、第8條 (D0020095; 2025-05-28 公布施行)", LAW_TW_D0020095,
+     "放假之紀念日：開國紀念日、和平紀念日、孔子誕辰紀念日（9月28日）、國慶日、臺灣光復暨金門古寧頭大捷紀念日（10月25日）、"
+     "行憲紀念日（12月25日）。放假之節日：春節（農曆除夕前一日至正月初三）、兒童節、民族掃墓節、勞動節、端午節、中秋節。"
+     "放假日逢例假日應予補假：逢星期六於前一個上班日、逢星期日於後一個上班日；春節逢例假日於其後之上班日補假。"),
+    ("行政院人事行政總處 政府行政機關辦公日曆表 2000-2016 (xls and calendar images)",
+     "https://www.dgpa.gov.tw/information?uid=30&pid=4977",
+     "Yearly official calendars: 調整放假, 補行上班, 補假; 2000 was 隔週休二日 (only the 2nd and 4th Saturdays off)."),
+    ("政府行政機關辦公日曆表 2017-2027 (CSV, data.gov.tw dataset 14718)", "https://data.gov.tw/dataset/14718",
+     "西元日期, 星期, 是否放假 (2 = 放假), 備註; the 2025 file is the 1141020 revision after the 條例."),
+    ("Hong Kong Observatory, Gregorian-Lunar Calendar Conversion Tables",
+     "https://www.hko.gov.hk/en/gts/time/conversion.htm",
+     "Lunar dates and 清明 at UTC+8, the zone of Taiwan; they agree with the DGPA calendars 2000-2027."),
+]
+
+TW_NOTE = (
+    "行政機關放假日 (government offices): the statutory days of each era with their 補假, plus the yearly "
+    "調整放假 of the Executive Yuan. Saturdays and Sundays are not listed unless a holiday falls on them; "
+    ":working-days lists the Saturdays that are working days (補行上班, and every non-off Saturday of the "
+    "2000 隔週休二日 regime). 勞動節 before 2026 was a day off for labourers only, not for offices. Years "
+    "after 2027 follow the rules only: no 調整放假 is known for them."
+)
+
+# 行政院人事行政總處 (DGPA) 政府行政機關辦公日曆表 2000-2016, transcribed from the
+# official xls / calendar images (dgpa.gov.tw information?uid=30); 2017-2027 are read
+# from the data.gov.tw CSVs below. Days off on Monday-Friday (weekend holidays are
+# rule days) and the Saturdays/Sundays that are working days.
+TW_DGPA_2000_2016 = {
+    2000: (['2000-02-04', '2000-02-07', '2000-02-28', '2000-04-03', '2000-04-04', '2000-06-06', '2000-09-12', '2000-10-10', '2000-12-25'],
+           ['2000-01-15', '2000-01-29', '2000-02-19', '2000-03-04', '2000-03-18', '2000-04-01', '2000-04-08', '2000-04-15', '2000-04-29', '2000-05-06', '2000-05-20', '2000-06-03', '2000-06-17', '2000-07-01', '2000-07-15', '2000-07-29', '2000-08-05', '2000-08-19', '2000-09-02', '2000-09-16', '2000-09-30', '2000-10-07', '2000-10-21', '2000-11-04', '2000-11-18', '2000-12-02', '2000-12-16', '2000-12-30']),
+    2001: (['2001-01-01', '2001-01-22', '2001-01-23', '2001-01-24', '2001-01-25', '2001-01-26', '2001-02-28', '2001-04-05', '2001-06-25', '2001-10-01', '2001-10-10'],
+           ['2001-01-20']),
+    2002: (['2002-01-01', '2002-02-11', '2002-02-12', '2002-02-13', '2002-02-14', '2002-02-28', '2002-04-05', '2002-10-10'],
+           []),
+    2003: (['2003-01-01', '2003-01-31', '2003-02-03', '2003-02-04', '2003-02-05', '2003-02-28', '2003-06-04', '2003-09-11', '2003-10-10'],
+           []),
+    2004: (['2004-01-01', '2004-01-21', '2004-01-22', '2004-01-23', '2004-01-26', '2004-06-22', '2004-09-28'],
+           []),
+    2005: (['2005-02-07', '2005-02-08', '2005-02-09', '2005-02-10', '2005-02-11', '2005-02-28', '2005-04-05', '2005-10-10'],
+           ['2005-02-05']),
+    2006: (['2006-01-30', '2006-01-31', '2006-02-01', '2006-02-02', '2006-02-28', '2006-04-05', '2006-05-31', '2006-10-06', '2006-10-09', '2006-10-10'],
+           ['2006-10-14']),
+    2007: (['2007-01-01', '2007-02-19', '2007-02-20', '2007-02-21', '2007-02-22', '2007-02-23', '2007-02-28', '2007-04-05', '2007-04-06', '2007-06-18', '2007-06-19', '2007-09-24', '2007-09-25', '2007-10-10'],
+           ['2007-03-03', '2007-04-14', '2007-06-23', '2007-09-29']),
+    2008: (['2008-01-01', '2008-02-06', '2008-02-07', '2008-02-08', '2008-02-11', '2008-02-28', '2008-04-04', '2008-10-10'],
+           []),
+    2009: (['2009-01-01', '2009-01-02', '2009-01-26', '2009-01-27', '2009-01-28', '2009-01-29', '2009-01-30', '2009-05-28', '2009-05-29'],
+           ['2009-01-10', '2009-01-17', '2009-06-06']),
+    2010: (['2010-01-01', '2010-02-15', '2010-02-16', '2010-02-17', '2010-02-18', '2010-02-19', '2010-04-05', '2010-06-16', '2010-09-22'],
+           ['2010-02-06']),
+    2011: (['2011-02-02', '2011-02-03', '2011-02-04', '2011-02-07', '2011-02-28', '2011-04-04', '2011-04-05', '2011-06-06', '2011-09-12', '2011-10-10'],
+           []),
+    2012: (['2012-01-23', '2012-01-24', '2012-01-25', '2012-01-26', '2012-01-27', '2012-02-27', '2012-02-28', '2012-04-04', '2012-10-10', '2012-12-31'],
+           ['2012-02-04', '2012-03-03', '2012-12-22']),
+    2013: (['2013-01-01', '2013-02-11', '2013-02-12', '2013-02-13', '2013-02-14', '2013-02-15', '2013-02-28', '2013-04-04', '2013-04-05', '2013-06-12', '2013-09-19', '2013-09-20', '2013-10-10'],
+           ['2013-02-23', '2013-09-14']),
+    2014: (['2014-01-01', '2014-01-30', '2014-01-31', '2014-02-03', '2014-02-04', '2014-02-28', '2014-04-04', '2014-06-02', '2014-09-08', '2014-10-10'],
+           ['2014-12-27']),
+    2015: (['2015-01-01', '2015-01-02', '2015-02-18', '2015-02-19', '2015-02-20', '2015-02-23', '2015-02-27', '2015-04-03', '2015-04-06', '2015-06-19', '2015-09-28', '2015-10-09'],
+           []),
+    2016: (['2016-01-01', '2016-02-08', '2016-02-09', '2016-02-10', '2016-02-11', '2016-02-12', '2016-02-29', '2016-04-04', '2016-04-05', '2016-06-09', '2016-06-10', '2016-09-15', '2016-09-16', '2016-10-10'],
+           ['2016-01-30', '2016-06-04', '2016-09-10']),
+}
+TW_DGPA_URLS = {
+    2000: 'https://www.dgpa.gov.tw/information?uid=30&pid=4977',
+    2001: 'https://www.dgpa.gov.tw/information?uid=30&pid=4976',
+    2002: 'https://www.dgpa.gov.tw/information?uid=30&pid=4975',
+    2003: 'https://www.dgpa.gov.tw/information?uid=30&pid=4974',
+    2004: 'https://www.dgpa.gov.tw/information?uid=30&pid=4973',
+    2005: 'https://www.dgpa.gov.tw/information?uid=30&pid=4972',
+    2006: 'https://www.dgpa.gov.tw/information?uid=30&pid=4971',
+    2007: 'https://www.dgpa.gov.tw/information?uid=30&pid=4970',
+    2008: 'https://www.dgpa.gov.tw/information?uid=30&pid=4969',
+    2009: 'https://www.dgpa.gov.tw/information?uid=30&pid=4968',
+    2010: 'https://www.dgpa.gov.tw/information?uid=30&pid=4980',
+    2011: 'https://www.dgpa.gov.tw/information?uid=30&pid=4981',
+    2012: 'https://www.dgpa.gov.tw/information?uid=30&pid=4982',
+    2013: 'https://www.dgpa.gov.tw/information?uid=30&pid=4983',
+    2014: 'https://www.dgpa.gov.tw/information?uid=30&pid=4988',
+    2015: 'https://www.dgpa.gov.tw/information?uid=30&pid=4987',
+    2016: 'https://www.dgpa.gov.tw/information?uid=30&pid=4989',
+    2017: 'https://www.dgpa.gov.tw/FileConversion?filename=dgpa/files/202407/f9efbeb6-af1b-4adf-9034-3c8a95a5a192.csv&nfix=&name=106%e5%b9%b4%e6%94%bf%e5%ba%9c%e6%a9%9f%e9%97%9c%e8%be%a6%e5%85%ac%e6%97%a5%e6%9b%86%e8%a1%a8.csv',
+    2018: 'https://www.dgpa.gov.tw/FileConversion?filename=dgpa/files/202407/d645842e-7b26-43e4-9f08-1172c61dde91.csv&nfix=&name=107%e6%94%bf%e5%ba%9c%e6%a9%9f%e9%97%9c%e8%be%a6%e5%85%ac%e6%97%a5%e6%9b%86%e8%a1%a8(%e6%95%b8%e5%ad%97%e7%89%88).csv',
+    2019: 'https://www.dgpa.gov.tw/FileConversion?filename=dgpa/files/202407/5f2ff9c5-a235-4819-8c62-f064fc5bffb8.csv&nfix=&name=108%e5%b9%b4%e4%b8%ad%e8%8f%af%e6%b0%91%e5%9c%8b%e6%94%bf%e5%ba%9c%e8%a1%8c%e6%94%bf%e6%a9%9f%e9%97%9c%e8%be%a6%e5%85%ac%e6%97%a5%e6%9b%86%e8%a1%a8.csv',
+    2020: 'https://www.dgpa.gov.tw/FileConversion?filename=dgpa/files/202407/4d215402-15c7-4ad9-ab90-a33f34a63f5b.csv&nfix=&name=109%e5%b9%b4%e4%b8%ad%e8%8f%af%e6%b0%91%e5%9c%8b%e6%94%bf%e5%ba%9c%e8%a1%8c%e6%94%bf%e6%a9%9f%e9%97%9c%e8%be%a6%e5%85%ac%e6%97%a5%e6%9b%86%e8%a1%a8.csv',
+    2021: 'https://www.dgpa.gov.tw/FileConversion?filename=dgpa/files/202407/daec35f0-ae43-4466-aa26-bafb39aa8e0a.csv&nfix=&name=110%e4%b8%ad%e8%8f%af%e6%b0%91%e5%9c%8b%e6%94%bf%e5%ba%9c%e8%a1%8c%e6%94%bf%e6%a9%9f%e9%97%9c%e8%be%a6%e5%85%ac%e6%97%a5%e6%9b%86%e8%a1%a8.csv',
+    2022: 'https://www.dgpa.gov.tw/FileConversion?filename=dgpa/files/202407/cbe02c09-d3ce-4912-ace4-69b7129efa9f.csv&nfix=&name=111%e5%b9%b4%e4%b8%ad%e8%8f%af%e6%b0%91%e5%9c%8b%e6%94%bf%e5%ba%9c%e8%a1%8c%e6%94%bf%e6%a9%9f%e9%97%9c%e8%be%a6%e5%85%ac%e6%97%a5%e6%9b%86%e8%a1%a8.csv',
+    2023: 'https://www.dgpa.gov.tw/FileConversion?filename=dgpa/files/202407/dd89fe8c-25f5-4035-a31e-7c14b44a74d7.csv&nfix=&name=112%e5%b9%b4%e4%b8%ad%e8%8f%af%e6%b0%91%e5%9c%8b%e6%94%bf%e5%ba%9c%e8%a1%8c%e6%94%bf%e6%a9%9f%e9%97%9c%e8%be%a6%e5%85%ac%e6%97%a5%e6%9b%86%e8%a1%a8.csv',
+    2024: 'https://www.dgpa.gov.tw/FileConversion?filename=dgpa/files/202407/777152e9-fdd1-4a61-876c-2733e7692538.csv&nfix=&name=113年中華民國政府行政機關辦公日曆表.csv',
+    2025: 'https://www.dgpa.gov.tw/FileConversion?filename=dgpa/files/202407/22f9fcbc-fbb2-4387-8bcf-73b2279666c2.csv&nfix=&name=114年中華民國政府行政機關辦公日曆表.csv',
+    2026: 'https://www.dgpa.gov.tw/FileConversion?filename=dgpa/files/202506/a52331bd-a189-466b-b0f0-cae3062bbf74.csv&nfix=&name=115%e5%b9%b4%e4%b8%ad%e8%8f%af%e6%b0%91%e5%9c%8b%e6%94%bf%e5%ba%9c%e8%a1%8c%e6%94%bf%e6%a9%9f%e9%97%9c%e8%be%a6%e5%85%ac%e6%97%a5%e6%9b%86%e8%a1%a8.csv',
+    2027: 'https://www.dgpa.gov.tw/FileConversion?filename=dgpa/files/202607/f538b1ff-ba60-4c63-9477-10db8e6612d1.csv&nfix=&name=116%e5%b9%b4%e4%b8%ad%e8%8f%af%e6%b0%91%e5%9c%8b%e6%94%bf%e5%ba%9c%e8%a1%8c%e6%94%bf%e6%a9%9f%e9%97%9c%e8%be%a6%e5%85%ac%e6%97%a5%e6%9b%86%e8%a1%a8_utf8bom.csv',
+}
+
+TW_ADJUSTMENTS = {
+    2000: ([('2000-04-03', '調整放假')],
+           ['2000-01-15', '2000-01-29', '2000-02-19', '2000-03-04', '2000-03-18', '2000-04-01', '2000-04-08', '2000-04-15', '2000-04-29', '2000-05-06', '2000-05-20', '2000-06-03', '2000-06-17', '2000-07-01', '2000-07-15', '2000-07-29', '2000-08-05', '2000-08-19', '2000-09-02', '2000-09-16', '2000-09-30', '2000-10-07', '2000-10-21', '2000-11-04', '2000-11-18', '2000-12-02', '2000-12-16', '2000-12-30']),
+    2001: ([('2001-01-22', '調整放假')],
+           ['2001-01-20']),
+    2005: ([('2005-02-07', '調整放假')],
+           ['2005-02-05']),
+    2006: ([('2006-10-09', '調整放假')],
+           ['2006-10-14']),
+    2007: ([('2007-02-23', '調整放假'), ('2007-04-06', '調整放假'), ('2007-06-18', '調整放假'), ('2007-09-24', '調整放假')],
+           ['2007-03-03', '2007-04-14', '2007-06-23', '2007-09-29']),
+    2009: ([('2009-01-02', '調整放假'), ('2009-01-30', '調整放假'), ('2009-05-29', '調整放假')],
+           ['2009-01-10', '2009-01-17', '2009-06-06']),
+    2010: ([('2010-02-19', '調整放假')],
+           ['2010-02-06']),
+    2012: ([('2012-01-27', '調整放假'), ('2012-02-27', '調整放假'), ('2012-12-31', '調整放假')],
+           ['2012-02-04', '2012-03-03', '2012-12-22']),
+    2013: ([('2013-02-15', '調整放假'), ('2013-09-20', '調整放假')],
+           ['2013-02-23', '2013-09-14']),
+    2014: ([],
+           ['2014-12-27']),
+    2015: ([('2015-01-02', '調整放假')],
+           []),
+    2016: ([('2016-02-12', '調整放假'), ('2016-06-10', '調整放假'), ('2016-09-16', '調整放假')],
+           ['2016-01-30', '2016-06-04', '2016-09-10']),
+    2017: ([('2017-02-27', '調整放假'), ('2017-05-29', '調整放假'), ('2017-10-09', '調整放假')],
+           ['2017-02-18', '2017-06-03', '2017-09-30']),
+    2018: ([('2018-04-06', '調整放假'), ('2018-12-31', '調整放假')],
+           ['2018-03-31', '2018-12-22']),
+    2019: ([('2019-02-08', '調整放假'), ('2019-03-01', '調整放假'), ('2019-10-11', '調整放假')],
+           ['2019-01-19', '2019-02-23', '2019-10-05']),
+    2020: ([('2020-01-23', '調整放假'), ('2020-06-26', '調整放假'), ('2020-10-02', '調整放假')],
+           ['2020-02-15', '2020-06-20', '2020-09-26']),
+    2021: ([('2021-02-10', '調整放假'), ('2021-09-20', '調整放假')],
+           ['2021-02-20', '2021-09-11']),
+    2022: ([('2022-02-04', '調整放假')],
+           ['2022-01-22']),
+    2023: ([('2023-01-20', '小年夜'), ('2023-01-27', '調整放假'), ('2023-02-27', '調整放假'), ('2023-04-03', '調整放假'), ('2023-06-23', '調整放假'), ('2023-10-09', '調整放假')],
+           ['2023-01-07', '2023-02-04', '2023-02-18', '2023-03-25', '2023-06-17', '2023-09-23']),
+    2024: ([('2024-02-08', '小年夜')],
+           ['2024-02-17']),
+    2025: ([('2025-01-27', '小年夜')],
+           ['2025-02-08']),
+}
+
+
+def _tw_nominal(year: int) -> list[tuple[date, str, str]]:
+    """The statutory days off of YEAR: (date, name, kind)."""
+    cny = hk_lunar(year, 1, 1)
+    out = [(date(year, 1, 1), "開國紀念日", "day")]
+    if year >= 2026:  # 條例 第6條 (the 2025 小年夜 came before it, by decision)
+        out.append((cny - timedelta(days=2), "小年夜", "spring"))
+    out.append((cny - timedelta(days=1), "農曆除夕", "spring"))
+    out += [(cny + timedelta(days=i), "春節", "spring") for i in range(3)]
+    out.append((date(year, 2, 28), "和平紀念日", "day"))
+    if year >= 2011:
+        out.append((date(year, 4, 4), "兒童節", "children"))
+    out.append((hk_ching_ming(year), "民族掃墓節", "day"))
+    if year >= 2026:
+        out.append((date(year, 5, 1), "勞動節", "day"))
+    out.append((hk_lunar(year, 5, 5), "端午節", "day"))
+    out.append((hk_lunar(year, 8, 15), "中秋節", "day"))
+    if year >= 2025:  # 條例, from 2025-05-28
+        out.append((date(year, 9, 28), "孔子誕辰紀念日", "day"))
+    out.append((date(year, 10, 10), "國慶日", "day"))
+    if year >= 2025:
+        out.append((date(year, 10, 25), "臺灣光復暨金門古寧頭大捷紀念日", "day"))
+    if year <= 2000:
+        out.append((date(year, 11, 12), "國父誕辰紀念日", "day"))
+    if year <= 2000 or year >= 2025:
+        out.append((date(year, 12, 25), "行憲紀念日", "day"))
+    return out
+
+
+def _tw_rule_days(year: int) -> list[tuple[date, str]]:
+    """The statutory days of YEAR with their 補假 (a 補假 for 1 January may fall
+    on 31 December of the year before) and the 調整放假 of TW_ADJUSTMENTS."""
+    weekend = lambda d: d.weekday() >= 5
+    nominal = _tw_nominal(year)
+    adjust = [(date.fromisoformat(d), n) for d, n in TW_ADJUSTMENTS.get(year, ([], []))[0]]
+    out = [(d, n) for d, n, _ in nominal] + adjust
+    taken = {d for d, _ in out}
+
+    def free(d):
+        return not weekend(d) and d not in taken
+
+    def step(d, by):
+        d += timedelta(days=by)
+        while not free(d):
+            d += timedelta(days=by)
+        return d
+
+    def place(d, name):
+        taken.add(d)
+        out.append((d, name))
+
+    children = date(year, 4, 4)
+    for d, name, kind in sorted(nominal):
+        if kind == "spring":
+            continue
+        if kind == "children" and year >= 2013 and hk_ching_ming(year) == children:
+            # 實施辦法 第5條: 前一日放假, 逢星期四於後一日; a weekend day so
+            # reached moves by the 補假 rule (2016: Sunday → 4/5; 2021: 4/2).
+            d = children + timedelta(days=1 if children.weekday() == 3 else -1)
+            if not weekend(d):
+                place(d, "兒童節 (與民族掃墓節同日)")
+                continue
+        if weekend(d) and year >= 2015:
+            place(step(d, -1 if d.weekday() == 5 else 1), f"補假 ({name})")
+    if year >= 2003:  # 除夕/春節 on a weekend: the following workdays
+        spring = sorted(d for d, _, k in nominal if k == "spring")
+        last = spring[-1]
+        for d in spring:
+            if weekend(d):
+                last = step(last, 1)
+                place(last, "補假 (春節)")
+    return out
+
+
+def tw_holidays(year: int) -> list[tuple[date, str]]:
+    return [(d, n) for y in (year, year + 1) for d, n in _tw_rule_days(y) if d.year == year]
+
+
+def tw_working_days(year: int) -> list[date]:
+    return [date.fromisoformat(d) for d in TW_ADJUSTMENTS.get(year, ([], []))[1]]
+
+
+def _tw_official(year: int) -> tuple[set, set]:
+    """The weekday days off and the working weekend days of the DGPA calendar of YEAR."""
+    if year <= 2016:
+        off, work = TW_DGPA_2000_2016[year]
+        return {date.fromisoformat(d) for d in off}, {date.fromisoformat(d) for d in work}
+    name = "tw/dgpa-2025-1141020.csv" if year == 2025 else f"tw/dgpa-{year}.csv"
+    raw = (CACHE / name).read_bytes()
+    try:
+        text = raw.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        text = raw.decode("big5")
+    off, work = set(), set()
+    for line in text.splitlines()[1:]:
+        cells = line.split(",")
+        if len(cells) < 3 or not cells[0].strip().isdigit():
+            continue
+        d = date(int(cells[0][:4]), int(cells[0][4:6]), int(cells[0][6:8]))
+        holiday = cells[2].strip() == "2"
+        if holiday and d.weekday() < 5:
+            off.add(d)
+        if not holiday and d.weekday() >= 5:
+            work.add(d)
+    return off, work
+
+
+def tw_official_check(days: dict) -> None:
+    bad = []
+    for year in range(2000, 2028):
+        off, work = _tw_official(year)
+        ours = {d for d in days if d.year == year and d.weekday() < 5}
+        bad += [(d, "official only") for d in sorted(off - ours)]
+        bad += [(d, f"gold only {days[d]}") for d in sorted(ours - off)]
+        if work != set(tw_working_days(year)):
+            bad.append((year, "working days", sorted(work ^ set(tw_working_days(year)))))
+    for b in bad:
+        print("  TW", *b)
+    print(f"  TW 2000-2027: {len(bad)} differences with the DGPA calendars")
+    assert not bad
+
+
 # --- registry and writer --------------------------------------------------
 
 COUNTRIES = {
@@ -593,6 +874,9 @@ COUNTRIES = {
     "HK": dict(name="Hong Kong", build=hk_holidays, sources=HK_SOURCES, note=HK_NOTE,
                python=lambda years: __import__("holidays").HK(years=years, categories=("public", "optional")),
                crosscheck=hk_official_check),
+    "TW": dict(name="Taiwan", build=tw_holidays, working=tw_working_days, sources=TW_SOURCES, note=TW_NOTE,
+               python=lambda years: __import__("holidays").TW(years=years),
+               crosscheck=tw_official_check),
 }
 
 
@@ -629,7 +913,15 @@ def build(cc: str) -> None:
     lines.append(" (")
     for d in sorted(days):
         lines.append(f"  ({d.year} {d.month} {d.day} {lisp_string(' / '.join(days[d]))})")
-    lines.append(" ))")
+    lines.append(" )")
+    if spec.get("working"):
+        lines.append(" :working-days")
+        lines.append(" (")
+        for year in range(FIRST, LAST + 1):
+            for d in spec["working"](year):
+                lines.append(f"  ({d.year} {d.month} {d.day} \"補行上班\")")
+        lines.append(" )")
+    lines.append(")")
     out = ROOT / "data" / "tests" / f"{cc.lower()}-holiday-gold.sexp"
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"{cc}: {len(days)} days -> {out.relative_to(ROOT)}")

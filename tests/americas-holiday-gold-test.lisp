@@ -16,18 +16,22 @@
         (setf (gethash (format nil "~4,'0d-~2,'0d-~2,'0d" y m d) table) name)))))
 
 (defun %holiday-gold-mismatches (gold calendar-for-year &key (from (getf gold :from))
-                                                             (to (getf gold :to)))
+                                      (to (getf gold :to)))
   "Every (ISO KIND GOLD OURS) where the calendar disagrees with GOLD in
-FROM..TO. CALENDAR-FOR-YEAR maps a year to the calendar to ask."
+FROM..TO. CALENDAR-FOR-YEAR maps a year to the calendar to ask. A business
+day is a Monday–Friday that is no holiday, or a day GOLD lists under
+:WORKING-DAYS (a Saturday or Sunday made a working day by decree)."
   (let ((days (%holiday-gold-days gold))
+        (working (%holiday-gold-days (list :days (getf gold :working-days))))
         (bad '()))
     (loop for year from from to to
           for cal = (funcall calendar-for-year year)
           do (loop for date = (make-date year 1 1) then (+ date 1)
                    while (= (date-year date) year)
                    do (let* ((gold-holiday (and (gethash (suite-date-iso date) days) t))
-                             (gold-business (and (not gold-holiday)
-                                                 (<= (date-day-of-week date) 5)))
+                             (gold-business (or (and (gethash (suite-date-iso date) working) t)
+                                                (and (not gold-holiday)
+                                                     (<= (date-day-of-week date) 5))))
                              (holiday (and (holiday-p cal date) t))
                              (business (and (business-day-p cal date) t)))
                         (unless (eq gold-holiday holiday)

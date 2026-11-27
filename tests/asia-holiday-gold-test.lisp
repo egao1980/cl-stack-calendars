@@ -156,3 +156,55 @@ New Year for the Sunday 2024-02-11."
       (ok (holiday 2020 12 26) "the first weekday after Christmas may be a Saturday")
       (ok (holiday 2015 9 3) "one-off 2015 general holiday")
       (ok (holiday 2033 10 3) "National Day and Chung Yeung on Saturday 2033-10-01: s. 6(2)"))))
+
+;;; --- Taiwan (#41) ----------------------------------------------------------
+
+(defparameter *tw-holiday-gold* (load-holiday-gold "TW"))
+
+(deftest tw-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *tw-holiday-gold* "TW")
+  (ok (getf *tw-holiday-gold* :working-days)))
+
+(deftest tw-registered-calendar-matches-gold
+  "find-calendar \"TW\" agrees with the statute, the 補假 rules and the DGPA
+調整放假 / 補行上班 on every day 2000–2040 (gold checked against the DGPA
+calendars 2000–2027)."
+  (let ((tw (find-calendar "TW")))
+    (%report-holiday-gold "TW" (%holiday-gold-mismatches *tw-holiday-gold* (constantly tw)))))
+
+(deftest tw-year-calendars-match-gold
+  (%report-holiday-gold "TW :year"
+                        (%holiday-gold-mismatches *tw-holiday-gold*
+                                                  (lambda (y) (taiwan-holidays-calendar :year y)))))
+
+(deftest tw-country-calendar-matches-gold
+  (let ((tw (country-calendar "TW")))
+    (ok (eq :normative (calendar-provenance tw)))
+    (%report-holiday-gold "country-calendar TW"
+                          (%holiday-gold-mismatches *tw-holiday-gold* (constantly tw)))))
+
+(deftest tw-childrens-day-and-bujia
+  "兒童節 from 2011 with the 清明 rule; 補假 (#41 TW comment)."
+  (let ((tw (find-calendar "TW")))
+    (flet ((holiday (y m d) (holiday-p tw (make-date y m d))))
+      (ok (holiday 2024 4 5) "兒童節 on 清明, a Thursday: the day after")
+      (ok (holiday 2025 4 3) "兒童節 on 清明, a Friday: the day before")
+      (ok (holiday 2016 4 5) "the day before is a Sunday: the next workday")
+      (ok (holiday 2021 4 2) "both on a Sunday: 兒童節 to Friday 4/2")
+      (ok (holiday 2021 4 5) "清明 to Monday 4/5")
+      (ng (holiday 2010 4 4) "no 兒童節 before 2011 (Sunday anyway)")
+      (ok (holiday 2026 4 3) "兒童節 on a Saturday: the Friday before")
+      (ok (holiday 2026 4 6) "清明 on a Sunday: the Monday after")
+      (ok (holiday 2021 12 31) "1 January 2022 on a Saturday")
+      (ok (holiday 2024 2 8) "小年夜 2024 by decision")
+      (ok (holiday 2023 1 20))
+      (ok (holiday 2023 1 27))
+      (ok (business-day-p tw (make-date 2024 2 17)) "補行上班")
+      (ok (holiday 2026 5 1) "勞動節 from 2026")
+      (ng (holiday 2025 5 1))
+      (ok (holiday 2025 9 29) "孔子誕辰紀念日 on Sunday 2025-09-28")
+      (ok (holiday 2025 12 25)))))
+
+(deftest tw-after-last-calendar-is-provisional
+  (ng (tw-provisional-year-p 2027))
+  (ok (tw-provisional-year-p 2028)))
