@@ -460,17 +460,21 @@ and with the statute days of the provisional years 2028–2040."
                           (%holiday-gold-mismatches *cn-holiday-gold* (constantly cn)))))
 
 (defun %cn-name-mismatches (gold calendar)
-  "Every (ISO GOLD-NAME OUR-NAME) where CALENDAR's name for a GOLD day is none
-of the gold's names (\"中秋节 / 国庆节\" lists two)."
-  (loop for (y m d gold-name) in (getf gold :days)
-        for date = (make-date y m d)
-        for ours = (nth-value 1 (holiday-p calendar date))
-        unless (and (stringp ours)
-                    (loop for start = 0 then (+ end 3)
-                          for end = (or (search " / " gold-name :start2 start) (length gold-name))
-                          thereis (string= ours gold-name :start2 start :end2 end)
-                          while (< end (length gold-name))))
-          collect (list (suite-date-iso date) gold-name ours)))
+  "Every (ISO GOLD-NAME OUR-NAME) where CALENDAR's name for a GOLD day is not
+the gold's name. Two festivals on one day are \"中秋节 / 国庆节\" in the gold
+and \"中秋节; 国庆节\" in HOLIDAY-P."
+  (flet ((parts (string separator)
+           (loop for start = 0 then (+ end (length separator))
+                 for end = (or (search separator string :start2 start) (length string))
+                 collect (subseq string start end)
+                 while (< end (length string)))))
+    (loop for (y m d gold-name) in (getf gold :days)
+          for date = (make-date y m d)
+          for ours = (nth-value 1 (holiday-p calendar date))
+          unless (and (stringp ours)
+                      (equal (sort (parts ours "; ") #'string<)
+                             (sort (parts gold-name " / ") #'string<)))
+            collect (list (suite-date-iso date) gold-name ours))))
 
 (deftest cn-holiday-names-match-gold
   "Each day off carries its festival name, not \"调休\" (#26, #12): the
@@ -546,7 +550,7 @@ extension 〔2020〕1号, the 2003 SARS amendment and the 2000 国庆 notice."
       (ng (business 2020 2 1))
       (ok (holiday 2003 5 5) "2003 五一 by the statute days (非典)")
       (ok (business 2003 5 6))
-      (ok (business 2003 4 26))
+      (ng (business 2003 4 26) "the amendment cancels the 4/26–27 上班")
       (ok (holiday 2000 10 4) "2000 国庆 10/1–7")
       (ok (business 2000 9 30))
       (ok (business 2000 10 8))

@@ -146,13 +146,15 @@
     (ng (weekend-day-p cal (make-date 2026 2 14)))))
 
 (deftest china-tiaoxiu-corpus-span
-  "国办调休 notices encoded 1999–2026."
+  "国办 放假 notices encoded 1999–2027 (#26)."
   (ok (cn-notice-for-year 1999))
   (ok (cn-notice-for-year 2008))            ; first 清明/端午/中秋 year
   (ok (cn-notice-for-year 2015))            ; 抗战胜利日国发明电
   (ok (cn-notice-for-year 2025))
   (ok (cn-notice-for-year 2026))
-  (ok (>= (length (cn-transfer-notices)) 28)))
+  (ok (cn-notice-for-year 2027))            ; 国办发明电〔2026〕10号
+  (ng (cn-notice-for-year 2028))
+  (ok (>= (length (cn-transfer-notices)) 29)))
 
 (deftest china-tiaoxiu-2008-qingming
   "国办发明电〔2007〕52号: 清明 4/4–6."
