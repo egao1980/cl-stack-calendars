@@ -396,19 +396,25 @@ only the statutory days are in it."
 
 ;;; --- Malaysia JPM / PMO additional public holidays --------------------
 
-(defun load-my-transfers (&optional (path (data-path "my/transfers.sexp")))
-  (let ((form (read-data-form path)))
-    (mapcar
-     (lambda (block)
-       (let* ((year (getf block :year))
-              (auth (getf block :authority))
-              (transfers (mapcar (lambda (e)
-                                   (make-extra-day-transfer e auth))
-                                 (getf block :holidays))))
-         (cons year (list :authority auth
-                          :transfers transfers
-                          :uri (getf block :uri)))))
-     form)))
+(defun load-my-transfers (&optional (path (data-path "my/holidays.sexp")))
+  "Return alist YEAR → (:authority A :uri U :moveable … :transfers …) from
+the Jadual Hari Kelepasan Am Persekutuan of each year: :MOVEABLE an alist
+KIND → dates of the listed moveable holidays (:CNY, :WESAK, :AGONG,
+:HARI-RAYA-PUASA, :HARI-RAYA-HAJI, :AWAL-MUHARRAM, :MAULIDUR-RASUL,
+:DEEPAVALI), :TRANSFERS the Holidays Act 1951 s. 8 additional days."
+  (mapcar
+   (lambda (block)
+     (let ((auth (getf block :authority)))
+       (cons (getf block :year)
+             (list :authority auth
+                   :uri (getf block :uri)
+                   :moveable (mapcar (lambda (entry)
+                                       (cons (car entry)
+                                             (mapcar (lambda (d) (apply #'make-date d)) (cdr entry))))
+                                     (getf block :moveable))
+                   :transfers (mapcar (lambda (e) (make-extra-day-transfer e auth))
+                                      (getf block :holidays))))))
+   (read-data-form path)))
 
 (defvar *my-transfers* nil)
 
@@ -421,6 +427,82 @@ only the statutory days are in it."
 
 (defun my-transfers-for-year (year)
   (transfers-touching-year (my-transfers) year))
+
+(defparameter *my-list-years* '(2008 . 2027)
+  "The years data/my/holidays.sexp covers: their moveable days are the JPM
+list's. No primary list of 2000-2007 was found, so those years estimate.")
+
+(defun my-estimated-year-p (year)
+  "True when no JPM list of data/my covers YEAR: its moveable days (CNY,
+Wesak, the Agong's birthday, the Islamic days, Deepavali) are estimates."
+  (not (<= (car *my-list-years*) year (cdr *my-list-years*))))
+
+(defun my-provisional-year-p (year)
+  "True for a year after the last JPM list (2027): its moveable days are
+estimates and it has no s. 8 additional days."
+  (> year (cdr *my-list-years*)))
+
+(defun my-listed-days (year kind)
+  "The listed dates of moveable holiday KIND in YEAR (a list, maybe empty)."
+  (cdr (assoc kind (getf (my-notice-for-year year) :moveable))))
+
+(defun my-deepavali-estimate (year)
+  "Deepavali for a year with no list: the day before the first new moon (its
+IST date) after 17 October, i.e. the end of amanta Ashvina after the Sun's
+sidereal entry into Tula. It matches 17 of the 20 listed dates 2008-2027 and
+is a day late in the others (2008, 2014, 2017): the list follows the tithi of
+Naraka Chaturdashi, which this does not model."
+  (let* ((ist (location-zone +delhi+))
+         (start (cl:- (float (date-rd (make-date year 10 18)) 0d0) ist))
+         (new-moon (new-moon-at-or-after start)))
+    (date-from-rd (1- (floor (cl:+ new-moon ist))))))
+
+(defun my-wesak-estimate (year)
+  "Wesak for a year with no list: the first lunar day 15 (Chinese calendar at
+UTC+8, a leap month included) on or after 3 May. The listed Wesak of
+2008-2027 falls on 3-31 May and this gives every one of them."
+  (loop for rd from (date-rd (make-date year 5 3))
+        when (= 15 (nth-value 3 (lunisolar-from-fixed rd :location +beijing+)))
+          return (date-from-rd rd)))
+
+(defun my-agong-birthday-estimate (year)
+  "The Agong's birthday for a year with no list: the first Saturday of June
+before 2017 (every list 2008-2016), the first Monday of June from 2021 (every
+list 2021-2027)."
+  (let* ((june (make-date year 6 1))
+         (want (if (< year 2017) 6 1)))
+    (+ june (mod (- want (date-day-of-week june)) 7))))
+
+(defun my-moveable (year kind estimate)
+  "The dates of KIND in YEAR: the list's in a listed year, else (FUNCALL
+ESTIMATE)."
+  (if (my-estimated-year-p year)
+      (funcall estimate)
+      (my-listed-days year kind)))
+
+(defun my-cuti-ganti-pass (calendar year pairs)
+  "Holidays Act 1951 s. 3: a public holiday on the weekly holiday (Sunday in
+the Saturday/Sunday states) gives the following day, or, when that day is
+already a public holiday, the day after it. The holidays of YEAR (PAIRS and
+the s. 8 days of CALENDAR) are taken in date order. Two holidays on one
+weekday give no extra day (JPM, 31 July 2024)."
+  (let ((taken (make-hash-table :test #'eql))
+        (days (mapcar #'car pairs))
+        (extra '()))
+    (dolist (tr (calendar-transfers calendar))
+      (let ((to (calendar-transfer-to tr)))
+        (when (and to (= year (date-year to)))
+          (push to days))))
+    (dolist (d days)
+      (setf (gethash (date-rd d) taken) t))
+    (dolist (d (sort (remove-duplicates days :test #'=) #'cl:< :key #'date-rd))
+      (when (= 7 (date-day-of-week d))
+        (let ((next (+ d 1)))
+          (loop while (gethash (date-rd next) taken)
+                do (setf next (+ next 1)))
+          (setf (gethash (date-rd next) taken) t)
+          (push (cons next "Cuti (Akta 369 s. 3)") extra))))
+    (append pairs (nreverse extra))))
 
 ;;; --- Gazette corpora (Dashain, Poya, Vesak/Deepavali, …) --------------
 
@@ -656,39 +738,45 @@ day before or after is a 공휴일 (②)."
    :authority "Islamic holiday (tabular)"))
 
 ;;; Malaysia (1957 / 1963)
-(define-calendar malaysia-holidays-calendar (:register "MY" :constructor malaysia-holidays-calendar)
-  (:fixed "New Year's Day" 1 1 :from 1957
-   :authority "Federal public holiday (most states)")
-  (:computed "Chinese New Year"
-   (lambda (y) (chinese-new-year-date y :location +beijing+))
-   :from 1957 :authority "Federal holiday — CNY")
-  (:computed "Chinese New Year"
-   (lambda (y) (+ (chinese-new-year-date y :location +beijing+) 1))
-   :from 1957 :authority "Federal holiday — CNY Day 2")
-  (:fixed "Labour Day" 5 1 :from 1957 :authority "Federal holiday")
-  (:fixed "National Day" 8 31 :from 1957
-   :authority "Hari Kebangsaan — Independence 31 Aug 1957")
-  (:fixed "Malaysia Day" 9 16 :from 2010
-   :authority "Hari Malaysia — federal holiday from 2010 (formation 1963)")
-  (:fixed "Christmas Day" 12 25 :from 1957 :authority "Federal holiday")
-  (:computed "Hari Raya Puasa" #'eid-al-fitr :from 1957
-   :authority "Federal holiday (tabular Hijri)")
+(define-calendar malaysia-holidays-calendar (:register "MY" :constructor malaysia-holidays-calendar
+                                             :observance-pass my-cuti-ganti-pass)
+  ;; Hari kelepasan am persekutuan: Holidays Act 1951 (Act 369) First
+  ;; Schedule as amended, for Peninsular Malaysia and the Federal Territories.
+  ;; The moveable days of 2008-2027 are the JPM lists' (data/my/holidays.sexp);
+  ;; the rules estimate other years (MY-ESTIMATED-YEAR-P). s. 3 replacement
+  ;; days: MY-CUTI-GANTI-PASS. State days (1 January, Thaipusam, Nuzul
+  ;; Al-Quran, Hari Raya Haji day 2, ...) are out of scope.
+  ;; https://www.kabinet.gov.my/bkpp/pdf/akta_warta/1951_12_31_act369.pdf
+  (:computed "Tahun Baharu Cina"
+             (lambda (y)
+               (my-moveable y :cny (lambda ()
+                                     (let ((d (chinese-new-year-date y :location +beijing+)))
+                                       (list d (+ d 1))))))
+   :from 1957
+   :authority "Act 369 First Schedule — Chinese New Year, 2 days (1 in Kelantan and Terengganu); the JPM list date 2008-2027")
+  (:fixed "Hari Pekerja" 5 1 :from 1973 :authority "Act 369 First Schedule — Labour Day (P.U.(B) 414/1972, from 12 October 1972)")
+  (:computed "Hari Wesak" (lambda (y) (my-moveable y :wesak (lambda () (list (my-wesak-estimate y)))))
+   :from 1962 :authority "Act 369 First Schedule — Wesak Day; the JPM list date 2008-2027, estimate otherwise")
+  (:computed "Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong"
+             (lambda (y) (my-moveable y :agong (lambda () (list (my-agong-birthday-estimate y)))))
+   :from 1957
+   :authority "Act 369 First Schedule — the Agong's birthday: first Saturday of June to 2016, 9 September 2017-2019, 8 June 2020 (Warta No. 6489), first Monday of June from 2021 (the JPM lists)")
+  (:fixed "Hari Kebangsaan" 8 31 :from 1957 :authority "Act 369 First Schedule — National Day (31 August 1957)")
+  (:fixed "Hari Malaysia" 9 16 :from 2010 :authority "P.U.(B) 491/2009 — Malaysia Day, 16 September, from 2010")
+  (:fixed "Hari Krismas" 12 25 :from 1957 :authority "Act 369 First Schedule — Christmas Day")
   (:computed "Hari Raya Puasa"
-   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
-   :from 1957 :authority "Hari Raya Puasa Day 2")
-  (:computed "Hari Raya Haji" #'eid-al-adha :from 1957
-   :authority "Federal holiday (tabular Hijri)")
-  (:computed "Hari Raya Haji"
-   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 1))))
-   :from 1957 :authority "Hari Raya Haji Day 2")
-  (:computed "Wesak Day"
-   (lambda (y) (chinese-lunar-date y 4 15 :location +beijing+))
-   :from 1962
-   :authority "Federal holiday — Vesak (Beijing tabular ≈ MY gazette)")
-  (:computed "Deepavali"
-   (lambda (y) (chinese-lunar-date y 8 1 :location +beijing+))
+             (lambda (y)
+               (my-moveable y :hari-raya-puasa (lambda () (let ((d (eid-al-fitr y))) (and d (list d (+ d 1)))))))
+   :from 1957 :authority "Act 369 First Schedule — Hari Raya Puasa, 2 days; the JPM list date 2008-2027, tabular estimate otherwise")
+  (:computed "Hari Raya Haji" (lambda (y) (my-moveable y :hari-raya-haji (lambda () (eid-al-adha y))))
+   :from 1957 :authority "Act 369 First Schedule — Hari Raya Haji, 1 day (2 in Kelantan and Terengganu); the JPM list date 2008-2027, tabular estimate otherwise")
+  (:computed "Awal Muharam" (lambda (y) (my-moveable y :awal-muharram (lambda () (islamic-new-year-date y))))
+   :from 1995 :authority "Act 369 First Schedule — Awal Muharam (P.U.(B) 363/2005, from 1995); the JPM list date 2008-2027, tabular estimate otherwise")
+  (:computed "Hari Keputeraan Nabi Muhammad S.A.W." (lambda (y) (my-moveable y :maulidur-rasul (lambda () (mawlid-date y))))
+   :from 1957 :authority "Act 369 First Schedule — Maulidur Rasul; the JPM list date 2008-2027, tabular estimate otherwise")
+  (:computed "Hari Deepavali" (lambda (y) (my-moveable y :deepavali (lambda () (list (my-deepavali-estimate y)))))
    :from 1972
-   :authority "Federal holiday — Deepavali (Beijing tabular ≈ gazette)"))
+   :authority "Act 369 First Schedule — Deepavali (not a Sarawak holiday); the JPM list date 2008-2027, estimate (MY-DEEPAVALI-ESTIMATE) otherwise"))
 
 ;;; --- Taiwan: 調整放假 / 補行上班 and 補假 ----------------------------------
 
@@ -913,9 +1001,13 @@ after the last 월력요항 are provisional (KR-PROVISIONAL-YEAR-P)."
 (defun myanmar-holidays-calendar () (make-instance 'myanmar-holidays-calendar))
 
 (defun malaysia-holidays-calendar (&key year transfers)
-  "Malaysian federal holidays with the JPM/PMO additional days of
-data/my/transfers.sexp. Without YEAR, every year in the file applies (the
-registered \"MY\" calendar); with YEAR, only that year's days."
+  "Malaysian federal public holidays (Holidays Act 1951, Peninsular Malaysia
+and the Federal Territories): the First Schedule days at the dates of the
+JPM list of each year 2008-2027 (data/my/holidays.sexp), the s. 3
+replacement days and the s. 8 additional days. Without YEAR, every s. 8 day
+of the file applies (the registered \"MY\" calendar); with YEAR, only that
+year's. MY-ESTIMATED-YEAR-P years estimate the moveable days; years after
+2027 are provisional (MY-PROVISIONAL-YEAR-P). State days are not included."
   (let ((tr (or transfers
                 (if year
                     (my-transfers-for-year year)

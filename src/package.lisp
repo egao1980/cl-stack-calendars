@@ -441,6 +441,10 @@
    #:calendar-observance-pass
    #:tw-provisional-year-p
    #:ph-provisional-year-p
-   #:id-provisional-year-p))
+   #:id-provisional-year-p
+   #:my-provisional-year-p
+   #:my-estimated-year-p
+   #:my-deepavali-estimate
+   #:my-wesak-estimate))
 
 (in-package #:cl-stack-calendars)

@@ -1265,6 +1265,368 @@ def id_cuti(year: int) -> list[tuple[date, str]]:
     return [(date.fromisoformat(d), n) for d, n in ID_SKB.get(year, {}).get("cuti", [])]
 
 
+# --- Malaysia -------------------------------------------------------------
+#
+# Hari kelepasan am persekutuan: the First Schedule of the Holidays Act 1951
+# (Act 369; Peninsular Malaysia and the Federal Territories) as amended, the
+# yearly "Jadual Hari Kelepasan Am Persekutuan" of the Prime Minister's
+# Department (BKPP, kabinet.gov.my; from 2019 the Warta Kerajaan table) with
+# its amendments, and the s. 8 notifications (P.U.(B)) of additional days. The
+# replacement days are not printed in the lists: they follow from s. 3 (a
+# holiday on the weekly holiday, Sunday in the Saturday/Sunday states, gives
+# the next day, or the day after that when the next day is itself a holiday).
+# State days (1 January, Thaipusam, Nuzul Al-Quran, Hari Wilayah, ...) and the
+# Friday-weekend states' replacements are out of scope. 2000-2007: no primary
+# list was found, so the gold starts in 2008. 2028-2040 are provisional.
+
+MY_NOTE = (
+    "Federal public holidays (Holidays Act 1951 First Schedule; the JPM Jadual Hari Kelepasan Am "
+    "Persekutuan of each year 2008-2027 with its amendments, and the s. 8 additional days), with the "
+    "s. 3 replacement for a holiday on a Sunday. State and Federal Territory days are not in it. "
+    "2028-2040 are provisional: fixed days and estimates (tabular Islamic dates; lunar 1/1 and 4/15 "
+    "from the HKO tables; Deepavali the day before the first new moon, IST, after 17 October; the "
+    "Agong's birthday the first Monday of June)."
+)
+
+MY_SOURCES = [
+    ("Holidays Act 1951 (Act 369), ss. 1(2), 2, 3, 8, 9 and First Schedule (Akta Hari Kelepasan 1951)",
+     "https://web.archive.org/web/2024id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/1951_12_31_act369.pdf",
+     "s. 3: a public holiday that falls on a weekly holiday (Sunday, or Friday where Friday is the weekly "
+     "holiday): the day following is a public holiday, and if that day is already one, the day after. "
+     "First Schedule: Maulidur Rasul, National Day, Chinese New Year (2 days; 1 in Kelantan and "
+     "Terengganu), Wesak, the Agong's birthday, Hari Raya Puasa (2 days), Hari Raya Haji (1 day; 2 in "
+     "Kelantan and Terengganu), Deepavali, Christmas; Labour Day (P.U.(B) 414/1972), Awal Muharam "
+     "(P.U.(B) 363/2005), Malaysia Day (P.U.(B) 491/2009, from 2010)."),
+    ("JPM / BKPP Jadual Hari Kelepasan Am Persekutuan 2008-2027 (kabinet.gov.my; Wayback copies)",
+     "https://www.kabinet.gov.my/storage/2026/08/HKA_2027.pdf",
+     "The federal table of each year; every date below is the table's, with its gazetted amendments "
+     "(Deepavali 2014: Warta No. 43367; Awal Muharam 2017: Warta No. 1779; the Agong's birthday 2020: "
+     "Warta No. 6489; Hari Raya Puasa 2022: PMO statement of 1 May 2022). Deepavali is not a Sarawak "
+     "holiday and CNY day 2 not a Kelantan / Terengganu one; both are federal days."),
+    ("Warta Kerajaan Persekutuan: Jadual Hari Kelepasan Am Persekutuan 2019-2025",
+     "https://web.archive.org/web/2024id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20230810_HARI_KELEPASAN_2024.pdf",
+     "Pemberitahuan No. 17295 (2019), 12985 (2020), 16872 (2023), 19239 (2024), 17852 (2025); the 2021 and "
+     "2022 tables of 9 July 2020 and 24 June 2021."),
+    ("Holidays Act 1951 s. 8 notifications: additional public holidays",
+     "https://web.archive.org/web/2022id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20221114_PUB556.pdf",
+     "P.U.(B) 70/2012 (11 April 2012), 176/2017 (24 April 2017), 325/2019 (30 July 2019), 556/2022 "
+     "(18-19 November 2022), 579/2022 (28 November 2022), 154/2023 (21 April 2023), 305/2025 "
+     "(15 September 2025); 9 May 2018 (PMO statement of 11 April 2018); 4 September 2017 and 10-11 May "
+     "2018 as announced (no P.U.(B) copy was archived)."),
+    ("PMO statement, 1 May 2022: the s. 3 replacement days",
+     "https://web.archive.org/web/20220515191737id_/https://www.pmo.gov.my/wp-content/uploads/2022/05/152022-KENYATAAN-MEDIA-PERUBAHAN-CUTI-UMUM.pdf",
+     "Hari Raya Aidilfitri on Monday 2 May 2022; Labour Day (Sunday 1 May) replaced on Wednesday 4 May "
+     "under s. 3, except in Kedah, Kelantan, Terengganu and Johor."),
+    ("JPM, 31 July 2024: no replacement day for Malaysia Day and Maulidur Rasul on 16 September 2024",
+     "https://www.thestar.com.my/news/nation/2024/08/02/no-automatic-replacement-holiday-on-sept-17",
+     "Two holidays on one weekday give no extra day: s. 3 covers only a holiday on the weekly holiday."),
+]
+
+MY_LISTS = {
+    2008: {
+        "sources": [
+            ('JPM BKPP Jadual Hari Kelepasan Am Persekutuan dan Negeri 2008',
+             'https://web.archive.org/web/20100816063534id_/http://www.kabinet.gov.my/pdf/persekutuan_negeri2008.pdf'),
+        ],
+        "days": [('2008-01-10', 'Awal Muharam (Maal Hijrah) 1429H'), ('2008-02-07', 'Tahun Baru Cina'), ('2008-02-08', 'Tahun Baru Cina (Hari Kedua)'), ('2008-03-20', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2008-05-01', 'Hari Pekerja'), ('2008-05-19', 'Hari Wesak'), ('2008-06-07', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2008-08-31', 'Hari Kebangsaan'), ('2008-10-01', 'Hari Raya Puasa'), ('2008-10-02', 'Hari Raya Puasa (Hari Kedua)'), ('2008-10-27', 'Hari Deepavali'), ('2008-12-08', 'Hari Raya Qurban (Haji)'), ('2008-12-25', 'Hari Krismas'), ('2008-12-29', 'Awal Muharam (Maal Hijrah) 1430H')],
+    },
+    2009: {
+        "sources": [
+            ('JPM BKPP Jadual Hari Kelepasan Am Persekutuan dan Negeri 2009',
+             'https://web.archive.org/web/20100816063617id_/http://www.kabinet.gov.my/pdf/persekutuan_negeri2009.pdf'),
+            ('JPM BKPP Jadual Hari Kelepasan Am Persekutuan 2009',
+             'https://web.archive.org/web/20100816063459id_/http://www.kabinet.gov.my/pdf/persekutuan2009.pdf'),
+        ],
+        "days": [('2009-01-26', 'Tahun Baru Cina'), ('2009-01-27', 'Tahun Baru Cina (Hari Kedua)'), ('2009-03-09', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2009-05-01', 'Hari Pekerja'), ('2009-05-09', 'Hari Wesak'), ('2009-06-06', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2009-08-31', 'Hari Kebangsaan'), ('2009-09-20', 'Hari Raya Puasa'), ('2009-09-21', 'Hari Raya Puasa (Hari Kedua)'), ('2009-10-17', 'Hari Deepavali'), ('2009-11-27', 'Hari Raya Qurban (Haji)'), ('2009-12-18', 'Awal Muharam (Maal Hijrah)'), ('2009-12-25', 'Hari Krismas')],
+    },
+    2010: {
+        "sources": [
+            ('JPM BKPP Jadual Hari Kelepasan Am Persekutuan dan Negeri 2010',
+             'https://web.archive.org/web/20091007191322id_/http://www.kabinet.gov.my/pdf/persekutuan_negeri2010.pdf'),
+            ('P.U.(B) 491/2009 & 492/2009 - Hari Malaysia from 2010 (Peninsular+Putrajaya; Labuan), Notification under s.8, 9 Nov 2009',
+             'https://web.archive.org/web/20100923033846id_/http://www.kabinet.gov.my/pdf/P.U.(B)HariMalaysiabagiSem.MalaysiadanWPLabuan.pdf'),
+        ],
+        "days": [('2010-02-14', 'Tahun Baru Cina'), ('2010-02-15', 'Tahun Baru Cina (Hari Kedua)'), ('2010-02-26', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2010-05-01', 'Hari Pekerja'), ('2010-05-28', 'Hari Wesak'), ('2010-06-05', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2010-08-31', 'Hari Kebangsaan'), ('2010-09-10', 'Hari Raya Puasa'), ('2010-09-11', 'Hari Raya Puasa (Hari Kedua)'), ('2010-09-16', 'Hari Malaysia'), ('2010-11-05', 'Hari Deepavali'), ('2010-11-17', 'Hari Raya Qurban (Haji)'), ('2010-12-07', 'Awal Muharam (Maal Hijrah)'), ('2010-12-25', 'Hari Krismas')],
+    },
+    2011: {
+        "sources": [
+            ('JPM BKPP Jadual HKA Persekutuan & Negeri 2011',
+             'https://web.archive.org/web/20101121153518id_/http://www.kabinet.gov.my/pdf/2011_merged.pdf'),
+        ],
+        "days": [('2011-02-03', 'Tahun Baru Cina'), ('2011-02-04', 'Tahun Baru Cina (Hari Kedua)'), ('2011-02-15', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2011-05-01', 'Hari Pekerja'), ('2011-05-17', 'Hari Wesak'), ('2011-06-04', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2011-08-30', 'Hari Raya Puasa'), ('2011-08-31', 'Hari Kebangsaan'), ('2011-08-31', 'Hari Raya Puasa (Hari Kedua)'), ('2011-09-16', 'Hari Malaysia'), ('2011-10-26', 'Hari Deepavali'), ('2011-11-06', 'Hari Raya Qurban (Haji)'), ('2011-11-27', 'Awal Muharam (Maal Hijrah)'), ('2011-12-25', 'Hari Krismas')],
+    },
+    2012: {
+        "sources": [
+            ('JPM BKPP Jadual HKA Persekutuan & Negeri 2012',
+             'https://web.archive.org/web/20130329200907id_/http://www.kabinet.gov.my/images/stories/kelepasanam/2012_merged.pdf'),
+            ('kabinet.gov.my Hari Kelepasan Am page (cites P.U.(B) 70/2012 & 71/2012: HKA sempena Istiadat Pertabalan YDPA XIV; PDF not archived)',
+             'https://web.archive.org/web/20121103220225id_/http://www.kabinet.gov.my/index.php/en/hari-kelepasan-am.html'),
+        ],
+        "days": [('2012-01-23', 'Tahun Baru Cina'), ('2012-01-24', 'Tahun Baru Cina (Hari Kedua)'), ('2012-02-05', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2012-04-11', 'Hari Pertabalan YDP Agong XIV (Istiadat Pertabalan)'), ('2012-05-01', 'Hari Pekerja'), ('2012-05-05', 'Hari Wesak'), ('2012-06-02', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2012-08-19', 'Hari Raya Puasa'), ('2012-08-20', 'Hari Raya Puasa (Hari Kedua)'), ('2012-08-31', 'Hari Kebangsaan'), ('2012-09-16', 'Hari Malaysia'), ('2012-10-26', 'Hari Raya Qurban (Haji)'), ('2012-11-13', 'Hari Deepavali'), ('2012-11-15', 'Awal Muharam (Maal Hijrah)'), ('2012-12-25', 'Hari Krismas')],
+    },
+    2013: {
+        "sources": [
+            ('JPM BKPP Jadual HKA Persekutuan & Negeri 2013',
+             'https://web.archive.org/web/20130330035635id_/http://www.kabinet.gov.my/images/stories/kelepasanam/2013_merged.pdf'),
+        ],
+        "days": [('2013-01-24', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2013-02-10', 'Tahun Baru Cina'), ('2013-02-11', 'Tahun Baru Cina (Hari Kedua)'), ('2013-05-01', 'Hari Pekerja'), ('2013-05-24', 'Hari Wesak'), ('2013-06-01', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2013-08-08', 'Hari Raya Puasa'), ('2013-08-09', 'Hari Raya Puasa (Hari Kedua)'), ('2013-08-31', 'Hari Kebangsaan'), ('2013-09-16', 'Hari Malaysia'), ('2013-10-15', 'Hari Raya Qurban (Haji)'), ('2013-11-02', 'Hari Deepavali'), ('2013-11-05', 'Awal Muharam (Maal Hijrah)'), ('2013-12-25', 'Hari Krismas')],
+    },
+    2014: {
+        "sources": [
+            ('JPM BKPP Jadual HKA Persekutuan & Negeri 2014',
+             'https://web.archive.org/web/20131008061109id_/http://www.kabinet.gov.my/images/stories/kelepasanam/2014_merged.pdf'),
+            ('kabinet.gov.my HKA page: Deepavali 2014 amended to 22 Oct 2014 by Warta No. 43367 (6 Dec 2013); Maulidur Rasul 2015 twice (3 Jan & 24 Dec)',
+             'https://web.archive.org/web/20140924012327id_/http://www.kabinet.gov.my/index.php/hari-kelepasan-am'),
+            ('Warta Kerajaan Persekutuan Pemberitahuan No. 43367 (6 Dec 2013) - Deepavali 2014 amendment',
+             'https://web.archive.org/web/20140109095519id_/http://www.kabinet.gov.my/images/stories/kelepasanam/warta_no43367.pdf'),
+        ],
+        "days": [('2014-01-14', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2014-01-31', 'Tahun Baru Cina'), ('2014-02-01', 'Tahun Baru Cina (Hari Kedua)'), ('2014-05-01', 'Hari Pekerja'), ('2014-05-13', 'Hari Wesak'), ('2014-06-07', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2014-07-28', 'Hari Raya Puasa'), ('2014-07-29', 'Hari Raya Puasa (Hari Kedua)'), ('2014-08-31', 'Hari Kebangsaan'), ('2014-09-16', 'Hari Malaysia'), ('2014-10-05', 'Hari Raya Qurban (Haji)'), ('2014-10-22', 'Hari Deepavali'), ('2014-10-25', 'Awal Muharam (Maal Hijrah)'), ('2014-12-25', 'Hari Krismas')],
+    },
+    2015: {
+        "sources": [
+            ('JPM BKPP Jadual HKA Persekutuan & Negeri 2015',
+             'https://web.archive.org/web/20150203230515id_/http://www.kabinet.gov.my/images/stories/kelepasanam/2015_merged.pdf'),
+            ('kabinet.gov.my HKA page: Deepavali 2014 amended to 22 Oct 2014 by Warta No. 43367 (6 Dec 2013); Maulidur Rasul 2015 twice (3 Jan & 24 Dec)',
+             'https://web.archive.org/web/20140924012327id_/http://www.kabinet.gov.my/index.php/hari-kelepasan-am'),
+        ],
+        "days": [('2015-01-03', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2015-02-19', 'Tahun Baru Cina'), ('2015-02-20', 'Tahun Baru Cina (Hari Kedua)'), ('2015-05-01', 'Hari Pekerja'), ('2015-05-03', 'Hari Wesak'), ('2015-06-06', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2015-07-17', 'Hari Raya Puasa'), ('2015-07-18', 'Hari Raya Puasa (Hari Kedua)'), ('2015-08-31', 'Hari Kebangsaan'), ('2015-09-16', 'Hari Malaysia'), ('2015-09-24', 'Hari Raya Qurban (Haji)'), ('2015-10-14', 'Awal Muharam (Maal Hijrah)'), ('2015-11-10', 'Hari Deepavali'), ('2015-12-24', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2015-12-25', 'Hari Krismas')],
+    },
+    2016: {
+        "sources": [
+            ('JPM BKPP Jadual HKA 2016 (hka2016.pdf)',
+             'https://web.archive.org/web/20150906063502id_/http://www.kabinet.gov.my/v2/pdf/hari_kelepasan_am/hka2016.pdf'),
+        ],
+        "days": [('2016-02-08', 'Tahun Baru Cina'), ('2016-02-09', 'Tahun Baru Cina (Hari Kedua)'), ('2016-05-01', 'Hari Pekerja'), ('2016-05-21', 'Hari Wesak'), ('2016-06-04', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2016-07-06', 'Hari Raya Puasa'), ('2016-07-07', 'Hari Raya Puasa (Hari Kedua)'), ('2016-08-31', 'Hari Kebangsaan'), ('2016-09-12', 'Hari Raya Qurban (Haji)'), ('2016-09-16', 'Hari Malaysia'), ('2016-10-02', 'Awal Muharam (Maal Hijrah)'), ('2016-10-29', 'Hari Deepavali'), ('2016-12-12', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2016-12-25', 'Hari Krismas')],
+    },
+    2017: {
+        "sources": [
+            ('4 September 2017 additional public holiday (SEA Games), announced by the Prime Minister on 30 August 2017 (no P.U.(B) copy archived)',
+             'https://www.thestar.com.my/news/nation/2017/08/31/sept-4-public-holiday'),
+            ('JPM BKPP Jadual HKA 2017 (hka2017.pdf)',
+             'https://web.archive.org/web/20180413080914id_/http://www.kabinet.gov.my/bkpp/pdf/hari_kelepasan_am/hka2017.pdf'),
+            ('Warta Kerajaan Persekutuan No. 1779 (31 Jan 2017): Pindaan - Awal Muharam 2017 from 21 Sep (Khamis) to 22 Sep (Jumaat), amending Warta No. 16335 of 25 Jul 2016',
+             'https://web.archive.org/web/20170809035234id_/http://www.kabinet.gov.my/v2/pdf/akta_warta/Pindaan_Warta_Cuti_Awal_Muharam_2017.pdf'),
+            ('P.U.(B) 176/2017 (3 Apr 2017): 24 Apr 2017 HKA, Peninsular Malaysia, s.8 (installation of YDPA XV); Labuan companion notification in separate PDF',
+             'https://web.archive.org/web/20180417110420id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20170404_warta_HKA_tambahan_Agong_semenanjung.pdf'),
+            ('Labuan companion notification for 24 Apr 2017',
+             'https://web.archive.org/web/20180517050700id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20170404_warta_HKA_tambahan_Agong_labuan.pdf'),
+        ],
+        "days": [('2017-01-28', 'Tahun Baru Cina'), ('2017-01-29', 'Tahun Baru Cina (Hari Kedua)'), ('2017-04-24', 'Hari Pertabalan YDP Agong XV'), ('2017-05-01', 'Hari Pekerja'), ('2017-05-10', 'Hari Wesak'), ('2017-06-25', 'Hari Raya Puasa'), ('2017-06-26', 'Hari Raya Puasa (Hari Kedua)'), ('2017-08-31', 'Hari Kebangsaan'), ('2017-09-01', 'Hari Raya Qurban (Haji)'), ('2017-09-04', 'Cuti tambahan (SEA Games KL2017 success)'), ('2017-09-09', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2017-09-16', 'Hari Malaysia'), ('2017-09-22', 'Awal Muharam (Maal Hijrah)'), ('2017-10-18', 'Hari Deepavali'), ('2017-12-01', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2017-12-25', 'Hari Krismas')],
+    },
+    2018: {
+        "sources": [
+            ('Ketua Setiausaha Negara, 10 May 2018: 10 and 11 May 2018 additional public holidays nationwide under s. 8 (no P.U.(B) copy archived)',
+             'https://www.nst.com.my/news/nation/2018/05/367879/public-holidays-thursday-and-friday-ali-hamsa'),
+            ('JPM BKPP Jadual HKA Persekutuan 2018 (hka2018.pdf, image)',
+             'https://web.archive.org/web/20180417110235id_/http://www.kabinet.gov.my/bkpp/pdf/hari_kelepasan_am/hka2018.pdf'),
+            ("PMO Kenyataan Media 11 Apr 2018: HKA tambahan sempena hari mengundi PRU-14, 9 May 2018, 'seluruh Negara' (s.8 for Peninsular+Labuan; Sabah/Sarawak by own ordinances)",
+             'https://web.archive.org/web/20180516214329id_/http://www.jpm.gov.my/jpm2/sites/default/files/siaran_akhbar/Kenyataan%20Media%20Hari%20Kelepasan%20Am%20Tambahan%20PRU.pdf'),
+        ],
+        "days": [('2018-02-16', 'Tahun Baru Cina'), ('2018-02-17', 'Tahun Baru Cina (Hari Kedua)'), ('2018-05-01', 'Hari Pekerja'), ('2018-05-09', 'Hari Mengundi PRU-14'), ('2018-05-10', 'Cuti tambahan selepas PRU-14'), ('2018-05-11', 'Cuti tambahan selepas PRU-14'), ('2018-05-29', 'Hari Wesak'), ('2018-06-15', 'Hari Raya Puasa'), ('2018-06-16', 'Hari Raya Puasa (Hari Kedua)'), ('2018-08-22', 'Hari Raya Qurban (Haji)'), ('2018-08-31', 'Hari Kebangsaan'), ('2018-09-09', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2018-09-11', 'Awal Muharam (Maal Hijrah)'), ('2018-09-16', 'Hari Malaysia'), ('2018-11-06', 'Hari Deepavali'), ('2018-11-20', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2018-12-25', 'Hari Krismas')],
+    },
+    2019: {
+        "sources": [
+            ('Warta Kerajaan Persekutuan Jil.62 No.36 (3 Sep 2018), Pemberitahuan No. 17295 Jadual HKA Persekutuan 2019',
+             'https://web.archive.org/web/20191105051452id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20190822_HARI_KELEPASAN_2019.pdf'),
+            ('P.U.(B) 325/2019 & 326/2019 (1 Jul 2019): 30 Jul 2019 HKA Peninsular & Labuan, s.8 (installation of YDPA XVI)',
+             'https://web.archive.org/web/20191105043423id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20190709_warta_hari_pertabalan_agongXVI.pdf'),
+        ],
+        "days": [('2019-02-05', 'Tahun Baru Cina'), ('2019-02-06', 'Tahun Baru Cina (Hari Kedua)'), ('2019-05-01', 'Hari Pekerja'), ('2019-05-19', 'Hari Wesak'), ('2019-06-05', 'Hari Raya Puasa'), ('2019-06-06', 'Hari Raya Puasa (Hari Kedua)'), ('2019-07-30', 'Hari Pertabalan YDP Agong XVI'), ('2019-08-11', 'Hari Raya Qurban (Haji)'), ('2019-08-31', 'Hari Kebangsaan'), ('2019-09-01', 'Awal Muharam (Maal Hijrah)'), ('2019-09-09', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2019-09-16', 'Hari Malaysia'), ('2019-10-27', 'Hari Deepavali'), ('2019-11-09', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2019-12-25', 'Hari Krismas')],
+    },
+    2020: {
+        "sources": [
+            ('Warta Kerajaan Persekutuan Jil.63 No.31 (29 Jul 2019), Pemberitahuan No. 12985 Jadual HKA Persekutuan 2020',
+             'https://web.archive.org/web/20220302034349id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20200513_Warta_HKA_2020.pdf'),
+            ("Warta Kerajaan Persekutuan Jil.64 No.12 (18 Mar 2020) No. 6489 Pindaan: YDPA birthday 2020 '6 Jun Sabtu' -> '8 Jun Isnin'",
+             'https://web.archive.org/web/20220302152516id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20200513_Warta_YdPA_2020.pdf'),
+            ("PMO-hosted JPM list 2020 'UPDATED 04032020' (shows Raya Puasa 24-25 May, YDPA 8 Jun; weekday labels for 24/25 May are misprinted)",
+             'https://web.archive.org/web/20200408212736id_/https://www.pmo.gov.my/wp-content/uploads/2020/03/Hari-Kelepasan-AM-UPDATED_04032020_Page_1.png'),
+        ],
+        "days": [('2020-01-25', 'Tahun Baru Cina'), ('2020-01-26', 'Tahun Baru Cina (Hari Kedua)'), ('2020-05-01', 'Hari Pekerja'), ('2020-05-07', 'Hari Wesak'), ('2020-05-24', 'Hari Raya Puasa'), ('2020-05-25', 'Hari Raya Puasa (Hari Kedua)'), ('2020-06-08', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2020-07-31', 'Hari Raya Qurban (Haji)'), ('2020-08-20', 'Awal Muharam (Maal Hijrah)'), ('2020-08-31', 'Hari Kebangsaan'), ('2020-09-16', 'Hari Malaysia'), ('2020-10-29', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2020-11-14', 'Hari Deepavali'), ('2020-12-25', 'Hari Krismas')],
+    },
+    2021: {
+        "sources": [
+            ('Warta Kerajaan Persekutuan (9 Jul 2020) Jadual HKA Persekutuan 2021',
+             'https://web.archive.org/web/20220301202455id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20200709_warta_hka2021.pdf'),
+            ('JPM BKPP hka_2021.pdf',
+             'https://web.archive.org/web/20200924081740id_/http://www.kabinet.gov.my/bkpp/pdf/hari_kelepasan_am/hka_2021.pdf'),
+        ],
+        "days": [('2021-02-12', 'Tahun Baru Cina'), ('2021-02-13', 'Tahun Baru Cina (Hari Kedua)'), ('2021-05-01', 'Hari Pekerja'), ('2021-05-13', 'Hari Raya Puasa'), ('2021-05-14', 'Hari Raya Puasa (Hari Kedua)'), ('2021-05-26', 'Hari Wesak'), ('2021-06-07', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2021-07-20', 'Hari Raya Qurban (Haji)'), ('2021-08-10', 'Awal Muharam (Maal Hijrah)'), ('2021-08-31', 'Hari Kebangsaan'), ('2021-09-16', 'Hari Malaysia'), ('2021-10-19', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2021-11-04', 'Hari Deepavali'), ('2021-12-25', 'Hari Krismas')],
+    },
+    2022: {
+        "sources": [
+            ('Warta Kerajaan Persekutuan (24 Jun 2021) Jadual HKA Persekutuan 2022',
+             'https://web.archive.org/web/20220301223716id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20210624_warta_hka2022.pdf'),
+            ('PMO Kenyataan Media 1 May 2022: Raya Aidilfitri 2022 = Isnin 2 Mei; Hari Pekerja (Sun 1 May) replacement automatically Rabu 4 Mei 2022 under s.3 Act 369 / Sabah Cap.56 / Sarawak Cap.8; not for Kedah, Terengganu, Kelantan, Johor',
+             'https://web.archive.org/web/20220515191737id_/https://www.pmo.gov.my/wp-content/uploads/2022/05/152022-KENYATAAN-MEDIA-PERUBAHAN-CUTI-UMUM.pdf'),
+            ('P.U.(B) 556/2022 (15 Nov 2022): 18 & 19 Nov 2022 HKA Peninsular, s.8 (GE15); Labuan: P.U.(B) 557/2022',
+             'https://web.archive.org/web/20221208142318id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20221114_PUB556.pdf'),
+            ('P.U.(B) 579/2022 (25 Nov 2022): 28 Nov 2022 HKA Peninsular, s.8; Labuan: P.U.(B) 580/2022',
+             'https://web.archive.org/web/20221208142317id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20221125_WARTA_PUB%20579_Semenanjung.pdf'),
+        ],
+        "days": [('2022-02-01', 'Tahun Baru Cina'), ('2022-02-02', 'Tahun Baru Cina (Hari Kedua)'), ('2022-05-01', 'Hari Pekerja'), ('2022-05-02', 'Hari Raya Puasa'), ('2022-05-03', 'Hari Raya Puasa (Hari Kedua)'), ('2022-05-15', 'Hari Wesak'), ('2022-06-06', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2022-07-10', 'Hari Raya Qurban (Haji)'), ('2022-07-30', 'Awal Muharam (Maal Hijrah)'), ('2022-08-31', 'Hari Kebangsaan'), ('2022-09-16', 'Hari Malaysia'), ('2022-10-09', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2022-10-24', 'Hari Deepavali'), ('2022-11-18', 'Hari kelepasan am tambahan PRU-15'), ('2022-11-19', 'Hari Mengundi PRU-15'), ('2022-11-28', 'Hari kelepasan am tambahan'), ('2022-12-25', 'Hari Krismas')],
+    },
+    2023: {
+        "sources": [
+            ('Warta Kerajaan Persekutuan Jil.66 No.28 (14 Jul 2022), Pemberitahuan No. 16872 Jadual HKA Persekutuan 2023',
+             'https://web.archive.org/web/20221208142317id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20220725_warta_hka2023.pdf'),
+            ('P.U.(B) 154/2023 (20 Apr 2023): 21 Apr 2023 HKA Peninsular, s.8 (extra Aidilfitri day); Labuan: P.U.(B) 155/2023',
+             'https://web.archive.org/web/20230604013430id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20230420_PUB_154.pdf'),
+            ('PMO news 18 Apr 2023: one extra Aidilfitri holiday (21 Apr if 1 Syawal is Sat 22 Apr), s.8 Peninsular+Labuan; Sabah/Sarawak by own ordinances',
+             'https://web.archive.org/web/20230724152934id_/https://www.pmo.gov.my/ms/2023/04/pm-anwar-satu-hari-kelepasan-am-tambahan-sempena-hari-raya-aidilfitri/'),
+        ],
+        "days": [('2023-01-22', 'Tahun Baru Cina'), ('2023-01-23', 'Tahun Baru Cina (Hari Kedua)'), ('2023-04-21', 'Hari kelepasan am tambahan Aidilfitri'), ('2023-04-22', 'Hari Raya Puasa'), ('2023-04-23', 'Hari Raya Puasa (Hari Kedua)'), ('2023-05-01', 'Hari Pekerja'), ('2023-05-04', 'Hari Wesak'), ('2023-06-05', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2023-06-29', 'Hari Raya Qurban (Haji)'), ('2023-07-19', 'Awal Muharam (Maal Hijrah)'), ('2023-08-31', 'Hari Kebangsaan'), ('2023-09-16', 'Hari Malaysia'), ('2023-09-28', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2023-11-12', 'Hari Deepavali'), ('2023-12-25', 'Hari Krismas')],
+    },
+    2024: {
+        "sources": [
+            ('Warta Kerajaan Persekutuan (9 Aug 2023), Pemberitahuan No. 19239 Jadual HKA Persekutuan 2024',
+             'https://web.archive.org/web/20230927184620id_/http://www.kabinet.gov.my/bkpp/pdf/akta_warta/20230810_HARI_KELEPASAN_2024.pdf'),
+            ('JPM BKPP hka_2024.pdf',
+             'https://web.archive.org/web/20230821135638id_/https://www.kabinet.gov.my/bkpp/pdf/hari_kelepasan_am/hka_2024.pdf'),
+        ],
+        "days": [('2024-02-10', 'Tahun Baru Cina'), ('2024-02-11', 'Tahun Baru Cina (Hari Kedua)'), ('2024-04-10', 'Hari Raya Puasa'), ('2024-04-11', 'Hari Raya Puasa (Hari Kedua)'), ('2024-05-01', 'Hari Pekerja'), ('2024-05-22', 'Hari Wesak'), ('2024-06-03', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2024-06-17', 'Hari Raya Qurban (Haji)'), ('2024-07-07', 'Awal Muharam (Maal Hijrah)'), ('2024-08-31', 'Hari Kebangsaan'), ('2024-09-16', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2024-09-16', 'Hari Malaysia'), ('2024-10-31', 'Hari Deepavali'), ('2024-12-25', 'Hari Krismas')],
+    },
+    2025: {
+        "sources": [
+            ('Warta Kerajaan Persekutuan (5 Aug 2024), Pemberitahuan No. 17852 Jadual HKA Persekutuan 2025',
+             'https://web.archive.org/web/20241118160009id_/https://www.kabinet.gov.my/bkpp/pdf/akta_warta/20240812_WJW24.pdf'),
+            ('JPM BKPP hka_2025.pdf',
+             'https://web.archive.org/web/20250830220717id_/https://www.kabinet.gov.my/storage/2024/11/hka_2025.pdf'),
+            ('P.U.(B) 305/2025 (14 Aug 2025): 15 Sep 2025 HKA Peninsular, s.8',
+             'https://web.archive.org/web/20261106120557id_/https://www.kabinet.gov.my/storage/2025/08/15082025-P.U.-B-305-2025-Semenanjung.pdf'),
+        ],
+        "days": [('2025-01-29', 'Tahun Baru Cina'), ('2025-01-30', 'Tahun Baru Cina (Hari Kedua)'), ('2025-03-31', 'Hari Raya Puasa'), ('2025-04-01', 'Hari Raya Puasa (Hari Kedua)'), ('2025-05-01', 'Hari Pekerja'), ('2025-05-12', 'Hari Wesak'), ('2025-06-02', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2025-06-07', 'Hari Raya Qurban (Haji)'), ('2025-06-27', 'Awal Muharam (Maal Hijrah)'), ('2025-08-31', 'Hari Kebangsaan'), ('2025-09-05', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2025-09-15', 'Hari kelepasan am tambahan'), ('2025-09-16', 'Hari Malaysia'), ('2025-10-20', 'Hari Deepavali'), ('2025-12-25', 'Hari Krismas')],
+    },
+    2026: {
+        "sources": [
+            ('Penyimpan Mohor Besar Raja-Raja, 19 March 2026: 1 Syawal 1447 on Saturday 21 March; the Prime Minister: Friday 20 March an additional public holiday under s. 8 (Peninsular Malaysia and Labuan) (RTM)',
+             'https://berita.rtm.gov.my/nasional/senarai-berita-nasional/senarai-artikel/umat-islam-di-malaysia-sambut-aidilfitri-pada-sabtu-21-mac/'),
+            ('PM umum cuti tambahan Hari Raya Aidilfitri (RTM, 15 March 2026): 20 March if 1 Syawal is a Saturday, 23 March if a Friday',
+             'https://berita.rtm.gov.my/?p=581444'),
+            ('JPM BKPP HKA-2026.pdf (Jadual HKA Persekutuan 2026)',
+             'https://web.archive.org/web/20251216120554id_/https://www.kabinet.gov.my/storage/2025/08/HKA-2026.pdf'),
+        ],
+        "days": [('2026-03-20', 'Hari kelepasan am tambahan Aidilfitri'), ('2026-02-17', 'Tahun Baru Cina'), ('2026-02-18', 'Tahun Baru Cina (Hari Kedua)'), ('2026-03-21', 'Hari Raya Puasa'), ('2026-03-22', 'Hari Raya Puasa (Hari Kedua)'), ('2026-05-01', 'Hari Pekerja'), ('2026-05-27', 'Hari Raya Qurban (Haji)'), ('2026-05-31', 'Hari Wesak'), ('2026-06-01', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2026-06-17', 'Awal Muharam (Maal Hijrah)'), ('2026-08-25', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2026-08-31', 'Hari Kebangsaan'), ('2026-09-16', 'Hari Malaysia'), ('2026-11-08', 'Hari Deepavali'), ('2026-12-25', 'Hari Krismas')],
+    },
+    2027: {
+        "sources": [
+            ('JPM BKPP HKA_2027.pdf (Jadual HKA Persekutuan 2027)',
+             'https://web.archive.org/web/20260904160020id_/https://www.kabinet.gov.my/storage/2026/08/HKA_2027.pdf'),
+        ],
+        "days": [('2027-02-06', 'Tahun Baru Cina'), ('2027-02-07', 'Tahun Baru Cina (Hari Kedua)'), ('2027-03-10', 'Hari Raya Puasa'), ('2027-03-11', 'Hari Raya Puasa (Hari Kedua)'), ('2027-05-01', 'Hari Pekerja'), ('2027-05-17', 'Hari Raya Qurban (Haji)'), ('2027-05-20', 'Hari Wesak'), ('2027-06-06', 'Awal Muharam (Maal Hijrah)'), ('2027-06-07', 'Hari Keputeraan Seri Paduka Baginda Yang di-Pertuan Agong'), ('2027-08-15', 'Hari Keputeraan Nabi Muhammad S.A.W. (Maulidur Rasul)'), ('2027-08-31', 'Hari Kebangsaan'), ('2027-09-16', 'Hari Malaysia'), ('2027-10-28', 'Hari Deepavali'), ('2027-12-25', 'Hari Krismas')],
+    },
+}
+
+
+MY_FIRST_LIST, MY_LAST_LIST = 2008, 2027
+
+
+def new_moons_near(year: int, month: int) -> list[float]:
+    """Julian Ephemeris Days of the true new moons around MONTH of YEAR (Meeus,
+    Astronomical Algorithms, 2nd ed., ch. 49; periodic terms for the new moon)."""
+    import math
+    out = []
+    k0 = math.floor((year + (month - 0.5) / 12 - 2000) * 12.3685)
+    for k in range(k0 - 2, k0 + 3):
+        t = k / 1236.85
+        jde = (2451550.09766 + 29.530588861 * k + 0.00015437 * t * t
+               - 0.000000150 * t ** 3 + 0.00000000073 * t ** 4)
+        e = 1 - 0.002516 * t - 0.0000074 * t * t
+        r = math.radians
+        m = r(2.5534 + 29.10535670 * k - 0.0000014 * t * t - 0.00000011 * t ** 3)
+        mp = r(201.5643 + 385.81693528 * k + 0.0107582 * t * t + 0.00001238 * t ** 3 - 0.000000058 * t ** 4)
+        f = r(160.7108 + 390.67050284 * k - 0.0016118 * t * t - 0.00000227 * t ** 3 + 0.000000011 * t ** 4)
+        om = r(124.7746 - 1.56375588 * k + 0.0020672 * t * t + 0.00000215 * t ** 3)
+        s = math.sin
+        jde += (-0.40720 * s(mp) + 0.17241 * e * s(m) + 0.01608 * s(2 * mp) + 0.01039 * s(2 * f)
+                + 0.00739 * e * s(mp - m) - 0.00514 * e * s(mp + m) + 0.00208 * e * e * s(2 * m)
+                - 0.00111 * s(mp - 2 * f) - 0.00057 * s(mp + 2 * f) + 0.00056 * e * s(2 * mp + m)
+                - 0.00042 * s(3 * mp) + 0.00042 * e * s(m + 2 * f) + 0.00038 * e * s(m - 2 * f)
+                - 0.00024 * e * s(2 * mp - m) - 0.00017 * s(om) - 0.00007 * s(mp + 2 * m)
+                + 0.00004 * s(2 * mp - 2 * f) + 0.00004 * s(3 * m) + 0.00003 * s(mp + m - 2 * f)
+                + 0.00003 * s(2 * mp + 2 * f) - 0.00003 * s(mp + m + 2 * f) + 0.00003 * s(mp - m + 2 * f)
+                - 0.00002 * s(mp - m - 2 * f) - 0.00002 * s(3 * mp + m) + 0.00002 * s(4 * mp))
+        a = [r(x) for x in (299.77 + 0.107408 * k - 0.009173 * t * t, 251.88 + 0.016321 * k,
+                            251.83 + 26.651886 * k, 349.42 + 36.412478 * k, 84.66 + 18.206239 * k,
+                            141.74 + 53.303771 * k, 207.14 + 2.453732 * k, 154.84 + 7.306860 * k,
+                            34.52 + 27.261239 * k, 207.19 + 0.121824 * k, 291.34 + 1.844379 * k,
+                            161.72 + 24.198154 * k, 239.56 + 25.513099 * k, 331.55 + 3.592518 * k)]
+        coef = (0.000325, 0.000165, 0.000164, 0.000126, 0.000110, 0.000062, 0.000060, 0.000056,
+                0.000047, 0.000042, 0.000040, 0.000037, 0.000035, 0.000023)
+        jde += sum(c * s(x) for c, x in zip(coef, a))
+        out.append(jde)
+    return out
+
+
+def jde_to_local_date(jde: float, offset_hours: float) -> date:
+    """Civil date at UTC+OFFSET of a JDE (TT; delta T taken as 70 s)."""
+    jd = jde - 70 / 86400 + offset_hours / 24 + 0.5
+    return date(2000, 1, 1) + timedelta(days=int(jd // 1) - 2451545)
+
+
+def my_deepavali_estimate(year: int) -> date:
+    """The day before the first new moon (IST date) after 17 October: the end
+    of amanta Ashvina after the Sun's sidereal entry into Tula. An estimate for
+    years with no list; it matches 17 of the 20 listed dates 2008-2027 and is a
+    day late in the other three (2008, 2014, 2017)."""
+    moons = sorted(jde_to_local_date(j, 5.5) for j in new_moons_near(year, 10))
+    return next(d for d in moons if d > date(year, 10, 17)) - timedelta(days=1)
+
+
+def my_wesak_estimate(year: int) -> date:
+    """The first full-moon day (lunar day 15 of the HKO table, UTC+8, a leap
+    month included) on or after 3 May: the listed Wesak of 2008-2027 falls on
+    3-31 May. An estimate for years with no list."""
+    return min(d for d, (_, day, _, _) in hko_days(year).items() if day == 15 and d >= date(year, 5, 3))
+
+
+def my_estimated(year: int) -> list[tuple[date, str]]:
+    """The days of a year no list covers (provisional years)."""
+    cny = hk_lunar(year, 1, 1)
+    june = date(year, 6, 1)
+    out = [(cny, "Tahun Baharu Cina (anggaran)"), (cny + timedelta(days=1), "Tahun Baharu Cina (Hari Kedua) (anggaran)"),
+           (date(year, 5, 1), "Hari Pekerja"), (my_wesak_estimate(year), "Hari Wesak (anggaran)"),
+           (june + timedelta(days=(0 - june.weekday()) % 7), "Hari Keputeraan Rasmi YDP Agong (anggaran)"),
+           (date(year, 8, 31), "Hari Kebangsaan"), (date(year, 9, 16), "Hari Malaysia"),
+           (my_deepavali_estimate(year), "Hari Deepavali (anggaran)"), (date(year, 12, 25), "Hari Krismas")]
+    for m, d, name, extra in ((10, 1, "Hari Raya Puasa", 0), (10, 1, "Hari Raya Puasa (Hari Kedua)", 1),
+                              (12, 10, "Hari Raya Qurban", 0), (1, 1, "Awal Muharam", 0),
+                              (3, 12, "Hari Keputeraan Nabi Muhammad S.A.W.", 0)):
+        for x in islamic_dates_in_year(year, m, d):
+            x += timedelta(days=extra)
+            if x.year == year:
+                out.append((x, f"{name} (anggaran)"))
+    return out
+
+
+def my_replacements(days: list[tuple[date, str]]) -> list[tuple[date, str]]:
+    """Act 369 s. 3: each holiday on a Sunday, in date order, gives the next day
+    that is not already a holiday."""
+    taken = {d for d, _ in days}
+    out = []
+    for d, name in sorted(days):
+        if d.weekday() == 6:
+            n = d + timedelta(days=1)
+            while n in taken:
+                n += timedelta(days=1)
+            taken.add(n)
+            out.append((n, f"Cuti {name}"))
+    return out
+
+
+def my_holidays(year: int) -> list[tuple[date, str]]:
+    if year in MY_LISTS:
+        days = [(date.fromisoformat(d), n) for d, n in MY_LISTS[year]["days"]]
+    else:
+        days = my_estimated(year)
+    # A replacement may run into January; it belongs to the next year's list.
+    prev = MY_LISTS.get(year - 1, {}).get("days")
+    prev_days = ([(date.fromisoformat(d), n) for d, n in prev] if prev
+                 else my_estimated(year - 1) if year - 1 >= MY_FIRST_LIST else [])
+    extra = [x for x in my_replacements(prev_days) if x[0].year == year]
+    return days + [x for x in my_replacements(days) if x[0].year == year] + extra
+
+
 # --- registry and writer --------------------------------------------------
 
 COUNTRIES = {
@@ -1278,6 +1640,8 @@ COUNTRIES = {
                python=lambda years: __import__("holidays").ID(years=years)),
     "PH": dict(name="Philippines", build=ph_holidays, sources=PH_SOURCES, note=PH_NOTE,
                python=lambda years: __import__("holidays").PH(years=years)),
+    "MY": dict(name="Malaysia", first=MY_FIRST_LIST, build=my_holidays, sources=MY_SOURCES, note=MY_NOTE,
+               python=lambda years: __import__("holidays").MY(years=years)),
     "TW": dict(name="Taiwan", build=tw_holidays, working=tw_working_days, sources=TW_SOURCES, note=TW_NOTE,
                python=lambda years: __import__("holidays").TW(years=years),
                crosscheck=tw_official_check),

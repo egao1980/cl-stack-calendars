@@ -259,7 +259,7 @@
  ("TH" 2025 4 13 t nil)
  (("TH" 2025) 2025 4 12 t nil)
  (("TH" 2025) 2025 4 16 t nil)
- (("MY" 2025) 2025 2 11 t nil)
+ (("MY" 2025) 2025 2 11 nil nil) ; not in the 2025 list, Warta No. 17852 (#40)
  (("SG" 2025) 2025 5 12 t nil)
  (("SG" 2025) 2025 10 20 t nil)
  ("SG" 2025 5 12 t nil) ; registered "SG" carries every gazette year (#14)

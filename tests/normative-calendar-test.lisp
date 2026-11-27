@@ -264,9 +264,13 @@ and 26 December 2025 are not in it (the old data had them, #41)."
     (ok (holiday-p cal (make-date 2025 4 13)))))
 
 (deftest malaysia-bridge-2025
+  "The 2025 \"bridges\" of the old data/my are not in the 2025 list (Warta No.
+17852): 11 February and 26 December were working days (#40)."
   (let ((cal (malaysia-holidays-calendar :year 2025)))
-    (ok (holiday-p cal (make-date 2025 2 11)))
-    (ok (holiday-p cal (make-date 2025 12 26)))))
+    (ng (holiday-p cal (make-date 2025 2 11)))
+    (ng (holiday-p cal (make-date 2025 12 26)))
+    (ok (holiday-p cal (make-date 2025 9 15)) "s. 8 day, P.U.(B) 305/2025")
+    (ok (holiday-p cal (make-date 2025 9 1)) "National Day on a Sunday: s. 3")))
 
 (deftest next-gaps-skips-twenty-million
   (let* ((gaps (next-normative-gaps 5))
