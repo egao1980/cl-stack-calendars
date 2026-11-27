@@ -73,7 +73,8 @@ unless the calendar was loaded with :STRICT NIL."))
     ("CO" . colombia-holidays-calendar)
     ("CL" . chile-holidays-calendar)
     ("PE" . peru-holidays-calendar)
-    ("AR" . argentina-holidays-calendar))
+    ("AR" . argentina-holidays-calendar)
+    ("KR" . south-korea-holidays-calendar))
   "Corpus codes whose COUNTRY-CALENDAR defers to a hand starter: alist CODE →
 starter constructor. The date-holidays dump for these codes is known to be
 wrong (RU: no 2–5 January from 2005, no ТК ст. 112 transfers or decrees,
@@ -82,8 +83,10 @@ Sunday, which Ley 51/1983 does not make a festivo; #15. CL: Virgen del Carmen
 before 2007, 31 October before 2008, no Ley 19.668 moves; #16. PE: lists
 Easter Sunday, which DL 713 art. 6 does not make a feriado; #19. AR: misses
 the DNU 810/2003 and Res. JGM 139/2025 moves, Güemes kept on a Friday
-(Decreto 789/2021), 17 June 2016 and the 2026 decree days; #18). The corpus
-file stays as shipped; its days are no longer consulted.")
+(Decreto 789/2021), 17 June 2016 and the 2026 decree days; #18. KR: keeps
+one day of each three-day 설날 and 추석, no 대체공휴일 rules and no election
+days; #39). The corpus file stays as shipped; its days are no longer
+consulted.")
 
 (defclass normative-country-calendar (country-holiday-calendar)
   ((normative :initarg :normative :reader country-calendar-normative

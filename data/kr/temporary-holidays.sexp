@@ -1,66 +1,92 @@
-;;;; Korea temporary public holidays (임시공휴일) under 관공서의 공휴일에 관한 규정.
-;;;; National designations only (not local). Modern bridge/election days
-;;;; 2015–2025 plus well-attested historical national 임시공휴일.
-;;;; Statutory election days after 2006/2007 reform are *not* listed here
-;;;; (they became ordinary public holidays).
+;;;; Korea temporary public holidays (임시공휴일), 관공서의 공휴일에 관한 규정
+;;;; 제2조제11호: days the Government designates after 국무회의 (제4조).
+;;;; National designations only (not local). Before 제2조제10의2호 (대통령령
+;;;; 제19674호, 2006-09-06) every election day was such a day, so the 2000-2006
+;;;; election days are here; later term-expiry election days follow from
+;;;; 공직선거법 제34조 (KR-ELECTION-DAYS) and are not listed. The 2017 and 2025
+;;;; presidential elections were 궐위선거 (제35조), designated one by one.
+;;;; Blocks before 2000 are carried over from the earlier corpus (secondary).
 
 (
  (:year 2025
-  :authority "관공서의 공휴일에 관한 규정 제2조 — 기타 정부에서 수시 지정하는 날 (임시공휴일)"
-  :uri "https://namu.wiki/w/임시공휴일"
+  :authority "관공서의 공휴일에 관한 규정 제2조제11호 (임시공휴일, 제4조 국무회의 심의) — 2025-01-27 국무회의 2025-01-14 의결; 2025-06-03 제21대 대통령 궐위선거(공직선거법 제35조), 국무회의 2025-04-08 의결"
+  :uri "https://www.mpm.go.kr/mpm/comm/newsPress/newsPressRelease/"
   :holidays (
               ((2025 1 27) "임시공휴일 — 설 연휴")
               ((2025 6 3) "임시공휴일 — 제21대 대통령 선거")
               ))
 
  (:year 2024
-  :authority "관공서의 공휴일에 관한 규정 제2조 — 기타 정부에서 수시 지정하는 날 (임시공휴일)"
-  :uri "https://namu.wiki/w/임시공휴일"
+  :authority "관공서의 공휴일에 관한 규정 제2조제11호 (임시공휴일, 제4조 국무회의 심의) — 국무회의 2024-09-03 의결"
+  :uri "https://www.mpm.go.kr/mpm/comm/newsPress/newsPressRelease/"
   :holidays (
               ((2024 10 1) "임시공휴일 — 국군의 날")
               ))
 
  (:year 2023
-  :authority "관공서의 공휴일에 관한 규정 제2조 — 기타 정부에서 수시 지정하는 날 (임시공휴일)"
-  :uri "https://namu.wiki/w/임시공휴일"
+  :authority "관공서의 공휴일에 관한 규정 제2조제11호 (임시공휴일, 제4조 국무회의 심의) — 국무회의 2023-09-05 의결, 인사혁신처 공고 제2023-400호"
+  :uri "https://www.mpm.go.kr/mpm/comm/newsPress/newsPressRelease/"
   :holidays (
               ((2023 10 2) "임시공휴일 — 추석 연휴")
               ))
 
  (:year 2020
-  :authority "관공서의 공휴일에 관한 규정 제2조 — 기타 정부에서 수시 지정하는 날 (임시공휴일)"
-  :uri "https://namu.wiki/w/임시공휴일"
+  :authority "관공서의 공휴일에 관한 규정 제2조제11호 (임시공휴일, 제4조 국무회의 심의) — 국무회의 2020-07-21 의결"
+  :uri "https://www.mpm.go.kr/mpm/comm/newsPress/newsPressRelease/"
   :holidays (
-              ((2020 8 17) "임시공휴일 — 광복 75주년")
+              ((2020 8 17) "임시공휴일 — 광복절 연휴")
               ))
 
  (:year 2017
-  :authority "관공서의 공휴일에 관한 규정 제2조 — 기타 정부에서 수시 지정하는 날 (임시공휴일)"
-  :uri "https://namu.wiki/w/임시공휴일"
+  :authority "관공서의 공휴일에 관한 규정 제2조제11호 (임시공휴일, 제4조 국무회의 심의) — 2017-05-09 제19대 대통령 궐위선거(공직선거법 제35조); 2017-10-02 국무회의 2017-09-05 의결"
+  :uri "https://www.mpm.go.kr/mpm/comm/newsPress/newsPressRelease/"
   :holidays (
               ((2017 5 9) "임시공휴일 — 제19대 대통령 선거")
               ((2017 10 2) "임시공휴일 — 추석 연휴")
               ))
 
  (:year 2016
-  :authority "관공서의 공휴일에 관한 규정 제2조 — 기타 정부에서 수시 지정하는 날 (임시공휴일)"
-  :uri "https://namu.wiki/w/임시공휴일"
+  :authority "관공서의 공휴일에 관한 규정 제2조제11호 (임시공휴일, 제4조 국무회의 심의) — 국무회의 2016-05-03 의결"
+  :uri "https://www.mpm.go.kr/mpm/comm/newsPress/newsPressRelease/"
   :holidays (
               ((2016 5 6) "임시공휴일 — 어린이날 징검다리")
               ))
 
  (:year 2015
-  :authority "관공서의 공휴일에 관한 규정 제2조 — 기타 정부에서 수시 지정하는 날 (임시공휴일)"
-  :uri "https://namu.wiki/w/임시공휴일"
+  :authority "관공서의 공휴일에 관한 규정 제2조제11호 (임시공휴일, 제4조 국무회의 심의) — 국무회의 2015-08-04 의결"
+  :uri "https://www.mpm.go.kr/mpm/comm/newsPress/newsPressRelease/"
   :holidays (
               ((2015 8 14) "임시공휴일 — 광복 70주년")
               ))
 
- (:year 2002
-  :authority "관공서의 공휴일에 관한 규정 제2조 — 기타 정부에서 수시 지정하는 날 (임시공휴일)"
-  :uri "https://namu.wiki/w/임시공휴일"
+ (:year 2006
+  :authority "관공서의 공휴일에 관한 규정 제2조제11호 (임시공휴일, 제4조 국무회의 심의) — 선거일 (제10의2호 신설 2006-09-06 전): 제4회 전국동시지방선거"
+  :uri "https://www.nec.go.kr/site/nec/ex/bbs/List.do?cbIdx=1129"
   :holidays (
+              ((2006 5 31) "임시공휴일 — 제4회 전국동시지방선거")
+              ))
+
+ (:year 2004
+  :authority "관공서의 공휴일에 관한 규정 제2조제11호 (임시공휴일, 제4조 국무회의 심의) — 선거일 (제10의2호 신설 전): 제17대 국회의원선거"
+  :uri "https://www.nec.go.kr/site/nec/ex/bbs/List.do?cbIdx=1129"
+  :holidays (
+              ((2004 4 15) "임시공휴일 — 제17대 국회의원 선거")
+              ))
+
+ (:year 2002
+  :authority "관공서의 공휴일에 관한 규정 제2조제11호 (임시공휴일, 제4조 국무회의 심의) — 2002-06-13 제3회 전국동시지방선거; 2002-07-01 월드컵 4강 경축; 2002-12-19 제16대 대통령선거"
+  :uri "https://www.nec.go.kr/site/nec/ex/bbs/List.do?cbIdx=1129"
+  :holidays (
+              ((2002 6 13) "임시공휴일 — 제3회 전국동시지방선거")
               ((2002 7 1) "임시공휴일 — 월드컵 4강 경축")
+              ((2002 12 19) "임시공휴일 — 제16대 대통령 선거")
+              ))
+
+ (:year 2000
+  :authority "관공서의 공휴일에 관한 규정 제2조제11호 (임시공휴일, 제4조 국무회의 심의) — 선거일 (제10의2호 신설 전): 제16대 국회의원선거"
+  :uri "https://www.nec.go.kr/site/nec/ex/bbs/List.do?cbIdx=1129"
+  :holidays (
+              ((2000 4 13) "임시공휴일 — 제16대 국회의원 선거")
               ))
 
  (:year 1988

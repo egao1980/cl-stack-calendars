@@ -132,7 +132,7 @@ against a different data root."
   (dolist (sym '(*formation-years* *population-order*
                  *gb-proclamations* *ru-transfer-decrees*
                  *cn-transfer-notices* *in-dopt-holidays*
-                 *id-cuti-bersama* *kr-temporary-holidays*
+                 *id-cuti-bersama* *kr-temporary-holidays* *kr-election-base*
                  *ph-proclamations* *th-transfers* *my-transfers*
                  *np-gazette* *lk-poya* *sg-gazette* *kh-gazette*
                  *co-transfers* *cl-transfers* *ar-transfers* *nyse-special-closures*))

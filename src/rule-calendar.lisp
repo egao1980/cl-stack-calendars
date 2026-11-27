@@ -63,6 +63,11 @@ under another."
                  :accessor calendar-furikae-from)
    (furikae-chain-from :initarg :furikae-chain-from :initform nil
                        :accessor calendar-furikae-chain-from)
+   ;; A statute's whole-year substitute rule that looks at every holiday of
+   ;; the year at once (관공서의 공휴일에 관한 규정 제3조): a function
+   ;; (CALENDAR YEAR PAIRS) → PAIRS, run after sandwich and furikae.
+   (observance-pass :initarg :observance-pass :initform nil
+                    :accessor calendar-observance-pass)
    ;; Decree transfers: TO dates become holidays (перенос выходных).
    (transfers :initarg :transfers :initform nil :accessor calendar-transfers)
    ;; Compensatory working Saturdays/Sundays (override weekend-day-p).
@@ -77,7 +82,9 @@ cite their normative authority (:AUTHORITY). TRANSFERS encode annual Government
 decree weekend moves; WORKING-DAYS encode compensatory work weekends;
 SUPPRESSED-DATES remove rule holidays relocated by proclamation. :WEEKEND-DAYS
 is a weekday list or an era list (WEEKEND-SPEC-MIXIN). :PROVENANCE is what
-CALENDAR-PROVENANCE reports; DEFINE-CALENDAR classes default to :NORMATIVE."))
+CALENDAR-PROVENANCE reports; DEFINE-CALENDAR classes default to :NORMATIVE.
+:OBSERVANCE-PASS is a function (CALENDAR YEAR PAIRS) returning the (DATE .
+NAME) pairs of YEAR with a statute's substitute days added."))
 
 (defmethod weekend-day-p ((calendar rule-calendar) date)
   (and (member (date-day-of-week date) (weekend-days-on calendar date))
@@ -196,11 +203,12 @@ sorted and joined with \"; \", or T when none of them is a string."
 (defun %rule-calendar-year-map (calendar year)
   "Hash-table RD → holiday name for all RULE occurrences in YEAR, applying
 observance substitutes (independent of rule order, see
-%OBSERVE-RULE-ENTRIES), optional sandwich days, and decree TRANSFERS whose TO
-date falls in YEAR. A transfer goes only into the map of its own year: the
-map of the year before may hold a rule day such as a substitute that runs
-into January, but never another year's transfer, so HOLIDAY-P (which reads
-YEAR-1 first) cannot name a rule holiday after a transfer."
+%OBSERVE-RULE-ENTRIES), optional sandwich days, the calendar's
+:OBSERVANCE-PASS, and decree TRANSFERS whose TO date falls in YEAR. A
+transfer goes only into the map of its own year: the map of the year before
+may hold a rule day such as a substitute that runs into January, but never
+another year's transfer, so HOLIDAY-P (which reads YEAR-1 first) cannot name
+a rule holiday after a transfer."
   (let ((pairs (%observe-rule-entries calendar year)))
     (when (calendar-sandwich-holidays-p calendar)
       ;; :SANDWICH-FROM is a year or a date: sandwich days start on that day.
@@ -216,6 +224,8 @@ YEAR-1 first) cannot name a rule holiday after a transfer."
                      pairs
                      (%as-date (calendar-furikae-from calendar))
                      (%as-date (calendar-furikae-chain-from calendar))))))
+    (when (calendar-observance-pass calendar)
+      (setf pairs (funcall (calendar-observance-pass calendar) calendar year pairs)))
     (let ((names (make-hash-table :test #'eql))
           (map (make-hash-table :test #'eql)))
       (dolist (pair pairs)
@@ -257,7 +267,7 @@ Returns CALENDAR."
                     calendar-suppressed-dates calendar-weekend-days
                     calendar-sandwich-holidays-p calendar-sandwich-from
                     calendar-furikae-chain-p calendar-furikae-from
-                    calendar-furikae-chain-from))
+                    calendar-furikae-chain-from calendar-observance-pass))
 
 (defmethod holiday-p ((calendar rule-calendar) date)
   (when (%suppressed-date-p calendar date)
@@ -340,7 +350,8 @@ rearrangements in starter calendars (normative source of truth)."
                                       sandwich-holidays-p sandwich-authority
                                       sandwich-from
                                       furikae-chain-p furikae-from
-                                      furikae-chain-from)
+                                      furikae-chain-from
+                                      observance-pass)
                                 &body rules)
   "Define NAME as a RULE-CALENDAR subclass from RULES. Its instances report
 CALENDAR-PROVENANCE :NORMATIVE.
@@ -391,6 +402,11 @@ sandwich applies (JP Art. 3(3) first GW 1986).
 (1973-04-12); chain over consecutive 祝日 only from :FURIKAE-CHAIN-FROM
 (平成19年法律第5号, 2007-01-01).
 
+:OBSERVANCE-PASS names a function (CALENDAR YEAR PAIRS) → PAIRS for a
+substitute rule that needs every holiday of the year at once, such as
+관공서의 공휴일에 관한 규정 제3조 (KR-DAECHE-GONGHYUIL-PASS). It runs after
+sandwich and furikae; decree transfers are added after it.
+
 Annual Government decree transfers are attached at instance time via
 CALENDAR-TRANSFERS / MAKE-RUSSIAN-HOLIDAYS-CALENDAR — not in this macro."
   `(progn
@@ -407,6 +423,7 @@ CALENDAR-TRANSFERS / MAKE-RUSSIAN-HOLIDAYS-CALENDAR — not in this macro."
         :furikae-chain-p ,furikae-chain-p
         :furikae-from ,(%bound-form furikae-from)
         :furikae-chain-from ,(%bound-form furikae-chain-from)
+        :observance-pass ,(and observance-pass `',observance-pass)
         :rules (list ,@(mapcar #'%holiday-rule-constructor-form rules))))
      ,@(when register
          (if constructor
