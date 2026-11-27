@@ -760,3 +760,103 @@ announcement row has :ISSUED and :PUBLISHED, each a date with its citation
       (ok (getf era :issued))
       (ok (getf era :published))
       (ok (getf era :in-force)))))
+
+;;; --- India (#42) -----------------------------------------------------------
+
+(defparameter *in-holiday-gold* (load-holiday-gold "IN"))
+
+(defun %in-gold-with-restricted ()
+  "The IN gold with its :RESTRICTED rows (Annexure-II) counted as days off."
+  (list* :days (append (getf *in-holiday-gold* :days) (getf *in-holiday-gold* :restricted))
+         *in-holiday-gold*))
+
+(deftest in-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *in-holiday-gold* "IN" :from 2002)
+  (ok (equal '(2005 2006) (getf *in-holiday-gold* :gaps)) "no O.M. found for 2005 and 2006")
+  (ok (getf *in-holiday-gold* :restricted)))
+
+(deftest in-registered-calendar-matches-gold
+  "find-calendar \"IN\" holds Annexure-I of every DoPT holiday O.M. 2002–2004
+and 2007–2027 with the later O.M.s (14 April, moon-sighting changes, the
+2010 and 2023 Delhi closures) on every day, and the fixed days, Good Friday
+and tabular Islamic estimates of 2028–2040."
+  (let ((in (find-calendar "IN")))
+    (%report-holiday-gold "IN" (%holiday-gold-mismatches *in-holiday-gold* (constantly in)))))
+
+(deftest in-year-calendars-match-gold
+  (%report-holiday-gold "IN :year"
+                        (%holiday-gold-mismatches *in-holiday-gold*
+                                                  (lambda (y) (india-holidays-calendar :year y)))))
+
+(deftest in-restricted-calendar-matches-gold
+  "(india-holidays-calendar :restricted t) adds exactly Annexure-II, with its
+corrections (Ganesh Chaturthi 2004, Guru Gobind Singh 2011 and 2014, Maha
+Shivratri 2015)."
+  (%report-holiday-gold "IN :restricted"
+                        (%holiday-gold-mismatches (%in-gold-with-restricted)
+                                                  (lambda (y) (india-holidays-calendar :year y :restricted t)))))
+
+(deftest in-country-calendar-matches-gold
+  "country-calendar \"IN\" defers to the starter: the corpus has no festival
+or Islamic day (#42 item 4)."
+  (let ((in (country-calendar "IN")))
+    (ok (eq :normative (calendar-provenance in)))
+    (%report-holiday-gold "country-calendar IN"
+                          (%holiday-gold-mismatches *in-holiday-gold* (constantly in)))))
+
+(deftest in-issue-42-days
+  (let ((in (find-calendar "IN")))
+    (flet ((holiday (y m d) (holiday-p in (make-date y m d))))
+      (ok (holiday 2024 4 21) "Mahavir Jayanti 2024 (item 1)")
+      (ok (holiday 2025 4 10) "Mahavir Jayanti 2025")
+      (ok (holiday 2024 4 17) "Ram Navami 2024, chosen for Delhi")
+      (ok (holiday 2025 2 26) "Maha Shivaratri 2025, chosen for Delhi")
+      (ok (holiday 2024 10 31) "Diwali 2024 per the O.M. (item 2)")
+      (ng (holiday 2024 11 1))
+      (ok (holiday 2025 10 20) "Diwali 2025")
+      (ng (holiday 2025 10 21))
+      (ok (holiday 2024 4 11) "Id-ul-Fitr 2024 per the O.M., not the tabular 04-10 (item 3)")
+      (ng (holiday 2024 4 10))
+      (ok (holiday 2027 3 23) "Holi 2027 per O.M. 12/2/2023-JCA of 16.07.2026")
+      (ok (holiday 2027 4 19) "Mahavir Jayanti 2027")
+      (ok (holiday 2026 4 14) "O.M. 12/4/2020-JCA of 09.04.2026")
+      (ok (holiday 2016 7 7) "Id-ul-Fitr 2016 moved by O.M. of 05.07.2016")
+      (ng (holiday 2016 7 6))
+      (ok (holiday 2018 8 22) "Id-ul-Zuha 2018: the 14.08 move was withdrawn on 20.08")
+      (ng (holiday 2018 8 23))
+      (ok (holiday 2023 9 8) "G-20 closure of the Delhi offices")
+      (ok (holiday 2010 10 14) "Commonwealth Games closing day")
+      (ng (holiday 2024 1 22) "the half-day closing is not a holiday")
+      (ng (holiday 2024 4 13) "restricted holidays are not office closures")
+      (ok (holiday-p (india-holidays-calendar :year 2024 :restricted t) (make-date 2024 4 13))))))
+
+(deftest in-provisional-and-estimated-years
+  (ng (in-provisional-year-p 2027))
+  (ok (in-provisional-year-p 2028))
+  (ok (eq :primary (in-confidence 2002)))
+  (ok (eq :primary (in-confidence 2027)))
+  (ok (eq :estimated (in-confidence 2005)) "only the 14 April O.M. of 2005 was found")
+  (ok (eq :estimated (in-confidence 2001)))
+  (ok (eq :provisional (in-confidence 2028)))
+  (ok (in-estimated-year-p 2006))
+  (ng (in-estimated-year-p 2007))
+  (let ((in (find-calendar "IN")))
+    (ok (holiday-p in (make-date 2005 4 14)) "O.M. 12/5/2005-JCA")
+    (ok (holiday-p in (eid-al-fitr 2005)) "2005 Id-ul-Fitr is a tabular estimate")
+    (ok (holiday-p in (eid-al-fitr 2030)) "provisional Id-ul-Fitr")
+    (ng (holiday-p in (make-date 2030 10 26)) "no Diwali estimate in provisional years")))
+
+(deftest in-decree-rows-carry-issued-and-published
+  "Bitemporal step 1 (#93): every DoPT O.M. block and row has :ISSUED and
+:PUBLISHED, each a date with its citation (:ISSUED-URI, :PUBLISHED-URI) or
+NIL with a :DATES-NOTE saying why."
+  (let ((rows (in-decree-rows)))
+    (ok (< 1000 (length rows)))
+    (dolist (row rows)
+      (let ((label (format nil "~s" (or (getf row :date) (getf row :authority)))))
+        (dolist (key '(:issued :published))
+          (ok (member key row) (format nil "~a has ~s" label key))
+          (if (getf row key)
+              (ok (getf row (if (eq key :issued) :issued-uri :published-uri))
+                  (format nil "~a ~s cited" label key))
+              (ok (getf row :dates-note) (format nil "~a ~s NIL with a note" label key))))))))

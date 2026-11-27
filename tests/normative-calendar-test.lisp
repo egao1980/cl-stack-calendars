@@ -197,7 +197,8 @@
     (ok (holiday-p cal (make-date 2026 12 25)))
     (ng (holiday-p cal (make-date 1948 1 26))) ; Republic Day from 1950
     (ok (holiday-p cal (make-date 1950 1 26)))
-    (ok (holiday-p cal (eid-al-fitr 2026)))))
+    (ok (holiday-p cal (make-date 2026 3 21)) "Id-ul-Fitr 2026 per the DoPT O.M. of 03.07.2025 (#42)")
+    (ng (holiday-p cal (eid-al-fitr 2026)) "not the tabular 2026-03-20")))
 
 (deftest india-dopt-hindu-corpus
   (ok (in-dopt-for-year 2010))
@@ -207,11 +208,13 @@
   (ok (>= (length (in-dopt-holidays)) 17)))
 
 (deftest india-dopt-diwali-2024
+  "DoPT O.M. 12/2/2023-JCA of 03.07.2023: Diwali 31 October 2024 (#42)."
   (let ((cal (india-holidays-calendar :year 2024))
         (bare (make-instance 'india-holidays-calendar)))
-    (ok (holiday-p cal (make-date 2024 11 1)))
+    (ok (holiday-p cal (make-date 2024 10 31)))
+    (ng (holiday-p cal (make-date 2024 11 1)))
     (ok (holiday-p cal (make-date 2024 3 25))) ; Holi
-    (ng (holiday-p bare (make-date 2024 11 1)))))
+    (ng (holiday-p bare (make-date 2024 10 31)))))
 
 (deftest twenty-million-plus-all-normative
   "Every ≥20M population code has a hand starter (not corpus)."
