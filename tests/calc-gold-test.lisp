@@ -21,8 +21,8 @@
   (holiday-p cal (make-date y m d)))
 
 (defparameter *hko-allow*
-  ;; See datetime-protocol data/tests/CHRONO.md — 闰十一月 / 中气 midnight.
-  '((2033 :zhongqiu)))
+  ;; Empty: 2033 中秋 was a leap-month bug (#38), fixed in datetime-protocol 0.2.0.
+  '())
 
 (deftest calc-gold-hko-china-hong-kong
   "HKO 春节/清明/端午/中秋 vs CN (放假办法 from-years) and HK lunar NY."

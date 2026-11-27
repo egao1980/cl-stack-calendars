@@ -145,21 +145,21 @@
   (:fixed "Tết Dương lịch" 1 1 :from 1945
    :authority "Ngày nghỉ lễ — New Year")
   (:computed "Giao thừa / Tết"
-   (lambda (y) (chinese-new-year-eve-date y :location +beijing+))
+             (lambda (y) (chinese-new-year-eve-date y :zone +vietnam-lunisolar-zone+))
    :from 1945
-   :authority "Giao thừa — ngày cuối năm Âm lịch (Beijing tabular; VN may ±0–1)")
+   :authority "Giao thừa — ngày cuối năm Âm lịch (UTC+7 from 1968, Quyết định 121-CP)")
   (:computed "Tết Nguyên Đán"
-   (lambda (y) (chinese-new-year-date y :location +beijing+))
+             (lambda (y) (chinese-new-year-date y :zone +vietnam-lunisolar-zone+))
    :from 1945
-   :authority "Tết — Âm lịch mùng 1 (Beijing tabular Chinese; VN may ±0–1)")
+   :authority "Tết — Âm lịch mùng 1 (UTC+7 from 1968, Quyết định 121-CP)")
   (:computed "Tết"
-   (lambda (y) (+ (chinese-new-year-date y :location +beijing+) 1))
+             (lambda (y) (+ (chinese-new-year-date y :zone +vietnam-lunisolar-zone+) 1))
    :from 1945 :authority "Tết mùng 2")
   (:computed "Tết"
-   (lambda (y) (+ (chinese-new-year-date y :location +beijing+) 2))
+             (lambda (y) (+ (chinese-new-year-date y :zone +vietnam-lunisolar-zone+) 2))
    :from 1945 :authority "Tết mùng 3")
   (:computed "Giỗ Tổ Hùng Vương"
-   (lambda (y) (chinese-lunar-date y 3 10 :location +beijing+))
+             (lambda (y) (chinese-lunar-date y 3 10 :zone +vietnam-lunisolar-zone+))
    :from 2007
    :authority "Bộ luật Lao động 2007 — Giỗ Tổ Hùng Vương (âm lịch 10/3)")
   (:fixed "Ngày thống nhất đất nước" 4 30 :from 1976
@@ -356,13 +356,13 @@
   (:fixed "신정" 1 1 :from 1948
    :authority "관공서의 공휴일에 관한 규정 — New Year")
   (:computed "설날"
-   (lambda (y) (- (chinese-new-year-date y :location +beijing+) 1))
-   :from 1948 :authority "설날 연휴 (전날)")
+             (lambda (y) (- (chinese-new-year-date y :zone +korea-lunisolar-zone+) 1))
+   :from 1948 :authority "설날 연휴 (전날) — 음력 KST (KASI)")
   (:computed "설날"
-   (lambda (y) (chinese-new-year-date y :location +beijing+))
-   :from 1948 :authority "설날 — 농력 1/1")
+             (lambda (y) (chinese-new-year-date y :zone +korea-lunisolar-zone+))
+   :from 1948 :authority "설날 — 음력 1/1, KST (KASI)")
   (:computed "설날"
-   (lambda (y) (+ (chinese-new-year-date y :location +beijing+) 1))
+             (lambda (y) (+ (chinese-new-year-date y :zone +korea-lunisolar-zone+) 1))
    :from 1948 :authority "설날 연휴 (다음날)")
   (:fixed "삼일절" 3 1 :from 1949
    :authority "3·1절 — Independence Movement Day")
@@ -373,12 +373,12 @@
   (:fixed "광복절" 8 15 :from 1949
    :authority "광복절 — Liberation Day")
   (:computed "추석"
-   (lambda (y) (- (zhongqiu-date y :location +beijing+) 1))
+             (lambda (y) (- (zhongqiu-date y :zone +korea-lunisolar-zone+) 1))
    :from 1948 :authority "추석 연휴")
-  (:computed "추석" (lambda (y) (zhongqiu-date y :location +beijing+))
-   :from 1948 :authority "추석")
+  (:computed "추석" (lambda (y) (zhongqiu-date y :zone +korea-lunisolar-zone+))
+   :from 1948 :authority "추석 — 음력 8/15, KST (KASI)")
   (:computed "추석"
-   (lambda (y) (+ (zhongqiu-date y :location +beijing+) 1))
+             (lambda (y) (+ (zhongqiu-date y :zone +korea-lunisolar-zone+) 1))
    :from 1948 :authority "추석 연휴")
   (:fixed "개천절" 10 3 :from 1949
    :authority "개천절 — National Foundation Day")
