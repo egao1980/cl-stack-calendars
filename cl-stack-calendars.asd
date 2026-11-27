@@ -1,5 +1,5 @@
 (defsystem "cl-stack-calendars"
-  :version "0.14.0"
+  :version "0.15.0"
   :description "Holiday and trading calendars for cl-stack (business days, sessions, versioned as-of)"
   :author "egao1980"
   :license "MIT"
@@ -49,6 +49,7 @@
                (:file "business-day-test")
                (:file "russian-calendar-test")
                (:file "russian-production-gold-test")
+               (:file "americas-holiday-gold-test")
                (:file "normative-calendar-test")
                (:file "country-calendar-test")
                (:file "holiday-suite-test")
