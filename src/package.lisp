@@ -401,6 +401,12 @@
    #:write-data-zip
    #:nyse-holidays-calendar
    #:load-nyse-special-closures
-   #:exchange-holiday-p))
+   #:exchange-holiday-p
+   #:weekend-days-on
+   #:country-weekend-days
+   #:weekend-era-codes
+   #:weekend-era-source
+   #:calendar-weekend-eras
+   #:weekend-days-at))
 
 (in-package #:cl-stack-calendars)

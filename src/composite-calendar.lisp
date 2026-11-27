@@ -52,6 +52,16 @@ and weekends combine."
                              (composite-calendar-calendars calendar))))
             #'cl:<)))
 
+(defmethod weekend-days-on ((calendar composite-calendar) date)
+  (or (%composite-weekend-override calendar)
+      (sort (copy-list
+             (reduce (ecase (composite-calendar-mode calendar)
+                       (:union #'union)
+                       (:intersection #'intersection))
+                     (mapcar (lambda (c) (weekend-days-on c date))
+                             (composite-calendar-calendars calendar))))
+            #'cl:<)))
+
 (defmethod weekend-day-p ((calendar composite-calendar) date)
   (let ((override (%composite-weekend-override calendar)))
     (if override

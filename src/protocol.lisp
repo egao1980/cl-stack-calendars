@@ -22,11 +22,21 @@ Default is Saturday/Sunday, i.e. (6 7)."))
 (defmethod calendar-weekend-days ((calendar holiday-calendar))
   '(6 7))
 
+(defgeneric weekend-days-on (calendar date)
+  (:documentation "The ISO weekday list CALENDAR treats as weekend on DATE.
+Differs from CALENDAR-WEEKEND-DAYS (the current list) when the weekend
+changed by era, e.g. AE Fri–Sat → Sat–Sun on 2022-01-01."))
+
+(defmethod weekend-days-on ((calendar holiday-calendar) date)
+  (declare (ignore date))
+  (calendar-weekend-days calendar))
+
 (defgeneric weekend-day-p (calendar date)
-  (:documentation "True if DATE's weekday is one of CALENDAR's weekend days."))
+  (:documentation "True if DATE's weekday is one of CALENDAR's weekend days
+on DATE (see WEEKEND-DAYS-ON)."))
 
 (defmethod weekend-day-p ((calendar holiday-calendar) date)
-  (and (member (date-day-of-week date) (calendar-weekend-days calendar)) t))
+  (and (member (date-day-of-week date) (weekend-days-on calendar date)) t))
 
 ;;; --- calendar identity --------------------------------------------------
 

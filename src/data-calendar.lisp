@@ -1,12 +1,12 @@
 (in-package #:cl-stack-calendars)
 
-(defclass data-calendar (holiday-calendar)
+(defclass data-calendar (weekend-spec-mixin holiday-calendar)
   ((name :initarg :name :initform nil :accessor calendar-name)
-   (weekend-days :initarg :weekend-days :initform '(6 7) :accessor calendar-weekend-days)
    (holidays :initarg :holidays :initform (make-hash-table :test #'eql)
              :accessor calendar-holidays-table
              :documentation "Hash-table RD-integer → holiday name (or T)."))
-  (:documentation "HOLIDAY-CALENDAR backed by an explicit set of holiday dates."))
+  (:documentation "HOLIDAY-CALENDAR backed by an explicit set of holiday dates.
+:WEEKEND-DAYS is a weekday list or an era list (WEEKEND-SPEC-MIXIN)."))
 
 (defun make-data-calendar (&key name (weekend-days '(6 7)) holidays)
   (let ((cal (make-instance 'data-calendar :name name :weekend-days weekend-days)))

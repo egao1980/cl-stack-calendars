@@ -161,7 +161,10 @@ be 1-5, or -1 for the last occurrence in the month."
 ;;;; block is :SANDWICH on the calendar (祝日法第3条第3項), not :BRIDGE.
 
 (defun weekendp (date weekend-days)
-  (and (member (date-day-of-week date) weekend-days) t))
+  "True when DATE is a weekend day under WEEKEND-DAYS, a weekday list or an
+era list (see WEEKEND-DAYS-AT), so observance shifts follow the weekend in
+force on each day."
+  (and (member (date-day-of-week date) (weekend-days-at weekend-days date)) t))
 
 (defun sundayp (date)
   (= (date-day-of-week date) 7))
