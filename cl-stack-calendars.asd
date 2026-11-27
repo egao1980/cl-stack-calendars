@@ -49,6 +49,7 @@
                (:file "business-day-test")
                (:file "russian-calendar-test")
                (:file "russian-production-gold-test")
+               (:file "americas-holiday-gold-test")
                (:file "normative-calendar-test")
                (:file "country-calendar-test")
                (:file "holiday-suite-test")
