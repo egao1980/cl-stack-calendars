@@ -82,7 +82,8 @@ unless the calendar was loaded with :STRICT NIL."))
     ("MY" . malaysia-holidays-calendar)
     ("VN" . vietnam-holidays-calendar)
     ("CN" . china-holidays-calendar)
-    ("TH" . thailand-holidays-calendar))
+    ("TH" . thailand-holidays-calendar)
+    ("IN" . india-holidays-calendar))
   "Corpus codes whose COUNTRY-CALENDAR defers to a hand starter: alist CODE →
 starter constructor. The date-holidays dump for these codes is known to be
 wrong (RU: no 2–5 January from 2005, no ТК ст. 112 transfers or decrees,
@@ -104,8 +105,10 @@ Deepavali in years such as 2008; VN: Giỗ Tổ before 2007, no nghỉ bù, no
 five-day Tết, no hoán đổi or làm bù; #40. CN: no State Council 放假 windows
 and no 上班 days, and the statutory days of the wrong era; #26. TH: Buddhist
 days off the Thai lunar calendar (Asalha Bucha 2024-07-19 for 07-20), no
-วันหยุดชดเชย and no Cabinet special days; #40). The corpus file stays as
-shipped; its days are no longer consulted.")
+วันหยุดชดเชย and no Cabinet special days; #40. IN: no festival or Islamic
+day at all, only Republic Day, Good Friday, 14 April, Independence Day,
+Gandhi Jayanti and Christmas; #42). The corpus file stays as shipped; its
+days are no longer consulted.")
 
 (defclass normative-country-calendar (country-holiday-calendar)
   ((normative :initarg :normative :reader country-calendar-normative

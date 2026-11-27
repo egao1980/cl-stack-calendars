@@ -183,6 +183,12 @@
    #:in-dopt-holidays
    #:in-dopt-for-year
    #:in-dopt-transfers-for-year
+   #:in-dopt-restricted-for-year
+   #:in-decree-rows
+   #:*in-last-om-year*
+   #:in-estimated-year-p
+   #:in-provisional-year-p
+   #:in-confidence
    #:germany-holidays-calendar
    #:france-holidays-calendar
    #:italy-holidays-calendar
