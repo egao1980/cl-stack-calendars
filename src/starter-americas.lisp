@@ -87,47 +87,67 @@
 
 ;;; Colombia (floor 1900; Ley 51/1983 Emiliani Monday + decree puentes)
 (define-calendar colombia-holidays-calendar (:register "CO" :constructor colombia-holidays-calendar)
-  (:fixed "Año Nuevo" 1 1 :from 1900 :authority "Festivo nacional")
+  ;; Ley 51 de 1983 art. 1: thirteen fixed-date festivos plus Jueves/Viernes
+  ;; Santo, Ascensión, Corpus Christi and Sagrado Corazón. Inciso 2 moves
+  ;; 6 Jan, 19 Mar, 29 Jun, 15 Aug, 12 Oct, 1 Nov, 11 Nov, Ascensión, Corpus
+  ;; Christi and Sagrado Corazón to the following Monday; 1 Jan, 1 May, 20 Jul,
+  ;; 7 Aug, 8 Dec, 25 Dec and Holy Week stay on their day. The law runs from
+  ;; its sanction (Dec 1983); the :from 1984 eras keep that boundary.
+  ;; https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=4954
+  (:fixed "Año Nuevo" 1 1 :from 1900 :authority "Ley 51/1983 art. 1 — fijo")
   (:computed "Día de los Reyes Magos"
-   (lambda (y) (co-emiliani-monday y 1 6)) :from 1984
-   :authority "Ley 51/1983 — Epifanía al lunes siguiente")
+             (lambda (y) (co-emiliani-monday y 1 6)) :from 1984
+   :authority "Ley 51/1983 art. 1 inc. 2 — 6 enero al lunes siguiente")
   (:fixed "Día de los Reyes Magos" 1 6 :from 1900 :to 1983
    :authority "Festivo — Epifanía (pre-Ley Emiliani)")
   (:computed "Día de San José"
-   (lambda (y) (co-emiliani-monday y 3 19)) :from 1984
-   :authority "Ley 51/1983 — San José al lunes siguiente")
+             (lambda (y) (co-emiliani-monday y 3 19)) :from 1984
+   :authority "Ley 51/1983 art. 1 inc. 2 — 19 marzo al lunes siguiente")
   (:fixed "Día de San José" 3 19 :from 1900 :to 1983 :authority "Festivo")
-  (:easter "Jueves Santo" -3 :from 1900 :authority "Semana Santa")
-  (:easter "Viernes Santo" -2 :from 1900 :authority "Semana Santa")
-  (:fixed "Día del Trabajo" 5 1 :from 1900 :authority "Festivo")
-  (:easter "Ascensión" 39 :from 1900 :authority "Festivo (Ley Emiliani Monday)")
-  (:easter "Corpus Christi" 60 :from 1900 :authority "Festivo")
-  (:easter "Sagrado Corazón" 68 :from 1900 :authority "Festivo")
+  (:easter "Jueves Santo" -3 :from 1900 :authority "Ley 51/1983 art. 1 — Jueves Santo, fijo")
+  (:easter "Viernes Santo" -2 :from 1900 :authority "Ley 51/1983 art. 1 — Viernes Santo, fijo")
+  (:fixed "Día del Trabajo" 5 1 :from 1900 :authority "Ley 51/1983 art. 1 — fijo")
+  ;; Ascensión (Thursday, Easter+39), Corpus Christi (Thursday, Easter+60)
+  ;; and Sagrado Corazón (Friday, Easter+68) move to the next Monday:
+  ;; Easter +43, +64, +71.
+  (:easter "Ascensión" 43 :from 1984
+   :authority "Ley 51/1983 art. 1 inc. 2 — Ascensión del Señor al lunes siguiente (Pascua+43)")
+  (:easter "Ascensión" 39 :from 1900 :to 1983 :authority "Festivo (jueves)")
+  (:easter "Corpus Christi" 64 :from 1984
+   :authority "Ley 51/1983 art. 1 inc. 2 — Corpus Christi al lunes siguiente (Pascua+64)")
+  (:easter "Corpus Christi" 60 :from 1900 :to 1983 :authority "Festivo (jueves)")
+  (:easter "Sagrado Corazón" 71 :from 1984
+   :authority "Ley 51/1983 art. 1 inc. 2 — Sagrado Corazón de Jesús al lunes siguiente (Pascua+71)")
+  (:easter "Sagrado Corazón" 68 :from 1900 :to 1983 :authority "Festivo (viernes)")
   (:computed "San Pedro y San Pablo"
-   (lambda (y) (co-emiliani-monday y 6 29)) :from 1984
-   :authority "Ley 51/1983 — 29 junio al lunes siguiente")
+             (lambda (y) (co-emiliani-monday y 6 29)) :from 1984
+   :authority "Ley 51/1983 art. 1 inc. 2 — 29 junio al lunes siguiente")
   (:fixed "San Pedro y San Pablo" 6 29 :from 1900 :to 1983 :authority "Festivo")
+  (:computed "Nuestra Señora del Rosario de Chiquinquirá"
+             (lambda (y) (co-emiliani-monday y 7 9)) :from 2026
+   :authority "Ley 2578 de 2026 art. 6 (D.O. 53.510, 2 jun 2026) — 9 julio, trasladado según Ley 51/1983; http://www.secretariasenado.gov.co/senado/basedoc/ley_2578_2026.html")
   (:fixed "Día de la Independencia" 7 20 :from 1900
-   :authority "Independencia 20 Jul 1810 — festivo")
-  (:fixed "Batalla de Boyacá" 8 7 :from 1900 :authority "Festivo")
+   :authority "Ley 51/1983 art. 1 — 20 julio, fijo")
+  (:fixed "Batalla de Boyacá" 8 7 :from 1900 :authority "Ley 51/1983 art. 1 — 7 agosto, fijo")
   (:computed "Asunción"
-   (lambda (y) (co-emiliani-monday y 8 15)) :from 1984
-   :authority "Ley 51/1983 — Asunción al lunes siguiente")
+             (lambda (y) (co-emiliani-monday y 8 15)) :from 1984
+   :authority "Ley 51/1983 art. 1 inc. 2 — 15 agosto al lunes siguiente")
   (:fixed "Asunción" 8 15 :from 1900 :to 1983 :authority "Festivo")
   (:computed "Día de la Raza"
-   (lambda (y) (co-emiliani-monday y 10 12)) :from 1984
-   :authority "Ley 51/1983 — 12 octubre al lunes siguiente")
+             (lambda (y) (co-emiliani-monday y 10 12)) :from 1984
+   :authority "Ley 51/1983 art. 1 inc. 2 — 12 octubre al lunes siguiente")
   (:fixed "Día de la Raza" 10 12 :from 1900 :to 1983 :authority "Festivo")
   (:computed "Todos los Santos"
-   (lambda (y) (co-emiliani-monday y 11 1)) :from 1984
-   :authority "Ley 51/1983 — 1 noviembre al lunes siguiente")
+             (lambda (y) (co-emiliani-monday y 11 1)) :from 1984
+   :authority "Ley 51/1983 art. 1 inc. 2 — 1 noviembre al lunes siguiente")
   (:fixed "Todos los Santos" 11 1 :from 1900 :to 1983 :authority "Festivo")
-  (:fixed "Independencia de Cartagena" 11 11 :from 1900 :authority "Festivo")
-  (:computed "Inmaculada Concepción"
-   (lambda (y) (co-emiliani-monday y 12 8)) :from 1984
-   :authority "Ley 51/1983 — 8 diciembre al lunes siguiente")
-  (:fixed "Inmaculada Concepción" 12 8 :from 1900 :to 1983 :authority "Festivo")
-  (:fixed "Navidad" 12 25 :from 1900 :authority "Festivo"))
+  (:computed "Independencia de Cartagena"
+             (lambda (y) (co-emiliani-monday y 11 11)) :from 1984
+   :authority "Ley 51/1983 art. 1 inc. 2 — 11 noviembre al lunes siguiente")
+  (:fixed "Independencia de Cartagena" 11 11 :from 1900 :to 1983 :authority "Festivo")
+  (:fixed "Inmaculada Concepción" 12 8 :from 1900
+   :authority "Ley 51/1983 art. 1 — 8 diciembre, fijo (no está en el inciso 2)")
+  (:fixed "Navidad" 12 25 :from 1900 :authority "Ley 51/1983 art. 1 — fijo"))
 
 ;;; Argentina (floor 1900)
 (define-calendar argentina-holidays-calendar (:register "AR")
@@ -298,9 +318,10 @@
 (defun brazil-holidays-calendar () (make-instance 'brazil-holidays-calendar))
 (defun mexico-holidays-calendar () (make-instance 'mexico-holidays-calendar))
 (defun colombia-holidays-calendar (&key year transfers)
-  "Colombian national holidays with the decree puente / extra days of
-data/co/transfers.sexp. Without YEAR, every year in the file applies (the
-registered \"CO\" calendar); with YEAR, only that year's days."
+  "Colombian national festivos (Ley 51/1983, Ley 2578/2026) plus any one-off
+decree days of data/co/transfers.sexp (none so far: Colombia has no yearly
+puentes). Without YEAR, every year in the file applies (the registered \"CO\"
+calendar); with YEAR, only that year's days."
   (let ((tr (or transfers
                 (if year
                     (co-transfers-for-year year)

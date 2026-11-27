@@ -69,11 +69,13 @@ unless the calendar was loaded with :STRICT NIL."))
             (cons name (or type :public))))))
 
 (defparameter *country-calendar-normative*
-  '(("RU" . russian-holidays-calendar))
+  '(("RU" . russian-holidays-calendar)
+    ("CO" . colombia-holidays-calendar))
   "Corpus codes whose COUNTRY-CALENDAR defers to a hand starter: alist CODE →
 starter constructor. The date-holidays dump for these codes is known to be
 wrong (RU: no 2–5 January from 2005, no ТК ст. 112 transfers or decrees,
-4 November before 2005; egao1980/cl-stack-calendars#13). The corpus file stays
+4 November before 2005; egao1980/cl-stack-calendars#13. CO: lists Easter
+Sunday, which Ley 51/1983 does not make a festivo; #15). The corpus file stays
 as shipped; its days are no longer consulted.")
 
 (defclass normative-country-calendar (country-holiday-calendar)
