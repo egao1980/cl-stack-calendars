@@ -50,20 +50,21 @@ chain pass replaces per-rule observance, so it never does."
        (some #'rule-observed (calendar-rules calendar))))
 
 (defun %rule-year-entries (calendar year)
-  "Every rule valid in YEAR as a list (RULE NOMINAL KEEP-P DIRECTION YEAR),
-where KEEP-P and DIRECTION come from OBSERVANCE-MOVES."
+  "Every nominal date of every rule valid in YEAR, as a list (RULE NOMINAL
+KEEP-P DIRECTION YEAR); KEEP-P and DIRECTION come from OBSERVANCE-MOVES. A
+computed rule can contribute several entries (RULE-NOMINAL-DATES)."
   (let ((weekend-days (calendar-weekend-days calendar))
         (observe-p (%rule-calendar-observed-p calendar)))
     (loop for rule in (calendar-rules calendar)
-          for nominal = (rule-nominal-date rule year)
-          when (and nominal (rule-valid-at-p rule nominal))
-            collect (let ((observed
-                            (and observe-p
-                                 (%observed-applies-at-p (rule-observed-from rule) nominal)
-                                 (rule-observed rule))))
-                      (multiple-value-bind (keep direction)
-                          (observance-moves nominal observed weekend-days)
-                        (list rule nominal keep direction year))))))
+          append (loop for nominal in (rule-nominal-dates rule year)
+                       when (rule-valid-at-p rule nominal)
+                         collect (let ((observed
+                                         (and observe-p
+                                              (%observed-applies-at-p (rule-observed-from rule) nominal)
+                                              (rule-observed rule))))
+                                   (multiple-value-bind (keep direction)
+                                       (observance-moves nominal observed weekend-days)
+                                     (list rule nominal keep direction year)))))))
 
 (defun %rule-entry-name (rule)
   (or (holiday-rule-name rule) t))

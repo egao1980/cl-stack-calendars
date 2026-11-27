@@ -4,6 +4,10 @@
   (:local-nicknames (#:sp #:cl-stack-pathlib))
   (:shadowing-import-from #:datetime-protocol
    #:+ #:- #:< #:<= #:> #:>= #:= #:/= #:min #:max)
+  ;; Occurrence-aware Hijri helpers (src/rules.lisp): a computed rule that
+  ;; calls them yields every occurrence in the Gregorian year (#28).
+  (:shadow #:islamic-date-in-gregorian-year #:eid-al-fitr #:eid-al-adha
+           #:islamic-new-year-date #:mawlid-date)
   (:export
    ;; conditions
    #:calendar-error
