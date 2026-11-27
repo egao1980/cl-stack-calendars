@@ -445,6 +445,10 @@
    #:my-provisional-year-p
    #:my-estimated-year-p
    #:my-deepavali-estimate
-   #:my-wesak-estimate))
+   #:my-wesak-estimate
+   #:vn-provisional-year-p
+   #:vn-notice-for-year
+   #:vn-tet-days
+   #:vn-notices))
 
 (in-package #:cl-stack-calendars)
