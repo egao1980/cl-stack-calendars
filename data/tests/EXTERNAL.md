@@ -29,3 +29,4 @@ Americas national holidays 2000–2040 live in `<cc>-holiday-gold.sexp`, built b
 | Code | Gold source |
 |------|-------------|
 | `CO` | Statute texts: [Ley 51 de 1983](https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=4954) art. 1 and [Ley 2578 de 2026](http://www.secretariasenado.gov.co/senado/basedoc/ley_2578_2026.html) art. 6. Colombia publishes no machine-readable festivos list. Python `holidays`: 0 differences. |
+| `CL` | BCN statute texts (leychile XML service), checked against the official [Gobierno Digital feriados API](https://apis.digital.gob.cl/fl/feriados) for 2013–2024 (pinned Wayback copies) and [feriados.cl](https://www.feriados.cl/) for 2026–2028. They agree except for election days (left out) and five days where the act wins: 2018-01-16 (Región Metropolitana only), 2021-06-21 (Ley 21.357 transitorio), 2022-06-27/28 (Ley 19.668), 2022-09-16 (Ley 21.482). Python `holidays`: 0 differences. |

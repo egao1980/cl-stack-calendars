@@ -240,10 +240,12 @@
     (ng (holiday-p (colombia-holidays-calendar :year 2025) (make-date 2025 7 21)))))
 
 (deftest chile-bridge-2024
+  ;; 18-19 Sep 2024 fall on Wednesday-Thursday: Ley 20.215 makes Friday 20 Sep
+  ;; a holiday. It is a statutory rule since #16, not a data day.
   (let ((cal (chile-holidays-calendar :year 2024))
         (bare (make-instance 'chile-holidays-calendar)))
     (ok (holiday-p cal (make-date 2024 9 20)))
-    (ng (holiday-p bare (make-date 2024 9 20)))))
+    (ok (holiday-p bare (make-date 2024 9 20)))))
 
 (deftest philippines-proclamation-2025
   (let ((cal (philippines-holidays-calendar :year 2025))

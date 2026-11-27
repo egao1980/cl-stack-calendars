@@ -49,7 +49,7 @@ Since 0.12.0 a calendar found by code carries every year of its data file. Befor
 | `IN` | `data/in/dopt-holidays.sexp` | DoPT gazetted festivals |
 | `ID`, `PH`, `TH`, `KR`, `MY` | `data/{id,ph,th,kr,my}/…` | cuti bersama, proclamations, Royal Gazette, 임시공휴일, JPM days |
 | `NP`, `KH`, `SG` | `data/{np,kh,sg}/gazette-holidays.sexp` | gazetted festival blocks |
-| `CL` | `data/cl/transfers.sexp` | Fiestas Patrias bridge days, 2 January, bank 31 December |
+| `CL` | `data/cl/transfers.sexp` | one-off laws only (census days, 2004, 2010, 2022); the Fiestas Patrias days and 2 January are rules |
 | `CO` | `data/co/transfers.sexp` | nothing: the file is empty, since Colombia decrees no "puentes" |
 
 `LK` is the exception: `data/lk/poya-days.sexp` lists new-moon dates rather than Poya days. So `find-calendar "LK"` and `(sri-lanka-holidays-calendar)` leave it out, and only `:year N` applies it (#61).
@@ -115,6 +115,8 @@ Since 0.14.0 (#13) RU matches the official production calendar on every day 2000
 - `(country-calendar "RU")` defers to this starter (`normative-country-calendar`, provenance `:normative`). The date-holidays dump for RU had no 2–5 January from 2005, no ст. 112 transfers or decrees, and 4 November before 2005; the file ships unchanged but is no longer consulted. `*country-calendar-normative*` lists the deferring codes.
 
 Colombia: since 0.15.0 (#15) `find-calendar "CO"` matches Ley 51/1983 art. 1 and Ley 2578/2026 on every day 2000–2040 (`tests/americas-holiday-gold-test.lisp`, gold `data/tests/co-holiday-gold.sexp` from `scripts/generate_americas_holiday_gold.py`). Ascensión, Corpus Christi and Sagrado Corazón fall on the Monday after (Easter +43/+64/+71); 11 Nov moves to Monday, 8 Dec does not; Nuestra Señora del Rosario de Chiquinquirá (9 Jul, moved to Monday) counts from 2026. Colombia has no official machine-readable festivos list, so the gold is built from the statute texts; Python `holidays` 0.109 agrees on every day. `(country-calendar "CO")` defers to the starter. Years after 2026 apply the statutes in force: a future law can still add a day.
+
+Chile: since 0.16.0 (#16) `find-calendar "CL"` matches the feriados legales on every day 2000–2040 (gold `data/tests/cl-holiday-gold.sexp`, built from the BCN statute texts and checked against the official Gobierno Digital feriados API for 2013–2024 and feriados.cl for 2026–2028). Sábado Santo, the Ley 19.668 / 20.299 moves, the winter-solstice Día de los Pueblos Indígenas and the Ley 20.215 / 20.983 Fiestas Patrias and 2 January days are rules, so later years need no data. Election days (Ley 18.700, always on a weekend), the bank-only 31 December and regional days are not in `CL`. `(country-calendar "CL")` defers to the starter.
 
 Normative starters (prefer over `country-calendar` corpus): `japan-holidays-calendar` (祝日法 + Tokyo equinoxes), `(china-holidays-calendar :year 2026)` (放假办法 + Beijing lunar + 调休), `india-holidays-calendar`, `germany-holidays-calendar` / `france-holidays-calendar` / `italy-holidays-calendar` / `spain-holidays-calendar` / `netherlands-holidays-calendar` / `belgium-holidays-calendar` / `austria-holidays-calendar` / `poland-holidays-calendar` / `sweden-holidays-calendar`, plus `target-calendar` (ECB). See [`docs/AUTHORITIES.md`](docs/AUTHORITIES.md).
 
