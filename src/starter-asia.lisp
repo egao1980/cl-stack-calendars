@@ -5,20 +5,75 @@
 
 ;;; --- Indonesia cuti bersama (SKB 3 Menteri / Keppres) ---------------
 
-(defun load-id-cuti-bersama (&optional (path (data-path "id/cuti-bersama.sexp")))
-  "Return alist YEAR → (:authority A :transfers … :uri …)."
-  (let ((form (read-data-form path)))
-    (mapcar
-     (lambda (block)
-       (let* ((year (getf block :year))
-              (auth (getf block :authority))
-              (transfers (mapcar (lambda (e)
-                                   (make-extra-day-transfer e auth))
-                                 (getf block :holidays))))
-         (cons year (list :authority auth
-                          :transfers transfers
-                          :uri (getf block :uri)))))
-     form)))
+(defun load-id-skb (&optional (path (data-path "id/skb.sexp")))
+  "Return alist YEAR → (:authority A :uri U :libur … :suppressed … :cuti …)
+from the SKB 3 Menteri of each year: :LIBUR the hari libur nasional the rules
+do not give (the moveable days, election days, one-off days), :SUPPRESSED
+rule dates the SKB did not keep, :CUTI the cuti bersama, both as transfers."
+  (mapcar
+   (lambda (block)
+     (let ((auth (getf block :authority)))
+       (flet ((transfers (key)
+                (mapcar (lambda (e) (make-extra-day-transfer e auth)) (getf block key))))
+         (cons (getf block :year)
+               (list :authority auth
+                     :uri (getf block :uri)
+                     :libur (transfers :holidays)
+                     :suppressed (mapcar (lambda (d) (apply #'make-date d)) (getf block :suppressed))
+                     :cuti (transfers :cuti))))))
+   (read-data-form path)))
+
+(defvar *id-skb* nil)
+
+(defun id-skb ()
+  (or *id-skb* (setf *id-skb* (load-id-skb))))
+
+(defparameter *id-skb-years* '(2005 . 2027)
+  "The years data/id/skb.sexp covers: their moveable days are the SKB's. No
+primary text of the 2000-2004 lists was found, so those years estimate.")
+
+(defun id-estimated-year-p (year)
+  "True when no SKB of data/id covers YEAR: the moveable days (Islamic,
+Nyepi, Waisak, Imlek) of the rules are estimates."
+  (not (<= (car *id-skb-years*) year (cdr *id-skb-years*))))
+
+(defun id-provisional-year-p (year)
+  "True for a year after the last SKB 3 Menteri (2027): its moveable days are
+estimates and it has no election, one-off or cuti bersama days."
+  (> year (cdr *id-skb-years*)))
+
+(defun id-nyepi-estimate (year)
+  "Estimate of Hari Suci Nyepi (the day after Tilem Kesanga) for a year no
+SKB covers: the day after the start (UTC+8, Bali's zone) of the second or
+third non-leap Chinese lunar month, the first that falls from 2 March to 15
+April. The Saka calendar's own rules (nampih sasih) are not modelled."
+  (let ((s (find-if (lambda (d) (<= (date-rd (make-date year 3 2)) (date-rd d)
+                                    (date-rd (make-date year 4 15))))
+                    (list (chinese-lunar-date year 2 1) (chinese-lunar-date year 3 1)))))
+    (and s (+ s 1))))
+
+(defun id-skb-libur-for-year (&optional year)
+  (loop for (nil . plist) in (id-skb)
+        append (remove-if-not (lambda (tr) (or (null year) (= year (date-year (calendar-transfer-to tr)))))
+                              (getf plist :libur))))
+
+(defun id-skb-cuti-for-year (&optional year)
+  (loop for (nil . plist) in (id-skb)
+        append (remove-if-not (lambda (tr) (or (null year) (= year (date-year (calendar-transfer-to tr)))))
+                              (getf plist :cuti))))
+
+(defun id-skb-suppressed-for-year (&optional year)
+  (loop for (nil . plist) in (id-skb)
+        append (remove-if-not (lambda (d) (or (null year) (= year (date-year d))))
+                              (getf plist :suppressed))))
+
+(defun load-id-cuti-bersama (&optional (path (data-path "id/skb.sexp")))
+  "Return alist YEAR → (:authority A :transfers … :uri …): the cuti bersama
+of each SKB 3 Menteri (data/id/skb.sexp)."
+  (loop for (year . plist) in (load-id-skb path)
+        collect (cons year (list :authority (getf plist :authority)
+                                 :transfers (getf plist :cuti)
+                                 :uri (getf plist :uri)))))
 
 (defvar *id-cuti-bersama* nil)
 
@@ -36,34 +91,48 @@
 
 ;;; Indonesia (formation 1945)
 (define-calendar indonesia-holidays-calendar (:register "ID" :constructor indonesia-holidays-calendar)
+  ;; Hari libur nasional. Fixed and Easter days are rules; the moveable days
+  ;; of each year 2000-2027 are the SKB 3 Menteri's (data/id/skb.sexp), so
+  ;; the moveable rules below only estimate years no SKB covers
+  ;; (ID-ESTIMATED-YEAR-P). Cuti bersama: (indonesia-holidays-calendar
+  ;; :cuti-bersama t).
   (:fixed "Tahun Baru Masehi" 1 1 :from 1946
-   :authority "Libur nasional sejak 1946; Keppres tahunan")
-  (:computed "Tahun Baru Imlek"
-   (lambda (y) (chinese-new-year-date y :location +beijing+))
-   :from 2003
-   :authority "Keppres — Tahun Baru Imlek sebagai hari libur nasional (sejak 2003)")
+   :authority "Keppres No. 24 Tahun 1953 dan perubahannya — Tahun Baru Masehi")
   (:fixed "Hari Buruh Internasional" 5 1 :from 2014
-   :authority "Keppres — Hari Buruh sebagai libur nasional (diperkuat 2014)")
+   :authority "Keppres No. 24 Tahun 2013 — Hari Buruh Internasional libur nasional (sejak 2014)")
   (:fixed "Hari Lahir Pancasila" 6 1 :from 2017
    :authority "Keppres No. 24 Tahun 2016 (libur sejak 2017)")
   (:fixed "Hari Kemerdekaan RI" 8 17 :from 1946
    :authority "Proklamasi 17 Agustus 1945; libur nasional sejak 1946")
-  (:fixed "Hari Raya Natal" 12 25 :from 1946
-   :authority "Libur nasional (Natal)")
-  (:easter "Wafat Isa Almasih" -2 :from 1946
-   :authority "Libur nasional (Jumat Agung)")
-  (:computed "Idul Fitri" #'eid-al-fitr :from 1945
-   :authority "Libur nasional — 1 Syawal (tabular Hijri; sighting may ±1)")
+  (:fixed "Hari Raya Natal" 12 25 :from 1946 :authority "Keppres No. 24 Tahun 1953 — Hari Raya Natal")
+  (:easter "Wafat Isa Almasih" -2 :from 1946 :authority "Keppres No. 10 Tahun 1971 — Wafat Isa Almasih (Jumat Agung)")
+  (:easter "Kebangkitan Isa Almasih" 0 :from 2024
+   :authority "Keppres No. 8 Tahun 2024 — Hari Kebangkitan Yesus Kristus (Paskah)")
+  (:easter "Kenaikan Isa Almasih" 39 :from 1968
+   :authority "Keppres No. 251 Tahun 1967 — Kenaikan Isa Almasih (Paskah + 39)")
+  (:computed "Tahun Baru Imlek"
+             (lambda (y) (when (id-estimated-year-p y) (chinese-new-year-date y :location +beijing+)))
+   :from 2003
+   :authority "Keppres No. 19 Tahun 2002 — Tahun Baru Imlek (sejak 2003); the SKB date in 2003-2027")
+  (:computed "Isra Mikraj Nabi Muhammad"
+             (lambda (y) (when (id-estimated-year-p y) (islamic-date-in-gregorian-year y 7 27)))
+   :from 1968 :authority "27 Rajab — the SKB date in 2000-2027, tabular estimate otherwise")
+  (:computed "Hari Suci Nyepi" (lambda (y) (when (id-estimated-year-p y) (id-nyepi-estimate y)))
+   :from 1983 :authority "Keppres No. 3 Tahun 1983 — Tahun Baru Saka; the SKB date in 2000-2027, estimate otherwise")
+  (:computed "Hari Raya Waisak"
+             (lambda (y) (when (id-estimated-year-p y) (chinese-lunar-date y 4 15 :location +beijing+)))
+   :from 1983 :authority "Keppres No. 3 Tahun 1983 — Waisak; the SKB date in 2000-2027, estimate (lunar 4/15) otherwise")
+  (:computed "Idul Fitri" (lambda (y) (when (id-estimated-year-p y) (eid-al-fitr y))) :from 1946
+   :authority "1 Syawal — the SKB date in 2000-2027, tabular estimate otherwise")
   (:computed "Idul Fitri"
-   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
-   :from 1945
-   :authority "Libur nasional — 2 Syawal")
-  (:computed "Idul Adha" #'eid-al-adha :from 1945
-   :authority "Libur nasional — 10 Dhu al-Hijjah (tabular)")
-  (:computed "Tahun Baru Islam" #'islamic-new-year-date :from 1945
-   :authority "Libur nasional — 1 Muharram (tabular)")
-  (:computed "Maulid Nabi" #'mawlid-date :from 1945
-   :authority "Libur nasional — 12 Rabiulawal (tabular)"))
+             (lambda (y) (when (id-estimated-year-p y) (let ((d (eid-al-fitr y))) (and d (+ d 1)))))
+   :from 1946 :authority "2 Syawal — the SKB date in 2000-2027, tabular estimate otherwise")
+  (:computed "Idul Adha" (lambda (y) (when (id-estimated-year-p y) (eid-al-adha y))) :from 1946
+   :authority "10 Zulhijah — the SKB date in 2000-2027, tabular estimate otherwise")
+  (:computed "Tahun Baru Islam" (lambda (y) (when (id-estimated-year-p y) (islamic-new-year-date y)))
+   :from 1946 :authority "1 Muharam — the SKB date in 2000-2027, tabular estimate otherwise")
+  (:computed "Maulid Nabi Muhammad" (lambda (y) (when (id-estimated-year-p y) (mawlid-date y)))
+   :from 1946 :authority "12 Rabiulawal — the SKB date in 2000-2027, tabular estimate otherwise"))
 
 ;;; Bangladesh (1971)
 (define-calendar bangladesh-holidays-calendar (:register "BD")
@@ -787,15 +856,19 @@ A workday is a Monday–Friday that is no day off and no 調整放假 of CALENDA
   (:computed "Qurbon Hayit" #'eid-al-adha :from 1991
    :authority "Eid al-Adha (tabular Hijri)"))
 
-(defun indonesia-holidays-calendar (&key year transfers)
-  "Indonesian national holidays with the cuti bersama days of
-data/id/cuti-bersama.sexp. Without YEAR, every year in the file applies (the
-registered \"ID\" calendar); with YEAR, only that year's days."
-  (let ((tr (or transfers
-                (if year
-                    (id-transfers-for-year year)
-                    (all-block-transfers (id-cuti-bersama))))))
-    (make-instance 'indonesia-holidays-calendar :transfers tr)))
+(defun indonesia-holidays-calendar (&key year transfers cuti-bersama)
+  "Indonesian hari libur nasional: the fixed and Easter days, and the days of
+each SKB 3 Menteri in data/id/skb.sexp (moveable days, election and one-off
+days; 2000-2027). CUTI-BERSAMA true adds the SKB's cuti bersama, the
+collective leave days that are mandatory for ASN and optional for private
+employers. Without YEAR, every year in the file applies (the registered
+\"ID\" calendar); with YEAR, only that year's days. ID-PROVISIONAL-YEAR-P
+years estimate the moveable days."
+  (make-instance 'indonesia-holidays-calendar
+                 :transfers (or transfers
+                                (append (id-skb-libur-for-year year)
+                                        (when cuti-bersama (id-skb-cuti-for-year year))))
+                 :suppressed-dates (id-skb-suppressed-for-year year)))
 
 (defun bangladesh-holidays-calendar () (make-instance 'bangladesh-holidays-calendar))
 

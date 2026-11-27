@@ -77,7 +77,8 @@ unless the calendar was loaded with :STRICT NIL."))
     ("KR" . south-korea-holidays-calendar)
     ("HK" . hong-kong-holidays-calendar)
     ("TW" . taiwan-holidays-calendar)
-    ("PH" . philippines-holidays-calendar))
+    ("PH" . philippines-holidays-calendar)
+    ("ID" . indonesia-holidays-calendar))
   "Corpus codes whose COUNTRY-CALENDAR defers to a hand starter: alist CODE →
 starter constructor. The date-holidays dump for these codes is known to be
 wrong (RU: no 2–5 January from 2005, no ТК ст. 112 transfers or decrees,
@@ -88,10 +89,12 @@ Easter Sunday, which DL 713 art. 6 does not make a feriado; #19. AR: misses
 the DNU 810/2003 and Res. JGM 139/2025 moves, Güemes kept on a Friday
 (Decreto 789/2021), 17 June 2016 and the 2026 decree days; #18. KR: keeps
 one day of each three-day 설날 and 추석, no 대체공휴일 rules and no election
-days; #39. HK: no Cap. 149 s. 6(2) days and no pre-2012 Lunar New Year and
-Mid-Autumn substitutes; TW: no 調整放假 or 補行上班 days; PH: no yearly
-proclamation days or moves; #41). The corpus file stays as shipped; its days
-are no longer consulted.")
+days; #39. HK: the post-2011 fourth day of Lunar New Year in 2010 instead of
+the day preceding, no Cap. 149 s. 6(2) day 2010-04-06; TW: misses 調整放假
+days such as 2024-02-08 and has no 補行上班; PH: no Black Saturday or other
+proclaimed special days, Ninoy Aquino Day 2024 not moved; ID: Islamic days
+off the SKB (Idul Adha 2024-06-16, SKB 06-17), no election days; #41). The
+corpus file stays as shipped; its days are no longer consulted.")
 
 (defclass normative-country-calendar (country-holiday-calendar)
   ((normative :initarg :normative :reader country-calendar-normative
