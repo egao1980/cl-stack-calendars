@@ -5,20 +5,75 @@
 
 ;;; --- Indonesia cuti bersama (SKB 3 Menteri / Keppres) ---------------
 
-(defun load-id-cuti-bersama (&optional (path (data-path "id/cuti-bersama.sexp")))
-  "Return alist YEAR → (:authority A :transfers … :uri …)."
-  (let ((form (read-data-form path)))
-    (mapcar
-     (lambda (block)
-       (let* ((year (getf block :year))
-              (auth (getf block :authority))
-              (transfers (mapcar (lambda (e)
-                                   (make-extra-day-transfer e auth))
-                                 (getf block :holidays))))
-         (cons year (list :authority auth
-                          :transfers transfers
-                          :uri (getf block :uri)))))
-     form)))
+(defun load-id-skb (&optional (path (data-path "id/skb.sexp")))
+  "Return alist YEAR → (:authority A :uri U :libur … :suppressed … :cuti …)
+from the SKB 3 Menteri of each year: :LIBUR the hari libur nasional the rules
+do not give (the moveable days, election days, one-off days), :SUPPRESSED
+rule dates the SKB did not keep, :CUTI the cuti bersama, both as transfers."
+  (mapcar
+   (lambda (block)
+     (let ((auth (getf block :authority)))
+       (flet ((transfers (key)
+                (mapcar (lambda (e) (make-extra-day-transfer e auth)) (getf block key))))
+         (cons (getf block :year)
+               (list :authority auth
+                     :uri (getf block :uri)
+                     :libur (transfers :holidays)
+                     :suppressed (mapcar (lambda (d) (apply #'make-date d)) (getf block :suppressed))
+                     :cuti (transfers :cuti))))))
+   (read-data-form path)))
+
+(defvar *id-skb* nil)
+
+(defun id-skb ()
+  (or *id-skb* (setf *id-skb* (load-id-skb))))
+
+(defparameter *id-skb-years* '(2005 . 2027)
+  "The years data/id/skb.sexp covers: their moveable days are the SKB's. No
+primary text of the 2000-2004 lists was found, so those years estimate.")
+
+(defun id-estimated-year-p (year)
+  "True when no SKB of data/id covers YEAR: the moveable days (Islamic,
+Nyepi, Waisak, Imlek) of the rules are estimates."
+  (not (<= (car *id-skb-years*) year (cdr *id-skb-years*))))
+
+(defun id-provisional-year-p (year)
+  "True for a year after the last SKB 3 Menteri (2027): its moveable days are
+estimates and it has no election, one-off or cuti bersama days."
+  (> year (cdr *id-skb-years*)))
+
+(defun id-nyepi-estimate (year)
+  "Estimate of Hari Suci Nyepi (the day after Tilem Kesanga) for a year no
+SKB covers: the day after the start (UTC+8, Bali's zone) of the second or
+third non-leap Chinese lunar month, the first that falls from 2 March to 15
+April. The Saka calendar's own rules (nampih sasih) are not modelled."
+  (let ((s (find-if (lambda (d) (<= (date-rd (make-date year 3 2)) (date-rd d)
+                                    (date-rd (make-date year 4 15))))
+                    (list (chinese-lunar-date year 2 1) (chinese-lunar-date year 3 1)))))
+    (and s (+ s 1))))
+
+(defun id-skb-libur-for-year (&optional year)
+  (loop for (nil . plist) in (id-skb)
+        append (remove-if-not (lambda (tr) (or (null year) (= year (date-year (calendar-transfer-to tr)))))
+                              (getf plist :libur))))
+
+(defun id-skb-cuti-for-year (&optional year)
+  (loop for (nil . plist) in (id-skb)
+        append (remove-if-not (lambda (tr) (or (null year) (= year (date-year (calendar-transfer-to tr)))))
+                              (getf plist :cuti))))
+
+(defun id-skb-suppressed-for-year (&optional year)
+  (loop for (nil . plist) in (id-skb)
+        append (remove-if-not (lambda (d) (or (null year) (= year (date-year d))))
+                              (getf plist :suppressed))))
+
+(defun load-id-cuti-bersama (&optional (path (data-path "id/skb.sexp")))
+  "Return alist YEAR → (:authority A :transfers … :uri …): the cuti bersama
+of each SKB 3 Menteri (data/id/skb.sexp)."
+  (loop for (year . plist) in (load-id-skb path)
+        collect (cons year (list :authority (getf plist :authority)
+                                 :transfers (getf plist :cuti)
+                                 :uri (getf plist :uri)))))
 
 (defvar *id-cuti-bersama* nil)
 
@@ -36,34 +91,48 @@
 
 ;;; Indonesia (formation 1945)
 (define-calendar indonesia-holidays-calendar (:register "ID" :constructor indonesia-holidays-calendar)
+  ;; Hari libur nasional. Fixed and Easter days are rules; the moveable days
+  ;; of each year 2000-2027 are the SKB 3 Menteri's (data/id/skb.sexp), so
+  ;; the moveable rules below only estimate years no SKB covers
+  ;; (ID-ESTIMATED-YEAR-P). Cuti bersama: (indonesia-holidays-calendar
+  ;; :cuti-bersama t).
   (:fixed "Tahun Baru Masehi" 1 1 :from 1946
-   :authority "Libur nasional sejak 1946; Keppres tahunan")
-  (:computed "Tahun Baru Imlek"
-   (lambda (y) (chinese-new-year-date y :location +beijing+))
-   :from 2003
-   :authority "Keppres — Tahun Baru Imlek sebagai hari libur nasional (sejak 2003)")
+   :authority "Keppres No. 24 Tahun 1953 dan perubahannya — Tahun Baru Masehi")
   (:fixed "Hari Buruh Internasional" 5 1 :from 2014
-   :authority "Keppres — Hari Buruh sebagai libur nasional (diperkuat 2014)")
+   :authority "Keppres No. 24 Tahun 2013 — Hari Buruh Internasional libur nasional (sejak 2014)")
   (:fixed "Hari Lahir Pancasila" 6 1 :from 2017
    :authority "Keppres No. 24 Tahun 2016 (libur sejak 2017)")
   (:fixed "Hari Kemerdekaan RI" 8 17 :from 1946
    :authority "Proklamasi 17 Agustus 1945; libur nasional sejak 1946")
-  (:fixed "Hari Raya Natal" 12 25 :from 1946
-   :authority "Libur nasional (Natal)")
-  (:easter "Wafat Isa Almasih" -2 :from 1946
-   :authority "Libur nasional (Jumat Agung)")
-  (:computed "Idul Fitri" #'eid-al-fitr :from 1945
-   :authority "Libur nasional — 1 Syawal (tabular Hijri; sighting may ±1)")
+  (:fixed "Hari Raya Natal" 12 25 :from 1946 :authority "Keppres No. 24 Tahun 1953 — Hari Raya Natal")
+  (:easter "Wafat Isa Almasih" -2 :from 1946 :authority "Keppres No. 10 Tahun 1971 — Wafat Isa Almasih (Jumat Agung)")
+  (:easter "Kebangkitan Isa Almasih" 0 :from 2024
+   :authority "Keppres No. 8 Tahun 2024 — Hari Kebangkitan Yesus Kristus (Paskah)")
+  (:easter "Kenaikan Isa Almasih" 39 :from 1968
+   :authority "Keppres No. 251 Tahun 1967 — Kenaikan Isa Almasih (Paskah + 39)")
+  (:computed "Tahun Baru Imlek"
+             (lambda (y) (when (id-estimated-year-p y) (chinese-new-year-date y :location +beijing+)))
+   :from 2003
+   :authority "Keppres No. 19 Tahun 2002 — Tahun Baru Imlek (sejak 2003); the SKB date in 2003-2027")
+  (:computed "Isra Mikraj Nabi Muhammad"
+             (lambda (y) (when (id-estimated-year-p y) (islamic-date-in-gregorian-year y 7 27)))
+   :from 1968 :authority "27 Rajab — the SKB date in 2000-2027, tabular estimate otherwise")
+  (:computed "Hari Suci Nyepi" (lambda (y) (when (id-estimated-year-p y) (id-nyepi-estimate y)))
+   :from 1983 :authority "Keppres No. 3 Tahun 1983 — Tahun Baru Saka; the SKB date in 2000-2027, estimate otherwise")
+  (:computed "Hari Raya Waisak"
+             (lambda (y) (when (id-estimated-year-p y) (chinese-lunar-date y 4 15 :location +beijing+)))
+   :from 1983 :authority "Keppres No. 3 Tahun 1983 — Waisak; the SKB date in 2000-2027, estimate (lunar 4/15) otherwise")
+  (:computed "Idul Fitri" (lambda (y) (when (id-estimated-year-p y) (eid-al-fitr y))) :from 1946
+   :authority "1 Syawal — the SKB date in 2000-2027, tabular estimate otherwise")
   (:computed "Idul Fitri"
-   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
-   :from 1945
-   :authority "Libur nasional — 2 Syawal")
-  (:computed "Idul Adha" #'eid-al-adha :from 1945
-   :authority "Libur nasional — 10 Dhu al-Hijjah (tabular)")
-  (:computed "Tahun Baru Islam" #'islamic-new-year-date :from 1945
-   :authority "Libur nasional — 1 Muharram (tabular)")
-  (:computed "Maulid Nabi" #'mawlid-date :from 1945
-   :authority "Libur nasional — 12 Rabiulawal (tabular)"))
+             (lambda (y) (when (id-estimated-year-p y) (let ((d (eid-al-fitr y))) (and d (+ d 1)))))
+   :from 1946 :authority "2 Syawal — the SKB date in 2000-2027, tabular estimate otherwise")
+  (:computed "Idul Adha" (lambda (y) (when (id-estimated-year-p y) (eid-al-adha y))) :from 1946
+   :authority "10 Zulhijah — the SKB date in 2000-2027, tabular estimate otherwise")
+  (:computed "Tahun Baru Islam" (lambda (y) (when (id-estimated-year-p y) (islamic-new-year-date y)))
+   :from 1946 :authority "1 Muharam — the SKB date in 2000-2027, tabular estimate otherwise")
+  (:computed "Maulid Nabi Muhammad" (lambda (y) (when (id-estimated-year-p y) (mawlid-date y)))
+   :from 1946 :authority "12 Rabiulawal — the SKB date in 2000-2027, tabular estimate otherwise"))
 
 ;;; Bangladesh (1971)
 (define-calendar bangladesh-holidays-calendar (:register "BD")
@@ -107,38 +176,42 @@
 
 ;;; Philippines (1946)
 (define-calendar philippines-holidays-calendar (:register "PH" :constructor philippines-holidays-calendar)
-  (:fixed "New Year's Day" 1 1 :from 1946
-   :authority "Republic Act / Proclamation — regular holiday")
-  (:fixed "EDSA People Power Revolution Anniversary" 2 25 :from 1986
-   :authority "Special non-working holiday — EDSA 1986")
-  (:computed "Chinese New Year"
-   (lambda (y) (chinese-new-year-date y :location +beijing+))
-   :from 2012
-   :authority "Special non-working day by proclamation (often; Beijing tabular CNY)")
-  (:easter "Maundy Thursday" -3 :from 1946
-   :authority "Regular holiday (Holy Week)")
-  (:easter "Good Friday" -2 :from 1946
-   :authority "Regular holiday (Holy Week)")
-  (:fixed "Araw ng Kagitingan" 4 9 :from 1946
-   :authority "Day of Valor — regular holiday")
-  (:fixed "Labor Day" 5 1 :from 1946
-   :authority "Regular holiday")
+  ;; EO 292 (Administrative Code of 1987) Book I, Chapter 7, Sec. 26 as
+  ;; amended by RA 9177, 9256, 9492, 9849 and 10966. The yearly
+  ;; proclamations (moves, special days, Eid dates) are in data/ph.
+  ;; https://lawphil.net/statutes/repacts/ra2007/ra_9492_2007.html
+  (:fixed "New Year's Day" 1 1 :from 1946 :authority "EO 292 Sec. 26 (1)(a) — regular holiday")
+  (:fixed "EDSA People Power Revolution Anniversary" 2 25 :from 1986 :to 1999
+   :authority "Special day by yearly proclamation; from 2000 in data/ph (absent 2001, 2007, 2024; a special working day from 2025)")
+  (:easter "Maundy Thursday" -3 :from 1946 :authority "EO 292 Sec. 26 — regular holiday")
+  (:easter "Good Friday" -2 :from 1946 :authority "EO 292 Sec. 26 — regular holiday")
+  (:fixed "Araw ng Kagitingan" 4 9 :from 1946 :authority "EO 292 Sec. 26 — regular holiday (9 April)")
+  (:fixed "Labor Day" 5 1 :from 1946 :authority "EO 292 Sec. 26 — regular holiday")
   (:fixed "Independence Day" 6 12 :from 1962
    :authority "Independence Day moved to 12 June (Diosdado Macapagal, 1962); was 4 July 1946–1961")
   (:fixed "Independence Day" 7 4 :from 1946 :to 1961
    :authority "Philippine Independence Day (4 July) until 1961")
   (:fixed "Ninoy Aquino Day" 8 21 :from 2004
-   :authority "RA 9256 — Ninoy Aquino Day (special non-working)")
+   :authority "RA 9256 (2004) — Ninoy Aquino Day, 21 August, special non-working")
+  (:nth-weekday "National Heroes Day" 8 :sunday -1 :from 1946 :to 2006
+   :authority "EO 292 Sec. 26 — National Heroes Day, last Sunday of August")
   (:nth-weekday "National Heroes Day" 8 :monday -1 :from 2007
-   :authority "RA 9492 — National Heroes Day last Monday of August")
-  (:fixed "All Saints' Day" 11 1 :from 1946
-   :authority "Special non-working holiday")
-  (:fixed "Bonifacio Day" 11 30 :from 1946
-   :authority "Regular holiday (Andrés Bonifacio)")
-  (:fixed "Christmas Day" 12 25 :from 1946
-   :authority "Regular holiday")
-  (:fixed "Rizal Day" 12 30 :from 1946
-   :authority "Regular holiday (José Rizal)"))
+   :authority "RA 9492 (2007) — National Heroes Day, last Monday of August")
+  (:fixed "All Saints' Day" 11 1 :from 1946 :authority "EO 292 Sec. 26 (2) — nationwide special day")
+  (:fixed "Bonifacio Day" 11 30 :from 1946 :authority "EO 292 Sec. 26 — regular holiday")
+  (:fixed "Feast of the Immaculate Conception" 12 8 :from 2018
+   :authority "RA 10966 (2017) — 8 December, special non-working holiday")
+  (:fixed "Christmas Day" 12 25 :from 1946 :authority "EO 292 Sec. 26 — regular holiday")
+  (:fixed "Rizal Day" 12 30 :from 1946 :authority "EO 292 Sec. 26 — regular holiday")
+  (:fixed "Last Day of the Year" 12 31 :from 1988 :authority "EO 292 Sec. 26 (2) — nationwide special day")
+  (:computed "Eid'l Fitr (estimated)"
+             (lambda (y) (when (ph-provisional-year-p y) (eid-al-fitr y)))
+   :from 2002
+   :authority "RA 9177 (2002) — Eid'l Fitr a regular holiday, its date proclaimed yearly (data/ph); tabular estimate in years with no proclamation")
+  (:computed "Eid'l Adha (estimated)"
+             (lambda (y) (when (ph-provisional-year-p y) (eid-al-adha y)))
+   :from 2010
+   :authority "RA 9849 (2009) — Eid'l Adha a regular holiday, its date proclaimed yearly (data/ph); tabular estimate in years with no proclamation"))
 
 ;;; Vietnam (1945)
 (define-calendar vietnam-holidays-calendar (:register "VN")
@@ -248,6 +321,9 @@
 ;;; --- Philippines Malacañang proclamations (bridge / special days) -----
 
 (defun load-ph-proclamations (&optional (path (data-path "ph/proclamations.sexp")))
+  "Return alist YEAR → (:authority A :transfers … :suppressed … :uri …):
+the proclaimed days the statutory rules do not give, and the statutory
+dates the proclamations did not keep."
   (let ((form (read-data-form path)))
     (mapcar
      (lambda (block)
@@ -258,6 +334,8 @@
                                  (getf block :holidays))))
          (cons year (list :authority auth
                           :transfers transfers
+                          :suppressed (mapcar (lambda (d) (apply #'make-date d))
+                                              (getf block :suppressed))
                           :uri (getf block :uri)))))
      form)))
 
@@ -272,6 +350,21 @@
 
 (defun ph-transfers-for-year (year)
   (transfers-touching-year (ph-proclamations) year))
+
+(defun ph-suppressed-for-year (&optional year)
+  "Statutory dates the proclamations did not keep, in YEAR (or every year)."
+  (loop for (nil . plist) in (ph-proclamations)
+        append (remove-if-not (lambda (d) (or (null year) (= year (date-year d))))
+                              (getf plist :suppressed))))
+
+(defparameter *ph-last-eid-year* 2026
+  "The latest year whose Eid'l Fitr and Eid'l Adha are proclaimed (data/ph).")
+
+(defun ph-provisional-year-p (year)
+  "True when YEAR has no Eid'l Fitr / Eid'l Adha proclamation yet: its Eid
+days are tabular estimates and, after the last yearly proclamation (2027),
+only the statutory days are in it."
+  (> year *ph-last-eid-year*))
 
 ;;; --- Thailand Royal Gazette substitute / bridge days ------------------
 
@@ -597,35 +690,148 @@ day before or after is a 공휴일 (②)."
    :from 1972
    :authority "Federal holiday — Deepavali (Beijing tabular ≈ gazette)"))
 
+;;; --- Taiwan: 調整放假 / 補行上班 and 補假 ----------------------------------
+
+(defun load-tw-adjustments (&optional (path (data-path "tw/adjustments.sexp")))
+  "Return alist YEAR → (:authority A :transfers … :working … :uri …)."
+  (mapcar
+   (lambda (block)
+     (let ((auth (getf block :authority)))
+       (cons (getf block :year)
+             (list :authority auth
+                   :transfers (mapcar (lambda (e) (make-extra-day-transfer e auth))
+                                      (getf block :holidays))
+                   :working (mapcar (lambda (d)
+                                      (make-calendar-working-day :date (apply #'make-date d)
+                                                                 :authority auth))
+                                    (getf block :working))
+                   :uri (getf block :uri)))))
+   (read-data-form path)))
+
+(defvar *tw-adjustments* nil)
+
+(defun tw-adjustments ()
+  (or *tw-adjustments* (setf *tw-adjustments* (load-tw-adjustments))))
+
+(defun tw-transfers-for-year (year)
+  "調整放假 days whose date falls in YEAR."
+  (transfers-touching-year (tw-adjustments) year))
+
+(defun tw-working-days-for-year (year)
+  "補行上班 days that fall in YEAR."
+  (loop for (nil . plist) in (tw-adjustments)
+        append (remove-if-not (lambda (wd) (= year (date-year (calendar-working-day-date wd))))
+                              (getf plist :working))))
+
+(defparameter *tw-last-calendar-year* 2027
+  "The latest year with a published DGPA 政府行政機關辦公日曆表 (116年, 2026-07).")
+
+(defun tw-provisional-year-p (year)
+  "True when YEAR is after the last DGPA calendar: its days follow the statute
+and the 補假 rules, but no 調整放假 can be known yet."
+  (> year *tw-last-calendar-year*))
+
+(defparameter *tw-spring-names* '("小年夜" "農曆除夕" "春節")
+  "The 春節 days: on a weekend, 補假 on the following workdays.")
+
+(defun tw-bujia-pass (calendar year pairs)
+  "補假 for the days off of YEAR in PAIRS (DATE . NAME):
+
+- 除夕/春節 (and 小年夜 from 2026) on a Saturday or Sunday: one day each on
+  the workdays after the last of them, from 2003 (週休二日實施辦法 第3條,
+  2002-08-30 修正).
+- Any other day off on a Saturday: the workday before; on a Sunday: the
+  workday after, from 2015 (實施辦法 第5條之1; 條例 第8條). A 1 January on a
+  Saturday gives 31 December of YEAR.
+- 兒童節 on 民族掃墓節, from 2013 (實施辦法 第5條): the day before, or the day
+  after when it is a Thursday; that day, if a weekend day, moves as above.
+
+A workday is a Monday–Friday that is no day off and no 調整放假 of CALENDAR."
+  (let ((taken (make-hash-table :test #'eql))
+        (extra '()))
+    (dolist (pair pairs)
+      (setf (gethash (date-rd (car pair)) taken) t))
+    (dolist (tr (calendar-transfers calendar))
+      (let ((to (calendar-transfer-to tr)))
+        (when to (setf (gethash (date-rd to) taken) t))))
+    (labels ((weekend-p (d) (>= (date-day-of-week d) 6))
+             (free-p (d) (not (or (weekend-p d) (gethash (date-rd d) taken))))
+             (step-to (d by)
+               (loop do (setf d (+ d by)) until (free-p d))
+               d)
+             (place (d name)
+               (setf (gethash (date-rd d) taken) t)
+               (push (cons d name) extra))
+             (by-date (list)
+               ;; Date order, ties by name, so the result is the same for any
+               ;; rule order (兒童節 takes its day before 民族掃墓節 does).
+               (sort (copy-list list)
+                     (lambda (a b)
+                       (or (cl:< (date-rd (car a)) (date-rd (car b)))
+                           (and (= (date-rd (car a)) (date-rd (car b)))
+                                (string< (princ-to-string (cdr a)) (princ-to-string (cdr b)))
+                                t))))))
+      (let ((qingming (car (find "民族掃墓節" pairs :key #'cdr :test #'equal)))
+            (children (make-date year 4 4)))
+        (dolist (pair (by-date pairs))
+          (let ((d (car pair)) (name (cdr pair)))
+            (unless (member name *tw-spring-names* :test #'equal)
+              (block one
+                (when (and (equal name "兒童節") (>= year 2013) qingming
+                           (= (date-rd qingming) (date-rd children)))
+                  (setf d (+ children (if (= 4 (date-day-of-week children)) 1 -1)))
+                  (unless (weekend-p d)
+                    (place d "兒童節 (與民族掃墓節同日)")
+                    (return-from one)))
+                (when (and (weekend-p d) (>= year 2015))
+                  (place (step-to d (if (= 6 (date-day-of-week d)) -1 1))
+                         (format nil "補假 (~a)" name)))))))
+        (when (>= year 2003)
+          (let* ((spring (by-date (remove-if-not (lambda (p) (member (cdr p) *tw-spring-names* :test #'equal))
+                                                 pairs)))
+                 (last (car (car (last spring)))))
+            (dolist (pair spring)
+              (when (weekend-p (car pair))
+                (setf last (step-to last 1))
+                (place last "補假 (春節)")))))
+        (let ((new-year (make-date (1+ year) 1 1)))
+          (when (and (>= (1+ year) 2015) (= 6 (date-day-of-week new-year)))
+            (place (step-to new-year -1) "補假 (開國紀念日)")))))
+    (append pairs (nreverse extra))))
+
 ;;; Taiwan (ROC post-1945) — national holidays under ROC calendar law
-(define-calendar taiwan-holidays-calendar (:register "TW")
-  (:fixed "中華民國開國紀念日" 1 1 :from 1945
-   :authority "紀念日及節日實施辦法 — Founding Day / New Year")
-  (:computed "農曆春節"
-   (lambda (y) (chinese-new-year-eve-date y :location +beijing+))
-   :from 1945 :authority "除夕")
-  (:computed "農曆春節"
-   (lambda (y) (chinese-new-year-date y :location +beijing+))
-   :from 1945 :authority "春節")
-  (:computed "農曆春節"
-   (lambda (y) (+ (chinese-new-year-date y :location +beijing+) 1))
-   :from 1945 :authority "春節")
-  (:computed "農曆春節"
-   (lambda (y) (+ (chinese-new-year-date y :location +beijing+) 2))
-   :from 1945 :authority "春節")
-  (:fixed "和平紀念日" 2 28 :from 1997
-   :authority "二二八和平紀念日 — public holiday from 1997")
+(define-calendar taiwan-holidays-calendar (:register "TW" :constructor taiwan-holidays-calendar
+                                           :observance-pass tw-bujia-pass)
+  ;; 行政機關放假日: 公務人員週休二日實施辦法 第3條 and 紀念日及節日實施辦法
+  ;; (2001-2025), 紀念日及節日實施條例 第4條、第6條 (from 2025-05-28); 補假
+  ;; in TW-BUJIA-PASS; 調整放假 / 補行上班 in data/tw/adjustments.sexp.
+  ;; Lunar dates and 清明 at UTC+8. https://law.moj.gov.tw/LawClass/LawAll.aspx?pcode=D0020095
+  (:fixed "開國紀念日" 1 1 :from 1945 :authority "週休二日實施辦法 第3條; 條例 第4條 — 開國紀念日 (1月1日)")
+  (:computed "小年夜" (lambda (y) (- (chinese-new-year-eve-date y) 1)) :from 2026
+   :authority "紀念日及節日實施條例 第6條 — 春節: 農曆除夕前一日至正月初三 (2025-05-28; 2023-2025 by yearly decision)")
+  (:computed "農曆除夕" #'chinese-new-year-eve-date :from 1945 :authority "民俗節日 — 農曆除夕")
+  (:computed "春節" #'chinese-new-year-date :from 1945 :authority "民俗節日 — 春節 (正月初一)")
+  (:computed "春節" (lambda (y) (+ (chinese-new-year-date y) 1)) :from 1945 :authority "春節 (正月初二)")
+  (:computed "春節" (lambda (y) (+ (chinese-new-year-date y) 2)) :from 1945 :authority "春節 (正月初三)")
+  (:fixed "和平紀念日" 2 28 :from 1997 :authority "二二八和平紀念日 — 放假 from 1997")
+  (:fixed "兒童節" 4 4 :from 2011
+   :authority "紀念日及節日實施辦法 第5條 (2010-11-02 修正); 週休二日實施辦法 第3條 (2011-04-01) — 兒童節放假 from 2011")
+  (:computed "民族掃墓節" #'qingming-date :from 1945 :authority "民俗節日 — 民族掃墓節 (清明, solar term)")
+  (:fixed "勞動節" 5 1 :from 2026
+   :authority "紀念日及節日實施條例 第6條 — 勞動節 (行政機關 from 2026; before, labourers only)")
+  (:computed "端午節" #'duanwu-date :from 1945 :authority "民俗節日 — 端午節 (農曆五月五日)")
+  (:computed "中秋節" #'zhongqiu-date :from 1945 :authority "民俗節日 — 中秋節 (農曆八月十五日)")
+  (:fixed "孔子誕辰紀念日" 9 28 :from (2025 5 28)
+   :authority "紀念日及節日實施條例 第4條 — 孔子誕辰紀念日 (9月28日), 2025-05-28 施行")
+  (:fixed "國慶日" 10 10 :from 1945 :authority "國慶日 (10月10日)")
+  (:fixed "臺灣光復暨金門古寧頭大捷紀念日" 10 25 :from (2025 5 28)
+   :authority "紀念日及節日實施條例 第4條 — 10月25日, 2025-05-28 施行")
+  (:fixed "國父誕辰紀念日" 11 12 :from 1945 :to 2000
+   :authority "公務人員週休二日實施辦法 第3條 (2001-01-01): 國父誕辰紀念日 no longer a day off")
   (:fixed "行憲紀念日" 12 25 :from 1945 :to 2000
-   :authority "Constitution Day on 25 Dec until abolished as holiday 2001")
-  (:computed "清明節" (lambda (y) (qingming-date y :location +beijing+))
-   :from 1945 :authority "清明節")
-  (:fixed "勞動節" 5 1 :from 1945 :authority "勞動節（勞工）")
-  (:computed "端午節" (lambda (y) (duanwu-date y :location +beijing+))
-   :from 1945 :authority "端午節")
-  (:computed "中秋節" (lambda (y) (zhongqiu-date y :location +beijing+))
-   :from 1945 :authority "中秋節")
-  (:fixed "國慶日" 10 10 :from 1945
-   :authority "國慶日 — Double Tenth"))
+   :authority "公務人員週休二日實施辦法 第3條 (2001-01-01): 行憲紀念日 no longer a day off")
+  (:fixed "行憲紀念日" 12 25 :from (2025 5 28)
+   :authority "紀念日及節日實施條例 第4條 — 行憲紀念日 (12月25日), 2025-05-28 施行"))
 
 ;;; Uzbekistan (independence 1991)
 (define-calendar uzbekistan-holidays-calendar (:register "UZ")
@@ -650,27 +856,35 @@ day before or after is a 공휴일 (②)."
   (:computed "Qurbon Hayit" #'eid-al-adha :from 1991
    :authority "Eid al-Adha (tabular Hijri)"))
 
-(defun indonesia-holidays-calendar (&key year transfers)
-  "Indonesian national holidays with the cuti bersama days of
-data/id/cuti-bersama.sexp. Without YEAR, every year in the file applies (the
-registered \"ID\" calendar); with YEAR, only that year's days."
-  (let ((tr (or transfers
-                (if year
-                    (id-transfers-for-year year)
-                    (all-block-transfers (id-cuti-bersama))))))
-    (make-instance 'indonesia-holidays-calendar :transfers tr)))
+(defun indonesia-holidays-calendar (&key year transfers cuti-bersama)
+  "Indonesian hari libur nasional: the fixed and Easter days, and the days of
+each SKB 3 Menteri in data/id/skb.sexp (moveable days, election and one-off
+days; 2000-2027). CUTI-BERSAMA true adds the SKB's cuti bersama, the
+collective leave days that are mandatory for ASN and optional for private
+employers. Without YEAR, every year in the file applies (the registered
+\"ID\" calendar); with YEAR, only that year's days. ID-PROVISIONAL-YEAR-P
+years estimate the moveable days."
+  (make-instance 'indonesia-holidays-calendar
+                 :transfers (or transfers
+                                (append (id-skb-libur-for-year year)
+                                        (when cuti-bersama (id-skb-cuti-for-year year))))
+                 :suppressed-dates (id-skb-suppressed-for-year year)))
 
 (defun bangladesh-holidays-calendar () (make-instance 'bangladesh-holidays-calendar))
 
-(defun philippines-holidays-calendar (&key year transfers)
-  "Philippine holidays with the Malacañang proclamation days of
-data/ph/proclamations.sexp. Without YEAR, every year in the file applies (the
-registered \"PH\" calendar); with YEAR, only that year's days."
-  (let ((tr (or transfers
-                (if year
-                    (ph-transfers-for-year year)
-                    (all-block-transfers (ph-proclamations))))))
-    (make-instance 'philippines-holidays-calendar :transfers tr)))
+(defun philippines-holidays-calendar (&key year transfers suppressed-dates)
+  "Philippine regular holidays and nationwide special (non-working) days: the
+statutory days, changed by the proclamations of data/ph/proclamations.sexp
+(days added, statutory dates moved or not kept). Without YEAR, every year in
+the file applies (the registered \"PH\" calendar); with YEAR, only that
+year's. Special working days are not holidays. PH-PROVISIONAL-YEAR-P years
+have estimated Eid days."
+  (make-instance 'philippines-holidays-calendar
+                 :transfers (or transfers
+                                (if year
+                                    (ph-transfers-for-year year)
+                                    (all-block-transfers (ph-proclamations))))
+                 :suppressed-dates (or suppressed-dates (ph-suppressed-for-year year))))
 
 (defun vietnam-holidays-calendar () (make-instance 'vietnam-holidays-calendar))
 
@@ -707,7 +921,21 @@ registered \"MY\" calendar); with YEAR, only that year's days."
                     (my-transfers-for-year year)
                     (all-block-transfers (my-transfers))))))
     (make-instance 'malaysia-holidays-calendar :transfers tr)))
-(defun taiwan-holidays-calendar () (make-instance 'taiwan-holidays-calendar))
+(defun taiwan-holidays-calendar (&key year transfers working-days)
+  "ROC government-office days off (行政機關放假日) with the 調整放假 and
+補行上班 of data/tw/adjustments.sexp. Without YEAR, every year in the file
+applies (the registered \"TW\" calendar); with YEAR, only that year's days.
+Years after the last DGPA calendar are provisional (TW-PROVISIONAL-YEAR-P)."
+  (make-instance 'taiwan-holidays-calendar
+                 :transfers (or transfers
+                                (if year
+                                    (tw-transfers-for-year year)
+                                    (all-block-transfers (tw-adjustments))))
+                 :working-days (or working-days
+                                   (if year
+                                       (tw-working-days-for-year year)
+                                       (loop for (nil . plist) in (tw-adjustments)
+                                             append (getf plist :working))))))
 (defun uzbekistan-holidays-calendar () (make-instance 'uzbekistan-holidays-calendar))
 
 ;;; --- Korea / South Asia / Central Asia (≥20M) -------------------------

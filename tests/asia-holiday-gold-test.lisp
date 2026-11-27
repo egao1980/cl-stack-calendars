@@ -111,3 +111,205 @@ each three-day 설날 and 추석 (#39 item 7)."
   (ng (kr-provisional-year-p 2027))
   (ok (kr-provisional-year-p 2028))
   (ok (kr-provisional-year-p 2040)))
+
+;;; --- Hong Kong (#41) -------------------------------------------------------
+
+(defparameter *hk-holiday-gold* (load-holiday-gold "HK"))
+
+(deftest hk-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *hk-holiday-gold* "HK"))
+
+(deftest hk-registered-calendar-matches-gold
+  "find-calendar \"HK\" agrees with Cap. 149 and the HKO lunar tables on every
+day 2000–2040 (the gold is checked against the gazetted lists 2000–2027)."
+  (let ((hk (find-calendar "HK")))
+    (%report-holiday-gold "HK" (%holiday-gold-mismatches *hk-holiday-gold* (constantly hk)))))
+
+(deftest hk-country-calendar-matches-gold
+  (let ((hk (country-calendar "HK")))
+    (ok (eq :normative (calendar-provenance hk)))
+    (%report-holiday-gold "country-calendar HK"
+                          (%holiday-gold-mismatches *hk-holiday-gold* (constantly hk)))))
+
+(deftest hk-cap149-schedule-2024
+  "The six general holidays #41 found missing, and the fourth day of Lunar
+New Year for the Sunday 2024-02-11."
+  (let ((hk (find-calendar "HK")))
+    (dolist (ymd '((2024 3 30) (2024 4 4) (2024 5 15) (2024 6 10) (2024 9 18) (2024 10 11)
+                   (2024 2 13)))
+      (ok (holiday-p hk (apply #'make-date ymd)) (format nil "~{~d-~2,'0d-~2,'0d~}" ymd)))))
+
+(deftest hk-substitutes-by-era
+  "Cap. 149 Schedule before and after 23 of 2011, and s. 6(2)."
+  (let ((hk (find-calendar "HK")))
+    (flet ((holiday (y m d) (holiday-p hk (make-date y m d))))
+      (ok (holiday 2010 2 13) "LNY on a Sunday before 2012: the day preceding")
+      (ng (holiday 2010 2 17))
+      (ok (holiday 2013 2 13) "LNY on a Sunday from 2012: the fourth day")
+      (ng (holiday 2013 2 9))
+      (ok (holiday 2009 10 3) "day following Mid-Autumn on a Sunday before 2012: the festival")
+      (ng (holiday 2009 10 5))
+      (ok (holiday 2014 9 9) "Mid-Autumn 2014-09-08: the day following")
+      (ok (holiday 2010 4 6) "Ching Ming on Easter Monday: s. 6(2)")
+      (ok (holiday 2015 4 7) "Ching Ming Sunday, its substitute on Easter Monday: s. 6(2)")
+      (ok (holiday 2022 12 27) "Christmas on a Sunday: the second weekday after")
+      (ok (holiday 2020 12 26) "the first weekday after Christmas may be a Saturday")
+      (ok (holiday 2015 9 3) "one-off 2015 general holiday")
+      (ok (holiday 2033 10 3) "National Day and Chung Yeung on Saturday 2033-10-01: s. 6(2)"))))
+
+;;; --- Taiwan (#41) ----------------------------------------------------------
+
+(defparameter *tw-holiday-gold* (load-holiday-gold "TW"))
+
+(deftest tw-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *tw-holiday-gold* "TW")
+  (ok (getf *tw-holiday-gold* :working-days)))
+
+(deftest tw-registered-calendar-matches-gold
+  "find-calendar \"TW\" agrees with the statute, the 補假 rules and the DGPA
+調整放假 / 補行上班 on every day 2000–2040 (gold checked against the DGPA
+calendars 2000–2027)."
+  (let ((tw (find-calendar "TW")))
+    (%report-holiday-gold "TW" (%holiday-gold-mismatches *tw-holiday-gold* (constantly tw)))))
+
+(deftest tw-year-calendars-match-gold
+  (%report-holiday-gold "TW :year"
+                        (%holiday-gold-mismatches *tw-holiday-gold*
+                                                  (lambda (y) (taiwan-holidays-calendar :year y)))))
+
+(deftest tw-country-calendar-matches-gold
+  (let ((tw (country-calendar "TW")))
+    (ok (eq :normative (calendar-provenance tw)))
+    (%report-holiday-gold "country-calendar TW"
+                          (%holiday-gold-mismatches *tw-holiday-gold* (constantly tw)))))
+
+(deftest tw-childrens-day-and-bujia
+  "兒童節 from 2011 with the 清明 rule; 補假 (#41 TW comment)."
+  (let ((tw (find-calendar "TW")))
+    (flet ((holiday (y m d) (holiday-p tw (make-date y m d))))
+      (ok (holiday 2024 4 5) "兒童節 on 清明, a Thursday: the day after")
+      (ok (holiday 2025 4 3) "兒童節 on 清明, a Friday: the day before")
+      (ok (holiday 2016 4 5) "the day before is a Sunday: the next workday")
+      (ok (holiday 2021 4 2) "both on a Sunday: 兒童節 to Friday 4/2")
+      (ok (holiday 2021 4 5) "清明 to Monday 4/5")
+      (ng (holiday 2010 4 4) "no 兒童節 before 2011 (Sunday anyway)")
+      (ok (holiday 2026 4 3) "兒童節 on a Saturday: the Friday before")
+      (ok (holiday 2026 4 6) "清明 on a Sunday: the Monday after")
+      (ok (holiday 2021 12 31) "1 January 2022 on a Saturday")
+      (ok (holiday 2024 2 8) "小年夜 2024 by decision")
+      (ok (holiday 2023 1 20))
+      (ok (holiday 2023 1 27))
+      (ok (business-day-p tw (make-date 2024 2 17)) "補行上班")
+      (ok (holiday 2026 5 1) "勞動節 from 2026")
+      (ng (holiday 2025 5 1))
+      (ok (holiday 2025 9 29) "孔子誕辰紀念日 on Sunday 2025-09-28")
+      (ok (holiday 2025 12 25)))))
+
+(deftest tw-after-last-calendar-is-provisional
+  (ng (tw-provisional-year-p 2027))
+  (ok (tw-provisional-year-p 2028)))
+
+;;; --- Philippines (#41) -----------------------------------------------------
+
+(defparameter *ph-holiday-gold* (load-holiday-gold "PH"))
+
+(deftest ph-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *ph-holiday-gold* "PH"))
+
+(deftest ph-registered-calendar-matches-gold
+  "find-calendar \"PH\" agrees with EO 292 s. 26 as amended and every yearly
+proclamation 2000–2027 on every day 2000–2040 (Eid days 2027 onward and the
+years after 2027 are provisional)."
+  (let ((ph (find-calendar "PH")))
+    (%report-holiday-gold "PH" (%holiday-gold-mismatches *ph-holiday-gold* (constantly ph)))))
+
+(deftest ph-year-calendars-match-gold
+  (%report-holiday-gold "PH :year"
+                        (%holiday-gold-mismatches *ph-holiday-gold*
+                                                  (lambda (y) (philippines-holidays-calendar :year y)))))
+
+(deftest ph-country-calendar-matches-gold
+  (let ((ph (country-calendar "PH")))
+    (ok (eq :normative (calendar-provenance ph)))
+    (%report-holiday-gold "country-calendar PH"
+                          (%holiday-gold-mismatches *ph-holiday-gold* (constantly ph)))))
+
+(deftest ph-issue-41-days
+  (let ((ph (find-calendar "PH")))
+    (flet ((holiday (y m d) (holiday-p ph (make-date y m d))))
+      (ok (holiday 2024 4 10) "Eid'l Fitr 2024")
+      (ok (holiday 2024 6 17) "Eid'l Adha 2024")
+      (ok (holiday 2024 3 30) "Black Saturday")
+      (ok (holiday 2024 12 8) "Immaculate Conception (RA 10966)")
+      (ok (holiday 2024 12 31) "Last Day of the Year")
+      (ok (holiday 2024 8 23) "Ninoy Aquino Day moved by Proc. 665")
+      (ng (holiday 2024 8 21))
+      (ng (holiday 2024 2 25) "EDSA not in Proc. 368")
+      (ng (holiday 2025 2 25) "EDSA a special working day (Proc. 727)")
+      (ng (holiday 2026 2 25))
+      (ng (holiday 2027 2 25) "EDSA a special working day (Proc. 1427)")
+      (ok (holiday 2027 2 6) "Chinese New Year 2027 (Proc. 1427)")
+      (ok (holiday 2023 4 10) "Araw ng Kagitingan moved to Monday (Proc. 90)")
+      (ng (holiday 2023 4 9)))))
+
+(deftest ph-provisional-years
+  (ng (ph-provisional-year-p 2026))
+  (ok (ph-provisional-year-p 2027)))
+
+;;; --- Indonesia (#41) -------------------------------------------------------
+
+(defparameter *id-holiday-gold* (load-holiday-gold "ID"))
+
+(defun %id-gold-with-cuti ()
+  "The ID gold with its :CUTI-BERSAMA rows counted as days off."
+  (list* :days (append (getf *id-holiday-gold* :days) (getf *id-holiday-gold* :cuti-bersama))
+         *id-holiday-gold*))
+
+(deftest id-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *id-holiday-gold* "ID" :from 2005)
+  (ok (getf *id-holiday-gold* :cuti-bersama)))
+
+(deftest id-registered-calendar-matches-gold
+  "find-calendar \"ID\" holds the hari libur nasional of every SKB 3 Menteri
+2005–2027 on every day, and the estimates of 2028–2040."
+  (let ((id (find-calendar "ID")))
+    (%report-holiday-gold "ID" (%holiday-gold-mismatches *id-holiday-gold* (constantly id)))))
+
+(deftest id-year-calendars-match-gold
+  (%report-holiday-gold "ID :year"
+                        (%holiday-gold-mismatches *id-holiday-gold*
+                                                  (lambda (y) (indonesia-holidays-calendar :year y)))))
+
+(deftest id-cuti-bersama-calendar-matches-gold
+  "(indonesia-holidays-calendar :cuti-bersama t) adds exactly the SKB cuti bersama."
+  (%report-holiday-gold "ID :cuti-bersama"
+                        (%holiday-gold-mismatches (%id-gold-with-cuti)
+                                                  (lambda (y) (indonesia-holidays-calendar :year y :cuti-bersama t)))))
+
+(deftest id-country-calendar-matches-gold
+  (let ((id (country-calendar "ID")))
+    (ok (eq :normative (calendar-provenance id)))
+    (%report-holiday-gold "country-calendar ID"
+                          (%holiday-gold-mismatches *id-holiday-gold* (constantly id)))))
+
+(deftest id-issue-41-days
+  (let ((id (find-calendar "ID")))
+    (flet ((holiday (y m d) (holiday-p id (make-date y m d))))
+      (ok (holiday 2024 2 8) "Isra Mikraj")
+      (ok (holiday 2024 3 11) "Nyepi")
+      (ok (holiday 2024 5 9) "Kenaikan")
+      (ok (holiday 2024 5 23) "Waisak")
+      (ok (holiday 2024 7 7) "Tahun Baru Islam per SKB, not the tabular 07-08")
+      (ng (holiday 2024 7 8))
+      (ok (holiday 2022 5 2) "Idul Fitri per SKB")
+      (ok (holiday 2022 5 3))
+      (ng (holiday 2022 5 4))
+      (ok (holiday 2024 2 14) "Pemilu 2024")
+      (ok (holiday 2024 11 27) "Pilkada serentak 2024")
+      (ok (holiday 2027 3 10) "SKB 2027")
+      (ng (holiday 2024 2 9) "cuti bersama is not a hari libur")
+      (ng (holiday 2016 6 1) "Pancasila from 2017"))))
+
+(deftest id-provisional-years
+  (ng (id-provisional-year-p 2027))
+  (ok (id-provisional-year-p 2028)))
