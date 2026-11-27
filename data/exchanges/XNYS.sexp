@@ -1,10 +1,10 @@
 ;;;; NYSE cash RTH (regular hours). ISO 10383 MIC XNYS.
-;;;; Civil calendar USFED does not include NYSE-only closings (Good Friday, etc.).
+;;;; Holidays: "NYSE" calendar (NYSE Rule 7.2 + special closures, src/starter-nyse.lisp).
 (
  :mic "XNYS"
  :name "New York Stock Exchange"
  :zone "America/New_York"
- :calendar "USFED"
+ :calendar "NYSE"
  :source "NYSE official timeline (archive) + NYSE early-close notices"
  :eras (
    (:from (1887 5 1) :to (1952 5 24)
@@ -25,8 +25,8 @@
     :sessions ((:open (9 30) :close (16 0)))
     :authority "NYSE timeline 1985-09-30: open moved to 09:30"))
  :early-close-rules (
-   (:kind :black-friday :from (1952 9 29) :to (1992 12 31) :close (14 0)
-    :authority "NYSE day-after-Thanksgiving early close 14:00 through 1992")
+   (:kind :black-friday :from (1992 1 1) :to (1992 12 31) :close (14 0)
+    :authority "NYSE day-after-Thanksgiving early close 14:00 in 1992 (first day-after-Thanksgiving early close)")
    (:kind :black-friday :from (1993 1 1) :close (13 0)
     :authority "NYSE day-after-Thanksgiving early close 13:00 from 1993")
    (:kind :christmas-eve-weekday :from (1952 9 29) :to (1992 12 31) :close (14 0)
@@ -35,6 +35,8 @@
     :authority "NYSE Christmas Eve weekday early close 13:00 from 1993")
    (:kind :july-3-mon-tue-thu :from (1995 1 1) :close (13 0)
     :authority "NYSE Jul 3 early close when Mon/Tue/Thu, from 1995")
+   (:kind :july-3-wednesday :from (2013 1 1) :close (13 0)
+    :authority "NYSE Jul 3 early close also when Wednesday, from 2013 (2013-07-03, 2019-07-03, 2024-07-03 notices)")
    (:kind :july-5-friday :from (1995 1 1) :to (2012 12 31) :close (13 0)
     :authority "NYSE Friday-after-Independence-Day early close 1995–2012"))
  :early-closes (

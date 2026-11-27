@@ -1,5 +1,5 @@
 (defsystem "cl-stack-calendars"
-  :version "0.4.1"
+  :version "0.5.0"
   :description "Holiday and trading calendars for cl-stack (business days, sessions, versioned as-of)"
   :author "egao1980"
   :license "MIT"
@@ -21,6 +21,7 @@
                (:file "trading-session")
                (:file "registry")
                (:file "starter-calendars")
+               (:file "starter-nyse")
                (:file "starter-russian")
                (:file "starter-japan")
                (:file "starter-china")
@@ -53,7 +54,8 @@
                (:file "calc-gold-test")
                (:file "trading-session-test")
                (:file "exchange-hours-test")
+               (:file "xnys-gold-test")
                (:file "data-root-test"))
   :perform (test-op (o c)
-             (unless (symbol-call :rove :run c)
-               (error "tests failed for ~A" (component-name c)))))
+                    (unless (symbol-call :rove :run c)
+                      (error "tests failed for ~A" (component-name c)))))

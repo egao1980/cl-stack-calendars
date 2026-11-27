@@ -49,14 +49,20 @@ Normative starters (prefer over `country-calendar` corpus): `japan-holidays-cale
 ;; Versioned major-exchange cash hours (data/exchanges/<MIC>.sexp)
 (list-exchanges)                                    ; XNYS XLON XAMS XTAI XCME …
 (exchange-sessions-for-date (find-exchange "XNYS")
-                            (make-date 1985 9 27))  ; 10:00–16:00 era
+                            (make-date 1985 9 26))  ; 10:00–16:00 era
+(exchange-trading-day-p (find-exchange "XNYS")
+                        (make-date 2026 11 26)) ; NIL — Thanksgiving ("NYSE" calendar)
 (exchange-session-bounds "XTKS" (make-date 2024 11 5)) ; afternoon to 15:30
 (exchange-open-p "XHKG" instant)                    ; lunch excluded
 ```
 
-Starter calendars: `weekend-only-calendar`, `target-calendar`, `us-federal-holidays-calendar`, `uk-bank-holidays-calendar`, `russian-holidays-calendar`, `ussr-holidays-calendar`, `japan-holidays-calendar`, `china-holidays-calendar`, `india-holidays-calendar`, **EU-27** national starters (`germany-…` … `malta-…`), plus `(country-calendar "XX")` for the world corpus (`data/countries/`, CC BY-SA 3.0 via date-holidays).
+Starter calendars: `weekend-only-calendar`, `target-calendar`, `us-federal-holidays-calendar`, `nyse-holidays-calendar` ("NYSE"), `uk-bank-holidays-calendar`, `russian-holidays-calendar`, `ussr-holidays-calendar`, `japan-holidays-calendar`, `china-holidays-calendar`, `india-holidays-calendar`, **EU-27** national starters (`germany-…` … `malta-…`), plus `(country-calendar "XX")` for the world corpus (`data/countries/`, CC BY-SA 3.0 via date-holidays).
 
-Holiday verification: `data/tests/holiday-gold.sexp` + `tests/holiday-suite-test.lisp` (gold vectors, year-sweep invariants, corpus load, starter↔corpus core dates, exchange calendar attachments). External lock: `data/tests/external-gold.sexp` (gov.uk + 内閣府 CSV + frozen vacanza dump; refresh `ros -l scripts/fetch-external-gold.lisp -q`). Computed festivals: `data/tests/calc-gold.sexp` (HKO lunar, dateutil Easter, pyluach Hebrew, Kuwaiti Eid; refresh `uv run scripts/generate_calc_gold.py`).
+Holiday verification: `data/tests/holiday-gold.sexp` + `tests/holiday-suite-test.lisp` (gold vectors, year-sweep invariants, corpus load, starter↔corpus core dates, exchange calendar attachments). External lock: `data/tests/external-gold.sexp` (gov.uk + 内閣府 CSV + frozen vacanza dump; refresh `ros -l scripts/fetch-external-gold.lisp -q`). Computed festivals: `data/tests/calc-gold.sexp` (HKO lunar, dateutil Easter, pyluach Hebrew, Kuwaiti Eid; refresh `uv run scripts/generate_calc_gold.py`). NYSE: `data/tests/xnys-gold.sexp` (Python `exchange_calendars` XNYS 1970–2030 — every session date and early close; refresh `uv run --no-project --with exchange_calendars python -I scripts/generate_xnys_gold.py`).
+
+### Exchange holidays
+
+Every exchange query — `exchange-trading-day-p`, `exchange-sessions-for-date`, `exchange-session-bounds`, `exchange-open-p` — honours the exchange's holiday calendar (`exchange-hours-calendar-name`; `exchange-holiday-p`). Since 0.5.0 XNYS and XNAS use the `"NYSE"` calendar (NYSE Rule 7.2 holidays from 1954 + special closures in `data/us/nyse-closures.sexp`), not `"USFED"`: Good Friday is closed, Columbus Day and Veterans Day are open, and a Saturday New Year's Day leaves Friday Dec 31 open. The CME-family MICs (XCME, XCBT, XCEC, XNYM) still use `"USFED"` as an approximation (Globex trades through most US holidays; #48). Other MICs use the national civil calendar, which can differ from the exchange's own list (#49).
 
 ## Data path / client zip
 

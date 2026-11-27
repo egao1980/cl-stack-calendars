@@ -394,6 +394,9 @@
    #:exchanges-data-directory
    #:clear-data-caches
    #:resolve-data-root
-   #:write-data-zip))
+   #:write-data-zip
+   #:nyse-holidays-calendar
+   #:load-nyse-special-closures
+   #:exchange-holiday-p))
 
 (in-package #:cl-stack-calendars)

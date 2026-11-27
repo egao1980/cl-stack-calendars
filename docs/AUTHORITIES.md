@@ -30,6 +30,9 @@ Example: PH Independence Day is `:from 1946 :to 1961` on 4 July, then
 | `USFED` | Pub. L. 98-144 | MLK Day (first observance 1986) |
 | `USFED` | Pub. L. 94-97 | Veterans Day back to Nov 11 (eff. 1978) |
 | `USFED` | Pub. L. 117-17 | Juneteenth (signed 2021-06-17) |
+| `NYSE` | [NYSE Rule 7.2](https://www.nyse.com/markets/hours-calendars) (Holidays) | Exchange holidays (incl. Good Friday; not Columbus / Veterans Day); Saturday → Friday and Sunday → Monday, except when the Friday ends an accounting period (Saturday New Year's Day not observed) |
+| `NYSE` | NYSE holiday schedule | MLK Day from 1998; Juneteenth from 2022; Election Day to 1980 (annual to 1967, then presidential years); Monday holidays from 1971 |
+| `NYSE` | NYSE closing notices | Special closures in `data/us/nyse-closures.sexp` (mourning days, weather, 1968 paperwork crisis, 2001-09-11–14, 2012 Sandy, 2025-01-09 …). Modeled from 1954; gold 1970–2030 vs `exchange_calendars` (`data/tests/xnys-gold.sexp`) |
 | `GBLO` | [Banking and Financial Dealings Act 1971](https://www.legislation.gov.uk/ukpga/1971/80) s.1 & Sch.1 | Statutory bank holidays + proclamation power |
 | `GBLO` | [Bank Holidays Act 1871](https://en.wikipedia.org/wiki/Bank_Holidays_Act_1871) | England & Wales: Easter Mon, Whit Mon, first Mon Aug, Boxing Day (research window from 1900); Whit/Aug replaced experimentally 1965, permanently BFDA 1971 |
 | `GBLO` | [gov.uk/bank-holidays](https://www.gov.uk/bank-holidays) | Published proclamation substitute dates |
@@ -115,6 +118,7 @@ Reference loci: `+jerusalem+`, `+mecca+`, `+tokyo+`, `+beijing+`, `+delhi+`, `+u
 | `:uk-proclamation-substitute` | BFDA 1971 + Royal Proclamations | next free weekday; exclusive across rules |
 | `:jp-furikae` | [祝日法](https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html) Art. 3(2) | **Sunday only** → 翌日 from 1973-04-12; chain over consecutive 祝日 from 2007-01-01 (平成19年法律第5号) |
 | `:ru-tk-112-transfer` | ТК РФ ст. 112 ч. 2 | weekend∩holiday → next workday; **not** for 1–8 Jan |
+| `:nyse-rule-7-2` | NYSE Rule 7.2 | Sat→Fri, Sun→Mon, unless the Friday is the last weekday of its month (monthly / yearly accounting period) |
 
 Calendar flag `:sandwich-holidays-p` + `:sandwich-authority` implements 祝日法 Art. 3(3) (国民の休日).
 
@@ -125,13 +129,18 @@ ID cuti bersama / KR 임시공휴일 / GB special proclamations attach the same 
 ## Not law by default
 
 - `:bridge :adjacent` (Tue→Mon / Thu→Fri “puente”) — only when a rule’s `:authority` cites a bridge statute or binding instrument.
-- Mechanical primitives (`:nearest-weekday`, `:next-weekday`, `:substitute-next`, …) — implementation atoms; starters must use statute-named policies + `:authority`.
+- Mechanical primitives (`:nearest-weekday`, `:next-weekday`, `:sunday-to-monday`, `:substitute-next`, …) — implementation atoms; starters must use statute-named policies + `:authority`.
 
 ## Exchange cash-session hours
 
 Major-exchange RTH live in `data/exchanges/<MIC>.sexp` (eras + early-close rules).
 Hours are exchange notices, not statutes. Full source table:
 [`data/exchanges/ATTRIBUTION.md`](../data/exchanges/ATTRIBUTION.md).
+
+Holidays come from the MIC's `:calendar` (XNYS / XNAS: `NYSE`). All exchange
+queries (`exchange-trading-day-p`, `exchange-sessions-for-date`,
+`exchange-session-bounds`, `exchange-open-p`) honour it. Eras end on the last
+trading day; a day between two eras is closed.
 
 | MIC | Current RTH | Last hour-change |
 |-----|-------------|------------------|

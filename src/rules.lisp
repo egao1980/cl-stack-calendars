@@ -22,6 +22,10 @@
                  "Exec. Order No. 11582 § 3(a) (Sunday → following Monday)")
      :uri ("https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title5-section6103"
            "https://www.federalregister.gov/executive-order/11582"))
+    (:nyse-rule-7-2
+     :implements (:nyse-rule-7-2)
+     :authority ("NYSE Rule 7.2 (Holidays) — Saturday holiday → preceding Friday closed, Sunday holiday → following Monday closed, unless unusual business conditions exist such as the ending of a monthly or yearly accounting period (a Saturday New Year's Day leaves Friday Dec 31 open)")
+     :uri ("https://www.nyse.com/markets/hours-calendars"))
     (:uk-proclamation-substitute
      :implements (:next-weekday)
      :authority ("Banking and Financial Dealings Act 1971 s.1 & Sch.1; Royal Proclamations (substitute weekday when a bank holiday falls on a weekend — normally the following Monday; exclusive across Christmas/Boxing)"
@@ -191,6 +195,21 @@ EO 11582 § 3(a) for a Monday–Friday basic workweek)."
                    (member d claimed :test #'=))
           return d))
 
+(defun last-weekday-of-month-p (date weekend-days)
+  "True when DATE is the last non-WEEKEND-DAYS day of its month."
+  (/= (date-month (shift-forward-past-weekend (+ date 1) weekend-days))
+      (date-month date)))
+
+(defun shift-nyse-rule-7-2 (date weekend-days)
+  "NYSE Rule 7.2: a Saturday holiday closes the preceding Friday, a Sunday
+holiday the following Monday — unless the Friday ends a monthly or yearly
+accounting period (so a Saturday New Year's Day leaves Dec 31 open)."
+  (cond ((not (weekendp date weekend-days)) date)
+        ((weekendp (- date 1) weekend-days)
+         (shift-forward-past-weekend date weekend-days))
+        ((last-weekday-of-month-p (- date 1) weekend-days) date)
+        (t (- date 1))))
+
 (defun canonicalize-observed (observed)
   "Map statute-named policies onto mechanical atoms (or leave specialty policies)."
   (case observed
@@ -236,30 +255,37 @@ CLAIMED makes exclusive next-weekday substitutes skip collisions (UK Christmas
 + Boxing under proclamations)."
   (let* ((policy (canonicalize-observed observed))
          (base
-          (ecase policy
-            ((nil) (list nominal))
-            ((:nearest-weekday :next-weekday :previous-weekday :monday)
-             (list (apply-move-observed nominal policy weekend-days claimed)))
-            (:substitute-next
-             (if (weekendp nominal weekend-days)
-                 (list nominal
-                       (shift-forward-past-weekend-and-claimed nominal weekend-days claimed))
-                 (list nominal)))
-            (:jp-furikae
-             (if (sundayp nominal)
-                 (list nominal
-                       (shift-forward-past-weekend-and-claimed nominal weekend-days claimed))
-                 (list nominal)))
-            (:ru-tk-112-transfer
-             ;; ТК РФ ст. 112 ч. 2: weekend∩holiday → next workday,
-             ;; except Jan 1–8 (Government decree transfers those).
-             (cond ((not (weekendp nominal weekend-days))
-                    (list nominal))
-                   ((ru-new-year-holiday-block-p nominal)
-                    (list nominal))
-                   (t (list nominal
-                            (shift-forward-past-weekend-and-claimed
-                             nominal weekend-days claimed)))))))
+           (ecase policy
+             ((nil) (list nominal))
+             ((:nearest-weekday :next-weekday :previous-weekday :monday)
+              (list (apply-move-observed nominal policy weekend-days claimed)))
+             (:sunday-to-monday
+              ;; Sunday → following weekday; a Saturday holiday is not moved.
+              (list (if (sundayp nominal)
+                        (shift-forward-past-weekend nominal weekend-days)
+                        nominal)))
+             (:nyse-rule-7-2
+              (list (shift-nyse-rule-7-2 nominal weekend-days)))
+             (:substitute-next
+              (if (weekendp nominal weekend-days)
+                  (list nominal
+                        (shift-forward-past-weekend-and-claimed nominal weekend-days claimed))
+                  (list nominal)))
+             (:jp-furikae
+              (if (sundayp nominal)
+                  (list nominal
+                        (shift-forward-past-weekend-and-claimed nominal weekend-days claimed))
+                  (list nominal)))
+             (:ru-tk-112-transfer
+              ;; ТК РФ ст. 112 ч. 2: weekend∩holiday → next workday,
+              ;; except Jan 1–8 (Government decree transfers those).
+              (cond ((not (weekendp nominal weekend-days))
+                     (list nominal))
+                    ((ru-new-year-holiday-block-p nominal)
+                     (list nominal))
+                    (t (list nominal
+                             (shift-forward-past-weekend-and-claimed
+                              nominal weekend-days claimed)))))))
          (bridged (apply-bridge-days base weekend-days bridge)))
     (remove-if (lambda (d) (member d claimed :test #'=)) bridged)))
 
