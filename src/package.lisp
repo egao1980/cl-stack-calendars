@@ -438,6 +438,7 @@
    #:ar-transfers-for-year
    #:kr-provisional-year-p
    #:kr-election-days
-   #:calendar-observance-pass))
+   #:calendar-observance-pass
+   #:tw-provisional-year-p))
 
 (in-package #:cl-stack-calendars)
