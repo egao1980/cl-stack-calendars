@@ -407,6 +407,7 @@
    #:weekend-era-codes
    #:weekend-era-source
    #:calendar-weekend-eras
-   #:weekend-days-at))
+   #:weekend-days-at
+   #:clear-calendar-cache))
 
 (in-package #:cl-stack-calendars)

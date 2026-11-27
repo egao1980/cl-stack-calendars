@@ -1,7 +1,32 @@
 (in-package #:cl-stack-calendars)
 
+(defun %make-calendar-cache ()
+  "A hash table safe for concurrent readers and writers (SBCL :SYNCHRONIZED).
+Entries are computed outside any lock; two threads that race on a missing
+year compute equal maps, and the later write wins."
+  #+sbcl (make-hash-table :test #'eql :synchronized t)
+  #-sbcl (make-hash-table :test #'eql))
+
+(defmacro %cached ((calendar key) &body compute)
+  "The cache entry KEY of rule CALENDAR, computed by COMPUTE when missing."
+  (let ((cache (gensym "CACHE")) (k (gensym "KEY")) (v (gensym "V")) (hit (gensym "HIT")))
+    `(let ((,cache (%rule-calendar-cache ,calendar))
+           (,k ,key))
+       (multiple-value-bind (,v ,hit) (gethash ,k ,cache)
+         (if ,hit
+             ,v
+             (setf (gethash ,k ,cache) (progn ,@compute)))))))
+
+(defun %date-set (dates &key (key #'identity))
+  (let ((set (make-hash-table :test #'eql)))
+    (dolist (d dates set)
+      (setf (gethash (date-rd (funcall key d)) set) t))))
+
 (defclass rule-calendar (weekend-spec-mixin holiday-calendar)
   ((name :initarg :name :initform nil :accessor calendar-name)
+   ;; Year → holiday map, plus working-day / suppressed-date sets (#34).
+   ;; Replaced (never cleared in place) when a SETF accessor changes inputs.
+   (cache :initform (%make-calendar-cache) :accessor %rule-calendar-cache)
    (rules :initarg :rules :initform nil :accessor calendar-rules)
    ;; 祝日法第3条第3項 (and analogues): insert weekdays sandwiched by holidays.
    (sandwich-holidays-p :initarg :sandwich-holidays-p :initform nil
@@ -36,12 +61,16 @@ is a weekday list or an era list (WEEKEND-SPEC-MIXIN)."))
 
 (defmethod weekend-day-p ((calendar rule-calendar) date)
   (and (member (date-day-of-week date) (weekend-days-on calendar date))
-       (not (find date (calendar-working-days calendar)
-                  :key #'calendar-working-day-date :test #'=))
+       (not (gethash (date-rd date)
+                     (%cached (calendar :working-days)
+                              (%date-set (calendar-working-days calendar)
+                                         :key #'calendar-working-day-date))))
        t))
 
 (defun %suppressed-date-p (calendar date)
-  (find date (calendar-suppressed-dates calendar) :test #'=))
+  (values (gethash (date-rd date)
+                   (%cached (calendar :suppressed)
+                            (%date-set (calendar-suppressed-dates calendar))))))
 
 (defun %rule-calendar-observed-p (calendar)
   "True when some rule of CALENDAR can place a substitute day. The furikae
@@ -169,12 +198,38 @@ date falls in YEAR (or adjacent for Dec 31 ↔ Jan moves)."
                     (or (calendar-transfer-name tr) "перенос выходного"))))))
       map)))
 
+(defun %cached-year-map (calendar year)
+  "%RULE-CALENDAR-YEAR-MAP of YEAR, computed once per calendar instance."
+  (%cached (calendar year)
+           (%rule-calendar-year-map calendar year)))
+
+(defun clear-calendar-cache (calendar)
+  "Drop CALENDAR's cached year maps and day sets. SETF of a RULE-CALENDAR
+accessor does this itself; call it after changing a rule or a list in place.
+Returns CALENDAR."
+  (when (typep calendar 'rule-calendar)
+    (setf (%rule-calendar-cache calendar) (%make-calendar-cache)))
+  calendar)
+
+(macrolet ((invalidate-after (&rest accessors)
+             `(progn
+                ,@(loop for accessor in accessors
+                        collect `(defmethod (setf ,accessor) :after (new (calendar rule-calendar))
+                                   (declare (ignore new))
+                                   (clear-calendar-cache calendar))))))
+  (invalidate-after calendar-rules calendar-transfers calendar-working-days
+                    calendar-suppressed-dates calendar-weekend-days
+                    calendar-sandwich-holidays-p calendar-sandwich-from
+                    calendar-furikae-chain-p calendar-furikae-from
+                    calendar-furikae-chain-from))
+
 (defmethod holiday-p ((calendar rule-calendar) date)
   (when (%suppressed-date-p calendar date)
     (return-from holiday-p (values nil nil)))
-  (let ((year (date-year date)))
+  (let ((year (date-year date))
+        (rd (date-rd date)))
     (dolist (y (list (1- year) year (1+ year)))
-      (let ((name (gethash (date-rd date) (%rule-calendar-year-map calendar y))))
+      (let ((name (gethash rd (%cached-year-map calendar y))))
         (when name
           (return-from holiday-p (values t (unless (eq name t) name))))))
     (values nil nil)))
