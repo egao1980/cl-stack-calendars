@@ -341,12 +341,177 @@ def cl_crosscheck(days: dict) -> None:
               f"{sorted(str(d) for d, n in listed.items() if 'Elecci' in n)})")
 
 
+# --- Canada (federal) -----------------------------------------------------
+
+JUSTICE = "https://laws-lois.justice.gc.ca/eng/acts/"
+
+CA_SOURCES = [
+    ("Canada Labour Code (R.S.C. 1985, c. L-2) s. 166, \"general holiday\"", JUSTICE + "L-2/",
+     "New Year's Day, Good Friday, Victoria Day, Canada Day, Labour Day, National Day for Truth "
+     "and Reconciliation (30 September), Thanksgiving Day, Remembrance Day, Christmas Day and "
+     "Boxing Day. Read from https://laws-lois.justice.gc.ca/eng/XML/L-2.xml."),
+    ("Canada Labour Code s. 193(2)", JUSTICE + "L-2/page-27.html",
+     "When New Year's Day, Canada Day, NDTR, Remembrance Day, Christmas Day or Boxing Day falls on "
+     "a non-working Saturday or Sunday, the employee gets the working day immediately preceding "
+     "or following: no fixed calendar day, so not in this fixture."),
+    ("Holidays Act (R.S.C. 1985, c. H-5) ss. 2-4", JUSTICE + "H-5/",
+     "s. 2: July 1, not being a Sunday, is Canada Day; when July 1 is a Sunday, July 2 is. "
+     "s. 3: Remembrance Day, 11 November. s. 4: Victoria Day, the first Monday immediately "
+     "preceding May 25."),
+    ("Interpretation Act (R.S.C. 1985, c. I-21) s. 35(1), \"holiday\"", JUSTICE + "I-21/",
+     "Labour Day is the first Monday in September."),
+    ("S.C. 2021, c. 11 (royal assent 2021-06-03)", "https://laws-lois.justice.gc.ca/eng/AnnualStatutes/2021_11/",
+     "Adds the National Day for Truth and Reconciliation, 30 September, from 2021."),
+    ("Canada.ca, Annual vacations and general holidays for employees working for federally regulated employers",
+     "https://www.canada.ca/en/services/jobs/workplace/federal-labour-standards/vacations-holidays.html",
+     "Lists the same 10 general holidays; a listed holiday on a non-working Saturday or Sunday gives "
+     "a holiday with pay on the scheduled work day immediately before or after it."),
+    ("Proclamation of 31 January 1957 (SOR/57-35)", "https://www.canada.ca/en/canadian-heritage/services/important-commemorative-days.html",
+     "Thanksgiving Day: the second Monday in October."),
+]
+
+CA_NOTE = (
+    "Federal scope: the general holidays of the Canada Labour Code (federally regulated "
+    "employers), with the Holidays Act dates. Provincial holidays (Family Day, Civic Holiday, "
+    "Easter Monday, Saint-Jean-Baptiste, ...) are not federal and are not here; the days every "
+    "province also observes are New Year's Day, Good Friday, Canada Day, Labour Day and "
+    "Christmas Day. No official machine-readable list exists; the days are the statute texts "
+    "(Justice Laws XML) applied to each year."
+)
+
+
+def ca_holidays(year: int) -> list[tuple[date, str]]:
+    e = easter(year)
+    may25 = date(year, 5, 25)
+    jul1 = date(year, 7, 1)
+    sep1 = date(year, 9, 1)
+    oct1 = date(year, 10, 1)
+    out = [
+        (date(year, 1, 1), "New Year's Day"),
+        (e - timedelta(days=2), "Good Friday"),
+        (may25 - timedelta(days=(may25.weekday() or 7)), "Victoria Day"),
+        (jul1 + timedelta(days=1) if jul1.weekday() == 6 else jul1, "Canada Day"),
+        (sep1 + timedelta(days=(7 - sep1.weekday()) % 7), "Labour Day"),
+        (oct1 + timedelta(days=(7 - oct1.weekday()) % 7 + 7), "Thanksgiving Day"),
+        (date(year, 11, 11), "Remembrance Day"),
+        (date(year, 12, 25), "Christmas Day"),
+        (date(year, 12, 26), "Boxing Day"),
+    ]
+    if year >= 2021:
+        out.append((date(year, 9, 30), "National Day for Truth and Reconciliation"))
+    return out
+
+
+# --- Australia (national) -------------------------------------------------
+
+AU_SOURCES = [
+    ("Fair Work Act 2009 (Cth) s. 115", "https://www.legislation.gov.au/C2009A00028/latest/text",
+     "Public holidays: 1 January, 26 January, Good Friday, Easter Monday, 25 April, the King's "
+     "birthday holiday (on the day each State or Territory celebrates it), 25 and 26 December, "
+     "and a day a State or Territory law substitutes for one of them (s. 115(2)-(3))."),
+    ("State and territory public holiday acts", "https://www.fairwork.gov.au/employment-conditions/public-holidays",
+     "Every State and Territory adds the Monday after a Saturday or Sunday New Year's Day or "
+     "Australia Day, and moves Christmas Day and Boxing Day off a weekend to the next free "
+     "weekdays. Anzac Day has no substitute in every jurisdiction, so none here."),
+    ("Australian Public Holidays Dates Machine Readable Dataset (PM&C, data.gov.au)",
+     "https://data.gov.au/data/dataset/australian-holidays-machine-readable-dataset",
+     "Official per-jurisdiction lists 2014-2025. The national subset (days listed for all of "
+     "ACT, NSW, NT, QLD, SA, TAS, VIC, WA) agrees with this fixture on every weekday except "
+     "2022-09-22, which the 2022 file (March 2022) predates."),
+    ("National Day of Mourning for Queen Elizabeth II, 22 September 2022",
+     "https://www.fairwork.gov.au/newsroom/news/national-day-of-mourning-public-holiday",
+     "A one-off public holiday declared in every State and Territory."),
+]
+
+AU_NOTE = (
+    "National subset: the Fair Work Act s. 115 holidays that every State and Territory keeps "
+    "on the same day, with the substitute days every jurisdiction gives. The King's (Queen's) "
+    "Birthday is left out (WA and QLD keep it on other days), as are Easter Saturday and Sunday, "
+    "Labour Day, Melbourne Cup and other state days. A weekend holiday stays a holiday on its "
+    "own day; the substitute day is added. The state acts differ on whether a weekend Australia "
+    "Day or New Year's Day itself stays a holiday, and the official data set lists them "
+    "inconsistently, so its weekend days are not compared."
+)
+
+
+def au_holidays(year: int) -> list[tuple[date, str]]:
+    e = easter(year)
+    out = [
+        (date(year, 1, 1), "New Year's Day"),
+        (date(year, 1, 26), "Australia Day"),
+        (e - timedelta(days=2), "Good Friday"),
+        (e + timedelta(days=1), "Easter Monday"),
+        (date(year, 4, 25), "Anzac Day"),
+        (date(year, 12, 25), "Christmas Day"),
+        (date(year, 12, 26), "Boxing Day"),
+    ]
+    for m, d, name in ((1, 1, "New Year's Day"), (1, 26, "Australia Day")):
+        nominal = date(year, m, d)
+        if nominal.weekday() >= 5:
+            out.append((nominal + timedelta(days=7 - nominal.weekday()), name + " (substitute day)"))
+    taken = {d for d, _ in out}
+    for d, name in ((date(year, 12, 25), "Christmas Day"), (date(year, 12, 26), "Boxing Day")):
+        if d.weekday() >= 5:
+            sub = d + timedelta(days=1)
+            while sub.weekday() >= 5 or sub in taken:
+                sub += timedelta(days=1)
+            taken.add(sub)
+            out.append((sub, name + " (substitute day)"))
+    if year == 2022:
+        out.append((date(2022, 9, 22), "National Day of Mourning for Queen Elizabeth II"))
+    return out
+
+
+def au_official_check(days: dict) -> None:
+    import csv
+    import io
+    import json
+    import urllib.request
+    cache = Path.home() / ".cache" / "cl-stack-calendars" / "au-public-holidays"
+    cache.mkdir(parents=True, exist_ok=True)
+    api = ("https://data.gov.au/data/api/3/action/package_show"
+           "?id=australian-holidays-machine-readable-dataset")
+    pkg = cache / "package.json"
+    if not pkg.exists():
+        pkg.write_bytes(urllib.request.urlopen(api, timeout=60).read())
+    jurisdictions = {"act", "nsw", "nt", "qld", "sa", "tas", "vic", "wa"}
+    listed: dict[date, set] = {}
+    for res in json.loads(pkg.read_bytes())["result"]["resources"]:
+        if "combined" in res["name"].lower():
+            continue
+        f = cache / (res["id"] + ".csv")
+        if not f.exists():
+            f.write_bytes(urllib.request.urlopen(res["url"], timeout=60).read())
+        for row in csv.DictReader(io.StringIO(f.read_bytes().decode("utf-8-sig", "replace"))):
+            raw = (row.get("Date") or "").strip()
+            if not raw.isdigit():
+                continue
+            d = date(int(raw[:4]), int(raw[4:6]), int(raw[6:]))
+            js = set()
+            for j in (row.get("Jurisdiction") or row.get("Applicable To") or "").lower().replace("|", ",").split(","):
+                j = j.strip()
+                js |= jurisdictions if j in ("nat", "national") else ({j} if j else set())
+            listed.setdefault(d, set()).update(js)
+    national = {d for d, js in listed.items() if jurisdictions <= js and d.weekday() < 5}
+    years = {d.year for d in listed}
+    gold = {d for d in days if d.year in years and d.weekday() < 5}
+    diff = sorted(national ^ gold)
+    assert diff == [date(2022, 9, 22)], diff
+    print(f"  AU {min(years)}-{max(years)}: data.gov.au national weekdays agree "
+          f"({len(national)} days) except 2022-09-22 (dataset predates the declaration)")
+
+
 COUNTRIES = {
     "CO": dict(name="Colombia", build=co_holidays, sources=CO_SOURCES, note=CO_NOTE,
                python=lambda years: __import__("holidays").CO(years=years)),
     "CL": dict(name="Chile", build=cl_holidays, sources=CL_SOURCES, note=CL_NOTE,
                python=lambda years: __import__("holidays").CL(years=years),
                crosscheck=cl_crosscheck),
+    "CA": dict(name="Canada (federal)", build=ca_holidays, sources=CA_SOURCES, note=CA_NOTE,
+               python=lambda years: __import__("holidays").CA(years=years)),
+    "AU": dict(name="Australia (national)", build=au_holidays, sources=AU_SOURCES, note=AU_NOTE,
+               python=lambda years: __import__("holidays").AU(years=years),
+               crosscheck=au_official_check),
 }
 
 

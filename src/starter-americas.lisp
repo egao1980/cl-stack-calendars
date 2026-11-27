@@ -180,29 +180,50 @@
   (:fixed "Inmaculada Concepción" 12 8 :from 1900 :authority "Feriado")
   (:fixed "Navidad" 12 25 :from 1900 :authority "Feriado"))
 
-;;; Canada (floor 1900; Canada Day name from 1982)
+(defun ca-victoria-day (year)
+  "Holidays Act s. 4: the first Monday immediately preceding 25 May."
+  (let* ((may25 (make-date year 5 25))
+         (dow (date-day-of-week may25)))
+    (- may25 (if (= dow 1) 7 (1- dow)))))
+
+(defun ca-canada-day (year)
+  "Holidays Act s. 2: 1 July, not being a Sunday; 2 July when 1 July is a Sunday."
+  (let ((jul1 (make-date year 7 1)))
+    (if (= 7 (date-day-of-week jul1)) (+ jul1 1) jul1)))
+
+;;; Canada, federal: the Canada Labour Code s. 166 general holidays (federally
+;;; regulated employers) on the Holidays Act dates. Provincial holidays (Family
+;;; Day, Civic Holiday, Easter Monday, …) are not federal and are not here.
+;;; CLC s. 193(2) gives a weekend holiday's employee the working day before or
+;;; after it: no fixed calendar day, so no substitute rule.
+;;; https://laws-lois.justice.gc.ca/eng/acts/L-2/ · https://laws-lois.justice.gc.ca/eng/acts/H-5/
+
+;;; Canada, federal (2000–2040 checked against data/tests/ca-holiday-gold.sexp, #17)
 (define-calendar canada-holidays-calendar (:register "CA")
   (:fixed "New Year's Day" 1 1 :from 1900
-   :authority "Canada Labour Code / provincial — nationwide observance")
+   :authority "Canada Labour Code s. 166 — general holiday")
   (:easter "Good Friday" -2 :from 1900
-   :authority "Nationwide (federal + provinces)")
+   :authority "Canada Labour Code s. 166 — general holiday")
   (:fixed "Victoria Day" 5 24 :from 1900 :to 1952
    :authority "Empire Day / Victoria's birthday fixed era")
-  (:nth-weekday "Victoria Day" 5 :monday -1 :from 1953
-   :authority "Monday before 25 May — Victoria Day")
+  (:computed "Victoria Day" #'ca-victoria-day :from 1953
+   :authority ("Holidays Act (R.S.C. 1985, c. H-5) s. 4 — the first Monday immediately preceding May 25"
+               "Canada Labour Code s. 166 — general holiday"))
   (:fixed "Dominion Day" 7 1 :from 1900 :to 1981
    :authority "Dominion Day until Canada Day Act 1982")
-  (:fixed "Canada Day" 7 1 :from 1982
-   :authority "Canada Day Act — 1 July")
+  (:computed "Canada Day" #'ca-canada-day :from 1982
+   :authority ("Holidays Act s. 2 — July 1, not being a Sunday; July 2 when July 1 is a Sunday"
+               "Canada Labour Code s. 166 — general holiday"))
   (:nth-weekday "Labour Day" 9 :monday 1 :from 1900
-   :authority "Labour Day — first Monday of September")
-  (:nth-weekday "Thanksgiving" 10 :monday 2 :from 1957
-   :authority "Second Monday of October (federal)")
+   :authority "Interpretation Act s. 35(1) — the first Monday in September; Canada Labour Code s. 166")
+  (:fixed "National Day for Truth and Reconciliation" 9 30 :from 2021
+   :authority "S.C. 2021, c. 11 — Canada Labour Code s. 166, observed on September 30")
+  (:nth-weekday "Thanksgiving Day" 10 :monday 2 :from 1957
+   :authority "Proclamation of 31 January 1957 — second Monday of October; Canada Labour Code s. 166")
   (:fixed "Remembrance Day" 11 11 :from 1931
-   :authority "Federal holiday (banks); statutory in many provinces")
-  (:fixed "Christmas Day" 12 25 :from 1900 :authority "Nationwide")
-  (:fixed "Boxing Day" 12 26 :from 1900
-   :authority "Statutory in several provinces; federal public sector"))
+   :authority "Holidays Act s. 3; Canada Labour Code s. 166 — general holiday")
+  (:fixed "Christmas Day" 12 25 :from 1900 :authority "Canada Labour Code s. 166 — general holiday")
+  (:fixed "Boxing Day" 12 26 :from 1900 :authority "Canada Labour Code s. 166 — general holiday"))
 
 ;;; Peru (floor 1900)
 (define-calendar peru-holidays-calendar (:register "PE")
@@ -223,22 +244,27 @@
    :authority "Ley 31155 — feriado 9 de diciembre desde 2022")
   (:fixed "Navidad" 12 25 :from 1900 :authority "Feriado"))
 
-;;; Australia (federation 1901)
+;;; Australia, national subset (2000–2040 checked against data/tests/au-holiday-gold.sexp, #17)
 (define-calendar australia-holidays-calendar (:register "AU")
-  (:fixed "New Year's Day" 1 1 :from 1901
-   :authority "Nationwide public holiday")
-  (:fixed "Australia Day" 1 26 :from 1901
-   :authority "Australia Day / Anniversary Day — national from early Federation era")
-  (:easter "Good Friday" -2 :from 1901 :authority "Nationwide")
-  (:easter "Easter Monday" 1 :from 1901 :authority "Nationwide")
-  (:fixed "ANZAC Day" 4 25 :from 1921
-   :authority "ANZAC Day — national public holiday from early 1920s")
-  (:fixed "King's Birthday" 6 3 :from 1901
-   :authority "Sovereign's birthday — date varies by state; June Monday common (NSW/VIC/…)")
-  (:nth-weekday "King's Birthday (June Monday states)" 6 :monday 2 :from 1901
-   :authority "Second Monday in June (NSW, VIC, WA, ACT, NT, TAS practice)")
-  (:fixed "Christmas Day" 12 25 :from 1901 :authority "Nationwide")
-  (:fixed "Boxing Day" 12 26 :from 1901 :authority "Nationwide (most jurisdictions)"))
+  ;; National subset: the Fair Work Act 2009 s. 115 holidays that every State
+  ;; and Territory keeps on the same day, with the substitute days every one of
+  ;; them gives. The King's (Queen's) Birthday is a state day (WA and QLD keep
+  ;; it on other dates), as are Easter Saturday/Sunday, Labour Day, Melbourne
+  ;; Cup and the rest. https://www.legislation.gov.au/C2009A00028/latest/text
+  (:fixed "New Year's Day" 1 1 :from 1901 :observed :au-substitute-day
+   :authority "Fair Work Act 2009 s. 115(1)(a); state acts — Monday after a weekend New Year's Day")
+  (:fixed "Australia Day" 1 26 :from 1901 :observed :au-substitute-day
+   :authority "Fair Work Act 2009 s. 115(1)(b); every State and Territory moves a weekend Australia Day to the Monday (since 1994)")
+  (:easter "Good Friday" -2 :from 1901 :authority "Fair Work Act 2009 s. 115(1)(c)")
+  (:easter "Easter Monday" 1 :from 1901 :authority "Fair Work Act 2009 s. 115(1)(d)")
+  (:fixed "Anzac Day" 4 25 :from 1921
+   :authority "Fair Work Act 2009 s. 115(1)(e); no substitute day in every jurisdiction")
+  (:fixed "Christmas Day" 12 25 :from 1901 :observed :au-substitute-day
+   :authority "Fair Work Act 2009 s. 115(1)(g); state acts — next free weekday when on a weekend")
+  (:fixed "Boxing Day" 12 26 :from 1901 :observed :au-substitute-day
+   :authority "Fair Work Act 2009 s. 115(1)(h); state acts — next free weekday when on a weekend")
+  (:fixed "National Day of Mourning for Queen Elizabeth II" 9 22 :from 2022 :to 2022
+   :authority "Declared in every State and Territory, 22 September 2022; https://www.fairwork.gov.au/newsroom/news/national-day-of-mourning-public-holiday"))
 
 ;;; Venezuela (floor 1900)
 (define-calendar venezuela-holidays-calendar (:register "VE")
