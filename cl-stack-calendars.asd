@@ -1,9 +1,9 @@
 (defsystem "cl-stack-calendars"
-  :version "0.13.0"
+  :version "0.13.1"
   :description "Holiday and trading calendars for cl-stack (business days, sessions, versioned as-of)"
   :author "egao1980"
   :license "MIT"
-  :depends-on ("datetime-protocol" "datetime-protocol/calendars" "cl-stack-pathlib")
+  :depends-on ((:version "datetime-protocol" "0.2.0") (:version "datetime-protocol/calendars" "0.2.0") "cl-stack-pathlib")
 
   :serial t
   :pathname "src"
@@ -62,6 +62,7 @@
                (:file "registry-data-years-test")
                (:file "corpus-derived-test")
                (:file "calc-gold-test")
+               (:file "lunisolar-festival-test")
                (:file "trading-session-test")
                (:file "exchange-hours-test")
                (:file "xnys-gold-test")
