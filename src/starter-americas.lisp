@@ -170,36 +170,182 @@ term (1988, 1994, …): 1 December until 2018 (DOF 22-12-1987), 1 October from
    :authority "Ley 51/1983 art. 1 — 8 diciembre, fijo (no está en el inciso 2)")
   (:fixed "Navidad" 12 25 :from 1900 :authority "Ley 51/1983 art. 1 — fijo"))
 
+;;; --- Argentina: trasladables, decree moves, data file --------------------
+
+(defun ar-ley-23555-monday (date)
+  "Ley 23.555 art. 1 (1988), Decreto 52/2017 art. 2, Ley 27.399 art. 6: a
+feriado on Tuesday or Wednesday moves to the previous Monday, on Thursday or
+Friday to the next Monday. Saturday, Sunday and Monday stay."
+  (let ((dow (date-day-of-week date)))
+    (case dow
+      ((2 3) (- date (1- dow)))
+      ((4 5) (+ date (- 8 dow)))
+      (t date))))
+
+(defparameter *ar-decree-moves*
+  '(((2001 10) (2001 10 8) "DNU 750/2001; Ley 25.442 — 12 de octubre de 2001 al lunes 8")
+    ((2002 10) (2002 10 14) "DNU 1932/2002 (BO 2002-09-30) — sábado 12 de octubre al lunes 14")
+    ((2003 10) (2003 10 13) "DNU 810/2003 (BO 2003-09-24) — domingo 12 de octubre al lunes 13")
+    ((2011 8) (2011 8 22) "DNU 521/2011 (BO 2011-05-04) — 17 de agosto de 2011 al día 22")
+    ((2015 11) (2015 11 27) "DNU 2226/2015 (BO 2015-10-29) — 20 de noviembre de 2015 al día 27")
+    ((2025 10) (2025 10 10) "Res. JGM 139/2025 (Decreto 614/2025) — 12 de octubre de 2025 al viernes 10"))
+  "One-year decree moves of a trasladable feriado: ((YEAR MONTH) (Y M D) AUTHORITY).")
+
+(defun ar-decree-move (year month)
+  "The date a decree of *AR-DECREE-MOVES* gives the MONTH trasladable of YEAR, or NIL."
+  (let ((entry (assoc (list year month) *ar-decree-moves* :test #'equal)))
+    (when entry
+      (apply #'make-date (second entry)))))
+
+(defun ar-inamovible-p (date)
+  "True when DATE is a feriado inamovible of Ley 27.399 art. 1."
+  (let* ((year (date-year date))
+         (easter-rd (date-rd (easter-western year)))
+         (rd (date-rd date)))
+    (or (member (list (date-month date) (date-day date))
+                '((1 1) (3 24) (4 2) (5 1) (5 25) (6 20) (7 9) (12 8) (12 25))
+                :test #'equal)
+        (member (- rd easter-rd) '(-48 -47 -2)))))
+
+(defun ar-trasladable-date (year month day)
+  "Ley 27.399 art. 6 (from 2017): the day the trasladable of MONTH/DAY is kept,
+after any decree move. Decreto 789/2021 art. 1 (from 2022): it stays on its
+date when the move would land on a feriado inamovible."
+  (or (ar-decree-move year month)
+      (let* ((nominal (make-date year month day))
+             (moved (ar-ley-23555-monday nominal)))
+        (if (and (>= year 2022) (ar-inamovible-p moved))
+            nominal
+            moved))))
+
+(defun ar-malvinas-date (year)
+  "Ley 25.370: 2 April, moved by Ley 23.555 in 2001-2006 (Ley 26.110 made it
+inamovible from 30 June 2006); 31 March in 2020 (DNU 297/2020)."
+  (cond ((= year 2020) (make-date 2020 3 31))
+        ((<= year 2006) (ar-ley-23555-monday (make-date year 4 2)))
+        (t (make-date year 4 2))))
+
+(defun ar-guemes-date (year)
+  "Ley 27.258: 17 June; kept on its date in 2016 (not in Decreto 1584/2010
+art. 2), trasladable from 2017."
+  (if (= year 2016)
+      (make-date 2016 6 17)
+      (ar-trasladable-date year 6 17)))
+
+(defun ar-san-martin-date (year)
+  "17 August: the third Monday of August 1995-2016 (Ley 24.445 art. 4,
+Decreto 1584/2010 art. 2), trasladable from 2017; decree moves first."
+  (or (ar-decree-move year 8)
+      (if (<= year 2016)
+          (nth-weekday-of-month year 8 1 3)
+          (ar-trasladable-date year 8 17))))
+
+(defun ar-12-octubre-date (year)
+  "12 October: Ley 23.555 art. 1 (1988-2007); Ley 26.416, Thursday to Sunday
+to the next Monday (2008-2010); the second Monday (Decreto 1584/2010 art. 2,
+2011-2016); Ley 27.399 art. 6 (2017-). Decree moves first."
+  (let ((nominal (make-date year 10 12)))
+    (or (ar-decree-move year 10)
+        (cond ((<= year 2007) (ar-ley-23555-monday nominal))
+              ((<= year 2010)
+               (let ((dow (date-day-of-week nominal)))
+                 (case dow
+                   ((2 3) (- nominal (1- dow)))
+                   (1 nominal)
+                   (t (+ nominal (- 8 dow))))))
+              ((<= year 2016) (nth-weekday-of-month year 10 1 2))
+              (t (ar-trasladable-date year 10 12))))))
+
+(defun ar-soberania-date (year)
+  "20 November (Decreto 1584/2010): the fourth Monday of November 2010-2016,
+trasladable from 2017; decree moves first."
+  (or (ar-decree-move year 11)
+      (if (<= year 2016)
+          (nth-weekday-of-month year 11 1 4)
+          (ar-trasladable-date year 11 20))))
+
+(defun load-ar-transfers (&optional (path (data-path "ar/transfers.sexp")))
+  "Return alist YEAR → (:authority A :transfers … :uri …) from PATH: the
+feriados con fines turísticos and one-off feriados, each with its decree."
+  (let ((form (read-data-form path)))
+    (mapcar
+     (lambda (block)
+       (let* ((year (getf block :year))
+              (auth (getf block :authority))
+              (transfers (mapcar (lambda (e)
+                                   (make-extra-day-transfer e auth))
+                                 (getf block :holidays))))
+         (cons year (list :authority auth
+                          :transfers transfers
+                          :uri (getf block :uri)))))
+     form)))
+
+(defvar *ar-transfers* nil)
+
+(defun ar-transfers ()
+  "The cached data/ar/transfers.sexp alist (see LOAD-AR-TRANSFERS)."
+  (or *ar-transfers*
+      (setf *ar-transfers* (load-ar-transfers))))
+
+(defun ar-notice-for-year (year)
+  "The data/ar/transfers.sexp block of YEAR, or NIL."
+  (cdr (assoc year (ar-transfers))))
+
+(defun ar-transfers-for-year (year)
+  "The data/ar/transfers.sexp days that touch YEAR."
+  (transfers-touching-year (ar-transfers) year))
+
 ;;; Argentina (floor 1900)
-(define-calendar argentina-holidays-calendar (:register "AR")
-  (:fixed "Año Nuevo" 1 1 :from 1900 :authority "Feriado nacional")
-  (:easter "Viernes Santo" -2 :from 1900 :authority "Feriado")
-  (:easter "Lunes de Carnaval" -48 :from 2011
-   :authority "Ley 26.665/2011 — Carnaval Monday (Easter−48)")
-  (:easter "Martes de Carnaval" -47 :from 2011
-   :authority "Ley 26.665/2011 — Carnaval Tuesday (Easter−47)")
-  (:fixed "Día del Veterano y de los Caídos en Malvinas" 4 2 :from 2001
-   :authority "Ley 26.110 — feriado 2 de abril")
-  (:fixed "Día del Trabajador" 5 1 :from 1900 :authority "Feriado")
-  (:fixed "Revolución de Mayo" 5 25 :from 1900 :authority "Feriado")
-  (:fixed "Paso a la Inmortalidad del Gral. Güemes" 6 17 :from 2016
-   :authority "Ley 27.116 — feriado 17 de junio")
-  (:fixed "Paso a la Inmortalidad del Gral. Belgrano" 6 20 :from 1900
-   :authority "Flag Day — feriado")
-  (:fixed "Día de la Independencia" 7 9 :from 1900
-   :authority "Independencia 1816 — feriado")
-  (:fixed "Paso a la Inmortalidad del Gral. San Martín" 8 17 :from 1900 :to 2010
-   :authority "Feriado 17 de agosto hasta reforma puente")
-  (:nth-weekday "Paso a la Inmortalidad del Gral. San Martín" 8 :monday 3 :from 2011
-   :authority "Ley 26.676/2011 — tercer lunes de agosto")
-  (:fixed "Día del Respeto a la Diversidad Cultural" 10 12 :from 2010
-   :authority "Ley 26.977 — ex Día de la Raza")
-  (:fixed "Día de la Raza" 10 12 :from 1900 :to 2009
-   :authority "Día de la Raza hasta cambio de denominación")
-  (:fixed "Día de la Soberanía Nacional" 11 20 :from 2010
-   :authority "Ley 26.815 — feriado")
-  (:fixed "Inmaculada Concepción" 12 8 :from 1900 :authority "Feriado")
-  (:fixed "Navidad" 12 25 :from 1900 :authority "Feriado"))
+(define-calendar argentina-holidays-calendar (:register "AR" :constructor argentina-holidays-calendar)
+  ;; Feriados nacionales (inamovibles; trasladables on the day they are kept)
+  ;; and, from data/ar/transfers.sexp, the feriados con fines turísticos and
+  ;; one-off feriados. Not here: días no laborables (Jueves Santo; Ley 27.399
+  ;; arts. 2-3; Ley 26.199), which each employer decides; provincial feriados.
+  ;; https://servicios.infoleg.gob.ar/infolegInternet/anexos/280000-284999/281835/norma.htm
+  (:fixed "Año Nuevo" 1 1 :from 1900 :authority "Ley 21.329 art. 1; Ley 27.399 art. 1 — inamovible")
+  (:easter "Carnaval" -48 :from 2011
+   :authority "Decreto 1584/2010 art. 1; Ley 27.399 art. 1 — lunes de Carnaval, inamovible")
+  (:easter "Carnaval" -47 :from 2011
+   :authority "Decreto 1584/2010 art. 1; Ley 27.399 art. 1 — martes de Carnaval, inamovible")
+  (:fixed "Día Nacional de la Memoria por la Verdad y la Justicia" 3 24 :from 2006
+   :authority "Ley 26.085 (BO 2006-03-21) — feriado inamovible; Ley 27.399 art. 1")
+  (:easter "Viernes Santo" -2 :from 1900 :authority "Ley 21.329 art. 1; Ley 27.399 art. 1 — inamovible")
+  (:fixed "Día de la Afirmación de los Derechos Argentinos sobre las Malvinas" 6 10 :from 1984 :to 2000
+   :authority "Ley 22.769; Decreto 901/1984 — 10 de junio; derogados por Ley 25.370 (BO 2000-12-21)")
+  (:computed "Día del Veterano y de los Caídos en la Guerra de Malvinas" #'ar-malvinas-date :from 2001
+   :authority ("Ley 25.370 (BO 2000-12-21) — 2 de abril, feriado nacional; trasladable (Ley 23.555 art. 1) hasta Ley 26.110 (BO 2006-06-30), inamovible desde entonces"
+               "DNU 297/2020 — el feriado del 2 de abril de 2020 se cumple el 31 de marzo"))
+  (:fixed "Día del Trabajador" 5 1 :from 1900 :authority "Ley 21.329 art. 1; Ley 27.399 art. 1 — inamovible")
+  (:fixed "Día de la Revolución de Mayo" 5 25 :from 1900 :authority "Ley 21.329 art. 1; Ley 27.399 art. 1 — inamovible")
+  (:computed "Paso a la Inmortalidad del Gral. Martín Miguel de Güemes" #'ar-guemes-date :from 2016
+   :authority ("Ley 27.258 (BO 2016-06-10) — 17 de junio, feriado nacional"
+               "Ley 27.399 arts. 1 y 6 — trasladable; Decreto 789/2021 art. 1 — sin superposición con un inamovible"))
+  (:fixed "Paso a la Inmortalidad del Gral. Manuel Belgrano" 6 20 :from 1900 :to 1994
+   :authority "Ley 21.329 art. 1; Ley 23.555 art. 3 — inamovible")
+  (:fixed "Paso a la Inmortalidad del Gral. José de San Martín" 8 17 :from 1900 :to 1994
+   :authority "Ley 21.329 art. 1; Ley 23.555 art. 3 — inamovible")
+  (:fixed "Día de la Raza" 10 12 :from 1917 :to 1987
+   :authority "Día de la Raza — 12 de octubre")
+  (:nth-weekday "Paso a la Inmortalidad del Gral. Manuel Belgrano" 6 :monday 3 :from 1995 :to 2010
+   :authority "Ley 24.445 (BO 1995-01-19) art. 4 — tercer lunes de junio")
+  (:fixed "Paso a la Inmortalidad del Gral. Manuel Belgrano" 6 20 :from 2011
+   :authority "Decreto 1584/2010 art. 1; Ley 27.399 art. 1 — inamovible")
+  (:fixed "Día de la Independencia" 7 9 :from 1900 :authority "Ley 21.329 art. 1; Ley 27.399 art. 1 — inamovible")
+  (:computed "Paso a la Inmortalidad del Gral. José de San Martín" #'ar-san-martin-date :from 1995
+   :authority ("Ley 24.445 art. 4 — tercer lunes de agosto (1995-2010); Decreto 1584/2010 art. 2 — tercer lunes (2011-2016)"
+               "Ley 27.399 arts. 1 y 6 — trasladable (2017-); DNU 521/2011 — 22 de agosto de 2011"))
+  (:computed "Día de la Raza" #'ar-12-octubre-date :from 1988 :to 2010
+   :authority ("Ley 23.555 art. 1 (1988-2007); Ley 26.416 (BO 2008-10-02, 2008-2010)"
+               "DNU 750/2001, DNU 1932/2002, DNU 810/2003 — traslados de un año"))
+  (:computed "Día del Respeto a la Diversidad Cultural" #'ar-12-octubre-date :from 2011
+   :authority ("Decreto 1584/2010 art. 2 — segundo lunes (2011-2016); Ley 27.399 arts. 1 y 6 — trasladable (2017-)"
+               "Res. JGM 139/2025 (Decreto 614/2025) — 12 de octubre de 2025 al viernes 10"))
+  (:computed "Día de la Soberanía Nacional" #'ar-soberania-date :from 2010
+   :authority ("Decreto 1584/2010 arts. 1-2 — 20 de noviembre, cuarto lunes (2010-2016)"
+               "Ley 27.399 arts. 1 y 6 — trasladable (2017-); DNU 2226/2015 — 27 de noviembre de 2015"))
+  (:fixed "Inmaculada Concepción de María" 12 8 :from 1995
+   :authority "Ley 24.445 art. 1; Ley 27.399 art. 1 — inamovible")
+  (:fixed "Navidad" 12 25 :from 1900 :authority "Ley 21.329 art. 1; Ley 27.399 art. 1 — inamovible"))
 
 (defun ca-victoria-day (year)
   "Holidays Act s. 4: the first Monday immediately preceding 25 May."
@@ -447,7 +593,16 @@ calendar); with YEAR, only that year's days."
                     (all-block-transfers (co-transfers))))))
     (make-instance 'colombia-holidays-calendar :transfers tr)))
 
-(defun argentina-holidays-calendar () (make-instance 'argentina-holidays-calendar))
+(defun argentina-holidays-calendar (&key year transfers)
+  "Argentine feriados nacionales (the rules of each era with the yearly decree
+moves) plus the feriados con fines turísticos and one-off feriados of
+data/ar/transfers.sexp. Without YEAR, every year in the file applies (the
+registered \"AR\" calendar); with YEAR, only that year's days."
+  (let ((tr (or transfers
+                (if year
+                    (ar-transfers-for-year year)
+                    (all-block-transfers (ar-transfers))))))
+    (make-instance 'argentina-holidays-calendar :transfers tr)))
 (defun canada-holidays-calendar () (make-instance 'canada-holidays-calendar))
 (defun peru-holidays-calendar () (make-instance 'peru-holidays-calendar))
 (defun australia-holidays-calendar () (make-instance 'australia-holidays-calendar))
