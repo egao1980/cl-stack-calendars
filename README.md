@@ -19,6 +19,17 @@ Substitute days do not depend on the order of the rules (since 0.6.0). Every nom
 
 A `:computed` rule may yield several dates per year (since 0.7.0). Its COMPUTE may return NIL, a DATE or a list of DATEs. The Hijri helpers the starters use (`eid-al-fitr`, `eid-al-adha`, `islamic-new-year-date`, `mawlid-date` and `islamic-date-in-gregorian-year`, all shadowing datetime-protocol's) are occurrence-aware: a COMPUTE that calls them runs once per occurrence of that Hijri date in the Gregorian year. So the second Eid of years such as 2000, 2006, 2033 and 2039 is kept, and `(+ (eid-al-adha y) 2)`-style blocks that start in late December run on into January. Dates are tabular (Kuwaiti arithmetic), and sighting or Umm al-Qura countries can differ by a day.
 
+### Composite and versioned calendars
+
+Since 0.8.0 a wrapper keeps its constituents' weekends and their working-day overrides, such as RU/CN decree work Saturdays:
+
+| `make-composite-calendar` mode | holiday | weekend | business day | name |
+|---|---|---|---|---|
+| `:union` (joint settlement, default) | any constituent | any constituent (`weekend-day-p` of each) | every constituent open | names of the holiday constituents, `"; "` |
+| `:intersection` | every constituent | every constituent | any constituent open | `"+"`-joined names |
+
+`calendar-weekend-days` is the union or intersection of the constituents' lists. With `:weekend-days`, that plain list replaces the constituents' weekends and their working-day overrides. An empty calendar list, or an unknown mode, signals `calendar-error`. A `versioned-calendar` delegates `holiday-p`, `weekend-day-p`, `business-day-p` and `calendar-weekend-days` to `(calendar-as-of c)`, its newest snapshot.
+
 Russian/USSR: `(russian-holidays-calendar :year 2026)` = ТК eras + decree transfers; `(ussr-holidays-calendar)` for late-Soviet fixed days.
 
 Normative starters (prefer over `country-calendar` corpus): `japan-holidays-calendar` (祝日法 + Tokyo equinoxes), `(china-holidays-calendar :year 2026)` (放假办法 + Beijing lunar + 调休), `india-holidays-calendar`, `germany-holidays-calendar` / `france-holidays-calendar` / `italy-holidays-calendar` / `spain-holidays-calendar` / `netherlands-holidays-calendar` / `belgium-holidays-calendar` / `austria-holidays-calendar` / `poland-holidays-calendar` / `sweden-holidays-calendar`, plus `target-calendar` (ECB). See [`docs/AUTHORITIES.md`](docs/AUTHORITIES.md).

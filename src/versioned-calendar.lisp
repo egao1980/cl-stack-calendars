@@ -60,3 +60,9 @@ APPEND a snapshot rather than mutate. CALENDAR-AS-OF selects by :VERSION or
 
 (defmethod calendar-weekend-days ((calendar versioned-calendar))
   (calendar-weekend-days (calendar-as-of calendar)))
+
+(defmethod weekend-day-p ((calendar versioned-calendar) date)
+  (weekend-day-p (calendar-as-of calendar) date))
+
+(defmethod business-day-p ((calendar versioned-calendar) date)
+  (business-day-p (calendar-as-of calendar) date))
