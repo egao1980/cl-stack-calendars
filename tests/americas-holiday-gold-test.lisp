@@ -313,7 +313,8 @@ Carmen before 2007, 31 Oct before 2008 and no Ley 19.668 moves."
     ((y m d holiday) :rows
      '(;; Corpus Christi and Carnaval are pontos facultativos, not feriados.
        (2025 6 19 nil) (2026 6 4 nil) (2025 3 3 nil) (2025 3 4 nil) (2026 2 17 nil)
-       ;; Paixão de Cristo is listed as feriado nacional by every federal portaria.
+       ;; Paixão de Cristo: feriado nacional in the federal portarias (ponto
+       ;; facultativo only in 2008, 2011 and 2012); Lei 9.093 art. 2 names it.
        (2025 4 18 t) (2026 4 3 t)
        ;; Lei 14.759/2023: Consciência Negra from 2024.
        (2023 11 20 nil) (2024 11 20 t) (2025 11 20 t)
@@ -322,3 +323,65 @@ Carmen before 2007, 31 Oct before 2008 and no Ley 19.668 moves."
        (2000 11 2 t) (2025 10 12 t)))
   (ok (eq holiday (and (holiday-p (find-calendar "BR") (make-date y m d)) t))
       (format nil "BR ~d-~2,'0d-~2,'0d ~:[no holiday~;holiday~]" y m d holiday)))
+
+;;; --- Argentina (#18) ---------------------------------------------------------
+
+(defparameter *ar-holiday-gold* (load-holiday-gold "AR"))
+
+(deftest ar-holiday-gold-fixture-shape
+  (%check-holiday-gold-shape *ar-holiday-gold* "AR"))
+
+(deftest ar-registered-calendar-matches-gold
+  "find-calendar \"AR\" is the feriados nacionales, turísticos and one-off feriados on every day 2000–2040."
+  (let ((ar (find-calendar "AR")))
+    (%report-holiday-gold "AR" (%holiday-gold-mismatches *ar-holiday-gold* (constantly ar)))))
+
+(deftest ar-year-calendars-match-gold
+  (%report-holiday-gold "AR :year"
+                        (%holiday-gold-mismatches *ar-holiday-gold*
+                                                  (lambda (y) (argentina-holidays-calendar :year y)))))
+
+(deftest ar-country-calendar-matches-gold
+  "country-calendar \"AR\" defers to the starter: the corpus misses decree moves and the 2026 days."
+  (let ((ar (country-calendar "AR")))
+    (ok (eq :normative (calendar-provenance ar)))
+    (%report-holiday-gold "country-calendar AR"
+                          (%holiday-gold-mismatches *ar-holiday-gold* (constantly ar)))))
+
+(deftest ar-statute-calendar-matches-gold-outside-decree-days
+  "Every recurring AR feriado is a rule: the bare starter (no data file) misses
+only the turísticos and one-off days of data/ar/transfers.sexp."
+  (let* ((bare (make-instance 'argentina-holidays-calendar))
+         (missing (mapcar #'first
+                          (remove-if-not (lambda (row) (eq (second row) :holiday))
+                                         (%holiday-gold-mismatches *ar-holiday-gold* (constantly bare)))))
+         (data-days (loop for (nil . notice) in (ar-transfers)
+                          append (loop for tr in (getf notice :transfers)
+                                       collect (suite-date-iso (calendar-transfer-to tr))))))
+    (ok (= 49 (length data-days)))
+    (ok (null (set-difference missing data-days :test #'string=)))
+    (ok (null (set-difference data-days missing :test #'string=)))))
+
+(deftest-parametrize ar-feriados
+    ((y m d holiday) :rows
+     '(;; 24 March, inamovible from 2006 (Ley 26.085).
+       (2005 3 24 nil) (2006 3 24 t) (2025 3 24 t)
+       ;; Malvinas: 10 June in 2000; 2 April trasladable 2001–2006 (Ley 23.555).
+       (2000 6 10 t) (2000 4 2 nil) (2002 4 1 t) (2003 3 31 t) (2004 4 5 t) (2004 4 2 nil)
+       (2020 3 31 t) (2020 4 2 nil)
+       ;; 20 June and 17 August on the third Monday until 2010 (Ley 24.445 art. 4).
+       (2000 6 19 t) (2000 6 20 nil) (2000 8 21 t) (2010 6 21 t) (2011 6 20 t)
+       ;; Ley 27.399 art. 6 trasladables.
+       (2018 10 15 t) (2018 10 12 nil) (2024 11 18 t) (2025 11 24 t) (2026 11 23 t)
+       (2025 6 16 t) (2026 6 15 t) (2026 6 17 nil) (2025 8 17 t) (2025 8 18 nil)
+       ;; Decreto 789/2021: 17 June on a Friday stays (Monday 20 June is inamovible).
+       (2022 6 17 t) (2033 6 17 t) (2039 6 17 t)
+       ;; Decree moves: DNU 810/2003, DNU 521/2011, DNU 2226/2015, Res. JGM 139/2025.
+       (2003 10 13 t) (2011 8 22 t) (2011 8 15 nil) (2015 11 27 t) (2015 11 23 nil)
+       (2025 10 10 t) (2025 10 13 nil)
+       ;; Turísticos and one-off feriados.
+       (2024 6 21 t) (2025 8 15 t) (2025 11 21 t) (2010 5 24 t) (2022 12 20 t) (2026 11 9 t)
+       ;; Días no laborables are not feriados: Jueves Santo; 10 Nov 2026 is provincial.
+       (2025 4 17 nil) (2026 11 10 nil)))
+  (ok (eq holiday (and (holiday-p (find-calendar "AR") (make-date y m d)) t))
+      (format nil "AR ~d-~2,'0d-~2,'0d ~:[no holiday~;holiday~]" y m d holiday)))

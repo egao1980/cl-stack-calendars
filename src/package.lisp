@@ -432,6 +432,9 @@
    #:corpus-derived-calendar
    #:*corpus-inference-min-agreement*
    #:ru-last-decree-year
-   #:ru-provisional-year-p))
+   #:ru-provisional-year-p
+   #:ar-transfers
+   #:ar-notice-for-year
+   #:ar-transfers-for-year))
 
 (in-package #:cl-stack-calendars)
