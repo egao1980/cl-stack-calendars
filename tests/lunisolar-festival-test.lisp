@@ -33,10 +33,15 @@ holiday of CAL."
     (ok (zerop bad) (format nil "~a ~a mismatches: ~d" source kind bad))))
 
 (deftest lunisolar-festival-kasi-korea
-  "설날 (eve, day, next) and 추석 (eve, day, next) 1948–2050 at KASI dates."
+  "설날 and 추석 at KASI dates in the 규정 era of each: 민속의 날 (1985–1988)
+and 설날 전날·당일·다음 날 from 1989; 추석 from 1949, 추석 다음 날 from 1986,
+추석 전날 from 1989 (#39 item 5)."
   (let ((kr (south-korea-holidays-calendar)))
-    (%assert-festival-days kr "kasi" :seollal '(-1 0 1) :from 1948 :to 2050)
-    (%assert-festival-days kr "kasi" :chuseok '(-1 0 1) :from 1948 :to 2050)))
+    (%assert-festival-days kr "kasi" :seollal '(0) :from 1985 :to 1988)
+    (%assert-festival-days kr "kasi" :seollal '(-1 0 1) :from 1989 :to 2050)
+    (%assert-festival-days kr "kasi" :chuseok '(0) :from 1949 :to 1985)
+    (%assert-festival-days kr "kasi" :chuseok '(0 1) :from 1986 :to 1988)
+    (%assert-festival-days kr "kasi" :chuseok '(-1 0 1) :from 1989 :to 2050)))
 
 (deftest lunisolar-festival-hnd-vietnam
   "Tết (giao thừa, mùng 1–3) 1945–2100 and Giỗ Tổ Hùng Vương 2007–2100 at
