@@ -39,51 +39,72 @@
 
 ;;; Brazil (floor 1900; Lei 662/1949 consolidates many)
 (define-calendar brazil-holidays-calendar (:register "BR")
+  ;; Feriados nacionais only. Carnaval, Quarta-feira de Cinzas, Corpus Christi,
+  ;; Dia do Servidor and the 24/31 December afternoons are federal pontos
+  ;; facultativos (optional days off for federal staff), not holidays. Election
+  ;; days (Código Eleitoral art. 380) are always on a Sunday.
+  ;; https://www.planalto.gov.br/ccivil_03/leis/l0662.htm
   (:fixed "Confraternização Universal" 1 1 :from 1900
-   :authority "Lei nº 662/1949 e anteriores — Ano Novo")
+   :authority "Lei nº 662/1949 art. 1 (redação da Lei nº 10.607/2002)")
+  (:easter "Paixão de Cristo" -2 :from 1900
+   :authority ("Lei nº 9.093/1995 art. 2 — feriado religioso, neste incluída a Sexta-Feira da Paixão"
+               "Portarias anuais do Ministério da Gestão (MPOG/ME/MGI) — Paixão de Cristo, feriado nacional"))
   (:fixed "Tiradentes" 4 21 :from 1900
-   :authority "Lei nº 662/1949 — Tiradentes")
-  (:fixed "Dia do Trabalhador" 5 1 :from 1900
-   :authority "Lei nº 662/1949 — Dia do Trabalho")
+   :authority "Lei nº 1.266/1950 art. 3; Lei nº 662/1949 art. 1 (redação da Lei nº 10.607/2002)")
+  (:fixed "Dia Mundial do Trabalho" 5 1 :from 1900
+   :authority "Lei nº 662/1949 art. 1")
   (:fixed "Independência do Brasil" 9 7 :from 1900
-   :authority "Lei nº 662/1949 — Independência (7 Set 1822)")
+   :authority "Lei nº 662/1949 art. 1")
   (:fixed "Nossa Senhora Aparecida" 10 12 :from 1980
-   :authority "Lei nº 6.802/1980 — padroeira; feriado nacional")
+   :authority "Lei nº 6.802/1980 art. 1 — feriado nacional, Padroeira do Brasil")
   (:fixed "Finados" 11 2 :from 1900
-   :authority "Lei nº 662/1949 — Finados")
+   :authority ("Lei nº 662/1949 art. 1 (redação da Lei nº 10.607/2002, DOU 2002-12-20)"
+               "Portarias anuais do Ministério da Gestão — Finados, feriado nacional"))
   (:fixed "Proclamação da República" 11 15 :from 1900
-   :authority "Lei nº 662/1949 — Proclamação da República (1889)")
+   :authority "Lei nº 662/1949 art. 1")
   (:fixed "Dia Nacional de Zumbi e da Consciência Negra" 11 20 :from 2024
-   :authority "Lei nº 14.759/2023 — feriado nacional desde 2024")
+   :authority "Lei nº 14.759/2023 (DOU 2023-12-22) — feriado nacional; first observed 2024")
   (:fixed "Natal" 12 25 :from 1900
-   :authority "Lei nº 662/1949 — Natal")
-  (:easter "Sexta-feira Santa" -2 :from 1900
-   :authority "Feriado nacional (Paixão de Cristo)")
-  (:easter "Corpus Christi" 60 :from 1900
-   :authority "Feriado nacional (Corpus Christi)"))
+   :authority "Lei nº 662/1949 art. 1"))
+
+(defun mx-transmision-date (year)
+  "LFT art. 74 fr. VII: the inauguration day of each six-year presidential
+term (1988, 1994, …): 1 December until 2018 (DOF 22-12-1987), 1 October from
+2024 (Constitución art. 83, reforma DOF 10-02-2014; LFT reforma DOF
+30-09-2024). NIL in other years."
+  (when (zerop (mod (- year 1988) 6))
+    (if (>= year 2024)
+        (make-date year 10 1)
+        (make-date year 12 1))))
 
 ;;; Mexico (floor 1900; LFT + Monday reforms 2006)
 (define-calendar mexico-holidays-calendar (:register "MX")
+  ;; LFT art. 74 días de descanso obligatorio (every worker). Not here: fr. IX
+  ;; election days (always a Sunday) and the CNBV bank-only days.
+  ;; https://www.diputados.gob.mx/LeyesBiblio/pdf/LFT.pdf
   (:fixed "Año Nuevo" 1 1 :from 1900
-   :authority "Ley Federal del Trabajo — descanso obligatorio")
+   :authority "Ley Federal del Trabajo art. 74 fr. I")
   (:fixed "Día de la Constitución" 2 5 :from 1917 :to 2005
-   :authority "Constitución 1917 — 5 febrero (antes de reforma LFT 2005/6)")
+   :authority "LFT art. 74 fr. II (texto DOF 22-12-1987) — 5 de febrero")
   (:nth-weekday "Día de la Constitución" 2 :monday 1 :from 2006
-   :authority "LFT reforma — primer lunes de febrero")
-  (:fixed "Natalicio de Benito Juárez" 3 21 :from 1900 :to 2005
-   :authority "Descanso obligatorio — 21 marzo hasta reforma")
-  (:nth-weekday "Natalicio de Benito Juárez" 3 :monday 3 :from 2006
-   :authority "LFT reforma — tercer lunes de marzo")
+   :authority "LFT art. 74 fr. II (reforma DOF 17-01-2006) — primer lunes de febrero")
+  (:fixed "Natalicio de Benito Juárez" 3 21 :from 1900 :to 2006
+   :authority "LFT art. 74 fr. III — 21 de marzo; DOF 17-01-2006 transitorio segundo: el lunes rige a partir de 2007 (bicentenario 2006)")
+  (:nth-weekday "Natalicio de Benito Juárez" 3 :monday 3 :from 2007
+   :authority "LFT art. 74 fr. III (reforma DOF 17-01-2006) — tercer lunes de marzo")
   (:fixed "Día del Trabajo" 5 1 :from 1900
-   :authority "LFT — 1 de mayo")
+   :authority "LFT art. 74 fr. IV")
   (:fixed "Día de la Independencia" 9 16 :from 1900
-   :authority "LFT — 16 de septiembre")
+   :authority "LFT art. 74 fr. V")
   (:fixed "Revolución Mexicana" 11 20 :from 1917 :to 2005
-   :authority "20 noviembre hasta reforma LFT")
+   :authority "LFT art. 74 fr. VI (texto DOF 22-12-1987) — 20 de noviembre")
   (:nth-weekday "Revolución Mexicana" 11 :monday 3 :from 2006
-   :authority "LFT reforma — tercer lunes de noviembre")
+   :authority "LFT art. 74 fr. VI (reforma DOF 17-01-2006) — tercer lunes de noviembre")
+  (:computed "Transmisión del Poder Ejecutivo Federal" #'mx-transmision-date :from 1988
+   :authority ("LFT art. 74 fr. VII — 1o. de diciembre de cada seis años (DOF 22-12-1987); 1o. de octubre (reforma DOF 30-09-2024)"
+               "Constitución art. 83 (reforma DOF 10-02-2014) — el Presidente entra a ejercer su encargo el 1o. de octubre, desde 2024"))
   (:fixed "Navidad" 12 25 :from 1900
-   :authority "LFT — 25 de diciembre"))
+   :authority "LFT art. 74 fr. VIII"))
 
 ;;; Colombia (floor 1900; Ley 51/1983 Emiliani Monday + decree puentes)
 (define-calendar colombia-holidays-calendar (:register "CO" :constructor colombia-holidays-calendar)
@@ -227,22 +248,30 @@
 
 ;;; Peru (floor 1900)
 (define-calendar peru-holidays-calendar (:register "PE")
-  (:fixed "Año Nuevo" 1 1 :from 1900 :authority "Feriado nacional")
-  (:easter "Jueves Santo" -3 :from 1900 :authority "Semana Santa")
-  (:easter "Viernes Santo" -2 :from 1900 :authority "Semana Santa")
-  (:fixed "Día del Trabajo" 5 1 :from 1900 :authority "Feriado")
-  (:fixed "San Pedro y San Pablo" 6 29 :from 1900 :authority "Feriado")
-  (:fixed "Fiestas Patrias" 7 28 :from 1900
-   :authority "Independencia — 28 julio")
-  (:fixed "Fiestas Patrias" 7 29 :from 1900
-   :authority "Fiestas Patrias — 29 julio")
-  (:fixed "Santa Rosa de Lima" 8 30 :from 1900 :authority "Feriado")
-  (:fixed "Combate de Angamos" 10 8 :from 1900 :authority "Feriado")
-  (:fixed "Todos los Santos" 11 1 :from 1900 :authority "Feriado")
-  (:fixed "Inmaculada Concepción" 12 8 :from 1900 :authority "Feriado")
+  ;; Feriados of DL 713 art. 6 and later laws, on their own dates (Ley 26331).
+  ;; Not here: días no laborables by Decreto Supremo (public sector; private
+  ;; sector by agreement), Easter Sunday, regional days.
+  ;; https://leyes.congreso.gob.pe/Documentos/DecretosLegislativos/00713.pdf
+  (:fixed "Año Nuevo" 1 1 :from 1900 :authority "DL 713 art. 6")
+  (:easter "Jueves Santo" -3 :from 1900 :authority "DL 713 art. 6 — feriado movible")
+  (:easter "Viernes Santo" -2 :from 1900 :authority "DL 713 art. 6 — feriado movible")
+  (:fixed "Día del Trabajo" 5 1 :from 1900 :authority "DL 713 art. 6")
+  (:fixed "Batalla de Arica y Día de la Bandera" 6 7 :from 2024
+   :authority "Ley 31788 (El Peruano 2023-06-15) — feriado nacional 7 de junio; first observed 2024")
+  (:fixed "San Pedro y San Pablo" 6 29 :from 1900 :authority "DL 713 art. 6")
+  (:fixed "Día de la Fuerza Aérea del Perú" 7 23 :from 2023
+   :authority "Ley 31822 (El Peruano 2023-07-08) — feriado nacional 23 de julio; modifica art. 6 del DL 713")
+  (:fixed "Fiestas Patrias" 7 28 :from 1900 :authority "DL 713 art. 6 — 28 de julio")
+  (:fixed "Fiestas Patrias" 7 29 :from 1900 :authority "DL 713 art. 6 — 29 de julio")
+  (:fixed "Batalla de Junín" 8 6 :from 2022
+   :authority "Ley 31530 (El Peruano 2022-07-26) — feriado nacional 6 de agosto")
+  (:fixed "Santa Rosa de Lima" 8 30 :from 1900 :authority "DL 713 art. 6")
+  (:fixed "Combate de Angamos" 10 8 :from 1900 :authority "DL 713 art. 6")
+  (:fixed "Todos los Santos" 11 1 :from 1900 :authority "DL 713 art. 6")
+  (:fixed "Inmaculada Concepción" 12 8 :from 1900 :authority "DL 713 art. 6")
   (:fixed "Batalla de Ayacucho" 12 9 :from 2022
-   :authority "Ley 31155 — feriado 9 de diciembre desde 2022")
-  (:fixed "Navidad" 12 25 :from 1900 :authority "Feriado"))
+   :authority "Ley 31381 (El Peruano 2021-12-31) — feriado nacional 9 de diciembre")
+  (:fixed "Navidad" 12 25 :from 1900 :authority "DL 713 art. 6"))
 
 ;;; Australia, national subset (2000–2040 checked against data/tests/au-holiday-gold.sexp, #17)
 (define-calendar australia-holidays-calendar (:register "AU")

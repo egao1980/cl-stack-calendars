@@ -1,4 +1,5 @@
 ;; Generated from commenthol/date-holidays (CC BY-SA 3.0)
+;; 2024, 2030, 2036 inauguration day corrected to 1 October (LFT art. 74 fr. VII, DOF 30-09-2024; #19).
 ;; country=MX years=2000-2040 types=public,bank
 (
  :code "MX"
@@ -282,9 +283,9 @@
   (2024 3 29 "Viernes Santo" :bank)
   (2024 5 1 "Día del Trabajador" :public)
   (2024 9 16 "Día de la Independencia" :public)
+  (2024 10 1 "Transmisión del Poder Ejecutivo Federal" :public)
   (2024 11 2 "Día de los Difuntos" :bank)
   (2024 11 18 "Día de la Revolución" :public)
-  (2024 12 1 "Transmisión del Poder Ejecutivo Federal" :public)
   (2024 12 12 "Día de la Virgen de Guadalupe" :bank)
   (2024 12 25 "Navidad" :public)
   (2025 1 1 "Año Nuevo" :public)
@@ -349,9 +350,9 @@
   (2030 4 19 "Viernes Santo" :bank)
   (2030 5 1 "Día del Trabajador" :public)
   (2030 9 16 "Día de la Independencia" :public)
+  (2030 10 1 "Transmisión del Poder Ejecutivo Federal" :public)
   (2030 11 2 "Día de los Difuntos" :bank)
   (2030 11 18 "Día de la Revolución" :public)
-  (2030 12 1 "Transmisión del Poder Ejecutivo Federal" :public)
   (2030 12 12 "Día de la Virgen de Guadalupe" :bank)
   (2030 12 25 "Navidad" :public)
   (2031 1 1 "Año Nuevo" :public)
@@ -416,9 +417,9 @@
   (2036 4 11 "Viernes Santo" :bank)
   (2036 5 1 "Día del Trabajador" :public)
   (2036 9 16 "Día de la Independencia" :public)
+  (2036 10 1 "Transmisión del Poder Ejecutivo Federal" :public)
   (2036 11 2 "Día de los Difuntos" :bank)
   (2036 11 17 "Día de la Revolución" :public)
-  (2036 12 1 "Transmisión del Poder Ejecutivo Federal" :public)
   (2036 12 12 "Día de la Virgen de Guadalupe" :bank)
   (2036 12 25 "Navidad" :public)
   (2037 1 1 "Año Nuevo" :public)
