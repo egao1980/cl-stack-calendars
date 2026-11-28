@@ -119,72 +119,6 @@
 
 ;;; --- Remaining EU-27 --------------------------------------------------
 
-;;; Romania — Codul muncii / lege zile libere (Orthodox Easter).
-(define-calendar romania-holidays-calendar (:register "RO")
-  (:fixed "Anul Nou" 1 1 :from 1900 :authority "Zile libere legale")
-  (:fixed "Anul Nou" 1 2 :from 1900 :authority "A doua zi de Anul Nou")
-  (:fixed "Boboteaza" 1 6 :from 2024
-   :authority "Lege — Boboteaza zi liberă din 2024")
-  (:fixed "Sfântul Ion" 1 7 :from 2024
-   :authority "Lege — Sfântul Ion Botezătorul zi liberă din 2024")
-  (:fixed "Ziua Unirii Principatelor Române" 1 24 :from 2016
-   :authority "Ziua Unirii — zi liberă din 2016")
-  (:easter "Vinerea Mare" -2 :orthodox t :from 2018
-   :authority "Vinerea Mare ortodoxă — zi liberă din 2018")
-  (:easter "Paștele" 0 :orthodox t :from 1900 :authority "Paștele ortodox")
-  (:easter "A doua zi de Paști" 1 :orthodox t :from 1900 :authority "A doua zi de Paști")
-  (:fixed "Ziua Muncii" 5 1 :from 1900 :authority "Ziua muncii")
-  (:fixed "Ziua Copilului" 6 1 :from 2017
-   :authority "Ziua Copilului — zi liberă din 2017")
-  (:easter "Rusaliile" 49 :orthodox t :from 1900 :authority "Rusaliile")
-  (:easter "A doua zi de Rusalii" 50 :orthodox t :from 1900 :authority "A doua zi de Rusalii")
-  (:fixed "Adormirea Maicii Domnului" 8 15 :from 1900 :authority "Adormirea Maicii Domnului")
-  (:fixed "Sfântul Andrei" 11 30 :from 2015
-   :authority "Sfântul Andrei — zi liberă din 2015")
-  (:fixed "Ziua Națională" 12 1 :from 1990
-   :authority "1 Decembrie — Ziua Marii Uniri")
-  (:fixed "Crăciunul" 12 25 :from 1900 :authority "Crăciun")
-  (:fixed "A doua zi de Crăciun" 12 26 :from 1900 :authority "A doua zi de Crăciun"))
-
-;;; Greece — επίσημες αργίες (Orthodox).
-(define-calendar greece-holidays-calendar (:register "GR")
-  (:fixed "Πρωτοχρονιά" 1 1 :from 1900 :authority "Επίσημη αργία")
-  (:fixed "Θεοφάνεια" 1 6 :from 1900 :authority "Επίσημη αργία")
-  (:easter "Καθαρά Δευτέρα" -48 :orthodox t :from 1900
-   :authority "Καθαρά Δευτέρα (Ορθόδοξο Πάσχα − 48)")
-  (:fixed "Ευαγγελισμός / Εθνική Εορτή" 3 25 :from 1900
-   :authority "25 Μαρτίου — εθνική εορτή")
-  (:easter "Μεγάλη Παρασκευή" -2 :orthodox t :from 1900 :authority "Μεγάλη Παρασκευή")
-  (:easter "Δευτέρα του Πάσχα" 1 :orthodox t :from 1900 :authority "Δευτέρα του Πάσχα")
-  (:fixed "Εργατική Πρωτομαγιά" 5 1 :from 1900 :authority "Επίσημη αργία")
-  (:easter "Αγίου Πνεύματος" 50 :orthodox t :from 1900
-   :authority "Δευτέρα του Αγίου Πνεύματος")
-  (:fixed "Κοίμηση της Θεοτόκου" 8 15 :from 1900 :authority "Επίσημη αργία")
-  (:fixed "Επέτειος του Όχι" 10 28 :from 1940 :authority "28 Οκτωβρίου")
-  (:fixed "Χριστούγεννα" 12 25 :from 1900 :authority "Επίσημη αργία")
-  (:fixed "Σύναξις Θεοτόκου" 12 26 :from 1900 :authority "Δεύτερη μέρα Χριστουγέννων"))
-
-;;; Bulgaria — официални празници (Orthodox).
-(define-calendar bulgaria-holidays-calendar (:register "BG")
-  (:fixed "Нова година" 1 1 :from 1900 :authority "Официален празник")
-  (:fixed "Ден на Освобождението" 3 3 :from 1880
-   :authority "3 март — Освобождение от османско иго")
-  (:easter "Разпети петък" -2 :orthodox t :from 1900 :authority "Великден (православен)")
-  (:easter "Великден" 0 :orthodox t :from 1900 :authority "Великден")
-  (:easter "Велики понеделник" 1 :orthodox t :from 1900 :authority "Велики понеделник")
-  (:fixed "Ден на труда" 5 1 :from 1900 :authority "Официален празник")
-  (:fixed "Гергьовден" 5 6 :from 1900
-   :authority "Гергьовден / Ден на храбростта")
-  (:fixed "Ден на азбуката" 5 24 :from 1900
-   :authority "Ден на българската просвета и култура")
-  (:fixed "Ден на съединението" 9 6 :from 1885 :authority "Съединение на България")
-  (:fixed "Ден на независимостта" 9 22 :from 1908 :authority "Независимост 1908")
-  (:fixed "Ден на народните будители" 11 1 :from 1922
-   :authority "Ден на народните будители")
-  (:fixed "Бъдни вечер" 12 24 :from 1900 :authority "Официален празник")
-  (:fixed "Коледа" 12 25 :from 1900 :authority "Официален празник")
-  (:fixed "Коледа" 12 26 :from 1900 :authority "Втори ден на Коледа"))
-
 ;;; Denmark — helligdage (Store bededag abolished 2024).
 (define-calendar denmark-holidays-calendar (:register "DK")
   (:fixed "Nytårsdag" 1 1 :from 1900 :authority "Danske helligdage")
@@ -274,24 +208,6 @@
   (:fixed "esimene jõulupüha" 12 25 :from 1991 :authority "Riigipüha")
   (:fixed "teine jõulupüha" 12 26 :from 1991 :authority "Riigipüha"))
 
-;;; Cyprus — επίσημες αργίες (Orthodox; Republic floor 1960).
-(define-calendar cyprus-holidays-calendar (:register "CY")
-  (:fixed "Πρωτοχρονιά" 1 1 :from 1960 :authority "Επίσημη αργία")
-  (:fixed "Θεοφάνεια" 1 6 :from 1960 :authority "Επίσημη αργία")
-  (:easter "Καθαρά Δευτέρα" -48 :orthodox t :from 1960 :authority "Καθαρά Δευτέρα")
-  (:fixed "Εθνική Εορτή" 3 25 :from 1960 :authority "25 Μαρτίου")
-  (:fixed "Κύπρος Εθνική Εορτή" 4 1 :from 1960
-   :authority "1 Απριλίου — ΕΟΚΑ")
-  (:easter "Μεγάλη Παρασκευή" -2 :orthodox t :from 1960 :authority "Μεγάλη Παρασκευή")
-  (:easter "Δευτέρα του Πάσχα" 1 :orthodox t :from 1960 :authority "Δευτέρα του Πάσχα")
-  (:fixed "Εργατική Πρωτομαγιά" 5 1 :from 1960 :authority "Επίσημη αργία")
-  (:easter "Πεντηκοστή" 50 :orthodox t :from 1960 :authority "Κατακλυσμός / Πεντηκοστή")
-  (:fixed "Κοίμηση της Θεοτόκου" 8 15 :from 1960 :authority "Επίσημη αργία")
-  (:fixed "Ημέρα Ανεξαρτησίας" 10 1 :from 1960 :authority "1 Οκτωβρίου")
-  (:fixed "Επέτειος του Όχι" 10 28 :from 1960 :authority "28 Οκτωβρίου")
-  (:fixed "Χριστούγεννα" 12 25 :from 1960 :authority "Επίσημη αργία")
-  (:fixed "Δεύτερη μέρα Χριστουγέννων" 12 26 :from 1960 :authority "Επίσημη αργία"))
-
 ;;; Luxembourg — jours fériés légaux.
 (define-calendar luxembourg-holidays-calendar (:register "LU")
   (:fixed "Nouvel An" 1 1 :from 1900 :authority "Jours fériés légaux")
@@ -329,14 +245,10 @@
 (defun belgium-holidays-calendar () (make-instance 'belgium-holidays-calendar))
 (defun austria-holidays-calendar () (make-instance 'austria-holidays-calendar))
 (defun sweden-holidays-calendar () (make-instance 'sweden-holidays-calendar))
-(defun romania-holidays-calendar () (make-instance 'romania-holidays-calendar))
-(defun greece-holidays-calendar () (make-instance 'greece-holidays-calendar))
-(defun bulgaria-holidays-calendar () (make-instance 'bulgaria-holidays-calendar))
 (defun denmark-holidays-calendar () (make-instance 'denmark-holidays-calendar))
 (defun finland-holidays-calendar () (make-instance 'finland-holidays-calendar))
 (defun lithuania-holidays-calendar () (make-instance 'lithuania-holidays-calendar))
 (defun latvia-holidays-calendar () (make-instance 'latvia-holidays-calendar))
 (defun estonia-holidays-calendar () (make-instance 'estonia-holidays-calendar))
-(defun cyprus-holidays-calendar () (make-instance 'cyprus-holidays-calendar))
 (defun luxembourg-holidays-calendar () (make-instance 'luxembourg-holidays-calendar))
 (defun malta-holidays-calendar () (make-instance 'malta-holidays-calendar))

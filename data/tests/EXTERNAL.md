@@ -87,3 +87,7 @@ Middle East and North Africa holidays live in `<cc>-holiday-gold.sexp` too, buil
 | `CZ` | 2000–2040: zákon 245/2000 Sb., 359/2015 Sb. (e-Sbírka). Python `holidays` agrees. |
 | `HU` | 2000–2040: Mt. § 102, 2017. évi XIII., 2026. évi LXXII. tv. and every munkarend decree 2001–2026 (njt, Magyar Közlöny). Python `holidays` lists Easter and Whit Sunday; the transfers agree. |
 | `PL` | 2000–2040: the 1951 act as amended, Dz.U. 2010/1459, 2018/2117, 2024/1965 (ISAP). Python `holidays` agrees. |
+| `RO` | 2000–2040: Legea 75/1996, Codul muncii art. 134/139 and its amending laws (cdep.ro, senat.ro). Python `holidays` agrees. |
+| `BG` | 2004–2040: КТ чл. 154 (lex.bg), ДВ 15/2010 and 105/2016 and every Council of Ministers decision 2004–2016, 2025 (dv.parliament.bg); `bg-secondary` 2000–2003. Python `holidays` agrees. |
+| `GR` | 2000–2040, `:confidence :secondary`: the public-sector list and the 1 May moves (secondary copies; ministry press releases for 2021, 2022, 2024). Python `holidays` keeps 1 May in 2013, 2016, 2021, 2022 and projects 2027. |
+| `CY` | 2000–2040, `:confidence :secondary`: the Central Bank lists 2015–2028 less Easter Tuesday. Python `holidays` lists Easter Sunday. |

@@ -940,6 +940,37 @@ FIXTURES: dict[str, dict] = {
                note="Dni pracovného pokoja of Slovakia: zákon 241/1993 Z. z. § 2 as amended: 17 November from 15 Nov "
                     "2001 (442/2001) to 31 Oct 2025 (261/2025), 1 September to 2023 (530/2023), 28 October never a "
                     "day of rest, 30 October 2018 (§ 4a), no 8 May and 15 September in 2026 (§ 4b)."),
+    # --- #22: Romania, Bulgaria, Greece, Cyprus ---
+    "RO": dict(name="Romania", region="europe", first=2000, weekends=[(None, (6, 7))],
+               data_note="no one-off days; the Codul muncii art. 139 days are rules",
+               note="Zile de sărbătoare legală of Romania: Legea 75/1996, Codul muncii art. 134/139 (from 1 Mar 2003) as "
+                    "amended: Rusalii and 15 August from 2009 (L. 202/2008), 30 November from 2012 (L. 147/2012), 24 "
+                    "January and 1 June from 2017 (L. 176/2016, L. 220/2016), Vinerea Mare from 2018 (L. 64/2018), 6 and "
+                    "7 January from 2024 (L. 52/2023). Orthodox Easter; both Easter and Rusalii Sundays are named."),
+    "BG": dict(name="Bulgaria", region="europe", first=2004, weekends=[(None, (6, 7))],
+               data_note="the Council of Ministers decisions: transferred rest days and working Saturdays (2004-2016) "
+                         "and one-off days (2004-04-02, 2007-01-02, 2025-12-31, 2026-01-02)",
+               note="Official holidays of Bulgaria: Кодекс на труда чл. 154(1) (no 1 November: schools only), Велики "
+                    "петък and Велика събота from 2010 (ДВ 15/2010), чл. 154(2) from 2017 (ДВ 105/2016: a holiday "
+                    "other than Easter on a Saturday or Sunday makes the next working day or days non-working), and "
+                    "every Council of Ministers decision 2004-2016 and 2025 (ДВ)."),
+    "BG-SECONDARY": dict(name="Bulgaria (secondary sources)", country="BG", region="europe", first=2000, last=2003,
+                         file="bg-secondary-holiday-gold.sexp", confidence="secondary", weekends=[(None, (6, 7))],
+                         note="LOWER CONFIDENCE. 2000-2003: the чл. 154 days only; the Council of Ministers transfer "
+                              "decisions of these years were not researched."),
+    "GR": dict(name="Greece (public sector)", region="europe", first=2000, confidence="secondary", data=True,
+               weekends=[(None, (6, 7))],
+               data_note="the Ministry of Labour decisions moving 1 May (2013, 2016, 2021, 2022, 2024), from secondary copies",
+               note="LOWER CONFIDENCE. Official holidays of Greece (public sector, ΠΝΠ 1980 / Ν. 1157/1981; the private-"
+                    "sector days of Ν. 4808/2021 art. 60 are among them): 1 and 6 January, Clean Monday, 25 March, Good "
+                    "Friday, Easter Monday, 1 May, Holy Spirit Monday, 15 August, 28 October, 25 and 26 December; 1 May "
+                    "moved by ministerial decision in 2013, 2016, 2021, 2022 and 2024. Future moves are not projected."),
+    "CY": dict(name="Cyprus", region="europe", first=2000, confidence="secondary", data=True,
+               weekends=[(None, (6, 7))], data_note="no one-off days",
+               note="LOWER CONFIDENCE. Public holidays of Cyprus as the Central Bank's yearly lists 2015-2028 carry them "
+                    "(less the bank-only Easter Tuesday): 1 and 6 January, Clean Monday, 25 March, 1 April, Good Friday, "
+                    "Easter Monday, 1 May, Whit Monday, 15 August, 1 October, 28 October, 25 and 26 December. No "
+                    "holiday statute could be read."),
 }
 
 
