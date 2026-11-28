@@ -79,7 +79,11 @@
     (:mw-cap-18-05-s-4
      :implements (:next-weekday)
      :authority ("Public Holidays Act (Cap. 18:05) s. 4 — a public holiday on a Saturday or Sunday ceases to be one and the next day that is not a Sunday or a public holiday is a public holiday")
-     :uri ("https://web.archive.org/web/20211202034241id_/https://malawilii.org/akn/mw/act/1967/11/eng@2014-12-31")))
+     :uri ("https://web.archive.org/web/20211202034241id_/https://malawilii.org/akn/mw/act/1967/11/eng@2014-12-31"))
+    (:bg-kt-154-2
+     :implements (:substitute-next)
+     :authority ("Кодекс на труда чл. 154, ал. 2 (ДВ бр. 105 от 30.12.2016, в сила от 01.01.2017) — когато официалните празници, с изключение на Великденските празници, съвпадат със събота и/или неделя, първият или първите два работни дни след тях са неприсъствени")
+     :uri ("https://dv.parliament.bg/DVWeb/showMaterialDV.jsp?idMat=110584")))
   "Normative observance policies. Prefer these over mechanical primitives in
 starter calendars; primitives exist only as implementation atoms.
 :DECREE-CANCELS-SUBSTITUTE T means a calendar transfer whose FROM is the
@@ -247,6 +251,7 @@ accounting period (so a Saturday New Year's Day leaves Dec 31 open)."
     (:zw-cap-10-21-s-2-1 :sunday-next)
     (:zm-cap-272-s-2-2 :sunday-next)
     (:mw-cap-18-05-s-4 :next-weekday)
+    (:bg-kt-154-2 :substitute-next)
     (otherwise observed)))
 
 (defun ru-new-year-holiday-block-p (date)

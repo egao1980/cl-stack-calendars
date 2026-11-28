@@ -13,7 +13,8 @@
 ;;;; Sundays (NL, IE, DE) are not listed. No weekend substitutes: none of these
 ;;;; statutes has one (IE s. 21 is a per-employee entitlement, #25 item 9).
 
-(defparameter *europe-list-codes* '("IT" "NL" "DE" "IE" "PT" "TARGET" "HR" "SI" "SK" "CZ" "HU" "PL")
+(defparameter *europe-list-codes* '("IT" "NL" "DE" "IE" "PT" "TARGET" "HR" "SI" "SK" "CZ" "HU" "PL"
+                                    "RO" "BG" "GR" "CY")
   "Codes whose acts and one-off days are data/<cc>/statutes.sexp and
 data/<cc>/holidays.sexp.")
 
@@ -370,3 +371,117 @@ transferred rest days and the working Saturdays (data/hu/holidays.sexp)."
   "Dni wolne od pracy of Poland (\"PL\"): the 1951 act art. 1 pkt 1 by era (Trzech
 Króli from 2011, Wigilia from 2025) and 12 November 2018 (data/pl/holidays.sexp)."
   (%mena-calendar 'poland-holidays-calendar "PL" year transfers suppressed working-days))
+
+;;; --- Romania (#22) -------------------------------------------------------------
+
+(define-calendar romania-holidays-calendar (:register "RO" :constructor romania-holidays-calendar)
+  ;; Legea 75/1996 art. 1, then Codul muncii art. 134 / 139 as amended.
+  ;; Floors before 1996 are the earlier starter's (not researched).
+  (:fixed "Anul Nou" 1 1 :from 1900 :authority "Codul muncii art. 139(1); Legea 75/1996 art. 1")
+  (:fixed "Anul Nou (a doua zi)" 1 2 :from 1900 :authority "Codul muncii art. 139(1); Legea 75/1996 art. 1")
+  (:fixed "Botezul Domnului – Boboteaza" 1 6 :from 2024 :authority "Legea 52/2023 (in force 9 Mar 2023)")
+  (:fixed "Soborul Sfântului Proroc Ioan Botezătorul" 1 7 :from 2024 :authority "Legea 52/2023 (in force 9 Mar 2023)")
+  (:fixed "Ziua Unirii Principatelor Române" 1 24 :from 2017 :authority "Legea 176/2016 (in force 16 Oct 2016)")
+  (:easter "Vinerea Mare" -2 :orthodox t :from 2018 :authority "Legea 64/2018 (in force 16 Mar 2018)")
+  (:easter "Paștele" 0 :orthodox t :from 1900 :authority "Codul muncii art. 139(1) (prima zi de Paști)")
+  (:easter "A doua zi de Paști" 1 :orthodox t :from 1900 :authority "Codul muncii art. 139(1)")
+  (:fixed "Ziua Muncii" 5 1 :from 1900 :authority "Codul muncii art. 139(1)")
+  (:fixed "Ziua Copilului" 6 1 :from 2017 :authority "Legea 220/2016 (in force 21 Nov 2016)")
+  (:easter "Rusaliile" 49 :orthodox t :from 2009 :authority "Legea 202/2008 (in force 31 Oct 2008)")
+  (:easter "A doua zi de Rusalii" 50 :orthodox t :from 2009 :authority "Legea 202/2008 (in force 31 Oct 2008)")
+  (:fixed "Adormirea Maicii Domnului" 8 15 :from 2009 :authority "Legea 202/2008 (in force 31 Oct 2008)")
+  (:fixed "Sfântul Apostol Andrei" 11 30 :from 2012 :authority "Legea 147/2012 (in force 27 Jul 2012)")
+  (:fixed "Ziua Națională" 12 1 :from 1990 :authority "Codul muncii art. 139(1); Legea 75/1996 art. 1")
+  (:fixed "Crăciunul" 12 25 :from 1900 :authority "Codul muncii art. 139(1)")
+  (:fixed "A doua zi de Crăciun" 12 26 :from 1900 :authority "Codul muncii art. 139(1)"))
+
+(defun romania-holidays-calendar (&key year transfers suppressed working-days)
+  "Zile de sărbătoare legală of Romania (\"RO\"): Codul muncii art. 139 by era
+(Rusalii and 15 August from 2009, 30 November from 2012, 24 January and 1 June
+from 2017, Vinerea Mare from 2018, 6–7 January from 2024)."
+  (%mena-calendar 'romania-holidays-calendar "RO" year transfers suppressed working-days))
+
+;;; --- Bulgaria (#22) ------------------------------------------------------------
+
+(define-calendar bulgaria-holidays-calendar (:register "BG" :constructor bulgaria-holidays-calendar)
+  ;; Кодекс на труда чл. 154(1); чл. 154(2) from 1 Jan 2017 for the fixed days.
+  ;; 1 November is a day off for schools only. The Council of Ministers
+  ;; transfers and one-off days are data/bg/holidays.sexp rows.
+  (:fixed "Нова година" 1 1 :from 1900 :observed :bg-kt-154-2 :observed-from (2017 1 1) :authority "КТ чл. 154(1)")
+  (:fixed "Ден на Освобождението на България" 3 3 :from 1880 :observed :bg-kt-154-2 :observed-from (2017 1 1)
+   :authority "КТ чл. 154(1)")
+  (:easter "Велики петък" -2 :orthodox t :from 2010 :authority "КТ чл. 154(1) (ДВ 15/2010)")
+  (:easter "Велика събота" -1 :orthodox t :from 2010 :authority "КТ чл. 154(1) (ДВ 15/2010)")
+  (:easter "Великден" 0 :orthodox t :from 1900 :authority "КТ чл. 154(1)")
+  (:easter "Великден (понеделник)" 1 :orthodox t :from 1900 :authority "КТ чл. 154(1)")
+  (:fixed "Ден на труда" 5 1 :from 1900 :observed :bg-kt-154-2 :observed-from (2017 1 1) :authority "КТ чл. 154(1)")
+  (:fixed "Гергьовден, Ден на храбростта и Българската армия" 5 6 :from 1900 :observed :bg-kt-154-2
+   :observed-from (2017 1 1) :authority "КТ чл. 154(1)")
+  (:fixed "Ден на светите братя Кирил и Методий" 5 24 :from 1900 :observed :bg-kt-154-2 :observed-from (2017 1 1)
+   :authority "КТ чл. 154(1)")
+  (:fixed "Ден на Съединението" 9 6 :from 1885 :observed :bg-kt-154-2 :observed-from (2017 1 1)
+   :authority "КТ чл. 154(1)")
+  (:fixed "Ден на Независимостта на България" 9 22 :from 1908 :observed :bg-kt-154-2 :observed-from (2017 1 1)
+   :authority "КТ чл. 154(1)")
+  (:fixed "Бъдни вечер" 12 24 :from 1900 :observed :bg-kt-154-2 :observed-from (2017 1 1) :authority "КТ чл. 154(1)")
+  (:fixed "Рождество Христово" 12 25 :from 1900 :observed :bg-kt-154-2 :observed-from (2017 1 1)
+   :authority "КТ чл. 154(1)")
+  (:fixed "Рождество Христово (втори ден)" 12 26 :from 1900 :observed :bg-kt-154-2 :observed-from (2017 1 1)
+   :authority "КТ чл. 154(1)"))
+
+(defun bulgaria-holidays-calendar (&key year transfers suppressed working-days)
+  "Official holidays of Bulgaria (\"BG\"): КТ чл. 154(1) by era (Good Friday and
+Holy Saturday from 2010, no 1 November), the чл. 154(2) weekend rule from 2017,
+and the Council of Ministers transfers and one-off days (data/bg/holidays.sexp)."
+  (%mena-calendar 'bulgaria-holidays-calendar "BG" year transfers suppressed working-days))
+
+;;; --- Greece (#22) --------------------------------------------------------------
+
+(define-calendar greece-holidays-calendar (:register "GR" :constructor greece-holidays-calendar)
+  ;; Public-sector official holidays (ΠΝΠ 1980 / Ν. 1157/1981; Ν. 4808/2021 art. 60
+  ;; for the private sector). The ministerial moves of 1 May are
+  ;; data/gr/holidays.sexp rows (:secondary).
+  (:fixed "Πρωτοχρονιά" 1 1 :from 1900 :authority "ΠΝΠ 1980 / Ν. 1157/1981; Ν. 4808/2021 art. 60")
+  (:fixed "Θεοφάνεια" 1 6 :from 1900 :authority "ΠΝΠ 1980 / Ν. 1157/1981; Ν. 4808/2021 art. 60")
+  (:easter "Καθαρά Δευτέρα" -48 :orthodox t :from 1900 :authority "ΠΝΠ 1980 / Ν. 1157/1981")
+  (:fixed "Ευαγγελισμός / Εθνική Εορτή" 3 25 :from 1900 :authority "ΠΝΠ 1980 / Ν. 1157/1981; Ν. 4808/2021 art. 60")
+  (:easter "Μεγάλη Παρασκευή" -2 :orthodox t :from 1900 :authority "ΠΝΠ 1980 / Ν. 1157/1981")
+  (:easter "Δευτέρα του Πάσχα" 1 :orthodox t :from 1900 :authority "ΠΝΠ 1980 / Ν. 1157/1981; Ν. 4808/2021 art. 60")
+  (:fixed "Εργατική Πρωτομαγιά" 5 1 :from 1900
+   :authority "ΠΝΠ 1980 / Ν. 1157/1981; Ν. 4808/2021 art. 60; moved by ministerial decision in some years")
+  (:easter "Αγίου Πνεύματος" 50 :orthodox t :from 1900 :authority "ΠΝΠ 1980 / Ν. 1157/1981")
+  (:fixed "Κοίμηση της Θεοτόκου" 8 15 :from 1900 :authority "ΠΝΠ 1980 / Ν. 1157/1981; Ν. 4808/2021 art. 60")
+  (:fixed "Επέτειος του Όχι" 10 28 :from 1940 :authority "ΠΝΠ 1980 / Ν. 1157/1981; Ν. 4808/2021 art. 60")
+  (:fixed "Χριστούγεννα" 12 25 :from 1900 :authority "ΠΝΠ 1980 / Ν. 1157/1981; Ν. 4808/2021 art. 60")
+  (:fixed "Σύναξις Θεοτόκου" 12 26 :from 1900 :authority "ΠΝΠ 1980 / Ν. 1157/1981; Ν. 4808/2021 art. 60"))
+
+(defun greece-holidays-calendar (&key year transfers suppressed working-days)
+  "Official holidays of Greece (\"GR\"), with the ministerial moves of 1 May in
+2013, 2016, 2021, 2022 and 2024 (data/gr/holidays.sexp, :secondary)."
+  (%mena-calendar 'greece-holidays-calendar "GR" year transfers suppressed working-days))
+
+;;; --- Cyprus (#22) --------------------------------------------------------------
+
+(define-calendar cyprus-holidays-calendar (:register "CY" :constructor cyprus-holidays-calendar)
+  ;; The public holidays of the Central Bank's yearly lists 2015-2028, less the
+  ;; bank-only Easter Tuesday; no holiday statute could be read. No weekend rule.
+  (:fixed "Πρωτοχρονιά" 1 1 :from 1960 :authority "Central Bank of Cyprus yearly holiday lists")
+  (:fixed "Θεοφάνεια" 1 6 :from 1960 :authority "Central Bank of Cyprus yearly holiday lists")
+  (:easter "Καθαρά Δευτέρα" -48 :orthodox t :from 1960 :authority "Central Bank of Cyprus yearly holiday lists")
+  (:fixed "Εθνική Εορτή" 3 25 :from 1960 :authority "Central Bank of Cyprus yearly holiday lists")
+  (:fixed "Εθνική Ημέρα Κύπρου" 4 1 :from 1960 :authority "Central Bank of Cyprus yearly holiday lists")
+  (:easter "Μεγάλη Παρασκευή" -2 :orthodox t :from 1960 :authority "Central Bank of Cyprus yearly holiday lists")
+  (:easter "Δευτέρα του Πάσχα" 1 :orthodox t :from 1960 :authority "Central Bank of Cyprus yearly holiday lists")
+  (:fixed "Εργατική Πρωτομαγιά" 5 1 :from 1960 :authority "Central Bank of Cyprus yearly holiday lists")
+  (:easter "Δευτέρα του Αγίου Πνεύματος (Κατακλυσμός)" 50 :orthodox t :from 1960
+   :authority "Central Bank of Cyprus yearly holiday lists")
+  (:fixed "Κοίμηση της Θεοτόκου" 8 15 :from 1960 :authority "Central Bank of Cyprus yearly holiday lists")
+  (:fixed "Ημέρα της Κυπριακής Ανεξαρτησίας" 10 1 :from 1960 :authority "Central Bank of Cyprus yearly holiday lists")
+  (:fixed "Επέτειος του Όχι" 10 28 :from 1960 :authority "Central Bank of Cyprus yearly holiday lists")
+  (:fixed "Χριστούγεννα" 12 25 :from 1960 :authority "Central Bank of Cyprus yearly holiday lists")
+  (:fixed "Δεύτερη μέρα Χριστουγέννων" 12 26 :from 1960 :authority "Central Bank of Cyprus yearly holiday lists"))
+
+(defun cyprus-holidays-calendar (&key year transfers suppressed working-days)
+  "Public holidays of Cyprus (\"CY\") as the Central Bank lists carry them
+(:secondary; no statute read)."
+  (%mena-calendar 'cyprus-holidays-calendar "CY" year transfers suppressed working-days))
