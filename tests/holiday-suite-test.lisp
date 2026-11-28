@@ -156,6 +156,23 @@
 
 ;;; --- gold table -------------------------------------------------------
 
+(deftest holiday-gold-loaders-are-distinct
+  "#92: the per-country gold loader (LOAD-HOLIDAY-GOLD CODE) and this suite's
+table loader have different names, so reloading one test file does not
+redefine the other's function."
+  (ok (fboundp 'load-holiday-suite-gold))
+  (ok (equal "CN" (getf (load-holiday-gold "CN") :country))
+      "LOAD-HOLIDAY-GOLD takes a country code after a full load"))
+
+(deftest cn-2007-banfa-cites-gov-cn
+  "#92: 国务院令第513号 (the 2007 放假办法) is cited from www.gov.cn."
+  (dolist (file '("tests/cn-holiday-gold.sexp" "tests/cn-secondary-holiday-gold.sexp"))
+    (let ((source (find-if (lambda (s) (search "第513号" (getf s :title)))
+                           (getf (read-data-form (data-path file)) :sources))))
+      (ok source (format nil "~a cites 令第513号" file))
+      (ok (and source (search "://www.gov.cn/" (getf source :uri)))
+          (format nil "~a cites it from gov.cn" file)))))
+
 (deftest holiday-gold
   (ok (>= (length *holiday-gold-rows*) 80) "gold table is populated")
   (dolist (row *holiday-gold-rows*)
