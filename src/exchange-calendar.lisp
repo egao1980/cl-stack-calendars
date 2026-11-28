@@ -6,7 +6,7 @@
 ;;;;
 ;;;; Data: data/exchanges/calendars/<NAME>.sexp
 ;;;;   (:name "XPAR" :title "…" :authority "…" :authority-uri "…"
-;;;;    :weekend (6 7)
+;;;;    :weekend (6 7)                  ; or eras ((NIL 5 6) ((2026 1 4) 6 7))
 ;;;;    :include ("EURONEXT")           ; family files whose rules, bases and
 ;;;;                                    ; notices also apply (before ours)
 ;;;;    :bases ((:calendar "FR" :from (Y M D) :to (Y M D) :except ("…")
@@ -16,13 +16,20 @@
 ;;;;               :published (Y M D) :published-uri "…" :published-in "…"
 ;;;;               :dates-note "…"
 ;;;;               :closed (((Y M D) "name") …) :open (((Y M D) "why") …)
+;;;;               :sessions (((Y M D) ((:open (H M) :close (H M)) …) "note") …)
+;;;;               :special-sessions (((Y M D) ((:open (H M) :close (H M))) "note") …)
 ;;;;               :early-closes (((Y M D) (H M) "note") …)
 ;;;;               :late-opens (((Y M D) (H M) "note") …)) …))
 ;;;;
 ;;;; A day is closed when a notice closes it, else open when a notice opens
-;;;; it, else closed when a rule or an active base (minus its :EXCEPT names)
-;;;; has a holiday. Rules use DEFINE-CALENDAR clause syntax; :COMPUTED takes
-;;;; a function name. CALENDAR-PROVENANCE is :EXCHANGE.
+;;;; it (:OPEN, or :SESSIONS, which also gives that day's hours in place of
+;;;; the hours era's), else closed when a rule or an active base (minus its
+;;;; :EXCEPT names) has a holiday. A notice that opens a weekend day (TWSE
+;;;; make-up Saturdays) makes it a trading day with the era's weekday hours.
+;;;; :SPECIAL-SESSIONS (NSE/BSE Muhurat) are held apart from regular trading
+;;;; and do not open the day (EXCHANGE-SPECIAL-SESSIONS-FOR-DATE). Rules use
+;;;; DEFINE-CALENDAR clause syntax; :COMPUTED takes a function name
+;;;; (src/exchange-date-functions.lisp). CALENDAR-PROVENANCE is :EXCHANGE.
 
 ;;; Date functions that exchange calendar files name in :COMPUTED rules and
 ;;; :FUNCTION early-close rules (data is read without evaluation).
@@ -93,11 +100,15 @@ between :FROM and :TO (dates, NIL = open-ended), except those named in :EXCEPT."
    (closures :initform (make-hash-table) :reader %exchange-closures)
    (openings :initform (make-hash-table) :reader %exchange-openings)
    (early-closes :initform (make-hash-table) :reader %exchange-notice-early-closes)
-   (late-opens :initform (make-hash-table) :reader %exchange-notice-late-opens))
+   (late-opens :initform (make-hash-table) :reader %exchange-notice-late-opens)
+   (sessions :initform (make-hash-table) :reader %exchange-notice-sessions)
+   (special-sessions :initform (make-hash-table)
+                     :reader %exchange-notice-special-sessions))
   (:documentation "A HOLIDAY-CALENDAR for one exchange: its own recurring
 rules, the civil calendars it follows by era (:BASES), and its notices of
-one-off closures, sessions on holidays, early closes and late opens. See
-src/exchange-calendar.lisp for the data format."))
+one-off closures, sessions on holidays and weekend days, per-day hours,
+special sessions, early closes and late opens. See src/exchange-calendar.lisp
+for the data format."))
 
 (defmethod initialize-instance :after ((calendar exchange-holiday-calendar) &key)
   (flet ((tod (spec) (if (eq spec :none) :none (%tod-list spec))))
@@ -110,6 +121,13 @@ src/exchange-calendar.lisp for the data format."))
              (lambda (row) (list (second row) notice)))
         (put (%exchange-openings calendar) (getf notice :open)
              (lambda (row) (list (second row) notice)))
+        ;; A day with its own hours (:SESSIONS) trades, weekend or holiday.
+        (put (%exchange-openings calendar) (getf notice :sessions)
+             (lambda (row) (list (third row) notice)))
+        (put (%exchange-notice-sessions calendar) (getf notice :sessions)
+             (lambda (row) (list (second row) (third row) notice)))
+        (put (%exchange-notice-special-sessions calendar) (getf notice :special-sessions)
+             (lambda (row) (list (second row) (third row) notice)))
         (put (%exchange-notice-early-closes calendar) (getf notice :early-closes)
              (lambda (row) (list (tod (second row)) (third row) notice)))
         (put (%exchange-notice-late-opens calendar) (getf notice :late-opens)
@@ -143,6 +161,41 @@ src/exchange-calendar.lisp for the data format."))
           (when (and hp (not (member name (getf base :except) :test #'equal)))
             (return-from holiday-p (values t name))))))
     (values nil nil)))
+
+(defun exchange-calendar-opened-p (calendar date)
+  "True when a notice of CALENDAR opens DATE (:OPEN or :SESSIONS) and none
+closes it: the exchange trades that day even on a weekend day or holiday.
+Second value is the notice's note."
+  (when (typep calendar 'exchange-holiday-calendar)
+    (let ((rd (date-rd date)))
+      (unless (gethash rd (%exchange-closures calendar))
+        (let ((row (gethash rd (%exchange-openings calendar))))
+          (when row (values t (first row))))))))
+
+(defmethod weekend-day-p ((calendar exchange-holiday-calendar) date)
+  "A weekend day that a notice opens (a make-up Saturday) is not a weekend day."
+  (and (not (exchange-calendar-opened-p calendar date))
+       (call-next-method)))
+
+(defun %notice-row-values (table date)
+  (let ((row (gethash (date-rd date) table)))
+    (when row
+      (values (first row) (second row) (getf (third row) :clock)))))
+
+(defun exchange-calendar-sessions (calendar date)
+  "The hours a notice of CALENDAR gives DATE in place of the era's regular
+sessions: (values SESSION-PLISTS NOTE CLOCK), or NIL. SESSION-PLISTS are
+(:OPEN (H M) :CLOSE (H M) …) as in an hours era; CLOCK as for
+EXCHANGE-CALENDAR-EARLY-CLOSE."
+  (when (typep calendar 'exchange-holiday-calendar)
+    (%notice-row-values (%exchange-notice-sessions calendar) date)))
+
+(defun exchange-calendar-special-sessions (calendar date)
+  "Special sessions a notice of CALENDAR holds on DATE apart from regular
+trading (NSE/BSE Muhurat): (values SESSION-PLISTS NOTE CLOCK), or NIL. They
+do not make DATE a trading day."
+  (when (typep calendar 'exchange-holiday-calendar)
+    (%notice-row-values (%exchange-notice-special-sessions calendar) date)))
 
 (defun exchange-calendar-early-close (calendar date)
   "The early close CALENDAR's notices give DATE: (values TIME-OF-DAY NOTE
@@ -203,11 +256,11 @@ notices that names none, so an included family file keeps its own clock."
                               own-notices)
              plist))))
 
-(defun load-exchange-calendar (name)
-  "Build the EXCHANGE-HOLIDAY-CALENDAR from data/exchanges/calendars/NAME.sexp."
-  (let* ((plist (%read-exchange-calendar-plist name))
-         (weekend (or (getf plist :weekend) '(6 7)))
-         (clauses (getf plist :rules)))
+(defun make-exchange-calendar (plist)
+  "Build an EXCHANGE-HOLIDAY-CALENDAR from PLIST, the data-file format above
+with any :INCLUDE files already merged in (as LOAD-EXCHANGE-CALENDAR does)."
+  (let ((weekend (or (getf plist :weekend) '(6 7)))
+        (clauses (getf plist :rules)))
     (make-instance 'exchange-holiday-calendar
                    :name (getf plist :name)
                    :title (getf plist :title)
@@ -223,6 +276,10 @@ notices that names none, so an included family file keeps its own clock."
                                                           clauses)))
                    :bases (getf plist :bases)
                    :notices (getf plist :notices))))
+
+(defun load-exchange-calendar (name)
+  "Build the EXCHANGE-HOLIDAY-CALENDAR from data/exchanges/calendars/NAME.sexp."
+  (make-exchange-calendar (%read-exchange-calendar-plist name)))
 
 (defun exchange-calendar-names ()
   "Names of the calendars in data/exchanges/calendars/."

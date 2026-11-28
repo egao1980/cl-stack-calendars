@@ -364,6 +364,30 @@ the zone its notice times are written in; exchange queries convert them to the
 MIC's zone (Lisbon closes at 13:05 local on a Euronext 14:05 CET half day).
 Years for which no exchange list was found are listed under `:gaps`.
 
+Since 0.42.0 a notice can also
+- open a **weekend day** (`:open` on a Saturday: TWSE make-up Saturdays, SHFE
+  2002-09-28): the day trades with the hours era's weekday sessions, and
+  `business-day-p` on the calendar is true;
+- give one day **its own hours** (`:sessions (((Y M D) ((:open (H M) :close (H M)) …)
+  "note"))`: KRX CSAT day 10:00–16:30, NSE Saturday sessions). The row opens the
+  day and its hours are that day's regular hours, not an early close;
+- hold **special sessions** apart from regular trading (`:special-sessions`, same
+  shape: NSE/BSE Muhurat). They do not make a trading day;
+  `exchange-special-sessions-for-date` lists them.
+
+An hours era can give one weekday its own sessions with `:sunday` (like
+`:friday` / `:saturday`) or `:days ((ISO-WEEKDAY session …) …)` (TASE Sunday
+closes). Rule functions named by data files live in
+`src/exchange-date-functions.lisp`: `last-weekday-of-year`,
+`krx-year-end-closing-day`, `hk-lunar-new-year-eve` and the TASE Hebrew-calendar
+days (`il-purim`, `il-erev-pesach`, `il-erev-pesach-seventh`,
+`il-memorial-day-observed`, `il-independence-day-observed`, `il-erev-shavuot`,
+`il-tisha-bav-observed`, `il-erev-rosh-hashanah`, `il-erev-yom-kippur`,
+`il-erev-sukkot`, `il-erev-simchat-torah`) on datetime-protocol's Hebrew
+calendar. They are checked against every date of the TASE yearly Vacation
+Schedules 2013–2028 (`scripts/generate_tase_hebrew_gold.py` →
+`data/tests/exchanges/XTAE-hebrew-dates.sexp`).
+
 Every notice records `:issued` / `:issued-uri`, `:published` / `:published-uri`
 and `:published-in` as decree rows do (#93), or a `:dates-note` saying why a date
 is NIL (many exchange calendar pages carry no date). Notices known only from a
