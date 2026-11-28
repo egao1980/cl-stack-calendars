@@ -163,6 +163,8 @@ South-east Europe: since 0.33.0 (#22) `"RO"`, `"BG"`, `"GR"` and `"CY"` match th
 
 Baltics: since 0.34.0 (#21) `"EE"`, `"LV"` and `"LT"` match their gold on every day (EE and LT `:secondary`). LV: 4 May from 2002, 24 December from 2007, the next working day off after a weekend 4 May or 18 November from 2007, every Cabinet transfer of a working day 2001–2026, the festival closing days and the one-off days of 2018 and 2023. EE: jõululaupäev from 2005. LT: Joninės from 2003. The corpus codes defer to the starters.
 
+Nordics: since 0.35.0 (#20) `"SE"` and `"FI"` match their gold on every day. SE: annandag pingst to 2004, nationaldagen from 2005. FI: pyhäinpäivä (the Saturday 31 Oct–6 Nov), and jouluaatto, juhannusaatto and pääsiäislauantai with vapunpäivä as vuosilomalaki § 4(3) counts them; no uudenvuodenaatto. Corpus SE / FI defer to the starters.
+
 Normative starters (prefer over `country-calendar` corpus): `japan-holidays-calendar` (祝日法 + Tokyo equinoxes), `(china-holidays-calendar :year 2026)` (放假办法 of each era + Beijing lunar + the 放假 notices), `india-holidays-calendar`, `germany-holidays-calendar` / `france-holidays-calendar` / `italy-holidays-calendar` / `spain-holidays-calendar` / `netherlands-holidays-calendar` / `belgium-holidays-calendar` / `austria-holidays-calendar` / `poland-holidays-calendar` / `sweden-holidays-calendar`, plus `target-calendar` (ECB). See [`docs/AUTHORITIES.md`](docs/AUTHORITIES.md).
 
 `(event-schedule cal :holiday)` / `:business-day` / `:weekend` — same `datetime-protocol` schedule protocol as sunrise/Easter. Ritual **activity bans until sunset / from fajr** still need lat/lon (`jewish-melacha-forbidden-p`, `islamic-fasting-p` on `+jerusalem+` / `+mecca+`), not civil-midnight holiday tables.

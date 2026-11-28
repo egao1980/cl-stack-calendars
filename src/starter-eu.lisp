@@ -94,29 +94,6 @@
   (:fixed "Christtag" 12 25 :from 1955 :authority "Arbeitsruhegesetz")
   (:fixed "Stefanitag" 12 26 :from 1955 :authority "Arbeitsruhegesetz"))
 
-;;; Sweden — Lag (1989:253) om allmänna helgdagar.
-(define-calendar sweden-holidays-calendar (:register "SE")
-  (:fixed "Nyårsdagen" 1 1 :from 1900 :authority "Lag (1989:253) om allmänna helgdagar")
-  (:fixed "Trettondedag jul" 1 6 :from 1900 :authority "Lag om allmänna helgdagar")
-  (:easter "Långfredagen" -2 :from 1900 :authority "Lag om allmänna helgdagar")
-  (:easter "Påskdagen" 0 :from 1900 :authority "Lag om allmänna helgdagar")
-  (:easter "Annandag påsk" 1 :from 1900 :authority "Lag om allmänna helgdagar")
-  (:fixed "Första maj" 5 1 :from 1900 :authority "Lag om allmänna helgdagar")
-  (:easter "Kristi himmelsfärdsdag" 39 :from 1900 :authority "Lag om allmänna helgdagar")
-  (:easter "Pingstdagen" 49 :from 1900 :authority "Lag om allmänna helgdagar")
-  (:fixed "Nationaldagen" 6 6 :from 2005
-   :authority "Lag om allmänna helgdagar — Sveriges nationaldag från 2005")
-  (:computed "Midsommardagen"
-   (lambda (y) (%saturday-in-range y 6 20 6 26))
-   :from 1900
-   :authority "Lag om allmänna helgdagar (lördagen 20–26 juni)")
-  (:computed "Alla helgons dag"
-   (lambda (y) (%saturday-in-range y 10 31 11 6))
-   :from 1953
-   :authority "Lag om allmänna helgdagar (lördagen mellan 31 okt och 6 nov)")
-  (:fixed "Juldagen" 12 25 :from 1900 :authority "Lag om allmänna helgdagar")
-  (:fixed "Annandag jul" 12 26 :from 1900 :authority "Lag om allmänna helgdagar"))
-
 ;;; --- Remaining EU-27 --------------------------------------------------
 
 ;;; Denmark — helligdage (Store bededag abolished 2024).
@@ -133,26 +110,6 @@
   (:easter "Anden pinsedag" 50 :from 1900 :authority "Danske helligdage")
   (:fixed "Juledag" 12 25 :from 1900 :authority "Danske helligdage")
   (:fixed "Anden juledag" 12 26 :from 1900 :authority "Danske helligdage"))
-
-;;; Finland — viralliset juhlapäivät.
-(define-calendar finland-holidays-calendar (:register "FI")
-  (:fixed "Uudenvuodenpäivä" 1 1 :from 1917 :authority "Virallinen juhlapäivä")
-  (:fixed "Loppiainen" 1 6 :from 1917 :authority "Virallinen juhlapäivä")
-  (:easter "Pitkäperjantai" -2 :from 1917 :authority "Virallinen juhlapäivä")
-  (:easter "Pääsiäispäivä" 0 :from 1917 :authority "Virallinen juhlapäivä")
-  (:easter "2. pääsiäispäivä" 1 :from 1917 :authority "Virallinen juhlapäivä")
-  (:fixed "Vappu" 5 1 :from 1917 :authority "Virallinen juhlapäivä")
-  (:easter "Helatorstai" 39 :from 1917 :authority "Virallinen juhlapäivä")
-  (:easter "Helluntaipäivä" 49 :from 1917 :authority "Virallinen juhlapäivä")
-  (:computed "Juhannuspäivä"
-   (lambda (y) (%saturday-in-range y 6 20 6 26))
-   :from 1917
-   :authority "Juhannuspäivä — lauantai 20.–26.6.")
-  (:fixed "Itsenäisyyspäivä" 12 6 :from 1917 :authority "Itsenäisyyspäivä")
-  (:fixed "Jouluaatto" 12 24 :from 1917
-   :authority "Jouluaatto (de facto / bank; often treated as holiday)")
-  (:fixed "Joulupäivä" 12 25 :from 1917 :authority "Virallinen juhlapäivä")
-  (:fixed "Tapaninpäivä" 12 26 :from 1917 :authority "Virallinen juhlapäivä"))
 
 ;;; Luxembourg — jours fériés légaux.
 (define-calendar luxembourg-holidays-calendar (:register "LU")
@@ -190,8 +147,6 @@
 (defun spain-holidays-calendar () (make-instance 'spain-holidays-calendar))
 (defun belgium-holidays-calendar () (make-instance 'belgium-holidays-calendar))
 (defun austria-holidays-calendar () (make-instance 'austria-holidays-calendar))
-(defun sweden-holidays-calendar () (make-instance 'sweden-holidays-calendar))
 (defun denmark-holidays-calendar () (make-instance 'denmark-holidays-calendar))
-(defun finland-holidays-calendar () (make-instance 'finland-holidays-calendar))
 (defun luxembourg-holidays-calendar () (make-instance 'luxembourg-holidays-calendar))
 (defun malta-holidays-calendar () (make-instance 'malta-holidays-calendar))
