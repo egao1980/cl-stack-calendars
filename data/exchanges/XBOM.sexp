@@ -3,7 +3,7 @@
  :mic "XBOM"
  :name "BSE Ltd."
  :zone "Asia/Kolkata"
- :calendar "IN"
+ :calendar "XBOM"
  :kind :equity
  :source "BSE/NSE joint hour change 2010-01-04; SEBI pre-open 2010-10-18"
  :eras (

@@ -3,7 +3,7 @@
  :mic "XNSE"
  :name "National Stock Exchange of India"
  :zone "Asia/Kolkata"
- :calendar "IN"
+ :calendar "XNSE"
  :source "NSE press 2009-12-17; SEBI pre-open circular 2010"
  :eras (
    (:from (1994 11 3) :to (2010 1 1)

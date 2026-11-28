@@ -112,26 +112,29 @@ for the data format."))
 
 (defmethod initialize-instance :after ((calendar exchange-holiday-calendar) &key)
   (flet ((tod (spec) (if (eq spec :none) :none (%tod-list spec))))
-    (dolist (notice (exchange-calendar-notices calendar))
-      (flet ((put (table rows value-fn)
-               (dolist (row rows)
-                 (setf (gethash (date-rd (%ymd->date (first row))) table)
-                       (funcall value-fn row)))))
-        (put (%exchange-closures calendar) (getf notice :closed)
-             (lambda (row) (list (second row) notice)))
-        (put (%exchange-openings calendar) (getf notice :open)
-             (lambda (row) (list (second row) notice)))
-        ;; A day with its own hours (:SESSIONS) trades, weekend or holiday.
-        (put (%exchange-openings calendar) (getf notice :sessions)
-             (lambda (row) (list (third row) notice)))
-        (put (%exchange-notice-sessions calendar) (getf notice :sessions)
-             (lambda (row) (list (second row) (third row) notice)))
-        (put (%exchange-notice-special-sessions calendar) (getf notice :special-sessions)
-             (lambda (row) (list (second row) (third row) notice)))
-        (put (%exchange-notice-early-closes calendar) (getf notice :early-closes)
-             (lambda (row) (list (tod (second row)) (third row) notice)))
-        (put (%exchange-notice-late-opens calendar) (getf notice :late-opens)
-             (lambda (row) (list (tod (second row)) (third row) notice)))))))
+    (loop for notice in (exchange-calendar-notices calendar)
+          for index from 0
+          do (flet ((put (table rows value-fn)
+                      (dolist (row rows)
+                        (setf (gethash (date-rd (%ymd->date (first row))) table)
+                              (funcall value-fn row)))))
+               ;; Closures and openings keep the notice's position (third),
+               ;; so a later notice can revoke an earlier one's closure.
+               (put (%exchange-closures calendar) (getf notice :closed)
+                    (lambda (row) (list (second row) notice index)))
+               (put (%exchange-openings calendar) (getf notice :open)
+                    (lambda (row) (list (second row) notice index)))
+               ;; A day with its own hours (:SESSIONS) trades, weekend or holiday.
+               (put (%exchange-openings calendar) (getf notice :sessions)
+                    (lambda (row) (list (third row) notice index)))
+               (put (%exchange-notice-sessions calendar) (getf notice :sessions)
+                    (lambda (row) (list (second row) (third row) notice)))
+               (put (%exchange-notice-special-sessions calendar) (getf notice :special-sessions)
+                    (lambda (row) (list (second row) (third row) notice)))
+               (put (%exchange-notice-early-closes calendar) (getf notice :early-closes)
+                    (lambda (row) (list (tod (second row)) (third row) notice)))
+               (put (%exchange-notice-late-opens calendar) (getf notice :late-opens)
+                    (lambda (row) (list (tod (second row)) (third row) notice)))))))
 
 (defmethod calendar-provenance ((calendar exchange-holiday-calendar))
   :exchange)
@@ -142,13 +145,24 @@ for the data format."))
     (and (or (null from) (<= (%ymd->date from) date))
          (or (null to) (<= date (%ymd->date to))))))
 
+(defun %notice-day-state (calendar rd)
+  "What CALENDAR's notices say about the day RD: (values :CLOSED row),
+(values :OPEN row) or NIL. A closure wins over an opening of the same or an
+earlier notice; an opening in a later notice (a partial-modification
+circular moving a holiday) revokes the closure."
+  (let ((closure (gethash rd (%exchange-closures calendar)))
+        (opening (gethash rd (%exchange-openings calendar))))
+    (cond ((and closure opening (> (third opening) (third closure)))
+           (values :open opening))
+          (closure (values :closed closure))
+          (opening (values :open opening)))))
+
 (defmethod holiday-p ((calendar exchange-holiday-calendar) date)
   (let ((rd (date-rd date)))
-    (let ((closure (gethash rd (%exchange-closures calendar))))
-      (when closure
-        (return-from holiday-p (values t (first closure)))))
-    (when (gethash rd (%exchange-openings calendar))
-      (return-from holiday-p (values nil nil)))
+    (multiple-value-bind (state row) (%notice-day-state calendar rd)
+      (case state
+        (:closed (return-from holiday-p (values t (first row))))
+        (:open (return-from holiday-p (values nil nil)))))
     (let ((rules (exchange-calendar-rules calendar)))
       (when rules
         (multiple-value-bind (hp name) (holiday-p rules date)
@@ -163,14 +177,13 @@ for the data format."))
     (values nil nil)))
 
 (defun exchange-calendar-opened-p (calendar date)
-  "True when a notice of CALENDAR opens DATE (:OPEN or :SESSIONS) and none
-closes it: the exchange trades that day even on a weekend day or holiday.
-Second value is the notice's note."
+  "True when a notice of CALENDAR opens DATE (:OPEN or :SESSIONS) and no
+notice closes it after that (%NOTICE-DAY-STATE): the exchange trades that
+day even on a weekend day or holiday. Second value is the notice's note."
   (when (typep calendar 'exchange-holiday-calendar)
-    (let ((rd (date-rd date)))
-      (unless (gethash rd (%exchange-closures calendar))
-        (let ((row (gethash rd (%exchange-openings calendar))))
-          (when row (values t (first row))))))))
+    (multiple-value-bind (state row) (%notice-day-state calendar (date-rd date))
+      (when (eq state :open)
+        (values t (first row))))))
 
 (defmethod weekend-day-p ((calendar exchange-holiday-calendar) date)
   "A weekend day that a notice opens (a make-up Saturday) is not a weekend day."
