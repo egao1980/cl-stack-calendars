@@ -81,3 +81,9 @@ Middle East and North Africa holidays live in `<cc>-holiday-gold.sexp` too, buil
 | `IE` | 2000–2040: Organisation of Working Time Act 1997 Sched. 2 and S.I. 392/1997, 419/2001, 50/2022 (irishstatutebook.ie). Python `holidays` has the National Day of Mourning in 2011 instead of 2001. |
 | `PT` | 2009–2040: Lei 7/2009 art. 234.º, Lei 23/2012, Lei 8/2016 (files.diariodarepublica.pt); `pt-secondary` 2000–2008 (the 2003 Code not read). Python `holidays` agrees. |
 | `TARGET` | 1999–2040: ECB press releases of 31 Mar 1999, 15 Jul 1999, 25 May 2000 and 14 Dec 2000. Python `holidays` (`financial_holidays("XECB")`) agrees. |
+| `HR` | 2000–2040: NN 33/1996, 96/2001, 13/2002, 55/2008, 110/2019 (narodne-novine.nn.hr). Python `holidays` agrees. |
+| `SI` | 2000–2040: ZPDPD-UPB1, ZUJF, ZPDPD-D, ZOPNN-F (Uradni list PDFs). Python `holidays` agrees. |
+| `SK` | 2000–2040: zákon 241/1993 Z. z. and 442/2001, 281/2018, 530/2023, 261/2025 (slov-lex). Python `holidays` agrees. |
+| `CZ` | 2000–2040: zákon 245/2000 Sb., 359/2015 Sb. (e-Sbírka). Python `holidays` agrees. |
+| `HU` | 2000–2040: Mt. § 102, 2017. évi XIII., 2026. évi LXXII. tv. and every munkarend decree 2001–2026 (njt, Magyar Közlöny). Python `holidays` lists Easter and Whit Sunday; the transfers agree. |
+| `PL` | 2000–2040: the 1951 act as amended, Dz.U. 2010/1459, 2018/2117, 2024/1965 (ISAP). Python `holidays` agrees. |

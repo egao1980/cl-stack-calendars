@@ -94,26 +94,6 @@
   (:fixed "Christtag" 12 25 :from 1955 :authority "Arbeitsruhegesetz")
   (:fixed "Stefanitag" 12 26 :from 1955 :authority "Arbeitsruhegesetz"))
 
-;;; Poland — Ustawa o dniach wolnych od pracy (1951 + amendments).
-(define-calendar poland-holidays-calendar (:register "PL")
-  (:fixed "Nowy Rok" 1 1 :from 1918 :authority "Ustawa o dniach wolnych od pracy")
-  (:fixed "Święto Trzech Króli" 1 6 :from 2011
-   :authority "Nowelizacja 2010 — Trzech Króli przywrócone od 2011")
-  (:easter "Niedziela Wielkanocna" 0 :from 1918 :authority "Ustawa o dniach wolnych od pracy")
-  (:easter "Poniedziałek Wielkanocny" 1 :from 1918 :authority "Ustawa o dniach wolnych od pracy")
-  (:fixed "Święto Pracy" 5 1 :from 1918 :authority "Ustawa o dniach wolnych od pracy")
-  (:fixed "Święto Konstytucji 3 Maja" 5 3 :from 1990
-   :authority "Przywrócone 1990 — Święto Narodowe Trzeciego Maja")
-  (:easter "Boże Ciało" 60 :from 1918 :authority "Ustawa o dniach wolnych od pracy")
-  (:fixed "Wniebowzięcie NMP" 8 15 :from 1918 :authority "Ustawa o dniach wolnych od pracy")
-  (:fixed "Wszystkich Świętych" 11 1 :from 1918 :authority "Ustawa o dniach wolnych od pracy")
-  (:fixed "Narodowe Święto Niepodległości" 11 11 :from 1989
-   :authority "Przywrócone 1989 — 11 listopada")
-  (:fixed "Wigilia Bożego Narodzenia" 12 24 :from 2025
-   :authority "Nowelizacja 2024 — Wigilia dniem wolnym od 2025")
-  (:fixed "Boże Narodzenie" 12 25 :from 1918 :authority "Ustawa o dniach wolnych od pracy")
-  (:fixed "Boże Narodzenie (drugi dzień)" 12 26 :from 1918 :authority "Ustawa o dniach wolnych od pracy"))
-
 ;;; Sweden — Lag (1989:253) om allmänna helgdagar.
 (define-calendar sweden-holidays-calendar (:register "SE")
   (:fixed "Nyårsdagen" 1 1 :from 1900 :authority "Lag (1989:253) om allmänna helgdagar")
@@ -166,28 +146,6 @@
   (:fixed "Crăciunul" 12 25 :from 1900 :authority "Crăciun")
   (:fixed "A doua zi de Crăciun" 12 26 :from 1900 :authority "A doua zi de Crăciun"))
 
-;;; Czech Republic — zákon o státních svátcích (floor 1993; ČSFR eras optional).
-(define-calendar czechia-holidays-calendar (:register "CZ")
-  (:fixed "Nový rok / Den obnovy samostatného českého státu" 1 1 :from 1993
-   :authority "Zákon o státních svátcích")
-  (:easter "Velký pátek" -2 :from 2016
-   :authority "Velký pátek — státní svátek od 2016")
-  (:easter "Velikonoční pondělí" 1 :from 1993 :authority "Zákon o státních svátcích")
-  (:fixed "Svátek práce" 5 1 :from 1993 :authority "Zákon o státních svátcích")
-  (:fixed "Den vítězství" 5 8 :from 1993 :authority "Den vítězství 8. května")
-  (:fixed "Den slovanských věrozvěstů Cyrila a Metoděje" 7 5 :from 1993
-   :authority "Zákon o státních svátcích")
-  (:fixed "Den upálení mistra Jana Husa" 7 6 :from 1993 :authority "Zákon o státních svátcích")
-  (:fixed "Den české státnosti" 9 28 :from 2000
-   :authority "Den české státnosti (sv. Václav) od 2000")
-  (:fixed "Den vzniku samostatného československého státu" 10 28 :from 1993
-   :authority "28. říjen")
-  (:fixed "Den boje za svobodu a demokracii" 11 17 :from 1993
-   :authority "17. listopad")
-  (:fixed "Štědrý den" 12 24 :from 1993 :authority "Zákon o státních svátcích")
-  (:fixed "1. svátek vánoční" 12 25 :from 1993 :authority "Zákon o státních svátcích")
-  (:fixed "2. svátek vánoční" 12 26 :from 1993 :authority "Zákon o státních svátcích"))
-
 ;;; Greece — επίσημες αργίες (Orthodox).
 (define-calendar greece-holidays-calendar (:register "GR")
   (:fixed "Πρωτοχρονιά" 1 1 :from 1900 :authority "Επίσημη αργία")
@@ -205,26 +163,6 @@
   (:fixed "Επέτειος του Όχι" 10 28 :from 1940 :authority "28 Οκτωβρίου")
   (:fixed "Χριστούγεννα" 12 25 :from 1900 :authority "Επίσημη αργία")
   (:fixed "Σύναξις Θεοτόκου" 12 26 :from 1900 :authority "Δεύτερη μέρα Χριστουγέννων"))
-
-;;; Hungary — munkaszüneti napok.
-(define-calendar hungary-holidays-calendar (:register "HU")
-  (:fixed "Újév" 1 1 :from 1900 :authority "Munkaszüneti nap")
-  (:fixed "1848-as forradalom" 3 15 :from 1990
-   :authority "Nemzeti ünnep — 1848. március 15.")
-  (:easter "Nagypéntek" -2 :from 2017
-   :authority "Nagypéntek — munkaszüneti nap 2017-től")
-  (:easter "Húsvétvasárnap" 0 :from 1900 :authority "Munkaszüneti nap")
-  (:easter "Húsvéthétfő" 1 :from 1900 :authority "Munkaszüneti nap")
-  (:fixed "A munka ünnepe" 5 1 :from 1900 :authority "Munkaszüneti nap")
-  (:easter "Pünkösdvasárnap" 49 :from 1900 :authority "Munkaszüneti nap")
-  (:easter "Pünkösdhétfő" 50 :from 1900 :authority "Munkaszüneti nap")
-  (:fixed "Szent István ünnepe" 8 20 :from 1900
-   :authority "Államalapítás ünnepe — augusztus 20.")
-  (:fixed "1956-os forradalom" 10 23 :from 1991
-   :authority "Nemzeti ünnep — 1956. október 23.")
-  (:fixed "Mindenszentek" 11 1 :from 1900 :authority "Munkaszüneti nap")
-  (:fixed "Karácsony" 12 25 :from 1900 :authority "Munkaszüneti nap")
-  (:fixed "Karácsony másnapja" 12 26 :from 1900 :authority "Munkaszüneti nap"))
 
 ;;; Bulgaria — официални празници (Orthodox).
 (define-calendar bulgaria-holidays-calendar (:register "BG")
@@ -282,52 +220,6 @@
   (:fixed "Joulupäivä" 12 25 :from 1917 :authority "Virallinen juhlapäivä")
   (:fixed "Tapaninpäivä" 12 26 :from 1917 :authority "Virallinen juhlapäivä"))
 
-;;; Slovakia — zákon o štátnych sviatkoch (floor 1993).
-(define-calendar slovakia-holidays-calendar (:register "SK")
-  (:fixed "Deň vzniku Slovenskej republiky" 1 1 :from 1993
-   :authority "Zákon o štátnych sviatkoch")
-  (:fixed "Zjavenie Pána" 1 6 :from 1993 :authority "Zákon o štátnych sviatkoch")
-  (:easter "Veľký piatok" -2 :from 1993 :authority "Zákon o štátnych sviatkoch")
-  (:easter "Veľkonočný pondelok" 1 :from 1993 :authority "Zákon o štátnych sviatkoch")
-  (:fixed "Sviatok práce" 5 1 :from 1993 :authority "Zákon o štátnych sviatkoch")
-  (:fixed "Deň víťazstva nad fašizmom" 5 8 :from 1993 :authority "Zákon o štátnych sviatkoch")
-  (:fixed "Sviatok svätého Cyrila a Metoda" 7 5 :from 1993 :authority "Zákon o štátnych sviatkoch")
-  (:fixed "Výročie SNP" 8 29 :from 1993
-   :authority "Výročie Slovenského národného povstania")
-  (:fixed "Deň Ústavy" 9 1 :from 1993 :to 2023
-   :authority "Deň Ústavy SR — zrušený ako deň pracovného pokoja od 2024")
-  (:fixed "Sedembolestná Panna Mária" 9 15 :from 1993 :authority "Zákon o štátnych sviatkoch")
-  (:fixed "Sviatok všetkých svätých" 11 1 :from 1993 :authority "Zákon o štátnych sviatkoch")
-  (:fixed "Deň boja za slobodu a demokraciu" 11 17 :from 1993
-   :authority "Zákon o štátnych sviatkoch")
-  (:fixed "Štedrý deň" 12 24 :from 1993 :authority "Zákon o štátnych sviatkoch")
-  (:fixed "1. sviatok vianočný" 12 25 :from 1993 :authority "Zákon o štátnych sviatkoch")
-  (:fixed "2. sviatok vianočný" 12 26 :from 1993 :authority "Zákon o štátnych sviatkoch"))
-
-;;; Croatia — Zakon o blagdanima (eras 2019–2020 reform).
-(define-calendar croatia-holidays-calendar (:register "HR")
-  (:fixed "Nova godina" 1 1 :from 1991 :authority "Zakon o blagdanima")
-  (:fixed "Bogojavljenje" 1 6 :from 1991 :authority "Zakon o blagdanima")
-  (:easter "Uskrs" 0 :from 1991 :authority "Zakon o blagdanima")
-  (:easter "Uskršnji ponedjeljak" 1 :from 1991 :authority "Zakon o blagdanima")
-  (:fixed "Praznik rada" 5 1 :from 1991 :authority "Zakon o blagdanima")
-  (:fixed "Dan državnosti" 5 30 :from 2020
-   :authority "Dan državnosti — 30. svibnja od 2020.")
-  (:fixed "Dan državnosti" 6 25 :from 1991 :to 2019
-   :authority "Dan državnosti — 25. lipnja do 2019.")
-  (:easter "Tijelovo" 60 :from 1991 :authority "Zakon o blagdanima")
-  (:fixed "Dan antifašističke borbe" 6 22 :from 1991 :authority "Zakon o blagdanima")
-  (:fixed "Dan pobjede i domovinske zahvalnosti" 8 5 :from 1995
-   :authority "Dan pobjede / Dan hrvatskih branitelja")
-  (:fixed "Velika Gospa" 8 15 :from 1991 :authority "Zakon o blagdanima")
-  (:fixed "Dan neovisnosti" 10 8 :from 1991 :to 2019
-   :authority "Dan neovisnosti — 8. listopada do 2019.")
-  (:fixed "Dan sjećanja na žrtve Domovinskog rata" 11 18 :from 2020
-   :authority "Dan sjećanja — 18. studenoga od 2020.")
-  (:fixed "Svi sveti" 11 1 :from 1991 :authority "Zakon o blagdanima")
-  (:fixed "Božić" 12 25 :from 1991 :authority "Zakon o blagdanima")
-  (:fixed "Sveti Stjepan" 12 26 :from 1991 :authority "Zakon o blagdanima"))
-
 ;;; Lithuania — valstybės šventės.
 (define-calendar lithuania-holidays-calendar (:register "LT")
   (:fixed "Naujieji metai" 1 1 :from 1990 :authority "Lietuvos Respublikos šventės")
@@ -348,24 +240,6 @@
   (:fixed "Kūčios" 12 24 :from 1990 :authority "Šventė")
   (:fixed "Kalėdos" 12 25 :from 1990 :authority "Šventė")
   (:fixed "2. Kalėdų diena" 12 26 :from 1990 :authority "Šventė"))
-
-;;; Slovenia — Zakon o praznikih.
-(define-calendar slovenia-holidays-calendar (:register "SI")
-  (:fixed "Novo leto" 1 1 :from 1991 :authority "Zakon o praznikih")
-  (:fixed "Novo leto" 1 2 :from 1991 :authority "Zakon o praznikih")
-  (:fixed "Prešernov dan" 2 8 :from 1991 :authority "Slovenski kulturni praznik")
-  (:easter "Velika noč" 0 :from 1991 :authority "Zakon o praznikih")
-  (:easter "Velikonočni ponedeljek" 1 :from 1991 :authority "Zakon o praznikih")
-  (:fixed "Dan upora proti okupatorju" 4 27 :from 1991 :authority "Zakon o praznikih")
-  (:fixed "Praznik dela" 5 1 :from 1991 :authority "Zakon o praznikih")
-  (:fixed "Praznik dela" 5 2 :from 1991 :authority "Zakon o praznikih")
-  (:easter "Binkošti" 49 :from 1991 :authority "Zakon o praznikih")
-  (:fixed "Dan državnosti" 6 25 :from 1991 :authority "Zakon o praznikih")
-  (:fixed "Marijino vnebovzetje" 8 15 :from 1991 :authority "Zakon o praznikih")
-  (:fixed "Dan reformacije" 10 31 :from 1991 :authority "Zakon o praznikih")
-  (:fixed "Dan spomina na mrtve" 11 1 :from 1991 :authority "Zakon o praznikih")
-  (:fixed "Božič" 12 25 :from 1991 :authority "Zakon o praznikih")
-  (:fixed "Dan samostojnosti in enotnosti" 12 26 :from 1991 :authority "Zakon o praznikih"))
 
 ;;; Latvia — svētku dienas.
 (define-calendar latvia-holidays-calendar (:register "LV")
@@ -454,19 +328,13 @@
 (defun spain-holidays-calendar () (make-instance 'spain-holidays-calendar))
 (defun belgium-holidays-calendar () (make-instance 'belgium-holidays-calendar))
 (defun austria-holidays-calendar () (make-instance 'austria-holidays-calendar))
-(defun poland-holidays-calendar () (make-instance 'poland-holidays-calendar))
 (defun sweden-holidays-calendar () (make-instance 'sweden-holidays-calendar))
 (defun romania-holidays-calendar () (make-instance 'romania-holidays-calendar))
-(defun czechia-holidays-calendar () (make-instance 'czechia-holidays-calendar))
 (defun greece-holidays-calendar () (make-instance 'greece-holidays-calendar))
-(defun hungary-holidays-calendar () (make-instance 'hungary-holidays-calendar))
 (defun bulgaria-holidays-calendar () (make-instance 'bulgaria-holidays-calendar))
 (defun denmark-holidays-calendar () (make-instance 'denmark-holidays-calendar))
 (defun finland-holidays-calendar () (make-instance 'finland-holidays-calendar))
-(defun slovakia-holidays-calendar () (make-instance 'slovakia-holidays-calendar))
-(defun croatia-holidays-calendar () (make-instance 'croatia-holidays-calendar))
 (defun lithuania-holidays-calendar () (make-instance 'lithuania-holidays-calendar))
-(defun slovenia-holidays-calendar () (make-instance 'slovenia-holidays-calendar))
 (defun latvia-holidays-calendar () (make-instance 'latvia-holidays-calendar))
 (defun estonia-holidays-calendar () (make-instance 'estonia-holidays-calendar))
 (defun cyprus-holidays-calendar () (make-instance 'cyprus-holidays-calendar))

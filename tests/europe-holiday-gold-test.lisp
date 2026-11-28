@@ -95,6 +95,101 @@
       (ok (business-day-p target (make-date 1999 5 3)))
       (ng (holiday 1999 12 27) "26 December from 2000"))))
 
+;;; --- #23: Croatia, Slovenia, Slovakia, Czechia, Hungary, Poland --------------
+
+(define-mena-gold-tests "HR" croatia-holidays-calendar 2000)
+
+(deftest hr-issue-23-days
+  (let ((hr (find-calendar "HR")))
+    (flet ((holiday (y m d) (holiday-p hr (make-date y m d))))
+      (ok (holiday 2000 5 30) "Dan državnosti 30 May to 2001 (NN 33/1996) (#23)")
+      (ok (holiday 2001 5 30))
+      (ng (holiday 2001 6 25) "25 June from 2002 (NN 96/2001)")
+      (ng (holiday 2001 10 8))
+      (ok (holiday 2002 10 8))
+      (ng (holiday 2001 6 14) "Tijelovo from 2002")
+      (ok (holiday 2002 5 30) "Tijelovo 2002")
+      (ng (holiday 2002 1 6) "no Bogojavljenje 15 Nov 2001 - 15 Feb 2002 (NN 96/2001, NN 13/2002)")
+      (ok (holiday 2001 1 6))
+      (ok (holiday 2003 1 6))
+      (ok (holiday 2020 5 30))
+      (ng (holiday 2020 6 25)))))
+
+(define-mena-gold-tests "SI" slovenia-holidays-calendar 2000)
+
+(deftest si-issue-23-days
+  (let ((si (find-calendar "SI")))
+    (flet ((holiday (y m d) (holiday-p si (make-date y m d))))
+      (ok (holiday 2012 1 2) "2 January to 2012 (#23 item 1)")
+      (ng (holiday 2013 1 2) "not 2013-2016 (ZUJF 82. člen)")
+      (ng (holiday 2016 1 2))
+      (ok (holiday 2017 1 2) "restored by ZPDPD-D")
+      (ok (holiday 2023 8 14) "dan solidarnosti (ZOPNN-F 15. člen) (#23 item 2)")
+      (ng (holiday 2024 8 14))
+      (ng (holiday 2024 9 15) "a praznik that is not a day off"))))
+
+(define-mena-gold-tests "SK" slovakia-holidays-calendar 2000)
+
+(deftest sk-issue-23-days
+  (let ((sk (find-calendar "SK")))
+    (flet ((holiday (y m d) (holiday-p sk (make-date y m d))))
+      (ng (holiday 2000 11 17) "17 November from 15 Nov 2001 (442/2001) (#23 item 3)")
+      (ok (holiday 2001 11 17))
+      (ok (holiday 2024 11 17))
+      (ng (holiday 2025 11 17) "not a day of rest from 1 Nov 2025 (261/2025) (#23 item 1)")
+      (ng (holiday 2026 5 8) "§ 4b (#23 item 2)")
+      (ng (holiday 2026 9 15))
+      (ok (holiday 2027 5 8))
+      (ok (holiday 2027 9 15))
+      (ok (holiday 2018 10 30) "§ 4a (#23 item 4)")
+      (ok (holiday 2023 9 1) "1 September to 2023")
+      (ng (holiday 2024 9 1))
+      (ng (holiday 2024 10 28) "28 October is no day of rest"))))
+
+(define-mena-gold-tests "CZ" czechia-holidays-calendar 2000)
+
+(deftest cz-issue-23-days
+  (let ((cz (find-calendar "CZ"))
+        (corpus (country-calendar "CZ")))
+    (dolist (cal (list cz corpus))
+      (flet ((holiday (y m d) (holiday-p cal (make-date y m d))))
+        (ng (holiday 2015 4 3) "Velký pátek from 2016 (359/2015 Sb.) (#23)")
+        (ng (holiday 2000 4 21))
+        (ok (holiday 2016 3 25))
+        (ok (holiday 2000 11 17) "245/2000 Sb. in force 9 Aug 2000")))))
+
+(define-mena-gold-tests "HU" hungary-holidays-calendar 2000)
+
+(deftest hu-issue-23-days
+  (let ((hu (find-calendar "HU")))
+    (flet ((holiday (y m d) (holiday-p hu (make-date y m d)))
+           (business (y m d) (business-day-p hu (make-date y m d))))
+      (ok (holiday 2026 12 24) "Szenteste from 14 Nov 2026 (2026. évi LXXII. tv.) (#23 item 1)")
+      (ok (holiday 2030 12 24))
+      (ng (holiday 2025 12 22))
+      (ok (holiday 2025 5 2) "munkarend transfer, 11/2024. NGM (#23 item 2)")
+      (ok (business 2025 5 17) "... and its working Saturday")
+      (ok (holiday 2025 10 24))
+      (ok (holiday 2025 12 24))
+      (ok (holiday 2026 1 2))
+      (ok (holiday 2026 8 21))
+      (ng (business 2026 12 12) "the 2026 December pair was repealed by 4/2026. SZCSM")
+      (ok (business 2009 3 28) "1/2009. SZMM moved the working Saturday to 28 March")
+      (ng (business 2009 1 10))
+      (ok (holiday 2012 12 31) "28/2012. NGM")
+      (ng (holiday 2024 3 31) "Easter Sunday is not a munkaszüneti nap"))))
+
+(define-mena-gold-tests "PL" poland-holidays-calendar 2000)
+
+(deftest pl-issue-23-days
+  (let ((pl (find-calendar "PL")))
+    (flet ((holiday (y m d) (holiday-p pl (make-date y m d))))
+      (ok (holiday 2018 11 12) "Dz.U. 2018 poz. 2117 (#23)")
+      (ng (holiday 2019 11 12))
+      (ok (holiday 2024 5 19) "Zielone Świątki: art. 1 pkt 1 lit. g")
+      (ok (holiday 2025 12 24) "Wigilia from 2025")
+      (ng (holiday 2024 12 24)))))
+
 (deftest europe-rows-and-statutes-carry-issued-and-published
   "Every block, row and act of the European lists has :ISSUED and :PUBLISHED
 (or a :DATES-NOTE) and every act :IN-FORCE (or a :DATES-NOTE) (#93)."
