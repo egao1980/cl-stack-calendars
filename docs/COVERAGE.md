@@ -185,7 +185,7 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 
 | MIC | Name | Calendar | Provenance | Notices | Gold | Sessions | Early closes | Late opens | Recorded differences |
 |---|---|---|---|---|---|---|---|---|---|
-| BVMF | B3 S.A. - Brasil, Bolsa, Balcão | BR | normative | — | — | — | — | — | — |
+| BVMF | B3 S.A. - Brasil, Bolsa, Balcão | BVMF | exchange | 19 (2011–2026) | 2011–2028 | 4463 | 0 | 13 | 14 |
 | IFEU | ICE Futures Europe | IFEU | exchange | 16 (2013–2027) | — | — | — | — | — |
 | XAMS | Euronext Amsterdam | XAMS | exchange | 27 (2001–2027) | 2001–2028 | 7166 | 39 | 0 | 21 |
 | XASX | Australian Securities Exchange | XASX | exchange | 18 (2009–2027) | 2000–2028 | 7339 | 36 | 0 | 8 |
@@ -227,7 +227,7 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XPAR | Euronext Paris | XPAR | exchange | 28 (2000–2027) | 2000–2028 | 7420 | 39 | 0 | 20 |
 | XPHS | Philippine Stock Exchange | XPHS | exchange | 31 (2013–2026) | 2015–2026 | 2930 | 0 | 0 | 29 |
 | XPRA | Prague Stock Exchange | XPRA | exchange | 23 (2003–2027) | 2017–2028 | 3003 | 0 | 0 | 1 |
-| XSAU | Saudi Exchange (Tadawul) | SA | normative | — | — | — | — | — | — |
+| XSAU | Saudi Exchange (Tadawul) | XSAU | exchange | 20 (2003–2028) | 2021–2026 | 1494 | 0 | 0 | 20 |
 | XSES | Singapore Exchange | XSES | exchange | 16 (2020–2027) | 2020–2026 | 1759 | 0 | 0 | 18 |
 | XSGE | Shanghai Futures Exchange | XSGE | exchange | 33 (2002–2026) | — | — | — | — | — |
 | XSHE | Shenzhen Stock Exchange | XSHE | exchange | 34 (2003–2026) | 2004–2026 | 5586 | 0 | 0 | 0 |
@@ -235,10 +235,10 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XSTC | Ho Chi Minh Stock Exchange | XSTC | exchange | 8 (2016–2026) | — | — | — | — | — |
 | XSTO | Nasdaq Stockholm | XSTO | exchange | 20 (2008–2027) | 2008–2028 | 5277 | 92 | 0 | 0 |
 | XSWX | SIX Swiss Exchange | XSWX | exchange | 20 (2012–2027) | 2012–2028 | 4269 | 0 | 0 | 0 |
-| XTAE | Tel Aviv Stock Exchange | IL | normative | — | — | — | — | — | — |
+| XTAE | Tel Aviv Stock Exchange | XTAE | exchange | 20 (2013–2028) | 2013–2028 | 3930 | 862 | 0 | 21 |
 | XTAI | Taiwan Stock Exchange | XTAI | exchange | 52 (2000–2027) | 2000–2028 | 7127 | 0 | 0 | 72 |
 | XTKS | Tokyo Stock Exchange | XTKS | exchange | 5 (2008–2027) | 2000–2028 | 7102 | 0 | 0 | 20 |
-| XTSE | Toronto Stock Exchange | CA | normative | — | — | — | — | — | — |
+| XTSE | Toronto Stock Exchange | XTSE | exchange | 35 (2000–2027) | 2000–2028 | 7281 | 13 | 0 | 7 |
 | XWAR | Warsaw Stock Exchange | XWAR | exchange | 23 (2003–2027) | 2011–2028 | 4497 | 0 | 0 | 2 |
 | XWBO | Wiener Börse | XWBO | exchange | 19 (2019–2027) | 2019–2028 | 2537 | 10 | 0 | 0 |
 | XZCE | Zhengzhou Commodity Exchange | XZCE | exchange | 2 (2003–2024) | — | — | — | — | — |
