@@ -114,6 +114,20 @@ Since 0.8.0 a wrapper keeps its constituents' weekends and their working-day ove
 
 `calendar-weekend-days` is the union or intersection of the constituents' lists. With `:weekend-days`, that plain list replaces the constituents' weekends and their working-day overrides. An empty calendar list, or an unknown mode, signals `calendar-error`. A `versioned-calendar` delegates `holiday-p`, `weekend-day-p`, `business-day-p` and `calendar-weekend-days` to `(calendar-as-of c)`, its newest snapshot.
 
+Since 0.36.0 a `versioned-calendar` selects by `recorded-at`, never by insertion order (#30):
+
+- `(calendar-as-of v :as-of instant)` is the snapshot with the greatest `recorded-at` on or before `instant`; `(calendar-as-of v)` is the latest-recorded one; `:version tag` is the latest-recorded snapshot with that tag.
+- The snapshot list stays sorted newest first however it is written (`:snapshots` initarg, `setf`, `add-calendar-snapshot`), so a backfilled older snapshot never shadows a newer one.
+- Two snapshots with the same `recorded-at`: the one added later wins.
+- `add-calendar-snapshot` is safe from several threads (an atomic compare-and-swap on SBCL); the list is never mutated in place. `versioned-calendar-with-snapshot` is the functional form: it returns a new versioned calendar and leaves the old one unchanged.
+- A version tag that is already present signals `duplicate-snapshot-version`, with restarts `replace-snapshot` (drop the old snapshot) and `continue` (keep both).
+
+```lisp
+(handler-bind ((duplicate-snapshot-version
+                 (lambda (c) (invoke-restart (find-restart 'replace-snapshot c)))))
+  (add-calendar-snapshot v corrected :version-tag "2025.1"))
+```
+
 Russian/USSR: `(russian-holidays-calendar)` (and `find-calendar "RU"`) = ТК eras + every decree transfer; `:year 2026` keeps only that year's; `(ussr-holidays-calendar)` for late-Soviet fixed days.
 
 Since 0.14.0 (#13) RU matches the official production calendar on every day 2000–2027, holiday and business status both (`tests/russian-production-gold-test.lisp`, gold in `data/tests/ru-production-calendar-gold.sexp`):

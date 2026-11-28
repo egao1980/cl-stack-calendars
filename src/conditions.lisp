@@ -17,6 +17,20 @@ lookups) when no matching calendar/snapshot exists.")
                      (or (calendar-error-message condition)
                          (format nil "no calendar registered as ~s" (calendar-not-found-calendar-name condition)))))))
 
+(define-condition duplicate-snapshot-version (calendar-error)
+  ((calendar :initarg :calendar :initform nil
+             :reader duplicate-snapshot-version-calendar)
+   (version-tag :initarg :version-tag :initform nil
+                :reader duplicate-snapshot-version-tag))
+  (:documentation "Signaled by ADD-CALENDAR-SNAPSHOT when the versioned
+calendar already holds a snapshot with the same VERSION-TAG. Restarts:
+REPLACE-SNAPSHOT drops the existing snapshot(s) with that tag and adds the new
+one; CONTINUE keeps both (CALENDAR-AS-OF :VERSION then returns the one with the
+latest RECORDED-AT).")
+  (:report (lambda (condition stream)
+             (format stream "versioned calendar already has a snapshot tagged ~s"
+                     (duplicate-snapshot-version-tag condition)))))
+
 (define-condition invalid-holiday-rule (calendar-error)
   ()
   (:documentation "Signaled for malformed DEFINE-CALENDAR rule clauses or
