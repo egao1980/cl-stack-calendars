@@ -197,17 +197,17 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XCEC | COMEX | USFED | normative | — | — | — | — | — | — |
 | XCME | CME Globex (equity / FX / energy template) | USFED | normative | — | — | — | — | — | — |
 | XCSE | Nasdaq Copenhagen | XCSE | exchange | 22 (2003–2027) | 2003–2028 | 6507 | 0 | 0 | 0 |
-| XDCE | Dalian Commodity Exchange | CN | normative | — | — | — | — | — | — |
+| XDCE | Dalian Commodity Exchange | XDCE | exchange | 2 (2003–2024) | — | — | — | — | — |
 | XDUB | Euronext Dublin | XDUB | exchange | 10 (2018–2027) | 2019–2028 | 2523 | 20 | 0 | 0 |
 | XEEE | European Energy Exchange | XEEE | exchange | 2 (2025–2025) | 2025–2028 | 1018 | 0 | 0 | 0 |
 | XETR | Xetra | XETR | exchange | 33 (2003–2027) | 2003–2028 | 6609 | 19 | 0 | 1 |
 | XEUR | Eurex | XEUR | exchange | 20 (2006–2026) | 2012–2028 | 4327 | 0 | 0 | 1 |
 | XHEL | Nasdaq Helsinki | XHEL | exchange | 20 (2008–2027) | 2008–2028 | 5277 | 0 | 0 | 0 |
-| XHKG | Hong Kong Exchanges and Clearing | HK | normative | — | — | — | — | — | — |
+| XHKG | Hong Kong Exchanges and Clearing | XHKG | exchange | 31 (2003–2027) | 2000–2028 | 7148 | 53 | 0 | 9 |
 | XICE | Nasdaq Iceland | XICE | exchange | 20 (2008–2027) | 2008–2028 | 5229 | 0 | 0 | 7 |
 | XIDX | Indonesia Stock Exchange | ID | normative | — | — | — | — | — | — |
 | XIMC | Multi Commodity Exchange of India | IN | normative | — | — | — | — | — | — |
-| XINE | Shanghai International Energy Exchange | CN | normative | — | — | — | — | — | — |
+| XINE | Shanghai International Energy Exchange | XINE | exchange | 8 (2019–2024) | — | — | — | — | — |
 | XIST | Borsa Istanbul | XIST | exchange | 28 (2000–2026) | 2016–2026 | 2541 | 21 | 0 | 1 |
 | XKLS | Bursa Malaysia | MY | normative | — | — | — | — | — | — |
 | XKRX | Korea Exchange | XKRX | exchange | 33 (2000–2027) | 2000–2028 | 7144 | 0 | 0 | 30 |
@@ -228,9 +228,9 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XPRA | Prague Stock Exchange | XPRA | exchange | 23 (2003–2027) | 2017–2028 | 3003 | 0 | 0 | 1 |
 | XSAU | Saudi Exchange (Tadawul) | SA | normative | — | — | — | — | — | — |
 | XSES | Singapore Exchange | SG | normative | — | — | — | — | — | — |
-| XSGE | Shanghai Futures Exchange | CN | normative | — | — | — | — | — | — |
-| XSHE | Shenzhen Stock Exchange | CN | normative | — | — | — | — | — | — |
-| XSHG | Shanghai Stock Exchange | CN | normative | — | — | — | — | — | — |
+| XSGE | Shanghai Futures Exchange | XSGE | exchange | 33 (2002–2026) | — | — | — | — | — |
+| XSHE | Shenzhen Stock Exchange | XSHE | exchange | 34 (2003–2026) | 2004–2026 | 5586 | 0 | 0 | 0 |
+| XSHG | Shanghai Stock Exchange | XSHG | exchange | 31 (2003–2026) | 2003–2026 | 5827 | 0 | 0 | 2 |
 | XSTC | Ho Chi Minh Stock Exchange | VN | normative | — | — | — | — | — | — |
 | XSTO | Nasdaq Stockholm | XSTO | exchange | 20 (2008–2027) | 2008–2028 | 5277 | 92 | 0 | 0 |
 | XSWX | SIX Swiss Exchange | XSWX | exchange | 20 (2012–2027) | 2012–2028 | 4269 | 0 | 0 | 0 |
@@ -240,4 +240,4 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XTSE | Toronto Stock Exchange | CA | normative | — | — | — | — | — | — |
 | XWAR | Warsaw Stock Exchange | XWAR | exchange | 23 (2003–2027) | 2011–2028 | 4497 | 0 | 0 | 2 |
 | XWBO | Wiener Börse | XWBO | exchange | 19 (2019–2027) | 2019–2028 | 2537 | 10 | 0 | 0 |
-| XZCE | Zhengzhou Commodity Exchange | CN | normative | — | — | — | — | — | — |
+| XZCE | Zhengzhou Commodity Exchange | XZCE | exchange | 2 (2003–2024) | — | — | — | — | — |

@@ -3,7 +3,7 @@
  :mic "XSHG"
  :name "Shanghai Stock Exchange"
  :zone "Asia/Shanghai"
- :calendar "CN"
+ :calendar "XSHG"
  :source "SSE trading rules (unchanged cash hours since 1990s)"
  :eras (
    (:from (1990 12 19)

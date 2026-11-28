@@ -8,15 +8,16 @@
     "XETR" "XEUR" "XEEE" "XSWX" "XWBO" "XMAD"
     "XSTO" "XCSE" "XHEL" "XICE" "XOSL"
     "XWAR" "XBUD" "XPRA" "XATH" "XIST"
-    "XTKS" "XOSE" "XKRX" "XTAI")
+    "XTKS" "XOSE" "XKRX" "XTAI"
+    "XHKG" "XSHG" "XSHE" "XSGE" "XINE" "XDCE" "XZCE")
   "MICs whose exchange queries use the exchange's own calendar (provenance
 :EXCHANGE). #49 moves the rest off their national civil calendars by region.")
 
 (defparameter *exchange-calendar-mics-without-gold*
-  '("IFEU" "XLME" "XMAT" "XOSE")
+  '("IFEU" "XLME" "XMAT" "XOSE" "XSGE" "XINE" "XDCE" "XZCE")
   "Exchange-calendar MICs that Python exchange_calendars does not cover;
-their key dates are checked in EXCHANGE-CALENDARS-WITHOUT-GOLD and
-NORTH-ASIA-EXCHANGE-CALENDARS.")
+their key dates are checked in EXCHANGE-CALENDARS-WITHOUT-GOLD,
+NORTH-ASIA-EXCHANGE-KEY-DATES and GREATER-CHINA-EXCHANGE-KEY-DATES.")
 
 (deftest exchange-calendars-are-the-exchanges-own
   (dolist (mic *exchange-calendar-mics*)
@@ -110,6 +111,40 @@ key dates."
   (ok (equal (%trading-days "XTAI" '(2018 12 22) '(2000 1 15)) '(t t)))
   (ok (equal (%session-hm "XTAI" '(2018 12 22)) '(((9 0) (13 30)))))
   (ok (equal (%trading-days "XTAI" '(2023 1 18) '(2024 5 1) '(2024 10 31)) '(nil nil nil))))
+
+(deftest greater-china-exchange-key-dates
+  "XHKG, XSHG, XSHE and the mainland futures exchanges: key dates from the
+exchanges' notices (#49, #92)."
+  ;; SARS 2003: every mainland exchange closed 2003-05-06..09, reopened 05-12.
+  (dolist (mic '("XSHG" "XSHE" "XSGE" "XDCE" "XZCE"))
+    (ok (equal (%trading-days mic '(2003 5 6) '(2003 5 7) '(2003 5 8) '(2003 5 9) '(2003 5 12))
+               '(nil nil nil nil t))
+        (format nil "~a 2003 SARS closure" mic)))
+  ;; 2024-02-09 (除夕) closed on all mainland markets.
+  (dolist (mic '("XSHG" "XSHE" "XSGE" "XINE" "XDCE" "XZCE"))
+    (ok (equal (%trading-days mic '(2024 2 9)) '(nil)) (format nil "~a 2024-02-09" mic)))
+  ;; SHFE Saturday session 2002-09-28; 调休 weekend working days do not trade.
+  (ok (equal (%trading-days "XSGE" '(2002 9 28) '(2024 2 4)) '(t nil)))
+  (ok (equal (%trading-days "XSHG" '(2024 2 4)) '(nil)))
+  ;; SHFE night leg: none before 2013-12-23, none on the first trading day
+  ;; after a weekday holiday, none during the 2020 suspension.
+  (ok (equal (length (%session-hm "XSGE" '(2013 12 20))) 3))
+  (ok (equal (first (%session-hm "XSGE" '(2013 12 23))) '((21 0) (1 0))))
+  (ok (equal (first (%session-hm "XSGE" '(2024 10 8))) '((9 0) (10 15)))
+      "first trading day after National Day: day session only")
+  (ok (equal (first (%session-hm "XSGE" '(2024 10 9))) '((21 0) (1 0))))
+  (ok (equal (first (%session-hm "XSGE" '(2024 10 14))) '((21 0) (1 0)))
+      "after a plain weekend the night leg stays")
+  (ok (equal (first (%session-hm "XSGE" '(2020 3 2))) '((9 0) (10 15))))
+  (ok (equal (first (%session-hm "XSGE" '(2020 5 7))) '((21 0) (1 0))))
+  (ok (equal (first (%session-hm "XINE" '(2018 3 26))) '((9 0) (10 15))))
+  (ok (equal (first (%session-hm "XINE" '(2018 3 27))) '((21 0) (2 30))))
+  ;; HKEX: Lunar New Year eve half day (Rule 501(1)); weather closure.
+  (ok (equal (%early-close-hm "XHKG" '(2027 2 5)) '(12 0)))
+  (ok (equal (%early-close-hm "XHKG" '(2008 2 6)) '(12 30)))
+  (ok (equal (%trading-days "XHKG" '(2024 9 6)) '(nil)))
+  ;; SSE index circuit breaker 2016-01-07: halted from 09:58.
+  (ok (equal (%early-close-hm "XSHG" '(2016 1 7)) '(9 58))))
 
 (deftest civil-fixes-found-by-exchange-lists
   "#123: Norway's Ascension Day; #124: Iceland's First Day of Summer is the

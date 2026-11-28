@@ -645,4 +645,49 @@
   :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20180301&response=json")
  (:mic "XTAI" :date (2018 12 22) :kind :session :gold nil :ours t
   :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
-  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20181201&response=json"))
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20181201&response=json")
+ ;; XHKG
+ ;;;; XHKG: dates where an HKEX source disagrees with exchange_calendars (gold).
+ ;;;; All 13 ec weather closures 2008-2024 that have an HKEX notice agree (2008-08-22 only via the delay-open
+ ;;;; notice); 2001-07-06 / 2001-07-25 have no HKEX source (no row). All half days in the circulars for
+
+ (:mic "XHKG" :from (2000 1 3) :to (2011 3 4) :kind :hours
+  :gold ((10 0) (12 0) (13 0) (16 0)) :ours ((10 0) (12 30) (14 30) (16 0))
+  :why "Before phase 1 of the trading-hours extension the securities market traded 10:00-12:30 and 14:30-16:00 (table 'Current' column in the 2011-01-24 release); ec uses a 12:00-13:00 break."
+  :source "https://www.hkex.com.hk/news/news-release/2011/1101243news?sc_lang=en")
+ (:mic "XHKG" :from (2011 3 7) :to (2012 3 2) :kind :hours
+  :gold ((9 30) (12 0) (13 0) (16 0)) :ours ((9 30) (12 0) (13 30) (16 0))
+  :why "Phase 1 (from 2011-03-07): afternoon session 13:30-16:00; 13:00 only from phase 2 on 2012-03-05."
+  :source "https://www.hkex.com.hk/News/News-Release/2011/110303news?sc_lang=en")
+ (:mic "XHKG" :date (2008 2 6) :kind :early-close :gold nil :ours (12 30)
+  :why "Lunar New Year's Eve (weekday): half-day trading on the eves of Christmas, New Year and Lunar New Year (CMD/TMO/089/07); ec has LNY-eve half days only from 2014."
+  :source "https://www.hkex.com.hk/-/media/hkex-market/services/circulars-and-notices/participant-and-members-circulars/sehk/2007/ctmo089e")
+ (:mic "XHKG" :date (2011 2 2) :kind :early-close :gold nil :ours (12 30)
+  :why "SEHK holiday schedule for 2011: '2 February 2011 (Wednesday) - Eve of Lunar New Year' is a half day trading day (pre-2011-03-07 morning session ends 12:30)."
+  :source "https://www.hkex.com.hk/-/media/HKEX-Market/Services/Circulars-and-Notices/Participant-and-Members-Circulars/SEHK/2010/ctmo02010e")
+ (:mic "XHKG" :date (2003 7 24) :kind :late-open :gold nil :ours (10 30)
+  :why "Typhoon Imbudo: trading resumed 10:30 after Signal No. 8 was lowered (normal open then 10:00)."
+  :source "https://www.hkex.com.hk/News/News-Release/2003/0307242news?sc_lang=en")
+ (:mic "XHKG" :date (2003 9 2) :kind :early-close :gold nil :ours (12 30)
+  :why "No afternoon session: Typhoon Signal No. 8."
+  :source "https://www.hkex.com.hk/News/News-Release/2003/030902news?sc_lang=en")
+ (:mic "XHKG" :date (2008 6 25) :kind :late-open :gold nil :ours (14 30)
+  :why "Typhoon Fengshen: no morning session; trading resumed 14:30."
+  :source "https://www.hkex.com.hk/News/News-Release/2008/080625news?sc_lang=en")
+ ;; XSHG
+ ;;;; XSHG: dates where an SSE source disagrees with exchange_calendars (gold). Everything else in the
+ ;;;; SSE lists 2003, 2005-2006 (secondary), 2008-2026 agrees with ec. 2000-2002 and 2004-01-19..21 have
+ ;;;; no source (see XSHG.sexp :gaps), so no rows.
+
+ (:mic "XSHG" :date (2016 1 4) :kind :early-close :gold nil :ours (13 33)
+  :why "Index circuit breaker: SSE halted stocks/funds/CBs from 13:33 for the rest of the day (上证公告(熔断)〔2016〕02号). Unscheduled halt for the rest of the day, modelled as an early close."
+  :source "https://www.sse.com.cn/disclosure/announcement/general/c/c_20160104_4031718.shtml")
+ (:mic "XSHG" :date (2016 1 7) :kind :early-close :gold nil :ours (9 58)
+  :why "Index circuit breaker: halted from 09:58 for the rest of the day (上证公告(熔断)〔2016〕04号); earlier 09:42-09:57 15-minute halt (〔2016〕03号)."
+  :source "https://www.sse.com.cn/disclosure/announcement/general/c/c_20160107_4033042.shtml")
+ (:mic "XHKG" :date (2001 7 6) :kind :session :gold nil :ours t
+  :why "exchange_calendars closes the day (Typhoon Utor). No HKEx notice of a securities-market closure was found: the only HKEx release, of 2001-07-05, terminates Rolling Forex trading after Typhoon Signal No. 8 was hoisted at 20:30 and does not cover the next day. The day stays a session until a notice is cited (follow-up issue)."
+  :source "https://www.hkex.com.hk/News/News-Release/2001/010705news")
+ (:mic "XHKG" :date (2001 7 25) :kind :session :gold nil :ours t
+  :why "exchange_calendars closes the day (Typhoon Yutu). No HKEx notice was found (HKEx news releases of 2001 probed); the day stays a session until a notice is cited (follow-up issue)."
+  :source "https://www.hkex.com.hk/News/News-Release/2001/010705news"))

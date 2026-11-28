@@ -2,7 +2,7 @@
  :mic "XZCE"
  :name "Zhengzhou Commodity Exchange"
  :zone "Asia/Shanghai"
- :calendar "CN"
+ :calendar "XZCE"
  :kind :commodities
  :source "CZCE day session aligned with SHFE"
  :eras (

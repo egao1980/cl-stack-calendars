@@ -2,7 +2,7 @@
  :mic "XDCE"
  :name "Dalian Commodity Exchange"
  :zone "Asia/Shanghai"
- :calendar "CN"
+ :calendar "XDCE"
  :kind :commodities
  :source "DCE day session aligned with SHFE; night product-specific"
  :eras (
