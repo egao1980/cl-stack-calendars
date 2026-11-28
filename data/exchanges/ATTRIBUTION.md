@@ -16,8 +16,8 @@ Each era and early-close rule cites an `:authority` (exchange notice / official 
 - Exchange-only holidays for MICs whose `:calendar` is still a civil one (#49). Since
   0.49.0 the CME family (XCME XCBT XCEC XNYM) uses CME Group's Globex calendars, one per
   product group (`CME.sexp` and `CME-*.sexp`, #48).
-  XNYS / XNAS use the exchange's own `NYSE` calendar (src/starter-nyse.lisp,
-  data/us/nyse-closures.sexp). Since 0.39.0 XLON, IFEU, XLME, the Euronext markets
+  XNYS / XNAS use the exchange's own `NYSE` calendar (`calendars/NYSE.sexp`, modeled
+  from 1953; 1969–1970 paperwork-crisis hours in `XNYS.sexp`, #50). Since 0.39.0 XLON, IFEU, XLME, the Euronext markets
   (XPAR XAMS XBRU XLIS XDUB XMIL XMAT), XETR, XEUR, XEEE, XSWX, XWBO, XMAD and (0.40.0) the
   Nordics XSTO, XCSE, XHEL, XICE, XOSL, and (0.41.0) XWAR, XBUD, XPRA, XATH, XIST use their exchange's own calendar in `calendars/` (rules and notices, each cited;
   docs/AUTHORITIES.md#exchange-trading-holiday-calendars-49)

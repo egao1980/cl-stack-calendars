@@ -24,20 +24,25 @@
       (ok (string= (exchange-hours-zone ex) "America/New_York"))
       (ok (string= (exchange-hours-calendar-name ex) "NYSE")))))
 
+(defun %session-hms-continue (mic date)
+  "%SESSION-HMS, invoking CONTINUE (no holiday) when the calendar signals
+CALENDAR-OUT-OF-RANGE: the hours eras' trading week alone."
+  (handler-bind ((calendar-out-of-range #'continue))
+    (%session-hms mic date)))
+
 (deftest nyse-hour-eras
   ;; Before 1953 the NYSE calendar signals CALENDAR-OUT-OF-RANGE (#50); its
   ;; CONTINUE restart (no holiday) still shows the hours eras' trading week.
   (ok (signals (%session-hms "XNYS" (make-date 1950 6 5)) 'calendar-out-of-range))
-  (handler-bind ((calendar-out-of-range #'continue))
-    (ok (equal (%session-hms "XNYS" (make-date 1950 6 5))
-               '(((10 0) (15 0)))))         ; Monday
-    (ok (equal (%session-hms "XNYS" (make-date 1950 6 3))
-               '(((10 0) (12 0)))))         ; Saturday
-    (ok (null (%session-hms "XNYS" (make-date 1952 5 31)))) ; Saturday already closed
-    (ok (equal (%session-hms "XNYS" (make-date 1952 9 26))
-               '(((10 0) (15 0)))))
-    (ok (equal (%session-hms "XNYS" (make-date 1952 9 29))
-               '(((10 0) (15 30))))))
+  (ok (equal (%session-hms-continue "XNYS" (make-date 1950 6 5))
+             '(((10 0) (15 0)))))           ; Monday
+  (ok (equal (%session-hms-continue "XNYS" (make-date 1950 6 3))
+             '(((10 0) (12 0)))))           ; Saturday
+  (ok (null (%session-hms-continue "XNYS" (make-date 1952 5 31)))) ; Saturday already closed
+  (ok (equal (%session-hms-continue "XNYS" (make-date 1952 9 26))
+             '(((10 0) (15 0)))))
+  (ok (equal (%session-hms-continue "XNYS" (make-date 1952 9 29))
+             '(((10 0) (15 30)))))
   (ok (equal (%session-hms "XNYS" (make-date 1953 1 2))
              '(((10 0) (15 30)))))
   (ok (equal (%session-hms "XNYS" (make-date 1974 10 1))
@@ -135,12 +140,14 @@
 
 (deftest saturday-session-bounds
   ;; 1950 is before the NYSE calendar's coverage (#50): CONTINUE = no holiday.
-  (handler-bind ((calendar-out-of-range #'continue))
-    (multiple-value-bind (open close)
-        (exchange-session-bounds "XNYS" (make-date 1950 6 3))
-      (ok (< open close))
-      (ok (= (duration-seconds (exchange-session-duration "XNYS" (make-date 1950 6 3)))
-             7200)))))
+  (multiple-value-bind (open close seconds)
+      (handler-bind ((calendar-out-of-range #'continue))
+        (multiple-value-bind (open close)
+            (exchange-session-bounds "XNYS" (make-date 1950 6 3))
+          (values open close
+                  (duration-seconds (exchange-session-duration "XNYS" (make-date 1950 6 3))))))
+    (ok (< open close))
+    (ok (= seconds 7200))))
 
 (deftest eu-and-asia-hour-eras
   (ok (equal (%session-hms "XAMS" (make-date 2024 6 3)) '(((9 0) (17 30)))))

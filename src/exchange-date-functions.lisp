@@ -50,6 +50,13 @@ until 2016, whatever its weekday)."
   "The last ASX trading day of YEAR (early close 14:10 until 2016)."
   (last-business-day-before "XASX" (make-date (1+ year) 1 1)))
 
+(defun nyse-election-day (year)
+  "NYSE Election Day closing: the Tuesday after the first Monday of November,
+every year through 1968, then presidential years only (1972-1980), per the
+NYSE's History of New York Stock Exchange Holidays. NIL in other years."
+  (when (or (<= year 1968) (zerop (mod year 4)))
+    (+ (nth-weekday-of-month year 11 1 1) 1)))
+
 ;;; --- Lunar New Year ---------------------------------------------------------
 
 (defun hk-lunar-new-year-eve (year)
