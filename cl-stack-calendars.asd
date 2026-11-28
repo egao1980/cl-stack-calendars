@@ -61,6 +61,7 @@
                (:file "europe-holiday-gold-test")
                (:file "normative-calendar-test")
                (:file "country-calendar-test")
+               (:file "holiday-types-test")
                (:file "holiday-suite-test")
                (:file "observance-order-test")
                (:file "hijri-occurrence-test")
