@@ -190,6 +190,68 @@
       (ok (holiday 2025 12 24) "Wigilia from 2025")
       (ng (holiday 2024 12 24)))))
 
+;;; --- #22: Romania, Bulgaria, Greece, Cyprus -------------------------------------
+
+(define-mena-gold-tests "RO" romania-holidays-calendar 2000)
+
+(deftest ro-issue-22-days
+  (let ((ro (find-calendar "RO")))
+    (flet ((holiday (y m d) (holiday-p ro (make-date y m d))))
+      (ng (holiday 2008 8 15) "15 August from 2009 (Legea 202/2008) (#22 item 1)")
+      (ok (holiday 2009 8 15))
+      (ng (holiday 2008 6 16) "Rusalii from 2009")
+      (ok (holiday 2012 11 30) "30 November from 2012 (Legea 147/2012) (#22 item 2)")
+      (ng (holiday 2016 1 25) "24 January from 2017 (Legea 176/2016, in force 16 Oct 2016) (#22 item 3)")
+      (ok (holiday 2017 1 24))
+      (ok (holiday 2025 1 2) "2 January every year")
+      (ng (holiday 2023 1 6) "6-7 January from 2024 (Legea 52/2023)")
+      (ok (holiday 2024 1 6)))))
+
+(define-mena-gold-tests "BG" bulgaria-holidays-calendar 2004)
+
+(define-secondary-gold-test bg-secondary-gold-lower-confidence "BG"
+  "2000-2003: the чл. 154 days; the Council of Ministers transfers of these years not researched.")
+
+(deftest bg-issue-22-days
+  (let ((bg (find-calendar "BG")))
+    (flet ((holiday (y m d) (holiday-p bg (make-date y m d)))
+           (business (y m d) (business-day-p bg (make-date y m d))))
+      (ng (holiday 2024 11 1) "1 November is a day off for schools only (#22 item 1)")
+      (ng (holiday 2007 4 6) "Good Friday from 2010 (ДВ 15/2010) (#22 item 2)")
+      (ok (holiday 2010 4 2))
+      (ok (holiday 2010 4 3) "Holy Saturday from 2010")
+      (ok (holiday 2025 5 26) "чл. 154(2): 24 May on a Saturday (#22 item 3)")
+      (ok (holiday 2025 9 8))
+      (ok (holiday 2026 12 28) "26 December on a Saturday")
+      (ng (holiday 2016 12 27) "no weekend rule before 2017")
+      (ok (holiday 2004 4 2) "NATO accession (Решение № 220/2004) (#22 item 4)")
+      (ok (holiday 2007 1 2) "EU accession (Решение № 722/2006)")
+      (ok (holiday 2025 12 31) "Решение № 808/2025")
+      (ok (holiday 2026 1 2))
+      (ok (holiday 2014 5 2) "Council of Ministers transfer")
+      (ok (business 2014 5 10) "... and its working Saturday"))))
+
+(define-mena-gold-tests "GR" greece-holidays-calendar 2000)
+
+(deftest gr-issue-22-days
+  (let ((gr (find-calendar "GR")))
+    (flet ((holiday (y m d) (holiday-p gr (make-date y m d))))
+      (ok (holiday 2024 5 7) "1 May 2024 moved to 7 May (#22)")
+      (ng (holiday 2024 5 1))
+      (ok (holiday 2021 5 4))
+      (ok (holiday 2022 5 2))
+      (ok (holiday 2025 5 1)))))
+
+(define-mena-gold-tests "CY" cyprus-holidays-calendar 2000)
+
+(deftest cy-issue-22-days
+  (let ((cy (country-calendar "CY")))
+    (flet ((holiday (y m d) (holiday-p cy (make-date y m d))))
+      (ok (holiday 2000 3 13) "Clean Monday on the Monday (#22: the corpus had Tuesday)")
+      (ng (holiday 2000 3 14))
+      (ok (holiday 2025 6 9) "Whit Monday, not Pentecost Sunday")
+      (ng (holiday 2025 6 8)))))
+
 (deftest europe-rows-and-statutes-carry-issued-and-published
   "Every block, row and act of the European lists has :ISSUED and :PUBLISHED
 (or a :DATES-NOTE) and every act :IN-FORCE (or a :DATES-NOTE) (#93)."

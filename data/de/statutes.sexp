@@ -64,13 +64,13 @@
  (:calendar "DE" :key "mv-ftg" :from (2002 3 8) :to nil
   :authority "Mecklenburg-Vorpommern: Feiertagsgesetz M-V (Neufassung vom 8. März 2002), § 2 Abs. 1"
   :uri "https://www.landesrecht-mv.de/bsmv/document/jlr-FTGMVrahmen"
-  :issued (2002 3 8) :published nil :in-force nil :dates-note "SECONDARY: wording from umwelt-online; the juris portal did not render. Permanent day." :summary "§ 2 Abs. 1: der Reformationstag (31. Oktober).")
+  :issued (2002 3 8) :published nil :in-force nil :dates-note "SECONDARY: wording from umwelt-online; the juris portal did not render, so the document URI is the portal's juris id pattern, not a page that was read. Permanent day." :summary "§ 2 Abs. 1: der Reformationstag (31. Oktober).")
  (:calendar "DE" :key "st-feiertg" :from (2004 8 30) :to nil
   :authority "Sachsen-Anhalt: Gesetz über die Sonn- und Feiertage vom 25. August 2004, § 2"
   :uri "https://www.landesrecht.sachsen-anhalt.de/bsst/document/jlr-FeiertGSTrahmen"
-  :issued (2004 8 25) :published (2004 8 30) :published-in "GVBl. LSA 2004 Nr. 48, S. 538" :in-force nil :dates-note "SECONDARY: wording from secondary copies; the juris portal did not render. Permanent day." :summary "§ 2: der Reformationstag (31. Oktober).")
+  :issued (2004 8 25) :published (2004 8 30) :published-in "GVBl. LSA 2004 Nr. 48, S. 538" :in-force nil :dates-note "SECONDARY: wording from secondary copies; the juris portal did not render, so the document URI is the portal's juris id pattern, not a page that was read. Permanent day." :summary "§ 2: der Reformationstag (31. Oktober).")
  (:calendar "DE" :key "th-ftg" :from (1994 12 21) :to nil
   :authority "Thüringen: Thüringer Feiertagsgesetz vom 21. Dezember 1994, § 2 Abs. 1"
   :uri "https://landesrecht.thueringen.de/bsth/document/jlr-FeiertGTHrahmen"
-  :issued (1994 12 21) :published nil :published-in "GVBl. 1994 S. 1221" :in-force nil :dates-note "SECONDARY: wording from secondary copies; the juris portal did not render. Permanent day." :summary "§ 2 Abs. 1: der Reformationstag.")
+  :issued (1994 12 21) :published nil :published-in "GVBl. 1994 S. 1221" :in-force nil :dates-note "SECONDARY: wording from secondary copies; the juris portal did not render, so the document URI is the portal's juris id pattern, not a page that was read. Permanent day." :summary "§ 2 Abs. 1: der Reformationstag.")
 )
