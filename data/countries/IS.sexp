@@ -1,5 +1,8 @@
 ;; Generated from commenthol/date-holidays (CC BY-SA 3.0)
 ;; country=IS years=2000-2040 types=public,bank
+;; Corrected by hand (#124): Sumardagurinn fyrsti is the first Thursday after 18 April
+;; (19-25 April); the generator placed it on 18 April in 2002, 2013, 2019, 2024, 2030.
+;; Nasdaq Nordic lists Iceland closed on 2013-04-25, 2019-04-25, 2024-04-25.
 (
  :code "IS"
  :name "Iceland"
@@ -44,7 +47,7 @@
   (2002 3 29 "Föstudagurinn langi" :public)
   (2002 3 31 "Páskadagur" :public)
   (2002 4 1 "Annar í páskum" :public)
-  (2002 4 18 "Sumardagurinn fyrsti" :public)
+  (2002 4 25 "Sumardagurinn fyrsti" :public)
   (2002 5 1 "Hátíðisdagur Verkamanna" :public)
   (2002 5 9 "Uppstigningardagur" :public)
   (2002 5 19 "Hvítasunnudagur" :public)
@@ -220,7 +223,7 @@
   (2013 3 29 "Föstudagurinn langi" :public)
   (2013 3 31 "Páskadagur" :public)
   (2013 4 1 "Annar í páskum" :public)
-  (2013 4 18 "Sumardagurinn fyrsti" :public)
+  (2013 4 25 "Sumardagurinn fyrsti" :public)
   (2013 5 1 "Hátíðisdagur Verkamanna" :public)
   (2013 5 9 "Uppstigningardagur" :public)
   (2013 5 19 "Hvítasunnudagur" :public)
@@ -313,7 +316,7 @@
   (2018 12 31 "Gamlársdagur" :public)
   (2019 1 1 "Nýársdagur" :public)
   (2019 4 18 "Skírdagur" :public)
-  (2019 4 18 "Sumardagurinn fyrsti" :public)
+  (2019 4 25 "Sumardagurinn fyrsti" :public)
   (2019 4 19 "Föstudagurinn langi" :public)
   (2019 4 21 "Páskadagur" :public)
   (2019 4 22 "Annar í páskum" :public)
@@ -396,7 +399,7 @@
   (2024 3 29 "Föstudagurinn langi" :public)
   (2024 3 31 "Páskadagur" :public)
   (2024 4 1 "Annar í páskum" :public)
-  (2024 4 18 "Sumardagurinn fyrsti" :public)
+  (2024 4 25 "Sumardagurinn fyrsti" :public)
   (2024 5 1 "Hátíðisdagur Verkamanna" :public)
   (2024 5 9 "Uppstigningardagur" :public)
   (2024 5 19 "Hvítasunnudagur" :public)
@@ -489,7 +492,7 @@
   (2029 12 31 "Gamlársdagur" :public)
   (2030 1 1 "Nýársdagur" :public)
   (2030 4 18 "Skírdagur" :public)
-  (2030 4 18 "Sumardagurinn fyrsti" :public)
+  (2030 4 25 "Sumardagurinn fyrsti" :public)
   (2030 4 19 "Föstudagurinn langi" :public)
   (2030 4 21 "Páskadagur" :public)
   (2030 4 22 "Annar í páskum" :public)

@@ -257,4 +257,38 @@
 (:mic "XMIL" :date (2027 12 31) :kind :session :gold nil :ours t
  :why "Same as 24 Dec 2027: half trading day in Milan."
  :source "https://www.euronext.com/en/media/16439/download")
+ ;; XICE, XOSL
+ (:mic "XICE" :date (2008 1 2) :kind :session :gold t :ours nil
+  :why "The Nasdaq OMX Nordic exchange holiday schedule lists Nasdaq Iceland closed on 2 January (2008 list; 2009 Swedish page '1-2/1'); exchange_calendars has a session."
+  :source "https://web.archive.org/web/20090207122443/http://nasdaqomxnordic.com:80/tradinghours")
+ (:mic "XICE" :date (2009 1 2) :kind :session :gold t :ours nil
+  :why "The Nasdaq OMX Nordic exchange holiday schedule lists Nasdaq Iceland closed on 2 January (2008 list; 2009 Swedish page '1-2/1'); exchange_calendars has a session."
+  :source "https://web.archive.org/web/20090207122443/http://nasdaqomxnordic.com:80/tradinghours")
+ (:mic "XICE" :from (2008 1 3) :to (2008 3 28) :kind :hours
+  :gold ((9 30) nil nil (15 30)) :ours ((10 0) nil nil (16 23))
+  :why "From 2007-03-26 to 2010-01-03 ICEX opened at 10:00 and closed at 17:23 CET (15:23 Reykjavik in CET summer time, 16:23 in winter); 09:30–15:30 only from 2010-01-04 (NASDAQ OMX Iceland IT notice 122/09). exchange_calendars has 09:30–15:30 throughout."
+  :source "https://rss.globenewswire.com/news-release/2007/02/22/104069/0/en/ICEX-Trading-Hours-Changed-on-26-March-2007.html")
+ (:mic "XICE" :from (2008 3 31) :to (2008 10 24) :kind :hours
+  :gold ((9 30) nil nil (15 30)) :ours ((10 0) nil nil (15 23))
+  :why "From 2007-03-26 to 2010-01-03 ICEX opened at 10:00 and closed at 17:23 CET (15:23 Reykjavik in CET summer time, 16:23 in winter); 09:30–15:30 only from 2010-01-04 (NASDAQ OMX Iceland IT notice 122/09). exchange_calendars has 09:30–15:30 throughout."
+  :source "https://rss.globenewswire.com/news-release/2007/02/22/104069/0/en/ICEX-Trading-Hours-Changed-on-26-March-2007.html")
+ (:mic "XICE" :from (2008 10 27) :to (2009 3 27) :kind :hours
+  :gold ((9 30) nil nil (15 30)) :ours ((10 0) nil nil (16 23))
+  :why "From 2007-03-26 to 2010-01-03 ICEX opened at 10:00 and closed at 17:23 CET (15:23 Reykjavik in CET summer time, 16:23 in winter); 09:30–15:30 only from 2010-01-04 (NASDAQ OMX Iceland IT notice 122/09). exchange_calendars has 09:30–15:30 throughout."
+  :source "https://rss.globenewswire.com/news-release/2007/02/22/104069/0/en/ICEX-Trading-Hours-Changed-on-26-March-2007.html")
+ (:mic "XICE" :from (2009 3 30) :to (2009 10 23) :kind :hours
+  :gold ((9 30) nil nil (15 30)) :ours ((10 0) nil nil (15 23))
+  :why "From 2007-03-26 to 2010-01-03 ICEX opened at 10:00 and closed at 17:23 CET (15:23 Reykjavik in CET summer time, 16:23 in winter); 09:30–15:30 only from 2010-01-04 (NASDAQ OMX Iceland IT notice 122/09). exchange_calendars has 09:30–15:30 throughout."
+  :source "https://rss.globenewswire.com/news-release/2007/02/22/104069/0/en/ICEX-Trading-Hours-Changed-on-26-March-2007.html")
+ (:mic "XICE" :from (2009 10 26) :to (2009 12 31) :kind :hours
+  :gold ((9 30) nil nil (15 30)) :ours ((10 0) nil nil (16 23))
+  :why "From 2007-03-26 to 2010-01-03 ICEX opened at 10:00 and closed at 17:23 CET (15:23 Reykjavik in CET summer time, 16:23 in winter); 09:30–15:30 only from 2010-01-04 (NASDAQ OMX Iceland IT notice 122/09). exchange_calendars has 09:30–15:30 throughout."
+  :source "https://rss.globenewswire.com/news-release/2007/02/22/104069/0/en/ICEX-Trading-Hours-Changed-on-26-March-2007.html")
+ (:mic "XOSL" :from (2008 9 1) :to (2012 8 3) :kind :hours
+  :gold ((9 0) nil nil (16 20)) :ours ((9 0) nil nil (17 20))
+  :why "Oslo Børs extended its opening hours to 17:30 (continuous trading to 17:20, closing call to 17:30) from 2008-09-01 and reduced them again from 2012-08-06; exchange_calendars keeps 16:20."
+  :source "https://web.archive.org/web/20101220224530/http://oslobors.no/ob_eng/Oslo-Boers/About-us/Press-room/Press-releases/(year)/2008")
+ (:mic "XOSL" :date (2009 4 8) :kind :early-close :gold nil :ours (13 10)
+  :why "Oslo Børs Opening Hours 2009: on the Wednesday before Maundy Thursday continuous trading ends 13:10; exchange_calendars has its Easter-Wednesday early close only from 2011."
+  :source "https://web.archive.org/web/20090509192023/http://www.oslobors.no/ob_eng/Oslo-Boers/About-us/Opening-Hours")
 )
