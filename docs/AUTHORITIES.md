@@ -166,6 +166,143 @@ Neither kind is normative. `normative-coverage-by-population` reports them as `:
 
 The six **stubs** (`ABH`, `NCY`, `OST`, `PMR`, `PS`, `SOL`) have `:days ()`. They are not registered, so `(find-calendar "PS" :errorp nil)` is NIL. `(country-calendar "PS")` has `country-calendar-stub-p` true and `calendar-coverage` `:none`, and its `holiday-p` signals `calendar-out-of-range`. `(country-calendar "PS" :strict nil)` answers NIL instead.
 
+## Coverage per calendar
+
+[`COVERAGE.md`](COVERAGE.md) is the table of every normative starter and every gold fixture. `scripts/generate-coverage-table.lisp` writes it from the code and `data/tests/`, so it stays true: rerun it after changing a starter, a data file or a fixture.
+
+```
+cl-repo run -- ros -l scripts/generate-coverage-table.lisp -q
+```
+
+| Column | Read from |
+|---|---|
+| Provenance | `calendar-provenance` of `find-calendar` (`:normative` for every `define-calendar` starter) |
+| Corpus defers | the code is in `*country-calendar-normative*`, so `country-calendar` answers from the starter |
+| Scope | the parenthesis in the primary gold fixture's header (`federal`, `government offices`, `national`, …); `nationwide` when it has none. The prose is [below](#scope-per-calendar) |
+| Gold primary / secondary | `:from`–`:to` of `data/tests/<cc>-holiday-gold.sexp` and `<cc>-secondary-holiday-gold.sexp`. A test compares every day of those years: 0 differences in holiday and business status |
+| Other checks | the `data/tests/external-gold.sexp` blocks (gov.uk, 内閣府, the Python `holidays` dump), the RU production calendar, the XNYS sessions |
+| Provisional from | the first year `<cc>-provisional-year-p` (or `mena-provisional-year-p`) is true |
+| Confidence | the runs of years 2000–2040 whose `<cc>-confidence` (`mena-confidence`, `cn-notice-confidence`) is not `:primary` |
+| Gold sources | how many sources the primary fixture cites, and the first of them |
+
+A row with only dashes is a starter without a gold fixture: its rules cite their authority (`:authority`), but no test has compared it day by day with an official list.
+
+## Scope per calendar
+
+A calendar holds the days off of one population. Where the population is narrower than "everyone in the country", the starter says so, and the corpus code defers to it.
+
+| Population | Calendars |
+|---|---|
+| **Government offices / public sector** | `TH` (วันหยุดราชการ), `IN` (Central Government offices at Delhi/New Delhi), `BD` (government offices), `VN` (cán bộ, công chức, viên chức), `TW` (行政機關放假日), `KR` (관공서의 공휴일), `KW` (government sector), `EG` (government), `MA` (public administrations), `GR` (public sector) |
+| **Federal** (not state or provincial) | `USFED` (5 U.S.C. 6103 legal public holidays only), `CA` (Canada Labour Code), `PK`, `NG`, `IQ` (federal holidays), `MY` (Holidays Act 1951: Peninsular Malaysia and the Federal Territories; state days are left out), `BR` (feriados nacionais; the federal pontos facultativos are left out), `MX` (LFT art. 74) |
+| **National subset** (the days every region keeps) | `AU` (the Fair Work Act s. 115 days every State and Territory keeps; no King's Birthday), `DE` (bundeseinheitlich; Länder through composites such as `DE-BY`), `ES` (fiestas nacionales; no Jueves Santo, no regional Monday substitutes), `GB` / `GBLO` (England and Wales) |
+| **Banks and settlement** | `TH-BANK` (Bank of Thailand list; XBKK attaches it), `CY` (Central Bank of Cyprus list), `TARGET` (euro RTGS closing days), and the corpus `:bank` rows (`country-calendar … :types '(:bank)`, #35) |
+| **Exchanges** | `NYSE` (Rule 7.2 closures; XNYS / XNAS) |
+| **Everyone** (statutory days for all employers) | the other starters, such as `FR`, `IT`, `NL`, `PL`, `SE`, `FI`, `KZ`, `ZA` |
+
+Days that bind only part of the population are left out, or come in only on request:
+
+- **Optional and restricted days.** IN Annexure-II comes in only with `(india-holidays-calendar :restricted t)`. ID cuti bersama come in only with `(indonesia-holidays-calendar :cuti-bersama t)`.
+- **Days for one group only.** TW 勞動節 counts only from 2026: before the 2025 條例 it was a day off for labourers, not for offices. MG 8 March has been for women only since 2007.
+- **Corpus partial days.** The corpus CN half-day and group days (妇女节, 青年节, 六一儿童节, 建军节) no longer count: `country-calendar "CN"` defers to the starter.
+- **SA.** `SA` holds the statutory days with tabular Eid blocks. The royal decrees set different Eid blocks for government and private-sector staff, and neither block is modelled.
+
+## Sunday and weekend holidays
+
+**A Sunday is listed only when the statute names that day** (#25 item 2). Easter Sunday, Pentecost Sunday and similar days are rules where the law lists them:
+
+- Europe: PT Domingo de Páscoa, the IT first Sundays of L. 54/1977, PL, SE, FI, EE, LV, LT, HR, SI, RO, BG, NO (påskedag);
+- outside Europe: ID Kebangkitan Isa Almasih, ET Fasika, UA, MG.
+
+They are not rules where the law does not name them: DE, FR, IT (Easter), NL, BE, IE, ES, CO, PE, HU (since 0.32.0).
+
+**When a holiday falls on a weekend**, each calendar follows its own statute (README, "Weekend holidays and substitute-day names"):
+
+- **The holiday moves.** Only the observed day is a holiday:
+  - `USFED`: Saturday → Friday, Sunday → Monday (5 U.S.C. 6103(b), EO 11582);
+  - `GB`: the next free weekday, exclusive across rules (BFDA 1971);
+  - `MW`: Cap. 18:05 s. 4;
+  - `KE`: a Sunday holiday moves (Cap. 110 s. 4);
+  - `NYSE`: Rule 7.2.
+- **The holiday stays and a substitute is added:**
+  - `AU`: s. 115 and the state acts;
+  - `JP`: 振替休日, Sunday only, chained from 2007;
+  - `KR`: 대체공휴일, by era;
+  - `RU`: ТК ст. 112 ч. 2, except 1–8 January; a decree cancels it;
+  - `KZ`: art. 5;
+  - `BG`: чл. 154(2), from 2017;
+  - `LV`: 4 May and 18 November;
+  - `ZA`: s. 2(1), Sunday → Monday;
+  - `ZW`, `ZM`: Sunday → Monday;
+  - `HK`: Cap. 149 Schedule;
+  - `TH`: วันหยุดชดเชย, by era;
+  - `MY`: s. 3.
+- **No weekend rule.** `IE` has none (OWTA s. 21 gives an entitlement, not a date). `NG` has none: the next working days are declared each year and are rows. `MG`, `ES` and the EU starters other than BG and LV have none.
+
+**Window days (调休 / перенос).** CN and RU list every day of a notice's window as a holiday, its Saturdays and Sundays too. The notices count them that way ("共7天"). So `holiday-p` is true on 2026-10-03 (CN) and 2026-01-03 (RU). Python `holidays` lists only the weekdays. Business days are the same either way, but holiday counts differ. The notices' make-up working days are working days (`business-day-p` true on a Saturday or Sunday).
+
+## Islamic dates
+
+- **Calendars with lists.** Where a country publishes the dates (MENA lists, the BD/PK circulars, the DoPT O.M.s, the SKB 3 Menteri, the JPM lists, the PH proclamations, the KE/NG/MW/MG/SN/KZ gazettes and declarations), the starter holds the listed dates for those years (`data/<cc>/…`). The gold fixtures check them day by day. For years with no list, the Islamic days are the **tabular** (arithmetic civil) Hijri dates from `datetime-protocol` (`eid-al-fitr`, `eid-al-adha`, …), and a starter with lists names them **"(estimated)"**: an earlier year without a list has `mena-confidence` / `<cc>-confidence` `:estimated`, and a year after the last list is `:provisional`.
+- **Calendars without lists.** `SA`, `AE`, `TR`, `JO`, `SY`, `YE` and the other starters with no Islamic data use the tabular dates in every year, unlabelled.
+- **Accuracy.** Umm al-Qura, Diyanet, MABIMS, Dar al-Ifta and local sighting all differ from the tabular calendar by up to a day, and the sign depends on the country. [`COVERAGE.md`](COVERAGE.md#islamic-dates-listed-eid-al-fitr-against-tabular-1-shawwal) measures it from the fixtures: the first listed Eid al-Fitr day against tabular 1 Shawwal, for every list year.
+  - On the listed days the tabular date is exact in about 40–75% of years.
+  - Otherwise it is off by a day. In the Gulf (KW, IQ), North Africa (DZ, EG), NG, MY and ID the tabular date is usually a day **late** (offset −1). In IN, BD, KE and MW it is usually a day **early** (offset +1). MA and PH go both ways.
+  - The #46 review (python-holidays 0.109) found the same: SA 4 of 8 years exact for 2019–2026; TR (Diyanet) about 62%.
+- **Second occurrence.** A Gregorian year with two occurrences of a Hijri date gets both (#28, #43).
+
+## Provisional years
+
+A calendar built from yearly lists, decrees or notices is complete only for the years whose list is published. `COVERAGE.md` shows the first provisional year of each.
+
+- **From that year on**, the calendar applies the statute and estimates the moveable days: tabular Islamic dates, the CN 第二条 days without 补休 / 调休, the RU ст. 112 transfers without a decree (2028-11-06 is projected, and the Government usually rearranges it), no TH Royal Ploughing Day, no IN Hindu days. The predicates are `cn-`, `ru-`, `kr-`, `tw-`, `ph-`, `id-`, `my-`, `vn-`, `in-`, `bd-`, `pk-`, `th-`, `th-bank-provisional-year-p` and `mena-provisional-year-p`.
+- **Estimated earlier years.** Some codes also have earlier years with no list. `…-confidence` answers `:estimated` there.
+- **Data in the registry.** `find-calendar` by code carries every year of its data files; #25 item 15 is fixed. The `:year` constructors keep only that year's rows.
+- **Equinoxes.** JP 春分 / 秋分 are astronomical (Tokyo). They match 内閣府 1955–2027 (`cao-jp` block). 国立天文台 fixes each year's date only in the February before, so later years are predictions.
+- **Non-Gregorian civil dates fixed to a Gregorian day** drift by a day against their source calendar:
+  - NP Martyrs' Day (Magh 16 ≈ 30 Jan), Democracy Day (Falgun 7 ≈ 19 Feb), Republic Day (Jestha 15 ≈ 28 May) and Constitution Day (Asoj 3 ≈ 20 Sep);
+  - MM Thingyan (13–16 Apr) and National Day;
+  - LK Thai Pongal (15 Jan).
+  
+  BD Pohela Boishakh is exact on 14 April under the revised Bangla calendar. IR is astronomical Solar Hijri since 0.28.0.
+
+## Confidence: primary and secondary
+
+Every list-based starter tags each year by its sources, through `cn-notice-confidence`, `th-confidence`, `th-bank-confidence`, `in-confidence`, `bd-confidence`, `pk-confidence` and `mena-confidence CODE`:
+
+| Value | Meaning |
+|---|---|
+| `:primary` | the official text was read: the gazette, the ministry list or the decree |
+| `:secondary` | only a copy was found: a news report, a central-bank or press republication, a wikisource transcription |
+| `:estimated` | no list was found for the year; moveable days are estimated |
+| `:provisional` | the year is after the last list |
+
+Data rows carry the same `:confidence`. A secondary year gets its own fixture, `data/tests/<cc>-secondary-holiday-gold.sexp` with `:confidence :secondary`, and a separate test, so a primary fixture never rests on secondary sources. `COVERAGE.md` lists the non-primary runs of each code. Decree rows also carry `:issued` / `:published` (#93).
+
+## Deliberate differences from Python `holidays`
+
+These are scope choices, not wrong dates. Each was checked against the statute.
+
+| Where | cl-stack-calendars | Python `holidays` | Why |
+|---|---|---|---|
+| USFED, GB, MW, KE, NYSE weekend holidays | the observed day only, named per its authority | both dates, "(observed)" | the authority moves the day off (above) |
+| Unnamed Easter / Pentecost Sundays | not listed | listed for most countries | a Sunday is listed only when the statute names it |
+| FR Lundi de Pentecôte 2005–2007 | a jour férié | dropped | Code du travail L3133-1 never removed it; the journée de solidarité made it a working day by default only |
+| NL | Bevrijdingsdag every year; no Goede Vrijdag | differs | Algemene termijnenwet art. 3(1); Good Friday counts only for time limits (art. 3(2)) |
+| FI | jouluaatto, juhannusaatto, pääsiäislauantai; no uudenvuodenaatto | no pääsiäislauantai | vuosilomalaki 162/2005 § 4(3) |
+| CA | federal (Canada Labour Code): Thanksgiving, Remembrance Day, Boxing Day | national days only | the federal general holidays |
+| ES | fiestas nacionales only | Jueves Santo, regional "día sustituto" | regional days belong to the comunidades |
+| AR | no Jueves Santo | listed | a día no laborable, at each employer's choice (Ley 27.399) |
+| IE | no weekend substitutes | substitutes | OWTA s. 21: an entitlement, not a fixed date |
+| Bank-only corpus days (DE/AT eves, MX, BR Carnaval, CL 31 Dec, …) | starters leave them out; `country-calendar … :types '(:bank)` gives them | mixed | not public holidays (#35) |
+| USFED | 5 U.S.C. 6103 only: no executive-order closures (2018-12-05, 2025-01-09, 24 Dec 2019/2020/2024, 24 and 26 Dec 2025) | some included | those are closures, not legal public holidays |
+| RU after the last decree | ст. 112 transfers projected (`ru-provisional-year-p`) | not projected | the statute applies until a decree changes it |
+| BR Paixão de Cristo | every year | listed | Lei 9.093/1995 names it; the federal portarias keep it |
+| GB | England and Wales | per subdivision | the `GB` registry key is the BFDA E&W list |
+| CN / RU window weekends | every window day | weekdays only | the notices count them |
+| Islamic days | listed dates, tabular "(estimated)" elsewhere | each country's own method | above |
+| TW 勞動節 before 2026, IN restricted days, ID cuti bersama | not in the default calendar | category-dependent | not days off for that calendar's population |
+
 ## Sunrise / sunset–bound rules (lat/lon)
 
 Jewish and Muslim ritual intervals are **not** civil midnight calendars — they need an `astro-location`:
