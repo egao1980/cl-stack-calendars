@@ -12,10 +12,11 @@
     "XHKG" "XSHG" "XSHE" "XSGE" "XINE" "XDCE" "XZCE"
     "XNSE" "XBOM" "XIMC" "XASX"
     "XSES" "XKLS" "XIDX" "XPHS" "XBKK" "XSTC"
-    "BVMF" "XTSE" "XSAU" "XTAE")
+    "BVMF" "XTSE" "XSAU" "XTAE"
+    "XCME" "XCBT" "XCEC" "XNYM")
   "MICs whose exchange queries use the exchange's own calendar (provenance
-:EXCHANGE). #49 moved them off their national civil calendars by region; the
-CME family (#48) is next.")
+:EXCHANGE). #49 moved them off their national civil calendars by region; #48
+the CME family (one calendar per CME Globex product group).")
 
 (defparameter *exchange-calendar-mics-without-gold*
   '("IFEU" "XLME" "XMAT" "XOSE" "XSGE" "XINE" "XDCE" "XZCE" "XIMC" "XSTC")
