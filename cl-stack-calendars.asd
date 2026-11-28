@@ -1,9 +1,9 @@
 (defsystem "cl-stack-calendars"
-  :version "0.29.0"
+  :version "0.30.0"
   :description "Holiday and trading calendars for cl-stack (business days, sessions, versioned as-of)"
   :author "egao1980"
   :license "MIT"
-  :depends-on ((:version "datetime-protocol" "0.3.0") (:version "datetime-protocol/calendars" "0.3.0") "cl-stack-pathlib")
+  :depends-on ((:version "datetime-protocol" "0.4.0") (:version "datetime-protocol/calendars" "0.4.0") "cl-stack-pathlib")
 
   :serial t
   :pathname "src"

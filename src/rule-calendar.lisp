@@ -150,7 +150,8 @@ Two passes, so the result is the same for any order of the rules:
    only when a rule has an OBSERVED policy, so a Dec 31 and a Jan 1
    substitute cannot take the same day).
 2. Substitutes are placed in nominal-date order (ties by name). Each one skips
-   weekend days, every claimed day and every substitute placed before it.
+   weekend days, every claimed day and every substitute placed before it
+   (a :NEXT-DAY substitute is dropped instead when its day is taken).
    Under a policy with :DECREE-CANCELS-SUBSTITUTE (ТК РФ ст. 112 ч. 5), a
    substitute whose nominal date or own day is the FROM of a decree transfer
    is not a holiday: the decree moved that rest day elsewhere. The day stays
@@ -178,11 +179,12 @@ names. :BRIDGE extras are added last and claim nothing."
           (emit e (second e))))
       (dolist (e (stable-sort (remove-if-not #'fourth entries) #'%substitute-entry<))
         (let ((d (place-substitute (second e) (fourth e) weekend-days #'claimedp)))
-          (claim d)
-          (unless (and (observed-policy-decree-cancels-substitute-p (rule-observed (first e)))
-                       (or (%transfer-from-date-p calendar d)
-                           (%transfer-from-date-p calendar (second e))))
-            (emit e d))))
+          (when d
+            (claim d)
+            (unless (and (observed-policy-decree-cancels-substitute-p (rule-observed (first e)))
+                         (or (%transfer-from-date-p calendar d)
+                             (%transfer-from-date-p calendar (second e))))
+              (emit e d)))))
       (dolist (e entries)
         (let ((bridge (rule-bridge (first e)))
               (dates (gethash e dates-by-entry)))
