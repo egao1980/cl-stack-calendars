@@ -9,7 +9,8 @@ read, data/<cc>/holidays.sexp (egao1980/cl-stack-calendars#44).
 
     uv run --no-project --with holidays==0.109 python -I scripts/generate_mena_holiday_gold.py [CC ...]
 
-The transcriptions live in scripts/mena/<cc>.py, one module per country:
+The transcriptions live in scripts/<region>/<cc>.py, one module per country
+(region "mena" by default; "africa" and "asia" for #43 / #45):
 
   <CC>_STATUTES  the statutes, decrees and decisions that set the list, by era
   <CC>_FIXED     Gregorian fixed days by era: (month, day, name, [(from, to)], statute)
@@ -42,9 +43,9 @@ LAST = 2040
 GENERATED = "2026-11-28"
 
 
-def load(cc: str):
-    path = ROOT / "scripts" / "mena" / f"{cc.lower()}.py"
-    spec = importlib.util.spec_from_file_location(f"mena_{cc.lower()}", path)
+def load(cc: str, region: str = "mena"):
+    path = ROOT / "scripts" / region / f"{cc.lower()}.py"
+    spec = importlib.util.spec_from_file_location(f"{region}_{cc.lower()}", path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     keep = LISTED_YEARS.get(cc.upper())
@@ -67,6 +68,10 @@ LISTED_YEARS = {
     "DZ": [2009, 2011, 2012] + list(range(2016, 2027)),
     "MA": range(2003, 2027),   # 2000-2002: no source
     "EG": range(2014, 2027),   # 2008-2013: some Eid blocks and Mawlid dates only estimated
+    "KZ": range(2000, 2027),   # 2027: Kurban ait not yet announced
+    # SN: the Grand Magal only (a year :covers "magal"); 2013 (December), 2014 and
+    # 2016 are guesses in the transcription, so the Magal is estimated there.
+    "SN": [2012, 2015] + list(range(2017, 2027)),
 }
 
 
@@ -146,6 +151,184 @@ def solar_days(mod, cc: str, year: int) -> list[tuple[date, str]]:
     return out
 
 
+# --- rule engine (modules with OBSERVE = True) ---------------------------------
+#
+# The same algorithm as the Lisp RULE-CALENDAR (%OBSERVE-RULE-ENTRIES and
+# HOLIDAY-P), written from its documented contract: the year map of rule year
+# Y claims every kept nominal date of Y-1 .. Y+1, then places the substitutes
+# in nominal-date order (ties by name), each on the first day after its
+# nominal date that is no weekend day and not claimed. A date is a rule
+# holiday when the map of its year or of an adjacent year holds it.
+#
+# Rule tables (the last element of each tuple may be an options dict):
+#   <CC>_FIXED    (month, day, name, eras, statute[, opts])
+#   <CC>_ISLAMIC  (hijri month, hijri day, offsets, name, eras, statute[, opts]):
+#                 tabular, only in rule years with no list covering opts["key"]
+#   <CC>_EASTER   (offset, name, eras, statute[, opts]); opts["orthodox"]
+#   <CC>_NTH      (month, ISO weekday, n, name, eras, statute[, opts]); n = -1 last
+# Eras are (from, to) pairs of years or ISO dates, None = open. opts:
+#   observed       "substitute-next" (keep; a Saturday or Sunday one adds the next free day),
+#                  "sunday-next" (keep; a Sunday one adds the next free day)
+#   observed_from  year or ISO date from which the policy applies
+#   key            the Islamic rule's key for a year's :covers
+
+def _bound(b, d: date, lower: bool) -> bool:
+    if b is None:
+        return True
+    if isinstance(b, int):
+        return d.year >= b if lower else d.year <= b
+    b = date.fromisoformat(b)
+    return d >= b if lower else d <= b
+
+
+def in_era_date(eras, d: date) -> bool:
+    return any(_bound(a, d, True) and _bound(b, d, False) for a, b in eras)
+
+
+def _opts(row, n):
+    return row[n] if len(row) > n and isinstance(row[n], dict) else {}
+
+
+def easter_western(year: int) -> date:
+    a, b, c = year % 19, year // 100, year % 100
+    d, e = divmod(b, 4)
+    f = (b + 8) // 25
+    g = (b - f + 1) // 3
+    h = (19 * a + b - d - g + 15) % 30
+    i, k = divmod(c, 4)
+    l = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * l) // 451
+    month, day = divmod(h + l - 7 * m + 114, 31)
+    return date(year, month, day + 1)
+
+
+def nth_weekday(year: int, month: int, weekday: int, n: int) -> date:
+    if n > 0:
+        d = date(year, month, 1)
+        d += timedelta(days=(weekday - d.isoweekday()) % 7)
+        return d + timedelta(weeks=n - 1)
+    d = (date(year + (month == 12), month % 12 + 1, 1)) - timedelta(days=1)
+    return d - timedelta(days=(d.isoweekday() - weekday) % 7)
+
+
+def listed_for(mod, cc: str, year: int, key=None) -> bool:
+    """True when YEAR has a list that covers the rule KEY (a list with no
+    :covers covers every rule)."""
+    spec = getattr(mod, f"{cc}_YEARS").get(year)
+    if spec is None:
+        return False
+    covers = spec.get("covers")
+    return covers is None or key in covers
+
+
+class Engine:
+    def __init__(self, mod, cc: str, weekends):
+        self.mod, self.cc, self.weekends = mod, cc, weekends
+        self.rules = []   # (name, nominal-fn, eras, observed, observed_from)
+        for row in getattr(mod, f"{cc}_FIXED", []):
+            m, d, name, eras = row[:4]
+            self._add(name, (lambda y, m=m, d=d: [date(y, m, d)]), eras, _opts(row, 5))
+        for row in getattr(mod, f"{cc}_EASTER", []):
+            off, name, eras = row[:3]
+            o = _opts(row, 4)
+            fn = easter_orthodox if o.get("orthodox") else easter_western
+            self._add(name, (lambda y, off=off, fn=fn: [fn(y) + timedelta(days=off)]), eras, o)
+        for row in getattr(mod, f"{cc}_NTH", []):
+            m, wd, n, name, eras = row[:5]
+            self._add(name, (lambda y, m=m, wd=wd, n=n: [nth_weekday(y, m, wd, n)]), eras, _opts(row, 6))
+        for row in getattr(mod, f"{cc}_ISLAMIC", []):
+            hm, hd, offsets, name, eras = row[:5]
+            o = _opts(row, 6)
+
+            def fn(y, hm=hm, hd=hd, offsets=offsets, key=o.get("key")):
+                if listed_for(mod, cc, y, key):
+                    return []
+                out = []
+                for d0 in islamic_dates_in_year(y, hm, hd):
+                    for k in offsets:
+                        if d0 + timedelta(days=k) not in out:
+                            out.append(d0 + timedelta(days=k))
+                return out
+            self._add(f"{name} (estimated)", fn, eras, o)
+        self.any_observed = any(r[3] for r in self.rules)
+        self.suppressed = {date(y, int(md[:2]), int(md[3:5]))
+                           for y, spec in getattr(mod, f"{cc}_YEARS").items()
+                           for md, *_ in spec.get("suppressed", [])}
+        self.maps = {}
+
+    def _add(self, name, fn, eras, o):
+        self.rules.append((name, fn, eras, o.get("observed"), o.get("observed_from")))
+
+    def weekend(self, d: date) -> bool:
+        days = (6, 7)
+        for start, wd in self.weekends or []:
+            if start is None or d >= date(*start):
+                days = wd
+        return d.isoweekday() in days
+
+    def _moves(self, nominal: date, policy):
+        if policy is None:
+            return True, False
+        if policy == "substitute-next":
+            return True, self.weekend(nominal)
+        if policy == "sunday-next":
+            return True, nominal.isoweekday() == 7
+        raise ValueError(policy)
+
+    def entries(self, y: int):
+        out = []
+        for name, fn, eras, policy, pfrom in self.rules:
+            for nominal in fn(y):
+                if not in_era_date(eras, nominal):
+                    continue
+                applies = policy and (pfrom is None or _bound(pfrom, nominal, True))
+                keep, forward = self._moves(nominal, policy if applies else None)
+                out.append((name, nominal, keep, forward, y))
+        return out
+
+    def year_map(self, y: int) -> dict:
+        if y in self.maps:
+            return self.maps[y]
+        years = (y - 1, y, y + 1) if self.any_observed else (y,)
+        entries = [e for yy in years for e in self.entries(yy)]
+        claimed, out = set(), {}
+        for name, nominal, keep, _, ey in entries:
+            if keep and nominal not in self.suppressed:
+                claimed.add(nominal)
+                if ey == y:
+                    out.setdefault(nominal, name)
+        for name, nominal, _, _, ey in sorted((e for e in entries if e[3]), key=lambda e: (e[1], e[0])):
+            d = nominal + timedelta(days=1)
+            while self.weekend(d) or d in claimed:
+                d += timedelta(days=1)
+            claimed.add(d)
+            if ey == y and d not in self.suppressed:
+                out.setdefault(d, f"{name} (substitute)")
+        self.maps[y] = out
+        return out
+
+    def days(self, year: int) -> list[tuple[date, str]]:
+        found = {}
+        for y in (year - 1, year, year + 1):
+            for d, name in self.year_map(y).items():
+                if d.year == year:
+                    found.setdefault(d, name)
+        return sorted(found.items())
+
+
+ENGINES: dict[str, Engine] = {}
+
+
+def engine(mod, cc: str) -> Engine | None:
+    if not getattr(mod, "OBSERVE", False):
+        return None
+    if cc not in ENGINES:
+        weekends = next((f.get("weekends") for k, f in FIXTURES.items()
+                         if f.get("country", k) == cc and f.get("weekends")), None)
+        ENGINES[cc] = Engine(mod, cc, weekends)
+    return ENGINES[cc]
+
+
 # --- per-country rules ---------------------------------------------------------
 
 def in_era(eras, year: int) -> bool:
@@ -158,6 +341,9 @@ def fixed_days(mod, cc: str, year: int) -> list[tuple[date, str]]:
 
 def rule_days(mod, cc: str, year: int) -> list[tuple[date, str]]:
     """The days the starter computes in every year: fixed, solar and other rules."""
+    eng = engine(mod, cc)
+    if eng:
+        return eng.days(year)
     days = fixed_days(mod, cc, year) + solar_days(mod, cc, year)
     hook = getattr(mod, "rule_days", None)
     if hook:
@@ -193,6 +379,10 @@ def listed(mod, cc: str, year: int) -> list[tuple[date, str]]:
 
 def holidays_of(mod, cc: str, year: int) -> list[tuple[date, str]]:
     years = getattr(mod, f"{cc}_YEARS")
+    if engine(mod, cc):
+        if year in years and years[year].get("covers") is None:
+            return listed(mod, cc, year)
+        return rule_days(mod, cc, year) + (listed(mod, cc, year) if year in years else [])
     days = listed(mod, cc, year) if year in years else rule_days(mod, cc, year)
     return days + estimated_days(mod, cc, year)
 
@@ -203,13 +393,14 @@ def consistency_check(mod, cc: str) -> None:
     years = getattr(mod, f"{cc}_YEARS")
     gaps = 0
     for year, spec in sorted(years.items()):
+        if spec.get("covers") is not None:
+            continue  # a partial list: only its own rows
         have = {d for d, _ in listed(mod, cc, year)}
         sup = {date(year, int(md[:2]), int(md[3:5])) for md, *_ in spec.get("suppressed", [])}
         for d, name in rule_days(mod, cc, year):
             if d not in have and d not in sup:
                 gaps += 1
                 print(f"  {cc} {year}: rule day {d} {name!r} neither listed nor suppressed")
-        rules = {d for d, _ in rule_days(mod, cc, year)}
     print(f"{cc}: rule days checked against {len(years)} listed years, {gaps} unexplained")
 
 
@@ -243,7 +434,7 @@ def doc_fields(doc: dict) -> str:
 def write_data(mod, cc: str, spec: dict) -> None:
     years = getattr(mod, f"{cc}_YEARS")
     lines = [f";;;; {spec['name']}: {spec['data_note']}",
-             f";;;; Generated by scripts/generate_mena_holiday_gold.py {cc} from scripts/mena/{cc.lower()}.py;",
+             f";;;; Generated by scripts/generate_mena_holiday_gold.py {cc} from scripts/{spec.get('region', 'mena')}/{cc.lower()}.py;",
              ";;;; edit the transcription there, not this file. :holidays are the listed days",
              ";;;; that no fixed or solar rule of the starter gives; :suppressed the rule days a",
              ";;;; decree moved away or cancelled. Every block and row carries :issued and",
@@ -255,6 +446,8 @@ def write_data(mod, cc: str, spec: dict) -> None:
         rules = {d for d, _ in rule_days(mod, cc, year)}
         lines.append(f" (:year {year}")
         lines.append(f"  :confidence :{y['confidence']}")
+        if y.get("covers") is not None:
+            lines.append(f"  :covers ({' '.join(lisp_string(k) for k in y['covers'])})")
         lines.append(f"  :authority {lisp_string(head['title'])}")
         lines.append(f"  :uri {lisp_string(head['uri'])}")
         lines.append(f"  {doc_fields(head)}")
@@ -307,7 +500,7 @@ def sources_of(mod, cc: str, first: int, last: int) -> list[tuple[str, str, str]
 def build(key: str) -> None:
     spec = FIXTURES[key]
     cc = spec.get("country", key)
-    mod = load(cc)
+    mod = load(cc, spec.get("region", "mena"))
     first, last = spec["first"], spec.get("last", LAST)
     gaps = [y for y in spec.get("gaps", ()) if first <= y <= last]
     days: dict[date, list[str]] = {}
@@ -460,6 +653,42 @@ FIXTURES: dict[str, dict] = {
                     "communiqués 2003-2026 as the press reported them (habous.gov.ma, MAP and the Bulletin officiel "
                     "were unreachable), cross-checked with ICOP. 2027-2040 are provisional: the fixed days and "
                     "tabular estimates."),
+    "KZ": dict(name="Kazakhstan", region="asia", first=2000, gaps=tuple(range(2006, 2019)),
+               weekends=[(None, (6, 7))],
+               data_note="праздничные дни of decree 2534 (1995) and law 267 (2001) as amended, the выходные дни "
+                         "Kurban ait (first day) and 7 January (Labour law from 2006), with the Government and "
+                         "Ministry of Labour transfers of days off",
+               note="Holidays and days off of Kazakhstan: decree 2534 of 18 Oct 1995, law 267 of 13 Dec 2001 as amended "
+                    "(47-IV: 6 July from 2008; 152-IV: Nauryz 21-23 March from 2010, no 25 October 2009-2021; 509-IV: "
+                    "1 December 2012-2021; 43-V: 7 May from 2013; 143-VII: 25 October from 2022, 16 December one day "
+                    "from 2022; 306-VIII: 15 March from 2027, no 30 August from 2026), its art. 5 weekend carry-over "
+                    "from 14 Dec 2001, the first day of Kurban ait and 7 January from 2006 (law 109 of 30 Dec 2005; "
+                    "Labour Codes 2007 and 2015) with no carry-over, and every transfer decree or order 2000-2025 "
+                    "(adilet.zan.kz). Ораза айт is no holiday. Kurban ait at the egov.kz dates 2019-2026; 2006-2018 "
+                    "are gaps here (dates from secondary sources: the KZ-SECONDARY fixture). 2027-2040 are "
+                    "provisional: the statutory days, art. 5 and tabular Kurban ait."),
+    "KZ-SECONDARY": dict(name="Kazakhstan (Kurban ait from secondary sources)", country="KZ", region="asia",
+                         first=2006, last=2018, file="kz-secondary-holiday-gold.sexp", confidence="secondary",
+                         weekends=[(None, (6, 7))],
+                         note="LOWER CONFIDENCE. 2006-2018: the statutory days and transfer decrees are primary, the "
+                              "Kurban ait dates come from python-holidays' confirmed table (checked where a decree "
+                              "bridges them, 2006 and 2013)."),
+    "SN": dict(name="Senegal", region="africa", first=2025, data=True,
+               weekends=[(None, (6, 7))],
+               data_note="the declared Grand Magal de Touba dates (18 Safar; loi 2013-06) and one-off fêtes légales by "
+                         "decree; the other days are rules of loi 74-52 as amended",
+               note="Fêtes légales of Senegal: loi 74-52 of 4 Nov 1974 (1 January, 4 April, 1 May, Easter Monday, "
+                    "Ascension, Whit Monday, 15 August, 1 November, 25 December, Maouloud, Korité, Tabaski; the Monday "
+                    "after a Sunday Korité or Tabaski), loi 83-54 (Tamxarit) and loi 2013-06 (Grand Magal de Touba, "
+                    "18 Safar), with the Magal at the date the Khalife général des mourides fixed, as RTS and Le Soleil "
+                    "reported it 2025-2026. Tamxarit, Maouloud, Korité and Tabaski are tabular estimates in every year, "
+                    "and so is the Magal from 2027."),
+    "SN-SECONDARY": dict(name="Senegal (secondary sources)", country="SN", region="africa", first=2000, last=2024,
+                         file="sn-secondary-holiday-gold.sexp", confidence="secondary",
+                         weekends=[(None, (6, 7))],
+                         note="LOWER CONFIDENCE. 2000-2024: the Magal dates 2012, 2015, 2017-2024 from national press, "
+                              "Wikipedia or timeanddate (2023 RTS), estimated in 2013, 2014 and 2016; décret 2018-1942 "
+                              "(29 Oct 2018) and the Conseil des ministres of 22 Dec 2022 (26 Dec 2022)."),
 }
 
 

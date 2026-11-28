@@ -55,6 +55,7 @@
                (:file "americas-holiday-gold-test")
                (:file "asia-holiday-gold-test")
                (:file "mena-holiday-gold-test")
+               (:file "yearly-lists-holiday-gold-test")
                (:file "normative-calendar-test")
                (:file "country-calendar-test")
                (:file "holiday-suite-test")
