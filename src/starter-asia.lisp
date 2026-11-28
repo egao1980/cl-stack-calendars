@@ -134,6 +134,9 @@ of each SKB 3 Menteri (data/id/skb.sexp)."
   (:computed "Maulid Nabi Muhammad" (lambda (y) (when (id-estimated-year-p y) (mawlid-date y)))
    :from 1946 :authority "12 Rabiulawal — the SKB date in 2000-2027, tabular estimate otherwise"))
 
+(register-calendar-constructor
+ "ID-CUTI" (lambda () (indonesia-holidays-calendar :cuti-bersama t)))
+
 ;;; Philippines (1946)
 (define-calendar philippines-holidays-calendar (:register "PH" :constructor philippines-holidays-calendar)
   ;; EO 292 (Administrative Code of 1987) Book I, Chapter 7, Sec. 26 as

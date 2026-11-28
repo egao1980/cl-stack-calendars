@@ -2,7 +2,7 @@
  :mic "XSTC"
  :name "Ho Chi Minh Stock Exchange"
  :zone "Asia/Ho_Chi_Minh"
- :calendar "VN"
+ :calendar "XSTC"
  :kind :equity
  :source "HOSE / HSX cash sessions"
  :eras (

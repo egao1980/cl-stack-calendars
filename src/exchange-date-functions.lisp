@@ -58,6 +58,11 @@ no afternoon session on the eve of Lunar New Year). It may be a weekend day,
 when the rule does not apply."
   (- (chinese-new-year-date year) 1))
 
+(defun lunar-new-year-eve (year)
+  "The day before Lunar New Year's Day of YEAR on the UTC+8 meridian (China,
+Hong Kong, Singapore, Malaysia). It may be a weekend day."
+  (- (chinese-new-year-date year) 1))
+
 ;;; --- Hebrew calendar (TASE) -------------------------------------------------
 ;;;
 ;;; Months in Tishrei = 1 numbering (datetime-protocol HEBREW-*): Tishrei-based

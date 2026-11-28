@@ -10,12 +10,13 @@
     "XWAR" "XBUD" "XPRA" "XATH" "XIST"
     "XTKS" "XOSE" "XKRX" "XTAI"
     "XHKG" "XSHG" "XSHE" "XSGE" "XINE" "XDCE" "XZCE"
-    "XNSE" "XBOM" "XIMC" "XASX")
+    "XNSE" "XBOM" "XIMC" "XASX"
+    "XSES" "XKLS" "XIDX" "XPHS" "XBKK" "XSTC")
   "MICs whose exchange queries use the exchange's own calendar (provenance
 :EXCHANGE). #49 moves the rest off their national civil calendars by region.")
 
 (defparameter *exchange-calendar-mics-without-gold*
-  '("IFEU" "XLME" "XMAT" "XOSE" "XSGE" "XINE" "XDCE" "XZCE" "XIMC")
+  '("IFEU" "XLME" "XMAT" "XOSE" "XSGE" "XINE" "XDCE" "XZCE" "XIMC" "XSTC")
   "Exchange-calendar MICs that Python exchange_calendars does not cover;
 their key dates are checked in EXCHANGE-CALENDARS-WITHOUT-GOLD and the
 regional *-EXCHANGE-KEY-DATES tests.")
@@ -173,6 +174,30 @@ exchanges' notices (#49, #92)."
   (ok (null (%early-close-hm "XASX" '(2017 12 22))))
   (ok (equal (%early-close-hm "XASX" '(2024 12 24)) '(14 10)))
   (ok (equal (%trading-days "XASX" '(2022 9 22) '(2024 6 10) '(2024 3 11)) '(nil nil t))))
+
+(deftest southeast-asia-exchange-key-dates
+  "XSES, XKLS, XIDX, XPHS, XBKK and XSTC: key dates from the exchanges' notices."
+  ;; SGX half days: eve of Chinese New Year, Christmas and New Year; 12:30
+  ;; Trading Phase end until 2017-11-12, 12:00 from 2017-11-13 (RN 8.2.1).
+  (ok (equal (%early-close-hm "XSES" '(2016 12 30)) nil))
+  (ok (equal (%early-close-hm "XSES" '(2015 12 24)) '(12 30)))
+  (ok (equal (%early-close-hm "XSES" '(2024 2 9)) '(12 0)))
+  ;; Bursa: half-day eves 2010-2022, full days from 2024; ad-hoc 2023-04-21.
+  (ok (equal (%early-close-hm "XKLS" '(2022 1 31)) '(12 30)))
+  (ok (null (%early-close-hm "XKLS" '(2024 2 9))))
+  (ok (equal (%trading-days "XKLS" '(2023 4 21) '(2024 2 1)) '(nil nil)))
+  ;; IDX: 31 Dec Libur Bursa from 2010; COVID-era hours; cuti bersama.
+  (ok (equal (%trading-days "XIDX" '(2021 12 31) '(2007 12 31)) '(nil t)))
+  (ok (equal (%session-hm "XIDX" '(2021 6 4)) '(((9 0) (11 30)) ((13 30) (14 50)))))
+  (ok (equal (%session-hm "XIDX" '(2019 6 14)) '(((9 0) (11 30)) ((14 0) (15 50)))))
+  ;; PSE: 2022-01-04 trading cancelled; 2021-12-24 half day; COVID hours.
+  (ok (equal (%trading-days "XPHS" '(2022 1 4)) '(nil)))
+  (ok (equal (%early-close-hm "XPHS" '(2021 12 24)) '(12 10)))
+  (ok (equal (%session-hm "XPHS" '(2021 6 1)) '(((9 30) (13 0)))))
+  ;; SET: closed after the 2006 coup.
+  (ok (equal (%trading-days "XBKK" '(2006 9 20)) '(nil)))
+  ;; HOSE: Tết closures from the yearly notices.
+  (ok (equal (%trading-days "XSTC" '(2021 2 10) '(2021 2 17)) '(nil t))))
 
 (deftest civil-fixes-found-by-exchange-lists
   "#123: Norway's Ascension Day; #124: Iceland's First Day of Summer is the

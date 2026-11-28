@@ -44,7 +44,7 @@ Those libraries are Apache-2.0; we independently encode published dates.
 | XNSE | [NSE PR 17 Dec 2009](https://nsearchives.nseindia.com/content/press/17122009.htm) 09:00 from 2010-01-04; SEBI pre-open → continuous 09:15 from 2010-10-18; prior open 09:55; Diwali Muhurat as `:special-sessions` (2026: 14:20–15:15) |
 | BVMF | B3 cash 10:00–17:00 |
 | XKRX | Lunch abolished 2000-05-22 (secondary); [close 15:30 from 2016-08-01](https://www.koreaherald.com/article/1038609); first trading day opens 10:00 (`:regular` late-open rule); CSAT day 10:00–16:30 (`:sessions` notices) |
-| XSES | CAT 2011-08-01; [lunch restored 2017-11-13](https://www.businesstimes.com.sg/companies-markets/sgx-reintroduce-lunch-break-widen-bid-spreads-nov-13) |
+| XSES | CAT 2011-08-01; [lunch restored 2017-11-13](https://www.businesstimes.com.sg/companies-markets/sgx-reintroduce-lunch-break-widen-bid-spreads-nov-13); half days on the eves of Chinese New Year, Christmas and New Year, Trading Phase to 12:30 until 2017-11-12 and 12:00 after ([RN 8.2.1](https://rulebook.sgx.com/node/1771)) |
 | XAMS XBRU XMIL XMAD | Euronext / Borsa Italiana / BME cash 09:00–17:30; Euronext half days from the yearly notices, BME 24/31 Dec 14:00 |
 | XLIS | Euronext CET clock: 08:00–16:30 Lisbon, half days 13:00 / 13:05 |
 | XDUB | Euronext Dublin 08:00–16:28 local (continuous end; closing auction to 16:28–16:30) |
@@ -54,9 +54,9 @@ Those libraries are Apache-2.0; we independently encode published dates.
 | XWBO XWAR XBUD XPRA XATH | Vienna 09:00–17:30; GPW 09:00–16:50 (UTP 2013-04-15; 17:20 from 2011-01-01); Budapest 09:00–17:00; Prague 09:00–16:15 from 2020-11-30 (end of closing auction); ATHEX 10:15–17:20 (opening auction to end of trading at close, 2026 schedule) |
 | XTAI | [TWSE timeline](https://www.twse.com.tw/en/about/company/history.html) 2001-01-02: 09:00–13:30 (was 09:00–12:00); trading Saturdays in 2000 and make-up Saturdays 2006–2018 (calendar `:open` notices) |
 | XBKK | [SET 22/2024](https://www.set.or.th/en/market/news-and-alert/newsdetails?id=86864800&symbol=SET) afternoon from 14:00 on 2024-03-25 |
-| XIDX | [Jakarta Post 2012-11-02](https://www.thejakartapost.com/news/2012/11/02/idx-will-start-trading-day-earlier-january.html) open 09:00 from 2013-01-02; Friday shorter morning |
-| XKLS | [Bursa sessions](https://www.bursamalaysia.com/trade/trading_resources/equities/trading_sessions) 09:00–12:30 / 14:30–17:00 |
-| XPHS | PSE 2011-10-03 to 13:00; [2012-01-02](https://business.inquirer.net/21697/stock-trading-hours-extended-starting-oct-3) 09:30–12:00 / 13:30–15:30 |
+| XIDX | [Jakarta Post 2012-11-02](https://www.thejakartapost.com/news/2012/11/02/idx-will-start-trading-day-earlier-january.html) open 09:00 from 2013-01-02; Friday shorter morning; COVID era 09:00–11:30 / 13:30–14:50 2020-03-30..2023-03-31 (Kep-00031/BEI/03-2020) |
+| XKLS | [Bursa sessions](https://www.bursamalaysia.com/trade/trading_resources/equities/trading_sessions) 09:00–12:30 / 14:30–17:00; afternoon session cancelled on the eves of Chinese New Year and Hari Raya Puasa 2010-09-30..2023, full days from 2024 |
+| XPHS | PSE 2011-10-03 to 13:00; [2012-01-02](https://business.inquirer.net/21697/stock-trading-hours-extended-starting-oct-3) 09:30–12:00 / 13:30–15:30; COVID and later eras 2020-03-16 on (CN-2020-0017 … CN-2024-0012), close 15:00 from 2021-12-06 |
 | XSTC | HOSE 09:15–11:30 / 13:00–14:45 |
 | XBOM | Same SEBI hour changes as XNSE; Muhurat 2026 continuous trading 14:20–15:30 (BSE notice 20261019-9) |
 | XIST | BIST continuous 10:00–18:00, lunch break removed 2019-10-04 (notice 2019/56); 10:00–13:00 / 14:00–18:00 from 2016-11-14; half days 12:30 |

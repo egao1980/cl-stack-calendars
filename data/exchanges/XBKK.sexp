@@ -6,7 +6,7 @@
  :mic "XBKK"
  :name "Stock Exchange of Thailand"
  :zone "Asia/Bangkok"
- :calendar "TH-BANK"
+ :calendar "XBKK"
  :kind :equity
  :source "SET News 22/2024 — afternoon from 14:00 on 2024-03-25"
  :eras (

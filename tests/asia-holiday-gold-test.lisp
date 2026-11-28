@@ -733,10 +733,13 @@ Songkran one only when two of its days fall on the weekend."
 
 (deftest th-xbkk-attaches-th-bank
   "The SET holiday pages 2012–2022 list exactly the BOT financial-institution
-days, so XBKK closes on TH-BANK: Labour Day yes, the Royal Ploughing Day and
-the Cabinet-only special days no."
+days, so XBKK's exchange calendar has TH-BANK as its base: Labour Day yes,
+the Royal Ploughing Day and the Cabinet-only special days no."
   (let ((ex (find-exchange "XBKK")))
-    (ok (equal "TH-BANK" (exchange-hours-calendar-name ex)))
+    (ok (equal "XBKK" (exchange-hours-calendar-name ex)))
+    (ok (find "TH-BANK" (exchange-calendar-bases (exchange-calendar ex))
+              :key (lambda (base) (getf base :calendar)) :test #'equal)
+        "XBKK's exchange calendar follows TH-BANK")
     (ok (exchange-holiday-p ex (make-date 2024 5 1)) "Labour Day 2024")
     (ng (exchange-holiday-p ex (make-date 2025 5 9)) "Royal Ploughing Day 2025")
     (ng (exchange-holiday-p ex (make-date 2023 7 31)) "Cabinet-only special day 2023")

@@ -791,4 +791,311 @@
   :source "https://nsearchives.nseindia.com/content/circulars/cmtr11733.htm")
  (:mic "XBOM" :date (2009 4 30) :kind :session :gold nil :ours t
   :why "exchange_calendars closes the day (Lok Sabha poll in Mumbai). The NSE 2009 list (NSE/CMTR/11733) does not list it and no partial-modification circular was found (download numbers 12260-12420 probed); the day stays a session until the circular is cited (follow-up issue)."
-  :source "https://nsearchives.nseindia.com/content/circulars/cmtr11733.htm"))
+  :source "https://nsearchives.nseindia.com/content/circulars/cmtr11733.htm")
+ ;; XSES
+ ;;;; XSES: dates where SGX sources disagree with exchange_calendars (gold).
+ ;;;; Closures 2020-2026: the MOM lists agree with ec exactly (no rows). 2000-2019 closure disagreements
+ ;;;; between ec and our SG corpus are NOT resolved by an exchange source (see XSES.sexp :gaps).
+
+ (:mic "XSES" :kind :hours :from (2000 1 3) :to (2011 7 29) :gold ((9 0) nil nil (17 0)) :ours ((9 0) (12 30) (14 0) (17 0))
+  :why "SGX RN 8.2.1 (effective up to 31 Jul 2011): morning 09:00-12:30, afternoon 14:00-17:00; ec has no break" :source "https://rulebook.sgx.com/node/1771/revisions/1771/view")
+ (:mic "XSES" :kind :hours :from (2017 11 13) :to (2026 12 31) :gold ((9 0) nil nil (17 0)) :ours ((9 0) (12 0) (13 0) (17 0))
+  :why "SGX RN 8.2.1 from 13 Nov 2017: Mid-Day Break 12:00-13:00; ec has no break" :source "https://rulebook.sgx.com/node/1771/revisions/9710/view")
+ (:mic "XSES" :kind :early-close :date (2020 1 24) :gold nil :ours (12 0)
+  :why "eve of Chinese New Year: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2020 12 24) :gold nil :ours (12 0)
+  :why "Christmas Eve: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2020 12 31) :gold nil :ours (12 0)
+  :why "New Year's Eve: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2021 2 11) :gold nil :ours (12 0)
+  :why "eve of Chinese New Year: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2021 12 24) :gold nil :ours (12 0)
+  :why "Christmas Eve: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2021 12 31) :gold nil :ours (12 0)
+  :why "New Year's Eve: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2022 1 31) :gold nil :ours (12 0)
+  :why "eve of Chinese New Year: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2024 2 9) :gold nil :ours (12 0)
+  :why "eve of Chinese New Year: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2024 12 24) :gold nil :ours (12 0)
+  :why "Christmas Eve: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2024 12 31) :gold nil :ours (12 0)
+  :why "New Year's Eve: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2025 1 28) :gold nil :ours (12 0)
+  :why "eve of Chinese New Year: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2025 12 24) :gold nil :ours (12 0)
+  :why "Christmas Eve: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2025 12 31) :gold nil :ours (12 0)
+  :why "New Year's Eve: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2026 2 16) :gold nil :ours (12 0)
+  :why "eve of Chinese New Year: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2026 12 24) :gold nil :ours (12 0)
+  :why "Christmas Eve: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ (:mic "XSES" :kind :early-close :date (2026 12 31) :gold nil :ours (12 0)
+  :why "New Year's Eve: SGX half-day trading (Trading Phase 09:00-12:00, RN 8.2.1); ec has no half days. Date rule secondary" :source "https://rulebook.sgx.com/node/1771")
+ ;; XKLS
+ ;;;; XKLS: dates where Bursa Malaysia / KLSE sources disagree with exchange_calendars (ec 4.13.3) gold.
+ ;;;; Exchange lists used from 2001 (first KLSE list); 2000 and 2010 have no exchange list (see XKLS.sexp :gaps).
+
+ (:mic "XKLS" :date (2001 1 23) :kind :session :gold T :ours NIL :why "KLSE Holidays 2001 (page updated 28/11/01): Chinese New Year 23, 24, 25 Jan - exchange closed the CNY eve; ec has a 12:30 early close" :source "https://web.archive.org/web/20011212194147/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2001 3 5) :kind :session :gold NIL :ours T :why "KLSE Holidays 2001: Hari Raya Haji 6 Mar (Tue); ec closes Mon 5 Mar" :source "https://web.archive.org/web/20011212194147/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2001 3 6) :kind :session :gold T :ours NIL :why "KLSE Holidays 2001: Hari Raya Haji 6 Mar" :source "https://web.archive.org/web/20011212194147/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2001 5 7) :kind :session :gold T :ours NIL :why "KLSE Holidays 2001: Wesak Day 7 May (Mon)" :source "https://web.archive.org/web/20011212194147/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2001 11 14) :kind :session :gold T :ours NIL :why "KLSE Holidays 2001: Deepavali 14 Nov (Wed)" :source "https://web.archive.org/web/20011212194147/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2001 12 19) :kind :session :gold T :ours NIL :why "KLSE Holidays 2001: Hari Raya Puasa 17, 18, 19 Dec (Mon-Wed)" :source "https://web.archive.org/web/20011212194147/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2002 12 5) :kind :session :gold NIL :ours T :why "KLSE Holidays 2002 (updated 22/4/02): Hari Raya Puasa 6, 7* Dec (Fri, Sat; * subject to change). Provisional list, no later 2002 copy - moderate confidence" :source "https://web.archive.org/web/20021006135355/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2003 11 24) :kind :session :gold NIL :ours T :why "KLSE Holidays 2003 (page updated 1/12/03, after the event): Hari Raya Puasa 25, 26 Nov only" :source "https://web.archive.org/web/20031209160400/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2004 11 12) :kind :session :gold NIL :ours T :why "Bursa Malaysia Holidays 2004 (snapshot 2004-10-11): Deepavali 11* Nov, Hari Raya Puasa 15, 16* Nov; no 12 Nov. Provisional (*) - moderate confidence" :source "https://web.archive.org/web/20041011074234/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2007 5 2) :kind :session :gold NIL :ours T :why "Bursa Malaysia Holidays 2007 (snapshot 2007-11-12, after the event): Workers' Day and Wesak Day both Tue 1 May; no replacement day listed (the page rule replaces Sunday holidays only) - moderate confidence" :source "https://web.archive.org/web/20071112045423/http://www.klse.com.my/website/bm/about_us/our_holidays.html")
+ (:mic "XKLS" :date (2008 7 3) :kind :session :gold NIL :ours T :why "Not a holiday: Bursa Malaysia Holidays 2008 lists no 3 Jul closure. Search results (not fetched) report an unscheduled equities suspension that day after a trading-system hardware failure; ec closes the whole day - treat as outage, not calendar" :source "https://web.archive.org/web/20081217102440/http://www.klse.com.my/website/bm/about_us/our_holidays.html")
+ (:mic "XKLS" :date (2021 12 3) :kind :session :gold T :ours NIL :why "Bursa closed Fri 3 Dec 2021 for the Federal Territories public holiday (Bursa notice 2 Dec 2021, Mondo Visione reprint; secondary)" :source "https://mondovisione.com/media-and-resources/news/closure-of-bursa-malaysia-in-conjunction-with-public-holiday-for-federal-territo-2021122")
+ (:mic "XKLS" :date (2022 5 16) :kind :session :gold T :ours NIL :why "Bursa media release 11 May 2022: closed Mon 16 May 2022, Wesak Day replacement" :source "https://web.archive.org/web/20220513071850/https://www.bursamalaysia.com/about_bursa/media_centre/closure-of-bursa-malaysia-in-conjunction-with-the-wesak-day-replacement-holiday")
+ (:mic "XKLS" :date (2022 11 18) :kind :session :gold T :ours NIL :why "Bursa media release 15 Nov 2022: closed Fri 18 Nov 2022, special holiday (GE15)" :source "https://web.archive.org/web/20221115141728/https://www.bursamalaysia.com/about_bursa/media_centre/closure-of-bursa-malaysia-in-conjunction-with-the-special-holiday")
+ (:mic "XKLS" :date (2022 11 28) :kind :session :gold T :ours NIL :why "Bursa media release 25 Nov 2022: closed Mon 28 Nov 2022, special public holiday" :source "https://web.archive.org/web/20221125041505/https://www.bursamalaysia.com/about_bursa/media_centre/closure-of-bursa-malaysia-in-conjunction-with-the-special-public-holiday")
+ (:mic "XKLS" :date (2023 2 6) :kind :session :gold T :ours NIL :why "Bursa media release 30 Jan 2023: Thaipusam Sun 5 Feb 2023, public holiday Mon 6 Feb, resume Tue 7 Feb" :source "https://web.archive.org/web/20230130072507/https://www.bursamalaysia.com/about_bursa/media_centre/closure-of-bursa-malaysia-in-conjunction-with-federal-territory-day-and-thaipusam")
+ (:mic "XKLS" :date (2024 3 27) :kind :session :gold NIL :ours T :why "Bursa media release 26 Mar 2024: Nuzul Al-Quran closure is Thu 28 Mar 2024, not Wed 27 Mar" :source "https://web.archive.org/web/20240627133942/https://www.bursamalaysia.com/about_bursa/media_centre/closure-of-bursa-malaysia-in-conjunction-with-nuzul-al-quran-5")
+ (:mic "XKLS" :date (2024 3 28) :kind :session :gold T :ours NIL :why "Bursa media release 26 Mar 2024: closed Thu 28 Mar 2024 for Nuzul Al-Quran" :source "https://web.archive.org/web/20240627133942/https://www.bursamalaysia.com/about_bursa/media_centre/closure-of-bursa-malaysia-in-conjunction-with-nuzul-al-quran-5")
+ (:mic "XKLS" :date (2025 9 15) :kind :session :gold T :ours NIL :why "Bursa notice 25 Aug 2025 (Mondo Visione reprint; secondary): closed 15 Sep 2025, additional public holiday for Malaysia Day" :source "https://mondovisione.com/media-and-resources/news/closure-of-bursa-malaysia-in-conjunction-with-upcoming-public-holidays-in-septem-2025825/")
+ (:mic "XKLS" :date (2026 3 20) :kind :session :gold T :ours NIL :why "Bursa notice 18 Mar 2026 (Mondo Visione reprint; secondary): closed Fri 20 Mar and Mon 23 Mar 2026; ec has a 12:30 early close on 20 Mar" :source "https://mondovisione.com/media-and-resources/news/closure-of-bursa-malaysia-in-conjunction-with-hari-raya-aidilfitri-public-holida-2026318")
+ (:mic "XKLS" :date (2026 6 2) :kind :session :gold T :ours NIL :why "Bursa notice 20 May 2026 (Mondo Visione reprint; secondary): closed 1 and 2 Jun 2026 (Agong birthday; Wesak Day 31 May replacement)" :source "https://mondovisione.com/news/closure-of-bursa-malaysia-in-conjunction-with-the-aidiladha-birthday-of-his-maj-2026520/")
+ (:mic "XKLS" :date (2024 2 9) :kind :early-close :gold (12 30) :ours NIL :why "CNY eve: full-day trading reinstated (Bursa notice 26 Jan 2024, Mondo Visione reprint); calendar 2024 page has no half-day row" :source "https://mondovisione.com/news/full-day-trading-on-the-eve-of-chinese-new-year-closure-of-bursa-malaysia-in-co-2024126")
+ (:mic "XKLS" :date (2024 4 9) :kind :early-close :gold (12 30) :ours NIL :why "Hari Raya eve: Bursa media release 8 Apr 2024 - both markets under normal trading hours on 9 Apr 2024" :source "https://web.archive.org/web/20240510103445/https://www.bursamalaysia.com/about_bursa/media_centre/closure-of-bursa-malaysia-in-conjunction-with-hari-raya-aidilfitri-2024")
+ (:mic "XKLS" :date (2025 1 28) :kind :early-close :gold (12 30) :ours NIL :why "CNY eve: Bursa calendar 2025 note b - normal trading hours on the eve of CNY and Hari Raya Aidilfitri" :source "https://web.archive.org/web/20250205181612/https://www.bursamalaysia.com/about_bursa/about_us/calendar")
+ (:mic "XKLS" :date (2026 2 16) :kind :early-close :gold (12 30) :ours NIL :why "CNY eve: Bursa calendar 2026 note b - normal trading hours on the eve of CNY and Hari Raya Aidilfitri" :source "https://web.archive.org/web/20260911115934/https://www.bursamalaysia.com/about_bursa/about_us/calendar")
+ (:mic "XKLS" :from (2000 1 3) :to (2028 12 29) :kind :hours :gold ((9 0) NIL NIL (17 0)) :ours ((9 0) (12 30) (14 30) (17 0)) :why "Bursa/KLSE equities have a lunch break: morning session 9:00-12:30, afternoon 14:30-17:00 (pre-opening 14:00; continuous to 16:45, pre-close, trading at last 16:50-17:00); ec models no break" :source "https://web.archive.org/web/20201130115703/https://www.bursamalaysia.com/trade/trading_resources/equities/trading_sessions")
+ ;; XIDX
+ ;;;; XIDX: dates where IDX/JSX sources disagree with exchange_calendars 4.13.3 (gold). Rows only for years with an exchange list.
+
+(:mic "XIDX" :date (2005 12 30) :kind :session :gold nil :ours t
+ :why "BEJ 2005 calendar (Peng-58/BEJ-DAG/U/04-2005, 27 Apr 2005) closes only 26 Dec in December ('Libur Bursa'); 30 Dec 2005 is a trading day on it. ec closes 30 Dec. A later year-end notice may exist (not found); low confidence."
+ :source "https://web.archive.org/web/20061012054454/http://www.jsx.co.id/misc/revisi%20libur%202006.gif")
+(:mic "XIDX" :date (2006 12 29) :kind :session :gold nil :ours t
+ :why "BEJ 2006 calendar (Peng-398/BEJ-DAG/U/10-2005 with 2006 revisions) has only 25 Dec in December; ec closes 29 Dec (last weekday). Later notice not found; low confidence."
+ :source "https://web.archive.org/web/20061019130208/http://www.jsx.co.id/misc/libur%20bursa2007-2006.png")
+(:mic "XIDX" :date (2007 12 31) :kind :session :gold nil :ours t
+ :why "BEJ 2007 calendar (Peng-397/BEJ-DAG/10-2006) closes 20, 21, 24, 25 Dec, not 31 Dec; ec closes 31 Dec. Later notice not found; low confidence."
+ :source "https://web.archive.org/web/20061019130208/http://www.jsx.co.id/misc/libur%20bursa2007-2006.png")
+(:mic "XIDX" :date (2022 4 29) :kind :session :gold t :ours nil
+ :why "IDX Trading Holiday 2022 (v2, per SKB 375/2022 of 7 Apr 2022) closes 29 Apr and 4-6 May 2022 as Commemoration (cuti bersama) of Eid al-Fitr 1443 H; ec trades."
+ :source "https://web.archive.org/web/20221003144151/https://www.idx.co.id/media/10970/2022_eng-v2.jpg")
+(:mic "XIDX" :date (2022 5 4) :kind :session :gold t :ours nil
+ :why "IDX Trading Holiday 2022 (v2, per SKB 375/2022 of 7 Apr 2022) closes 29 Apr and 4-6 May 2022 as Commemoration (cuti bersama) of Eid al-Fitr 1443 H; ec trades."
+ :source "https://web.archive.org/web/20221003144151/https://www.idx.co.id/media/10970/2022_eng-v2.jpg")
+(:mic "XIDX" :date (2022 5 5) :kind :session :gold t :ours nil
+ :why "IDX Trading Holiday 2022 (v2, per SKB 375/2022 of 7 Apr 2022) closes 29 Apr and 4-6 May 2022 as Commemoration (cuti bersama) of Eid al-Fitr 1443 H; ec trades."
+ :source "https://web.archive.org/web/20221003144151/https://www.idx.co.id/media/10970/2022_eng-v2.jpg")
+(:mic "XIDX" :date (2022 5 6) :kind :session :gold t :ours nil
+ :why "IDX Trading Holiday 2022 (v2, per SKB 375/2022 of 7 Apr 2022) closes 29 Apr and 4-6 May 2022 as Commemoration (cuti bersama) of Eid al-Fitr 1443 H; ec trades."
+ :source "https://web.archive.org/web/20221003144151/https://www.idx.co.id/media/10970/2022_eng-v2.jpg")
+(:mic "XIDX" :date (2025 8 18) :kind :session :gold t :ours nil
+ :why "IDX set 18 Aug 2025 (government-added cuti bersama) as Hari Libur Bursa, revising Peng-00213/BEI.POP/10-2024 (secondary: Republika 8 Aug 2025); ec trades."
+ :source "https://ekonomi.republika.co.id/berita/t0obef423/bei-tetapkan-18-agustus-2025-libur-perdagangan-bursa")
+(:mic "XIDX" :date (2027 1 5) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Isra Mikraj; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :date (2027 2 5) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Cuti Bersama Imlek; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :date (2027 3 8) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Nyepi; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :date (2027 3 9) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Cuti Bersama Idul Fitri; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :date (2027 3 10) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Idul Fitri; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :date (2027 3 11) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Idul Fitri; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :date (2027 3 12) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Cuti Bersama Idul Fitri; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :date (2027 3 15) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Cuti Bersama Idul Fitri; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :date (2027 3 25) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Cuti Bersama Wafat Yesus Kristus; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :date (2027 5 17) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Idul Adha; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :date (2027 5 18) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Cuti Bersama Idul Adha; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :date (2027 5 19) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Cuti Bersama Waisak; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :date (2027 5 20) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Waisak; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :date (2027 12 24) :kind :session :gold t :ours nil
+ :why "IDX Kalender Libur Bursa 2027 (Peng-00169/BEI.POP/09-2026) lists Cuti Bersama Natal; ec (4.13.3) lacks the 2027 SKB dates."
+ :source "https://web.archive.org/web/20261107161932/https://www.idx.co.id/StaticData/NewsAndAnnouncement/ANNOUNCEMENTSTOCK/Exchange/Libur%20Bursa%20Peng-00169%20ID-No.%20Peng-00169BEI.POP09-2026.pdf")
+(:mic "XIDX" :from (2000 1 3) :to (2012 12 28) :kind :hours :gold ((9 0) nil nil (15 50)) :ours ((9 30) (12 0) (13 30) (16 0))
+ :why "JSX/IDX regular market: Mon-Thu Sesi I 09:30-12:00, Sesi II 13:30-16:00; FRIDAY 09:30-11:30 / 14:00-16:00 (Fridays mismatch as ((9 30) (11 30) (14 0) (16 0)); the test will split this into weekly runs - regenerate exact rows from the model). JSX Mekanisme Perdagangan page 2003; open moved to 09:00 on 2 Jan 2013. ec uses 09:00-15:50 throughout."
+ :source "https://web.archive.org/web/20031008160117/http://www.jsx.co.id:80/trading.asp?cmd=menu1")
+(:mic "XIDX" :from (2013 1 2) :to (2020 3 27) :kind :hours :gold ((9 0) nil nil (15 50)) :ours ((9 0) (12 0) (13 30) (15 50))
+ :why "IDX regular market Mon-Thu 09:00:00-12:00:00 / 13:30:00-15:49:59, FRIDAY 09:00-11:30 / 14:00-15:49:59 (Friday rows ((9 0) (11 30) (14 0) (15 50))); pre-closing 15:50-16:00 not counted. ec has no lunch break. Split into weekly runs by the test."
+ :source "https://web.archive.org/web/20191207111354/https://www.idx.co.id/en-us/investor/trading-hours/")
+(:mic "XIDX" :from (2020 3 30) :to (2023 3 31) :kind :hours :gold ((9 0) nil nil (15 50)) :ours ((9 0) (11 30) (13 30) (14 50))
+ :why "COVID-19 hours, Kep-00031/BEI/03-2020: Mon-Fri 09:00:00-11:30:00 / 13:30:00-14:49:59 (pre-closing 14:50-15:00), same on Fridays; in force (IDX pages Jun 2020, Jun 2021, Jan 2022) until normal hours returned on 3 Apr 2023 (secondary: Bisnis.com 3 Apr 2023). Start 30 Mar 2020 per OJK/IDX reports (secondary)."
+ :source "https://web.archive.org/web/20200606143204/https://www.idx.co.id/en-us/investor/trading-hours/")
+(:mic "XIDX" :from (2023 4 3) :to (2028 12 29) :kind :hours :gold ((9 0) nil nil (15 50)) :ours ((9 0) (12 0) (13 30) (15 50))
+ :why "Normal hours restored 3 Apr 2023 (secondary): Mon-Thu 09:00-12:00 / 13:30-15:49:59, FRIDAY 09:00-11:30 / 14:00-15:49:59 (as the 2019 page). ec has no lunch break. Split into weekly runs by the test."
+ :source "https://web.archive.org/web/20191207111354/https://www.idx.co.id/en-us/investor/trading-hours/")
+ ;; XPHS
+ ;;;; XPHS: dates where PSE memoranda disagree with exchange_calendars 4.13.3 (gold). Exchange-source years 2013-2026 (holiday memoranda from 2015).
+
+(:mic "XPHS" :date (2017 12 8) :kind :session :gold nil :ours t
+ :why "No PSE non-trading memorandum for 8 Dec 2017 (CN-2017-0076 of 13 Dec lists only 25 Dec and 1 Jan); Immaculate Conception became a special non-working day from 2018 (RA 10966); PSE issued CN-2017-0074 that day. ec closes. Medium confidence (absence of notice)."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2017-0076.pdf")
+(:mic "XPHS" :date (2020 1 13) :kind :session :gold t :ours nil
+ :why "CN-2020-0002: no trading at PSE on 13 Jan 2020 (Taal Volcano ash). ec trades."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2020-0002.pdf")
+(:mic "XPHS" :date (2020 3 17) :kind :session :gold t :ours nil
+ :why "CN-2020-0021: no trading from 17 Mar 2020 until further notice (COVID-19 ECQ); CN-2020-0025 resumes 19 Mar. ec trades."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2020-0021.pdf")
+(:mic "XPHS" :date (2020 3 18) :kind :session :gold t :ours nil
+ :why "CN-2020-0021 / CN-2020-0025: trading suspended 17-18 Mar 2020, resumed Thursday 19 Mar. ec trades."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2020-0025.pdf")
+(:mic "XPHS" :date (2020 11 12) :kind :session :gold t :ours nil
+ :why "CN-2020-0096: NO trading today, 12 Nov 2020 (Typhoon Ulysses). ec trades."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2020-0096.pdf")
+(:mic "XPHS" :date (2021 12 24) :kind :session :gold nil :ours t
+ :why "CN-2021-0063: half-day trading on 24 Dec 2021 (close 12:10); ec closes the whole day."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2021-0063.pdf")
+(:mic "XPHS" :date (2021 12 31) :kind :session :gold nil :ours t
+ :why "CN-2021-0063: half-day trading on 31 Dec 2021 (close 12:10); ec closes the whole day."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2021-0063.pdf")
+(:mic "XPHS" :date (2022 1 4) :kind :session :gold t :ours nil
+ :why "CN-2022-0002: trading cancelled 4 Jan 2022 (trading-engine connection failure). ec trades."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2022-0002.pdf")
+(:mic "XPHS" :date (2022 2 25) :kind :session :gold t :ours nil
+ :why "CN-2022-0006: no trading on 25 Feb 2022, EDSA People Power anniversary (special non-working day). ec trades."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2022-0006.pdf")
+(:mic "XPHS" :date (2022 9 26) :kind :session :gold t :ours nil
+ :why "CN-2022-0035: no trading on 26 Sep 2022 (Super Typhoon Karding). ec trades."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2022-0035.pdf")
+(:mic "XPHS" :date (2022 12 26) :kind :session :gold t :ours nil
+ :why "CN-2022-0050: no trading on 26 Dec 2022 (additional special non-working day). ec trades."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2022-0050.pdf")
+(:mic "XPHS" :date (2024 7 24) :kind :session :gold t :ours nil
+ :why "CN-2024-0038: no trading on 24 Jul 2024 (Typhoon Carina). ec trades."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2024-0038.pdf")
+(:mic "XPHS" :date (2026 11 2) :kind :session :gold t :ours nil
+ :why "CN-2026-0052: no trading on 2 Nov 2026 (All Souls' Day special non-working day). ec trades."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2026-0052.pdf")
+(:mic "XPHS" :date (2015 9 30) :kind :late-open :gold nil :ours (10 35)
+ :why "CN-2015-0128: adjusted schedule, market open 10:35."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2015-0128.pdf")
+(:mic "XPHS" :date (2018 12 3) :kind :late-open :gold nil :ours (10 15)
+ :why "CN-2018-0060: market opened at 10:15 after a system failure."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2018-0060.pdf")
+(:mic "XPHS" :date (2019 10 9) :kind :late-open :gold nil :ours (9 45)
+ :why "CN-2019-0045: market open 9:45."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2019-0045.pdf")
+(:mic "XPHS" :date (2024 12 9) :kind :late-open :gold nil :ours (9 55)
+ :why "CN-2024-0061: market open 09:55."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2024-0061.pdf")
+(:mic "XPHS" :date (2025 3 24) :kind :late-open :gold nil :ours (11 10)
+ :why "CN-2025-0015: market open 11:10."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2025-0015.pdf")
+(:mic "XPHS" :from (2000 1 3) :to (2011 9 30) :kind :hours :gold ((9 30) nil nil (15 30)) :ours ((9 30) nil nil (12 0))
+ :why "Morning-only session 09:30-12:00 until Sep 2011: CN-2011-0013 reports 'the PSE extended trading hours starting October 1 until 1:00 PM'. No 2000-2010 PSE document retrieved; repo era kept."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2011-0013.pdf")
+(:mic "XPHS" :from (2011 10 3) :to (2011 12 29) :kind :hours :gold ((9 30) nil nil (15 30)) :ours ((9 30) nil nil (13 0))
+ :why "CN-2011-0013: trading extended to 1:00 PM from 1 Oct 2011 (no lunch break)."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2011-0013.pdf")
+(:mic "XPHS" :from (2012 1 2) :to (2020 3 13) :kind :hours :gold ((9 30) nil nil (15 30)) :ours ((9 30) (12 0) (13 30) (15 30))
+ :why "09:30-12:00 / 13:30-15:30 with a 12:00-13:30 recess (CN-2014-0057 'close of trading 3:30 p.m.'; CN-2015-0128 recess 12:00, resume 13:30, close 15:30; CN-2018-0055 survey 9:30-12:00 / 1:30-3:30). Start 2 Jan 2012 from the repo's source. ec has no break."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2018-0055.pdf")
+(:mic "XPHS" :from (2020 3 16) :to (2021 12 3) :kind :hours :gold ((9 30) nil nil (15 30)) :ours ((9 30) nil nil (13 0))
+ :why "COVID shortened hours 09:30-13:00 (CN-2020-0017 for 16 Mar; CN-2020-0025 from 19 Mar; extended by CN-2020-0035, -0042, -0046 'until further notice'; ended by CN-2021-0059 effective 6 Dec 2021). 17-18 Mar 2020 closed."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2020-0046.pdf")
+(:mic "XPHS" :from (2021 12 6) :to (2022 1 13) :kind :hours :gold ((9 30) nil nil (15 30)) :ours ((9 30) (12 0) (13 0) (15 0))
+ :why "CN-2021-0059: from 6 Dec 2021 market open 09:30, recess 12:00, resumption 13:00, pre-close 14:45, run-off 14:50, close 15:00."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2021-0059.pdf")
+(:mic "XPHS" :from (2022 1 14) :to (2022 2 28) :kind :hours :gold ((9 30) nil nil (15 30)) :ours ((9 30) nil nil (13 0))
+ :why "CN-2022-0004: shortened hours 09:30-13:00 from 14 Jan 2022 (Omicron); CN-2022-0009 returns to the full-day schedule effective 1 Mar 2022."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2022-0004.pdf")
+(:mic "XPHS" :from (2022 3 1) :to (2024 2 29) :kind :hours :gold ((9 30) nil nil (15 30)) :ours ((9 30) (12 0) (13 0) (15 0))
+ :why "CN-2022-0009: from 1 Mar 2022 open 09:30, recess 12:00, resumption 13:00, pre-close 14:45, run-off 14:50, close 15:00."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2022-0009.pdf")
+(:mic "XPHS" :from (2024 3 1) :to (2028 12 29) :kind :hours :gold ((9 30) nil nil (15 30)) :ours ((9 30) (12 0) (13 0) (15 15))
+ :why "Closing VWAP session 15:00-15:15 from 1 Mar 2024 (CN-2024-0012 go-live); PSE 'Trading Hours & Holidays' page: open 9:30, recess 12:00, resume 1:00, run-off 2:50, Closing VWAP Session 3:00, Market Close 3:15. If the close is taken as end of run-off, use 15:00."
+ :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2024-0012.pdf")
+ ;; XBKK
+ ;;;; XBKK: dates where SET sources disagree with exchange_calendars (gold).
+
+ (:mic "XBKK" :kind :session :date (2020 4 13) :gold nil :ours t :why "Songkran 2020 postponed (COVID); not in SET 2020 holiday list - SET open" :source "https://web.archive.org/web/20210818095853/https://www.set.or.th/set/holiday.do?year=2020")
+ (:mic "XBKK" :kind :session :date (2020 4 14) :gold nil :ours t :why "Songkran 2020 postponed; SET open" :source "https://web.archive.org/web/20210818095853/https://www.set.or.th/set/holiday.do?year=2020")
+ (:mic "XBKK" :kind :session :date (2020 4 15) :gold nil :ours t :why "Songkran 2020 postponed; SET open" :source "https://web.archive.org/web/20210818095853/https://www.set.or.th/set/holiday.do?year=2020")
+ (:mic "XBKK" :kind :session :date (2020 7 27) :gold t :ours nil :why "SET 2020 list: substitute Songkran holiday (Mon 27 Jul)" :source "https://web.archive.org/web/20210818095853/https://www.set.or.th/set/holiday.do?year=2020")
+ (:mic "XBKK" :kind :session :date (2020 9 4) :gold t :ours nil :why "SET 2020 list: substitute Songkran holiday (Fri 4 Sep)" :source "https://web.archive.org/web/20210818095853/https://www.set.or.th/set/holiday.do?year=2020")
+ (:mic "XBKK" :kind :session :date (2020 9 7) :gold t :ours nil :why "SET 2020 list: substitute Songkran holiday (Mon 7 Sep)" :source "https://web.archive.org/web/20210818095853/https://www.set.or.th/set/holiday.do?year=2020")
+ (:mic "XBKK" :kind :session :date (2020 12 11) :gold t :ours nil :why "SET 2020 list: special holiday (Fri 11 Dec)" :source "https://web.archive.org/web/20210818095853/https://www.set.or.th/set/holiday.do?year=2020")
+ (:mic "XBKK" :kind :session :date (2021 10 25) :gold nil :ours t :why "SET 2021 list closes Fri 22 Oct (Chulalongkorn Day substitute), not Mon 25 Oct" :source "https://web.archive.org/web/20210818093150/https://www.set.or.th/set/holiday.do?year=2021")
+ (:mic "XBKK" :kind :session :date (2023 1 3) :gold nil :ours t :why "SET 2023 list: only Mon 2 Jan (substitute New Year); 3 Jan government-only special holiday not adopted" :source "https://web.archive.org/web/20230620111333/https://www.set.or.th/api/set/holiday/year/2023?lang=en")
+ (:mic "XBKK" :kind :session :date (2024 1 2) :gold nil :ours t :why "BOT moved the year-end substitute from 2 Jan 2024 to 29 Dec 2023; SET traded 2 Jan 2024 (SET index close 1,433.38). Secondary evidence" :source "https://www.thairath.co.th/money/investment/stocks/2752222")
+ (:mic "XBKK" :kind :session :date (2026 10 16) :gold t :ours nil :why "BOT 26/2569 and SEC special holiday (Bangkok, IMF/WB meetings); SET closed. Secondary report of SEC notice" :source "https://www.pptvhd36.com/wealth/stock-investment/278867")
+ (:mic "XBKK" :kind :session :date (2026 12 16) :gold t :ours nil :why "BOT 61/2569 and SEC special holiday for securities firms and TFEX; SET closed. Secondary report" :source "https://www.posttoday.com/business/stockholder/752147")
+ (:mic "XBKK" :kind :hours :from (2000 1 4) :to (2024 3 22) :gold ((10 0) nil nil (16 30)) :ours ((10 0) (12 30) (14 30) (16 30)) :why "SET has a midday break 12:30-14:30 (afternoon pre-open from 14:00); ec has none. Per SET News 22/2024 cited in data/exchanges/XBKK.sexp (not re-fetched: set.or.th returns 403)" :source "data/exchanges/XBKK.sexp")
+ (:mic "XBKK" :kind :hours :from (2024 3 25) :to (2028 12 29) :gold ((10 0) nil nil (16 30)) :ours ((10 0) (12 30) (14 0) (16 30)) :why "SET afternoon session from 14:00 effective 25 Mar 2024 (SET News 22/2024, as cited in the repo); ec has no break" :source "data/exchanges/XBKK.sexp")
+ (:mic "XIDX" :from (2005 1 7) :to (2012 12 28) :kind :hours
+  :gold ((9 0) nil nil (15 50)) :ours ((9 30) (11 30) (14 0) (16 0))
+  :why "Fridays before 2013: JSX/IDX session I 09:30-11:30, session II 14:00-16:00 (Friday prayer break). exchange_calendars has no break, no Friday hours and the 2013 hours throughout."
+  :source "https://web.archive.org/web/20031008160117/http://www.jsx.co.id:80/trading.asp?cmd=menu1")
+ (:mic "XIDX" :from (2013 1 4) :to (2028 12 29) :kind :hours
+  :gold ((9 0) nil nil (15 50)) :ours ((9 0) (11 30) (14 0) (15 50))
+  :why "Fridays from 2013 (outside the 2020-03-30..2023-03-31 COVID era): session I 09:00-11:30, session II 14:00-15:49:59. exchange_calendars has no break."
+  :source "https://web.archive.org/web/20191207111354/https://www.idx.co.id/en-us/investor/trading-hours/")
+ (:mic "XPHS" :from (2024 3 1) :to (2028 12 29) :kind :hours
+  :gold ((9 30) nil nil (15 30)) :ours ((9 30) (12 0) (13 0) (15 0))
+  :why "From 2022-03-01 the PSE trades 09:30-12:00 / 13:00-15:00 (CN-2022-0009); the closing VWAP session 15:00-15:15 added on 2024-03-01 (CN-2024-0012) follows the run-off and is not counted. exchange_calendars has 09:30-15:30 without a recess."
+  :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2024-0012.pdf")
+ (:mic "XPHS" :date (2015 11 18) :kind :session :gold nil :ours t
+  :why "exchange_calendars closes the day (APEC summit, NCR special non-working day). No PSE memorandum for it was found (the 2015 memoranda cover only nationwide days); NCR-only days do not close PSE unless PhilPaSS closes (CN-2015-0067). Stays a session until a memorandum is cited (follow-up issue)."
+  :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2015-0067.pdf")
+ (:mic "XPHS" :date (2015 11 19) :kind :session :gold nil :ours t
+  :why "As 2015-11-18 (APEC); no PSE memorandum found."
+  :source "https://documents.pse.com.ph/CircularOPSPDF/CN-2015-0067.pdf")
+ (:mic "XKLS" :date (2002 12 4) :kind :early-close :gold (12 30) :ours nil
+  :why "exchange_calendars has a half day (eve of Chinese New Year or Hari Raya). The KLSE/Bursa holiday lists of 2001-2009 show no half days, and Bursa introduced the half-day closure on those eves 'with immediate effect' on 30 Sep 2010; a full day is kept."
+  :source "https://web.archive.org/web/20011212194147/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2005 2 8) :kind :early-close :gold (12 30) :ours nil
+  :why "exchange_calendars has a half day (eve of Chinese New Year or Hari Raya). The KLSE/Bursa holiday lists of 2001-2009 show no half days, and Bursa introduced the half-day closure on those eves 'with immediate effect' on 30 Sep 2010; a full day is kept."
+  :source "https://web.archive.org/web/20011212194147/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2005 11 2) :kind :early-close :gold (12 30) :ours nil
+  :why "exchange_calendars has a half day (eve of Chinese New Year or Hari Raya). The KLSE/Bursa holiday lists of 2001-2009 show no half days, and Bursa introduced the half-day closure on those eves 'with immediate effect' on 30 Sep 2010; a full day is kept."
+  :source "https://web.archive.org/web/20011212194147/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2007 10 12) :kind :early-close :gold (12 30) :ours nil
+  :why "exchange_calendars has a half day (eve of Chinese New Year or Hari Raya). The KLSE/Bursa holiday lists of 2001-2009 show no half days, and Bursa introduced the half-day closure on those eves 'with immediate effect' on 30 Sep 2010; a full day is kept."
+  :source "https://web.archive.org/web/20011212194147/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2008 2 6) :kind :early-close :gold (12 30) :ours nil
+  :why "exchange_calendars has a half day (eve of Chinese New Year or Hari Raya). The KLSE/Bursa holiday lists of 2001-2009 show no half days, and Bursa introduced the half-day closure on those eves 'with immediate effect' on 30 Sep 2010; a full day is kept."
+  :source "https://web.archive.org/web/20011212194147/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XKLS" :date (2008 9 30) :kind :early-close :gold (12 30) :ours nil
+  :why "exchange_calendars has a half day (eve of Chinese New Year or Hari Raya). The KLSE/Bursa holiday lists of 2001-2009 show no half days, and Bursa introduced the half-day closure on those eves 'with immediate effect' on 30 Sep 2010; a full day is kept."
+  :source "https://web.archive.org/web/20011212194147/http://www.klse.com.my/website/aboutus/holidays.htm")
+ (:mic "XIDX" :date (2008 2 8) :kind :session :gold nil :ours t
+  :why "No IDX list for 2008-2009 (see the calendar's :gaps): exchange_calendars closes it; the SKB 2008 data has no cuti bersama that day. Kept until an IDX list or announcement is cited."
+  :source "https://web.archive.org/web/20121219163825/http://www.idx.co.id:80/en-us/home/newsannouncement/tradingholiday.aspx")
+ (:mic "XIDX" :date (2008 9 29) :kind :session :gold t :ours nil
+  :why "No IDX list for 2008-2009 (see the calendar's :gaps): the SKB 2008 cuti bersama (data/id/skb.sexp) closes it; exchange_calendars has a session. Kept until an IDX list or announcement is cited."
+  :source "https://web.archive.org/web/20121219163825/http://www.idx.co.id:80/en-us/home/newsannouncement/tradingholiday.aspx")
+ (:mic "XIDX" :date (2008 10 9) :kind :session :gold nil :ours t
+  :why "No IDX list for 2008-2009 (see the calendar's :gaps): exchange_calendars closes it (the October 2008 market suspension after the 8 Oct halt); known only from secondary reports. Kept until an IDX list or announcement is cited."
+  :source "https://web.archive.org/web/20121219163825/http://www.idx.co.id:80/en-us/home/newsannouncement/tradingholiday.aspx")
+ (:mic "XIDX" :date (2008 10 10) :kind :session :gold nil :ours t
+  :why "No IDX list for 2008-2009 (see the calendar's :gaps): as 2008-10-09: suspension known only from secondary reports. Kept until an IDX list or announcement is cited."
+  :source "https://web.archive.org/web/20121219163825/http://www.idx.co.id:80/en-us/home/newsannouncement/tradingholiday.aspx")
+ (:mic "XIDX" :date (2008 12 26) :kind :session :gold t :ours nil
+  :why "No IDX list for 2008-2009 (see the calendar's :gaps): the SKB 2008 cuti bersama closes it; exchange_calendars has a session. Kept until an IDX list or announcement is cited."
+  :source "https://web.archive.org/web/20121219163825/http://www.idx.co.id:80/en-us/home/newsannouncement/tradingholiday.aspx")
+ (:mic "XIDX" :date (2008 12 31) :kind :session :gold nil :ours t
+  :why "No IDX list for 2008-2009 (see the calendar's :gaps): exchange_calendars closes 31 Dec; the IDX year-end Libur Bursa rule is evidenced from 2010 only. Kept until an IDX list or announcement is cited."
+  :source "https://web.archive.org/web/20121219163825/http://www.idx.co.id:80/en-us/home/newsannouncement/tradingholiday.aspx")
+ (:mic "XIDX" :date (2009 12 31) :kind :session :gold nil :ours t
+  :why "No IDX list for 2008-2009 (see the calendar's :gaps): exchange_calendars closes 31 Dec; the IDX year-end Libur Bursa rule is evidenced from 2010 only. Kept until an IDX list or announcement is cited."
+  :source "https://web.archive.org/web/20121219163825/http://www.idx.co.id:80/en-us/home/newsannouncement/tradingholiday.aspx"))
