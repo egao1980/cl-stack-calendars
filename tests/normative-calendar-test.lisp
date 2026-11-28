@@ -364,8 +364,8 @@ Wednesday 16 (Cabinet overview 2568). Saturday 12 April is no holiday (#40)."
 (deftest ethiopia-fasika-patriots-enkutatash
   (let ((cal (ethiopia-holidays-calendar)))
     (ok (holiday-p cal (make-date 2024 5 5)))   ; Fasika 2024 = Patriots' Day too
-    (ok (holiday-p cal (make-date 2024 9 12)))  ; Enkutatash in Gregorian leap year
-    (ok (holiday-p cal (make-date 2023 9 11)))  ; Enkutatash non-leap
+    (ok (holiday-p cal (make-date 2024 9 11)))  ; Enkutatash 2017 EC
+    (ok (holiday-p cal (make-date 2023 9 12)))  ; Enkutatash 2016 EC, after Pagume 6 (#45 item 1)
     (ok (holiday-p cal (make-date 2024 3 2))))) ; Adwa
 
 (deftest germany-federal-common

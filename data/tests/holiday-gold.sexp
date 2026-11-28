@@ -281,8 +281,8 @@
  ("VN" 2020 9 3 nil nil)
  ("VN" 2021 9 3 t nil)
  ("ET" 2024 5 5 t nil)
- ("ET" 2024 9 12 t nil)
- ("ET" 2023 9 11 t nil)
+ ("ET" 2024 9 11 t nil) ; Enkutatash 1 Meskerem 2017 (#45 item 1)
+ ("ET" 2023 9 12 t nil) ; 1 Meskerem 2016, after Pagume 6
  ("IL" 2024 4 23 t "Passover")
  ("CH" 2000 8 1 t nil)
  ("GT" 2000 9 15 t nil)
