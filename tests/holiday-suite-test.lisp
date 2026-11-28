@@ -6,10 +6,12 @@
 ;;;; This file is the sweep: gold table, protocol invariants, every registered
 ;;;; calendar, country corpus, starter↔corpus agreement, exchange attachments.
 
-(defun load-holiday-gold (&optional (path (data-path "tests/holiday-gold.sexp")))
+(defun load-holiday-suite-gold (&optional (path (data-path "tests/holiday-gold.sexp")))
+  "The cross-calendar gold table of this suite (data/tests/holiday-gold.sexp).
+Not LOAD-HOLIDAY-GOLD, which loads one country's gold by code (#92)."
   (read-data-form path))
 
-(defparameter *holiday-gold-rows* (load-holiday-gold))
+(defparameter *holiday-gold-rows* (load-holiday-suite-gold))
 
 (defun suite-year-calendar (code year)
   (cond
