@@ -98,7 +98,12 @@ unless the calendar was loaded with :STRICT NIL."))
     ("ZW" . zimbabwe-holidays-calendar)
     ("ZM" . zambia-holidays-calendar)
     ("MW" . malawi-holidays-calendar)
-    ("MG" . madagascar-holidays-calendar))
+    ("MG" . madagascar-holidays-calendar)
+    ("IT" . italy-holidays-calendar)
+    ("NL" . netherlands-holidays-calendar)
+    ("DE" . germany-holidays-calendar)
+    ("IE" . ireland-holidays-calendar)
+    ("PT" . portugal-holidays-calendar))
   "Corpus codes whose COUNTRY-CALENDAR defers to a hand starter: alist CODE →
 starter constructor. The date-holidays dump for these codes is known to be
 wrong (RU: no 2–5 January from 2005, no ТК ст. 112 transfers or decrees,
@@ -140,8 +145,14 @@ estimated Eid days (2020-05-24 for the declared 05-25–26), no in-lieu
 declarations; ZW: no Easter Saturday, Youth Day or polling days; ZM: Women's
 Day on 2021-03-09 for 03-08, no Holy Saturday or Easter Sunday; MW: Saturday
 holidays kept as well as moved (2021-05-01), no Easter Saturday; MG: Africa
-Day (2020-05-25), no Pentecost Sunday, Eid days on estimated dates; #45). The
-corpus file stays as shipped; its days are no longer consulted.")
+Day (2020-05-25), no Pentecost Sunday, Eid days on estimated dates; #45.
+IT: 2 June 2000 (the festa was Sunday 4 June, L. 336/2000), Easter Sunday,
+no first Sundays of L. 54/1977; NL: Easter and Whit Sunday, Oudejaarsavond
+(:bank); DE: Heiliger Abend and Silvester (:bank); IE: Good Friday, Easter
+Sunday and weekend substitutes (:bank), none in the Act, no 2001-09-14 or
+2022-03-18; PT: Corpo de Deus, 5 October, 1 November and 1 December in
+2013-2015, suspended by Lei 23/2012; #24). The corpus file stays as shipped;
+its days are no longer consulted.")
 
 (defclass normative-country-calendar (country-holiday-calendar)
   ((normative :initarg :normative :reader country-calendar-normative

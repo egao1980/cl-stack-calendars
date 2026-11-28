@@ -10,7 +10,8 @@ read, data/<cc>/holidays.sexp (egao1980/cl-stack-calendars#44).
     uv run --no-project --with holidays==0.109 python -I scripts/generate_mena_holiday_gold.py [CC ...]
 
 The transcriptions live in scripts/<region>/<cc>.py, one module per country
-(region "mena" by default; "africa" and "asia" for #43 / #45):
+(region "mena" by default; "africa" and "asia" for #43 / #45, "europe" for
+#20-#24):
 
   <CC>_STATUTES  the statutes, decrees and decisions that set the list, by era
   <CC>_FIXED     Gregorian fixed days by era: (month, day, name, [(from, to)], statute)
@@ -168,6 +169,9 @@ def solar_days(mod, cc: str, year: int) -> list[tuple[date, str]]:
 #                 tabular, only in rule years with no list covering opts["key"]
 #   <CC>_EASTER   (offset, name, eras, statute[, opts]); opts["orthodox"]
 #   <CC>_NTH      (month, ISO weekday, n, name, eras, statute[, opts]); n = -1 last
+#   <CC>_COMPUTED (name, fn, eras, statute[, opts]); fn(year) -> list of dates, the
+#                 transcription's own reading of a rule the tables cannot express
+#                 (NL Koningsdag, IE St Brigid's Day, SE/FI Saturdays)
 # Eras are (from, to) pairs of years or ISO dates, None = open. opts:
 #   observed       "substitute-next" (keep; a Saturday or Sunday one adds the next free day),
 #                  "sunday-next" (keep; a Sunday one adds the next free day),
@@ -246,6 +250,9 @@ class Engine:
             self._add(name, (lambda y, m=m, wd=wd, n=n, k=o.get("offset", 0), only=o.get("years"):
                              [] if only and y not in only else [nth_weekday(y, m, wd, n) + timedelta(days=k)]),
                       eras, o)
+        for row in getattr(mod, f"{cc}_COMPUTED", []):
+            name, fn, eras = row[:3]
+            self._add(name, (lambda y, fn=fn: list(fn(y))), eras, _opts(row, 4))
         for row in getattr(mod, f"{cc}_ISLAMIC", []):
             hm, hd, offsets, name, eras = row[:5]
             o = _opts(row, 6)
@@ -381,7 +388,7 @@ def estimated_days(mod, cc: str, year: int) -> list[tuple[date, str]]:
     an estimated late-December Eid runs into a listed January)."""
     years = getattr(mod, f"{cc}_YEARS")
     out = []
-    for hm, hd, offsets, name, eras, *_ in getattr(mod, f"{cc}_ISLAMIC"):
+    for hm, hd, offsets, name, eras, *_ in getattr(mod, f"{cc}_ISLAMIC", []):
         for y in (year - 1, year):
             if y in years:
                 continue
@@ -525,7 +532,7 @@ def write_statutes(mod, cc: str, spec: dict) -> None:
         in_force = date_or_note("in-force", st.get("in_force"), notes)
         start = next((v for v in (in_force, published, issued) if v != "nil"), "nil")
         lines.append(f" (:calendar {lisp_string(cc)} :key {lisp_string(st['key'])} :from {start} "
-                     f":to {lisp_date(STATUTE_TO.get(st['key']))}")
+                     f":to {lisp_date(st.get('to') or STATUTE_TO.get(st['key']))}")
         lines.append(f"  :authority {lisp_string(st['title'])}")
         lines.append(f"  :uri {lisp_string(st['uri'])}")
         out = [f":issued {issued}"]
@@ -627,7 +634,10 @@ def build(key: str) -> None:
     except ImportError:
         print(f"{key}: python-holidays not installed, secondary check skipped")
         return
-    py = holidays.country_holidays(cc, years=range(first, last + 1))
+    if spec.get("financial"):
+        py = holidays.financial_holidays(spec["financial"], years=range(first, last + 1))
+    else:
+        py = holidays.country_holidays(cc, years=range(first, last + 1))
     ours = set(days)
     theirs = {d for d in py.keys() if d.year not in gaps}
     diffs = 0
@@ -849,6 +859,54 @@ FIXTURES: dict[str, dict] = {
                          note="LOWER CONFIDENCE. 2000-2024: the Magal dates 2012, 2015, 2017-2024 from national press, "
                               "Wikipedia or timeanddate (2023 RTS), estimated in 2013, 2014 and 2016; décret 2018-1942 "
                               "(29 Oct 2018) and the Conseil des ministres of 22 Dec 2022 (26 Dec 2022)."),
+    # --- Europe (#20-#24): statute rules; the data files hold one-off days ---
+    "IT": dict(name="Italy", region="europe", first=2000, weekends=[(None, (6, 7))],
+               data_note="one-off giorni festivi by decree-law (17 March 2011); the L. 260/1949 days are rules",
+               note="Giorni festivi of Italy: L. 260/1949 art. 1-2 less the days L. 54/1977 suppressed (Epifania back "
+                    "from 1986, D.P.R. 792/1985), the festa nazionale on the first Sunday of June 1977-2000 and on 2 "
+                    "June again from 2001 (L. 336/2000), the festa dell'Unità nazionale on the first Sunday of "
+                    "November (L. 54/1977; L. 27/2024 gives 4 November no civil effects), San Francesco d'Assisi 4 "
+                    "October from 2026 (L. 151/2025) and 17 March 2011 (D.L. 5/2011). No weekend rule."),
+    "NL": dict(name="Netherlands", region="europe", first=2000, weekends=[(None, (6, 7))],
+               data_note="no one-off days; the Algemene termijnenwet days are rules",
+               note="Algemeen erkende feestdagen of the Netherlands: Algemene termijnenwet art. 3(1) (Nieuwjaarsdag, "
+                    "tweede Paas- en Pinksterdag, Hemelvaartsdag, both Christmas days, 5 May every year, the "
+                    "King's/Queen's birthday): Koninginnedag 30 April, on a Sunday the Saturday before (KB 24 april "
+                    "1980 nr. 11) to 2013; Koningsdag 27 April, on a Sunday 26 April, from 2014 (Besluit van 30 "
+                    "januari 2013, Stcrt. 2013, 4075). Goede Vrijdag is only equated for time limits (art. 3(2))."),
+    "DE": dict(name="Germany (bundeseinheitlich)", region="europe", first=2000, gaps=(2017,), weekends=[(None, (6, 7))],
+               data_note="Reformationstag 2017, a holiday in all 16 Länder (each Land's act)",
+               note="Bundeseinheitliche Feiertage of Germany: the days every Land's Feiertagsgesetz lists (Neujahr, "
+                    "Karfreitag, Ostermontag, 1. Mai, Christi Himmelfahrt, Pfingstmontag, 25. und 26. Dezember), "
+                    "3. Oktober (Einigungsvertrag Art. 2 Abs. 2) and Reformationstag 31 October 2017, a holiday in "
+                    "every Land that year (2017 is a gap here: DE-SECONDARY). Days of only some Länder are left out."),
+    "DE-SECONDARY": dict(name="Germany (Reformationstag 2017)", country="DE", region="europe", first=2017, last=2017,
+                         file="de-secondary-holiday-gold.sexp", confidence="secondary", weekends=[(None, (6, 7))],
+                         note="LOWER CONFIDENCE. 2017: 31 October was a holiday in all 16 Länder; ten instruments read "
+                              "in the gazette (BW, BY, BE, HB, HH, HE, NI, NW; BB and SN permanent), RP, SL and SH only "
+                              "on secondary pages, MV, ST and TH (permanent) on secondary copies."),
+    "IE": dict(name="Ireland", region="europe", first=2000, weekends=[(None, (6, 7))],
+               data_note="days prescribed under the Organisation of Working Time Act 1997 Sched. 2 para. 1(g)",
+               note="Public holidays of Ireland: Organisation of Working Time Act 1997 Sched. 2 para. 1 (in force 30 "
+                    "Sep 1997) and the days prescribed under para. 1(g): 14 September 2001 (S.I. 419/2001), 18 March "
+                    "2022 and St Brigid's Day from 2023 (first Monday of February, or 1 February when a Friday; S.I. "
+                    "50/2022). No substitute day for a weekend holiday (s. 21 is an entitlement)."),
+    "PT": dict(name="Portugal", region="europe", first=2009, weekends=[(None, (6, 7))],
+               data_note="no one-off days; the art. 234.º days are rules",
+               note="Feriados obrigatórios of Portugal: Código do Trabalho (Lei 7/2009) art. 234.º(1), Easter Sunday "
+                    "included; Corpo de Deus, 5 October, 1 November and 1 December not in 2013-2015 (Lei 23/2012 "
+                    "art. 10.º, from 1 Jan 2013) and restored by Lei 8/2016. Carnaval and municipal days are left out."),
+    "PT-SECONDARY": dict(name="Portugal (secondary sources)", country="PT", region="europe", first=2000, last=2008,
+                         file="pt-secondary-holiday-gold.sexp", confidence="secondary", weekends=[(None, (6, 7))],
+                         note="LOWER CONFIDENCE. 2000-2008: the Código do Trabalho 2003 (art. 208.º) and DL 874/76 "
+                              "lists were not read; the art. 234.º days of 2009, which python-holidays agrees with."),
+    "TARGET": dict(name="TARGET (euro RTGS)", region="europe", first=1999, financial="XECB",
+                   weekends=[(None, (6, 7))],
+                   data_note="additional closing days the ECB Governing Council decided (31 December 1999, 2001)",
+                   note="TARGET closing days: 1999 25 December and New Year's Day; 2000-2001 New Year's Day, Good "
+                        "Friday, Easter Monday, 1 May, 25 and 26 December (ECB press releases 15 Jul 1999, 25 May "
+                        "2000); from 2002 the long-term calendar of 14 Dec 2000 (the same six days); plus 31 December "
+                        "1999 (Y2K, 31 Mar 1999) and 31 December 2001 (euro cash changeover, 25 May 2000)."),
 }
 
 

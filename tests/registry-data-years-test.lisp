@@ -41,7 +41,13 @@
     ("ZW" zimbabwe-holidays-calendar)
     ("ZM" zambia-holidays-calendar)
     ("MW" malawi-holidays-calendar)
-    ("MG" madagascar-holidays-calendar))
+    ("MG" madagascar-holidays-calendar)
+    ("IT" italy-holidays-calendar)
+    ("NL" netherlands-holidays-calendar)
+    ("DE" germany-holidays-calendar)
+    ("IE" ireland-holidays-calendar)
+    ("PT" portugal-holidays-calendar)
+    ("TARGET" target-calendar))
   "Registered code → constructor that takes :YEAR. Every registered calendar
 whose constructor takes :YEAR is listed here or in *YEAR-DATA-EXCEPTIONS*.")
 
