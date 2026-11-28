@@ -24,14 +24,36 @@
 ;;;; has a holiday. Rules use DEFINE-CALENDAR clause syntax; :COMPUTED takes
 ;;;; a function name. CALENDAR-PROVENANCE is :EXCHANGE.
 
+;;; Date functions that exchange calendar files name in :COMPUTED rules and
+;;; :FUNCTION early-close rules (data is read without evaluation).
+
+(defun swedish-midsummer-eve (year)
+  "Midsommarafton: the Friday before Midsommardagen (the Saturday of 20–26 June)."
+  (- (%saturday-in-range year 6 20 6 26) 1))
+
+(defun friday-before-swedish-all-saints (year)
+  "The Friday before Alla helgons dag (the Saturday of 31 October – 6 November)."
+  (- (%saturday-in-range year 10 31 11 6) 1))
+
+(defun exchange-date-function (designator)
+  "The function a data file names with DESIGNATOR, a symbol or string read in
+any package: the function of that name in CL-STACK-CALENDARS. Signals
+CALENDAR-ERROR for an unknown name."
+  (let ((symbol (find-symbol (string-upcase (string designator)) '#:cl-stack-calendars)))
+    (if (and symbol (fboundp symbol))
+        (fdefinition symbol)
+        (error 'calendar-error
+               :message (format nil "exchange data names unknown date function ~s"
+                                designator)))))
+
 (defun %holiday-rule-from-clause (clause)
-  "The holiday-rule struct for one DEFINE-CALENDAR rule CLAUSE read as data."
+  "The holiday-rule struct for one DEFINE-CALENDAR rule CLAUSE read as data.
+A :COMPUTED clause names its date function (EXCHANGE-DATE-FUNCTION)."
   (destructuring-bind (kind name &rest args) clause
     (flet ((common (rest)
              (destructuring-bind (&key observed observed-from bridge from to authority
-                                    orthodox)
+                                       &allow-other-keys)
                  rest
-               (declare (ignore orthodox))
                (list :name name :observed observed
                      :observed-from (normalize-rule-bound observed-from)
                      :bridge bridge :authority authority
@@ -52,7 +74,7 @@
         (:computed
          (destructuring-bind (function &rest rest) args
            (apply #'make-computed-holiday-rule
-                  :compute (fdefinition function) (common rest))))))))
+                  :compute (exchange-date-function function) (common rest))))))))
 
 (defclass exchange-holiday-calendar (weekend-spec-mixin holiday-calendar)
   ((name :initarg :name :initform nil :accessor calendar-name)

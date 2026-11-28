@@ -17,8 +17,8 @@ Each era and early-close rule cites an `:authority` (exchange notice / official 
   `USFED`; the MICs outside Western Europe on the national calendar, #49).
   XNYS / XNAS use the exchange's own `NYSE` calendar (src/starter-nyse.lisp,
   data/us/nyse-closures.sexp). Since 0.39.0 XLON, IFEU, XLME, the Euronext markets
-  (XPAR XAMS XBRU XLIS XDUB XMIL XMAT), XETR, XEUR, XEEE, XSWX, XWBO and XMAD use
-  their exchange's own calendar in `calendars/` (rules and notices, each cited;
+  (XPAR XAMS XBRU XLIS XDUB XMIL XMAT), XETR, XEUR, XEEE, XSWX, XWBO, XMAD and (0.40.0) the
+  Nordics XSTO, XCSE, XHEL, XICE, XOSL use their exchange's own calendar in `calendars/` (rules and notices, each cited;
   docs/AUTHORITIES.md#exchange-trading-holiday-calendars-49)
 - Circuit-breaker cuts, weather/disaster adhocs beyond the listed notices
 
@@ -49,8 +49,8 @@ Those libraries are Apache-2.0; we independently encode published dates.
 | XLIS | Euronext CET clock: 08:00–16:30 Lisbon, half days 13:00 / 13:05 |
 | XDUB | Euronext Dublin 08:00–16:28 local (continuous end; closing auction to 16:28–16:30) |
 | XSWX | [SIX shares](https://www.six-group.com/en/products-services/the-swiss-stock-exchange/trading/trading-provisions/trading-hours.html) 09:00–17:30, no early closes |
-| XSTO XCSE XHEL XICE | [Nasdaq Nordic Market Model](https://www.nasdaq.com/european-market-activity/trading-hours) — Stockholm 09:00–17:30, Copenhagen 09:00–17:00, Helsinki 10:00–18:30, Iceland 09:30–15:30 |
-| XOSL | Oslo Børs 09:00–16:20 |
+| XSTO XCSE XHEL XICE | [Nasdaq Nordic Market Model](https://www.nasdaq.com/european-market-activity/trading-hours) — Stockholm 09:00–17:30 (09:30 before SAXESS 2004-09-27), Copenhagen 09:00–17:00, Helsinki 10:00–18:30 (18:00 before 2004-09-27), Iceland 09:30–15:30 from 2010-01-04 (10:00–17:23 CET 2007-03-26 – 2010-01-03); Stockholm half days 13:00 |
+| XOSL | Oslo Børs 09:00–16:20; 10:00–16:00 to 2005, 09:00–17:20 2008-09-01 – 2012-08-03; 13:00 close on the Wednesday before Maundy Thursday |
 | XWBO XWAR XBUD XPRA XATH | Vienna 09:00–17:30; GPW 09:00–16:50; Budapest 09:00–17:00; Prague 09:00–16:20; ATHEX 10:15–17:20 |
 | XTAI | [TWSE timeline](https://www.twse.com.tw/en/about/company/history.html) 2001-01-02: 09:00–13:30 (was 09:00–12:00) |
 | XBKK | [SET 22/2024](https://www.set.or.th/en/market/news-and-alert/newsdetails?id=86864800&symbol=SET) afternoon from 14:00 on 2024-03-25 |

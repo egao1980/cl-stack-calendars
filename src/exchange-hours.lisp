@@ -192,6 +192,12 @@ or return NIL when ERRORP is NIL."
                     (= (date-day date) (getf args :day))
                     (%weekday-p date))
            (exchange-early-close-rule-close rule)))
+        (:function
+         ;; (:kind :function :function NAME): NAME names a function (YEAR) → DATE
+         ;; (EXCHANGE-DATE-FUNCTION).
+         (when (= date (funcall (exchange-date-function (getf args :function))
+                                (date-year date)))
+           (exchange-early-close-rule-close rule)))
         (:last-weekday-before-new-years-eve
          ;; The last weekday of 27–30 December: the year's last trading day
          ;; where 24–26 and 31 December are closed (Xetra, Wiener Börse).

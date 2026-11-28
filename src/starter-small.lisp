@@ -542,6 +542,8 @@ New Year, Mid-Autumn and Christmas substitutes are rules of their own."
   (:fixed "Labour Day" 5 1 :from 1905 :authority "Offentlig høytidsdag")
   (:fixed "Constitution Day" 5 17 :from 1905
    :authority "Grunnlovsdagen — 17. mai 1814")
+  (:easter "Ascension Day" 39 :from 1905
+   :authority "Kristi himmelfartsdag — lov om helligdager og helligdagsfred (LOV-1995-04-24-12) § 2; Oslo Børs closed on it in every list 2002–2027 (#123)")
   (:easter "Whit Monday" 50 :from 1905 :authority "Offentlig høytidsdag")
   (:fixed "Christmas Day" 12 25 :from 1905 :authority "Offentlig høytidsdag")
   (:fixed "Boxing Day" 12 26 :from 1905 :authority "Offentlig høytidsdag"))

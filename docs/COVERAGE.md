@@ -196,15 +196,15 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XCBT | CBOT grains | USFED | normative | — | — | — | — | — | — |
 | XCEC | COMEX | USFED | normative | — | — | — | — | — | — |
 | XCME | CME Globex (equity / FX / energy template) | USFED | normative | — | — | — | — | — | — |
-| XCSE | Nasdaq Copenhagen | DK | normative | — | — | — | — | — | — |
+| XCSE | Nasdaq Copenhagen | XCSE | exchange | 22 (2003–2027) | 2003–2028 | 6507 | 0 | 0 | 0 |
 | XDCE | Dalian Commodity Exchange | CN | normative | — | — | — | — | — | — |
 | XDUB | Euronext Dublin | XDUB | exchange | 10 (2018–2027) | 2019–2028 | 2523 | 20 | 0 | 0 |
 | XEEE | European Energy Exchange | XEEE | exchange | 2 (2025–2025) | 2025–2028 | 1018 | 0 | 0 | 0 |
 | XETR | Xetra | XETR | exchange | 33 (2003–2027) | 2003–2028 | 6609 | 19 | 0 | 1 |
 | XEUR | Eurex | XEUR | exchange | 20 (2006–2026) | 2012–2028 | 4327 | 0 | 0 | 1 |
-| XHEL | Nasdaq Helsinki | FI | normative | — | — | — | — | — | — |
+| XHEL | Nasdaq Helsinki | XHEL | exchange | 20 (2008–2027) | 2008–2028 | 5277 | 0 | 0 | 0 |
 | XHKG | Hong Kong Exchanges and Clearing | HK | normative | — | — | — | — | — | — |
-| XICE | Nasdaq Iceland | IS | corpus | — | — | — | — | — | — |
+| XICE | Nasdaq Iceland | XICE | exchange | 20 (2008–2027) | 2008–2028 | 5229 | 0 | 0 | 7 |
 | XIDX | Indonesia Stock Exchange | ID | normative | — | — | — | — | — | — |
 | XIMC | Multi Commodity Exchange of India | IN | normative | — | — | — | — | — | — |
 | XINE | Shanghai International Energy Exchange | CN | normative | — | — | — | — | — | — |
@@ -222,7 +222,7 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XNYM | NYMEX | USFED | normative | — | — | — | — | — | — |
 | XNYS | New York Stock Exchange | NYSE | normative | — | — | — | — | — | — |
 | XOSE | Osaka Exchange / JPX derivatives | JP | normative | — | — | — | — | — | — |
-| XOSL | Euronext Oslo / Oslo Børs | NO | normative | — | — | — | — | — | — |
+| XOSL | Euronext Oslo / Oslo Børs | XOSL | exchange | 15 (2002–2027) | 2006–2028 | 5775 | 18 | 0 | 2 |
 | XPAR | Euronext Paris | XPAR | exchange | 28 (2000–2027) | 2000–2028 | 7420 | 39 | 0 | 20 |
 | XPHS | Philippine Stock Exchange | PH | normative | — | — | — | — | — | — |
 | XPRA | Prague Stock Exchange | CZ | normative | — | — | — | — | — | — |
@@ -232,7 +232,7 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XSHE | Shenzhen Stock Exchange | CN | normative | — | — | — | — | — | — |
 | XSHG | Shanghai Stock Exchange | CN | normative | — | — | — | — | — | — |
 | XSTC | Ho Chi Minh Stock Exchange | VN | normative | — | — | — | — | — | — |
-| XSTO | Nasdaq Stockholm | SE | normative | — | — | — | — | — | — |
+| XSTO | Nasdaq Stockholm | XSTO | exchange | 20 (2008–2027) | 2008–2028 | 5277 | 92 | 0 | 0 |
 | XSWX | SIX Swiss Exchange | XSWX | exchange | 20 (2012–2027) | 2012–2028 | 4269 | 0 | 0 | 0 |
 | XTAE | Tel Aviv Stock Exchange | IL | normative | — | — | — | — | — | — |
 | XTAI | Taiwan Stock Exchange | TW | normative | — | — | — | — | — | — |

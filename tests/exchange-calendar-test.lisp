@@ -5,7 +5,8 @@
 (defparameter *exchange-calendar-mics*
   '("XLON" "IFEU" "XLME"
     "XPAR" "XAMS" "XBRU" "XLIS" "XDUB" "XMIL" "XMAT"
-    "XETR" "XEUR" "XEEE" "XSWX" "XWBO" "XMAD")
+    "XETR" "XEUR" "XEEE" "XSWX" "XWBO" "XMAD"
+    "XSTO" "XCSE" "XHEL" "XICE" "XOSL")
   "MICs whose exchange queries use the exchange's own calendar (provenance
 :EXCHANGE). #49 moves the rest off their national civil calendars by region.")
 
@@ -60,6 +61,22 @@ key dates."
   ;; A Euronext half day written in CET is 13:05 in Lisbon.
   (ok (equal (%early-close-hm "XLIS" '(2024 12 24)) '(13 5)))
   (ok (equal (%early-close-hm "XPAR" '(2024 12 24)) '(14 5))))
+
+(deftest civil-fixes-found-by-exchange-lists
+  "#123: Norway's Ascension Day; #124: Iceland's First Day of Summer is the
+first Thursday after 18 April."
+  (let ((no (find-calendar "NO"))
+        (is (find-calendar "IS")))
+    (ok (holiday-p no (make-date 2024 5 9)))
+    (ok (holiday-p no (make-date 2027 5 6)))
+    (dolist (y '(2002 2013 2019 2024 2030))
+      (ok (holiday-p is (make-date y 4 25)) (format nil "IS ~d-04-25" y)))
+    ;; 18 April 2019 and 2030 is Maundy Thursday (Skírdagur), a holiday anyway.
+    (dolist (y '(2002 2013 2024))
+      (ng (holiday-p is (make-date y 4 18)) (format nil "IS ~d-04-18" y)))
+    ;; Oslo Børs: closed on Ascension; Nasdaq Iceland on Sumardagurinn fyrsti.
+    (ok (equal (%trading-days "XOSL" '(2024 5 9)) '(nil)))
+    (ok (equal (%trading-days "XICE" '(2024 4 25) '(2024 4 18)) '(nil t)))))
 
 (defun %notice-date-ok-p (notice key)
   (let ((date (getf notice key))
