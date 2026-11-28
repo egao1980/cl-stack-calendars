@@ -487,6 +487,11 @@
    #:duplicate-snapshot-version
    #:duplicate-snapshot-version-tag
    #:duplicate-snapshot-version-calendar
-   #:replace-snapshot))
+   #:replace-snapshot
+   #:holiday-info
+   #:holiday-observance-type
+   #:calendar-holiday-types
+   #:holiday-type
+   #:*holiday-type-precedence*))
 
 (in-package #:cl-stack-calendars)

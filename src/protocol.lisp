@@ -65,18 +65,22 @@ of its own."))
 
 (defclass holiday-observance ()
   ((date :initarg :date :reader holiday-observance-date :type date)
-   (name :initarg :name :initform nil :reader holiday-observance-name))
+   (name :initarg :name :initform nil :reader holiday-observance-name)
+   (type :initarg :type :initform nil :reader holiday-observance-type
+         :documentation "The holiday's type when the calendar knows it: one
+of *HOLIDAY-TYPE-PRECEDENCE* (:PUBLIC, :BANK, …), else NIL."))
   (:documentation "A single holiday occurrence: DATE plus an optional
-human-readable NAME. Returned by HOLIDAYS-BETWEEN."))
+human-readable NAME and TYPE. Returned by HOLIDAYS-BETWEEN and HOLIDAY-INFO."))
 
 (defun holiday-observance-p (x) (typep x 'holiday-observance))
 
-(defun make-holiday-observance (date &optional name)
-  (make-instance 'holiday-observance :date date :name name))
+(defun make-holiday-observance (date &optional name type)
+  (make-instance 'holiday-observance :date date :name name :type type))
 
 (defmethod print-object ((o holiday-observance) stream)
   (print-unreadable-object (o stream :type t)
-    (format stream "~a~@[ ~s~]" (holiday-observance-date o) (holiday-observance-name o))))
+    (format stream "~a~@[ ~s~]~@[ ~s~]" (holiday-observance-date o)
+            (holiday-observance-name o) (holiday-observance-type o))))
 
 ;;; --- HOLIDAY-P / BUSINESS-DAY-P -------------------------------------------
 
@@ -139,6 +143,37 @@ holiday of CALENDAR in the closed interval [START, END]."))
         while (<= d end)
         for (holidayp name) = (multiple-value-list (holiday-p calendar d))
         when holidayp collect (make-holiday-observance d name)))
+
+;;; --- HOLIDAY-INFO / holiday types -------------------------------------------
+
+(defparameter *holiday-type-precedence* '(:public :bank :optional :observance)
+  "Holiday types, strongest first. A date with rows of several types
+resolves to the first of them here (a :PUBLIC row beats a :BANK one). The
+date-holidays corpus carries :PUBLIC and :BANK only; its generator dropped
+optional and observance days.")
+
+(deftype holiday-type ()
+  "A keyword in *HOLIDAY-TYPE-PRECEDENCE*."
+  '(member :public :bank :optional :observance))
+
+(defgeneric holiday-info (calendar date)
+  (:documentation "List of HOLIDAY-OBSERVANCE for DATE, one per holiday
+CALENDAR keeps on it, strongest type first (a corpus date can carry several
+rows: GT 2000-06-30 is both a :PUBLIC and a :BANK holiday). NIL when DATE is
+not a holiday. Each observance carries the TYPE when CALENDAR knows it, else
+NIL. Signals like HOLIDAY-P outside a strict calendar's coverage."))
+
+(defmethod holiday-info ((calendar holiday-calendar) date)
+  (multiple-value-bind (holidayp name) (holiday-p calendar date)
+    (when holidayp
+      (list (make-holiday-observance date name)))))
+
+(defgeneric calendar-holiday-types (calendar)
+  (:documentation "The holiday types CALENDAR counts, strongest first, or
+NIL when the calendar does not type its holidays."))
+
+(defmethod calendar-holiday-types ((calendar holiday-calendar))
+  nil)
 
 ;;; --- business-day navigation ----------------------------------------------
 

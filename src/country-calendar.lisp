@@ -28,14 +28,21 @@ for concurrent first use; two racing loads build equal calendars.")
            :documentation "True for a placeholder file with no holiday data.")
    (strict :initarg :strict :initform t :reader calendar-strict-p
            :documentation "When true, HOLIDAY-P outside CALENDAR-COVERAGE signals.")
+   (types :initarg :types :initform nil :reader %calendar-types
+          :documentation "The holiday types counted, strongest first; NIL
+counts every type in the corpus file.")
+   (present-types :initarg :present-types :initform nil :reader %calendar-present-types
+                  :documentation "The types that occur in the corpus file, strongest first.")
    (holidays :initarg :holidays :initform (make-hash-table :test #'eql)
              :accessor calendar-holidays-table
-             :documentation "RD → (name . type)"))
+             :documentation "RD → list of (name . type), one per corpus row of
+that date, strongest type first, then file order."))
   (:documentation "Precomputed public/bank holidays for an ISO country or
 territory code. Provenance is COUNTRY-CALENDAR-SOURCE / LICENSE. The weekend
 defaults to COUNTRY-WEEKEND-DAYS of the code (era-aware). HOLIDAY-P signals
 CALENDAR-OUT-OF-RANGE outside COUNTRY-CALENDAR-YEAR-RANGE and for stubs,
-unless the calendar was loaded with :STRICT NIL."))
+unless the calendar was loaded with :STRICT NIL. Loaded with :TYPES, it counts
+only the corpus rows of those types (see CALENDAR-HOLIDAY-TYPES)."))
 
 (defun %countries-index-path ()
   (sp:join (countries-data-directory) "index.sexp"))
@@ -62,11 +69,60 @@ unless the calendar was loaded with :STRICT NIL."))
       (error 'calendar-not-found :calendar-name (string-upcase code)))
     (read-data-form path)))
 
+(defun %holiday-type-rank (type)
+  (or (position type *holiday-type-precedence*)
+      (length *holiday-type-precedence*)))
+
 (defun %ingest-country-days (table days)
-  (dolist (entry days)
-    (destructuring-bind (y m d name &optional type) entry
-      (setf (gethash (date-rd (make-date y m d)) table)
-            (cons name (or type :public))))))
+  "Fill TABLE (RD → list of (name . type)) from the corpus DAYS rows. A date
+with several rows keeps all of them, strongest type first, then file order,
+so a later :BANK row never hides or demotes a :PUBLIC one. Returns the types
+present, strongest first."
+  (let ((present '()))
+    (dolist (entry days)
+      (destructuring-bind (y m d name &optional (type :public)) entry
+        (pushnew type present)
+        (let ((rd (date-rd (make-date y m d))))
+          (setf (gethash rd table)
+                (append (gethash rd table) (list (cons name type)))))))
+    (maphash (lambda (rd entries)
+               (when (rest entries)
+                 (setf (gethash rd table)
+                       (stable-sort entries #'< :key (lambda (e) (%holiday-type-rank (cdr e)))))))
+             table)
+    (sort present #'< :key #'%holiday-type-rank)))
+
+(defun %normalize-holiday-types (types)
+  "TYPES as a duplicate-free list, strongest first; NIL stays NIL. Signals
+TYPE-ERROR (with a STORE-VALUE restart) for a non-list or an unknown type."
+  (check-type types list)
+  (let ((out '()))
+    (dolist (type types)
+      (check-type type holiday-type)
+      (pushnew type out))
+    (sort out #'< :key #'%holiday-type-rank)))
+
+(defun %join-holiday-names (entries)
+  "The names of ENTRIES ((name . type) …) joined with \"; \", or NIL."
+  (let ((names (remove-duplicates (remove nil (mapcar #'car entries))
+                                  :test #'equal :from-end t)))
+    (when names
+      (format nil "~{~a~^; ~}" names))))
+
+(defun %corpus-entries (calendar date)
+  "The corpus rows of DATE that CALENDAR counts."
+  (let ((entries (gethash (date-rd date) (calendar-holidays-table calendar)))
+        (types (%calendar-types calendar)))
+    (if types
+        (remove-if-not (lambda (e) (member (cdr e) types)) entries)
+        entries)))
+
+(defgeneric %holiday-entries (calendar date)
+  (:documentation "The (name . type) holidays CALENDAR counts on DATE,
+strongest first. No coverage check: callers ask HOLIDAY-P first."))
+
+(defmethod %holiday-entries ((calendar country-holiday-calendar) date)
+  (%corpus-entries calendar date))
 
 (defparameter *country-calendar-normative*
   '(("RU" . russian-holidays-calendar)
@@ -198,11 +254,46 @@ CONSTRUCTOR when WEEKEND-DAYS overrides its weekend."
         cal)
       (find-calendar code)))
 
+(defmethod %holiday-entries ((calendar normative-country-calendar) date)
+  "The starter's holiday, typed :PUBLIC (the starter's own scope), when
+:PUBLIC is counted; then, with :TYPES, the corpus rows of the other counted
+types (DE :BANK Heiliger Abend). The corpus :PUBLIC rows never answer: the
+starter replaces them."
+  (let* ((types (%calendar-types calendar))
+         (starter-entry
+           (when (or (null types) (member :public types))
+             (multiple-value-bind (holidayp name)
+                 (holiday-p (country-calendar-normative calendar) date)
+               (when holidayp (list (cons name :public)))))))
+    (if types
+        (append starter-entry
+                (remove :public (%corpus-entries calendar date) :key #'cdr))
+        starter-entry)))
+
 (defmethod holiday-p ((calendar normative-country-calendar) date)
-  (holiday-p (country-calendar-normative calendar) date))
+  "Without :TYPES, the starter's answer. With :TYPES, the starter's holiday
+when :PUBLIC is counted, plus the corpus rows of the other counted types."
+  (if (null (%calendar-types calendar))
+      (holiday-p (country-calendar-normative calendar) date)
+      (call-with-coverage
+       calendar date (calendar-strict-p calendar)
+       (lambda ()
+         (let ((entries (%holiday-entries calendar date)))
+           (if entries
+               (values t (%join-holiday-names entries))
+               (values nil nil)))))))
 
 (defmethod business-day-p ((calendar normative-country-calendar) date)
-  (business-day-p (country-calendar-normative calendar) date))
+  (let ((starter (country-calendar-normative calendar))
+        (types (%calendar-types calendar)))
+    (cond ((null types) (business-day-p starter date))
+          ((member :public types)
+           ;; The starter's business day (decree working days included),
+           ;; closed by any counted corpus row of another type.
+           (and (business-day-p starter date)
+                (null (remove :public (%corpus-entries calendar date) :key #'cdr))))
+          (t (and (not (weekend-day-p starter date))
+                  (not (holiday-p calendar date)))))))
 
 (defmethod weekend-day-p ((calendar normative-country-calendar) date)
   (weekend-day-p (country-calendar-normative calendar) date))
@@ -214,7 +305,13 @@ CONSTRUCTOR when WEEKEND-DAYS overrides its weekend."
   (calendar-weekend-days (country-calendar-normative calendar)))
 
 (defmethod holidays-between ((calendar normative-country-calendar) start end)
-  (holidays-between (country-calendar-normative calendar) start end))
+  (if (null (%calendar-types calendar))
+      (mapcar (lambda (o)
+                (make-holiday-observance (holiday-observance-date o)
+                                         (holiday-observance-name o)
+                                         (or (holiday-observance-type o) :public)))
+              (holidays-between (country-calendar-normative calendar) start end))
+      (call-next-method)))
 
 (defmethod calendar-coverage ((calendar normative-country-calendar))
   (calendar-coverage (country-calendar-normative calendar)))
@@ -223,22 +320,32 @@ CONSTRUCTOR when WEEKEND-DAYS overrides its weekend."
   "The hand starter answers: its provenance (:NORMATIVE for RU)."
   (calendar-provenance (country-calendar-normative calendar)))
 
-(defun load-country-calendar (code &key weekend-days (strict t))
+(defun load-country-calendar (code &key weekend-days (strict t) types)
   "Load (or return cached) COUNTRY-HOLIDAY-CALENDAR for CODE (e.g. \"DE\", \"TW\", \"XK\").
 WEEKEND-DAYS (a weekday list or an era list) overrides the country's weekend
 from COUNTRY-WEEKEND-DAYS. STRICT (default T) makes HOLIDAY-P signal
 CALENDAR-OUT-OF-RANGE outside the corpus years and for stubs; STRICT NIL
-answers NIL there instead. The cache is keyed on CODE, WEEKEND-DAYS and
-STRICT. A code in *COUNTRY-CALENDAR-NORMATIVE* gives a
-NORMATIVE-COUNTRY-CALENDAR, which answers from the hand starter."
+answers NIL there instead.
+
+TYPES (a list of HOLIDAY-TYPE, default NIL = every type of the file) counts
+only the corpus rows of those types: (country-calendar \"GT\" :types
+'(:public)) leaves out Día del Empleado Bancario. A code in
+*COUNTRY-CALENDAR-NORMATIVE* gives a NORMATIVE-COUNTRY-CALENDAR, which answers
+from the hand starter; there :PUBLIC means the starter's holidays and the
+other types add the corpus rows of that type (DE :BANK Heiliger Abend).
+An unknown type signals TYPE-ERROR.
+
+The cache is keyed on CODE, WEEKEND-DAYS, STRICT and the normalized TYPES."
   (let* ((cc (string-upcase code))
-         (key (list cc weekend-days (and strict t)))
+         (types (%normalize-holiday-types types))
+         (key (list cc weekend-days (and strict t) types))
          (cached (gethash key *country-calendar-cache*)))
     (or cached
         (let* ((plist (%load-country-plist cc))
                (table (make-hash-table :test #'eql))
                (years (%plist-get plist :years))
                (days (%plist-get plist :days))
+               (present (%ingest-country-days table days))
                (normative (cdr (assoc cc *country-calendar-normative* :test #'string=)))
                (cal (apply #'make-instance
                            (if normative 'normative-country-calendar 'country-holiday-calendar)
@@ -250,11 +357,12 @@ NORMATIVE-COUNTRY-CALENDAR, which answers from the hand starter."
                            :year-range years
                            :stub-p (null days)
                            :strict strict
+                           :types types
+                           :present-types present
                            :weekend-days (or weekend-days (country-weekend-days cc))
                            :holidays table
                            (when normative
                              (list :normative (%normative-country-starter cc normative weekend-days))))))
-          (%ingest-country-days table days)
           (setf (gethash key *country-calendar-cache*) cal)
           cal))))
 
@@ -271,13 +379,42 @@ NORMATIVE-COUNTRY-CALENDAR, which answers from the hand starter."
   :corpus)
 
 (defmethod holiday-p ((calendar country-holiday-calendar) date)
+  "True on a date with a counted corpus row; the second value joins every
+counted name of the date with \"; \", strongest type first."
   (call-with-coverage
    calendar date (calendar-strict-p calendar)
    (lambda ()
-     (let ((v (gethash (date-rd date) (calendar-holidays-table calendar))))
-       (if v
-           (values t (car v))
+     (let ((entries (%corpus-entries calendar date)))
+       (if entries
+           (values t (%join-holiday-names entries))
            (values nil nil))))))
+
+(defmethod holiday-info ((calendar country-holiday-calendar) date)
+  "One HOLIDAY-OBSERVANCE per counted holiday of DATE, with its type."
+  (multiple-value-bind (holidayp name) (holiday-p calendar date)
+    (when holidayp
+      (or (mapcar (lambda (e) (make-holiday-observance date (car e) (cdr e)))
+                  (%holiday-entries calendar date))
+          ;; A USE-VALUE restart can make HOLIDAY-P true with no row.
+          (list (make-holiday-observance date name))))))
+
+(defmethod holidays-between ((calendar country-holiday-calendar) start end)
+  "One observance per holiday date: every counted name joined, typed by the
+strongest counted row."
+  (loop for d = start then (+ d 1)
+        while (<= d end)
+        for (holidayp name) = (multiple-value-list (holiday-p calendar d))
+        when holidayp
+          collect (make-holiday-observance d name
+                                           (cdr (first (%holiday-entries calendar d))))))
+
+(defmethod calendar-holiday-types ((calendar country-holiday-calendar))
+  "The :TYPES it was loaded with, else the types of its corpus file."
+  (or (%calendar-types calendar) (%calendar-present-types calendar)))
+
+(defmethod calendar-holiday-types ((calendar normative-country-calendar))
+  "The :TYPES it was loaded with, else (:PUBLIC): the starter alone."
+  (or (%calendar-types calendar) (list :public)))
 
 (defun clear-country-calendar-cache ()
   (clrhash *country-calendar-cache*)
