@@ -690,4 +690,105 @@
   :source "https://www.hkex.com.hk/News/News-Release/2001/010705news")
  (:mic "XHKG" :date (2001 7 25) :kind :session :gold nil :ours t
   :why "exchange_calendars closes the day (Typhoon Yutu). No HKEx notice was found (HKEx news releases of 2001 probed); the day stays a session until a notice is cited (follow-up issue)."
-  :source "https://www.hkex.com.hk/News/News-Release/2001/010705news"))
+  :source "https://www.hkex.com.hk/News/News-Release/2001/010705news")
+ ;; XNSE
+ ;;;; XNSE: dates where NSE circulars disagree with exchange_calendars (gold = ec XBOM calendar).
+ ;;;; Session rows only for years with an NSE yearly list (see XNSE.sexp :gaps); hours rows from XNSE-hours.md.
+
+ (:mic "XNSE" :date (2010 11 5) :kind :session :gold T :ours NIL
+  :why "NSE trading holiday: Laxmi Puja (Muhurat evening session only, not a regular session)"
+  :source "https://nsearchives.nseindia.com/content/circulars/cmtr13713.pdf")
+ (:mic "XNSE" :date (2011 10 26) :kind :session :gold T :ours NIL
+  :why "NSE trading holiday: Laxmi Puja (Muhurat evening session only, not a regular session)"
+  :source "https://nsearchives.nseindia.com/content/circulars/cmtr16348.pdf")
+ (:mic "XNSE" :date (2012 11 13) :kind :session :gold T :ours NIL
+  :why "NSE trading holiday: Diwali – Laxmi Puja (Muhurat evening session only, not a regular session)"
+  :source "https://nsearchives.nseindia.com/content/circulars/CMTR19539.pdf")
+ (:mic "XNSE" :date (2013 11 14) :kind :session :gold NIL :ours T
+  :why "holiday of 14 Nov 2013 revoked; normal market timings"
+  :source "https://nsearchives.nseindia.com/content/circulars/CMTR24977.pdf")
+ (:mic "XNSE" :date (2013 11 15) :kind :session :gold T :ours NIL
+  :why "NSE trading holiday: Moharram (moved per RBI holiday notice)"
+  :source "https://nsearchives.nseindia.com/content/circulars/CMTR24977.pdf")
+ (:mic "XNSE" :date (2015 2 28) :kind :session :gold NIL :ours T
+  :why "Live trading session (Saturday) - Union Budget"
+  :source "https://nsearchives.nseindia.com/content/circulars/CMTR28939.pdf")
+ (:mic "XNSE" :date (2020 2 1) :kind :session :gold NIL :ours T
+  :why "Live trading session (Saturday) - Union Budget"
+  :source "https://nsearchives.nseindia.com/content/circulars/CMTR43290.pdf")
+ (:mic "XNSE" :date (2026 2 1) :kind :session :gold NIL :ours T
+  :why "Live trading session (Sunday) - Union Budget"
+  :source "https://nsearchives.nseindia.com/content/circulars/CMTR72349.pdf")
+ (:mic "XNSE" :from (2000 1 3) :to (2010 1 1) :kind :hours :gold ((9 15) nil nil (15 30)) :ours ((9 55) nil nil (15 30))
+  :why "NSE press release 17 Dec 2009: \"the current market open timing of 9.55 a.m. shall continue\" until the 09:00 open takes effect on 4 Jan 2010 (start of the 09:55 era before 2000 not established)"
+  :source "https://nsearchives.nseindia.com/content/press/17122009.htm")
+ (:mic "XNSE" :from (2010 1 4) :to (2010 10 15) :kind :hours :gold ((9 15) nil nil (15 30)) :ours ((9 0) nil nil (15 30))
+  :why "NSE CM circular download no. 13705 (16 Dec 2009): Normal Market open 9:00 a.m., close unchanged 3:30 pm; postponed to 4 Jan 2010 by download no. 13708; 09:15 normal-market open only from 18 Oct 2010 (pre-open, download no. 15981)"
+  :source "https://nsearchives.nseindia.com/content/circulars/cmtr13705.pdf")
+ ;; XBOM
+ ;;;; XBOM: dates where NSE circulars disagree with exchange_calendars (gold = ec XBOM calendar).
+ ;;;; Session rows only for years with an NSE yearly list (see XNSE.sexp :gaps); hours rows from XNSE-hours.md.
+
+ (:mic "XBOM" :date (2010 11 5) :kind :session :gold T :ours NIL
+  :why "NSE trading holiday: Laxmi Puja (Muhurat evening session only, not a regular session)"
+  :source "https://nsearchives.nseindia.com/content/circulars/cmtr13713.pdf")
+ (:mic "XBOM" :date (2011 10 26) :kind :session :gold T :ours NIL
+  :why "NSE trading holiday: Laxmi Puja (Muhurat evening session only, not a regular session)"
+  :source "https://nsearchives.nseindia.com/content/circulars/cmtr16348.pdf")
+ (:mic "XBOM" :date (2012 11 13) :kind :session :gold T :ours NIL
+  :why "NSE trading holiday: Diwali – Laxmi Puja (Muhurat evening session only, not a regular session)"
+  :source "https://nsearchives.nseindia.com/content/circulars/CMTR19539.pdf")
+ (:mic "XBOM" :date (2013 11 14) :kind :session :gold NIL :ours T
+  :why "holiday of 14 Nov 2013 revoked; normal market timings"
+  :source "https://nsearchives.nseindia.com/content/circulars/CMTR24977.pdf")
+ (:mic "XBOM" :date (2013 11 15) :kind :session :gold T :ours NIL
+  :why "NSE trading holiday: Moharram (moved per RBI holiday notice)"
+  :source "https://nsearchives.nseindia.com/content/circulars/CMTR24977.pdf")
+ (:mic "XBOM" :date (2015 2 28) :kind :session :gold NIL :ours T
+  :why "Live trading session (Saturday) - Union Budget"
+  :source "https://nsearchives.nseindia.com/content/circulars/CMTR28939.pdf")
+ (:mic "XBOM" :date (2020 2 1) :kind :session :gold NIL :ours T
+  :why "Live trading session (Saturday) - Union Budget"
+  :source "https://nsearchives.nseindia.com/content/circulars/CMTR43290.pdf")
+ (:mic "XBOM" :date (2026 2 1) :kind :session :gold NIL :ours T
+  :why "Live trading session (Sunday) - Union Budget"
+  :source "https://nsearchives.nseindia.com/content/circulars/CMTR72349.pdf")
+ (:mic "XBOM" :from (2000 1 3) :to (2010 1 1) :kind :hours :gold ((9 15) nil nil (15 30)) :ours ((9 55) nil nil (15 30))
+  :why "NSE press release 17 Dec 2009: \"the current market open timing of 9.55 a.m. shall continue\" until the 09:00 open takes effect on 4 Jan 2010 (start of the 09:55 era before 2000 not established)"
+  :source "https://nsearchives.nseindia.com/content/press/17122009.htm")
+ (:mic "XBOM" :from (2010 1 4) :to (2010 10 15) :kind :hours :gold ((9 15) nil nil (15 30)) :ours ((9 0) nil nil (15 30))
+  :why "NSE CM circular download no. 13705 (16 Dec 2009): Normal Market open 9:00 a.m., close unchanged 3:30 pm; postponed to 4 Jan 2010 by download no. 13708; 09:15 normal-market open only from 18 Oct 2010 (pre-open, download no. 15981)"
+  :source "https://nsearchives.nseindia.com/content/circulars/cmtr13705.pdf")
+ ;; XASX
+ ;;;; XASX: dates where ASX's own calendars/notices disagree with exchange_calendars XASX (gold).
+
+ (:mic "XASX" :date (2009 12 24) :kind :early-close :gold nil :ours (14 10)
+  :why "ASX Trading Calendar 2009: Last Business Day before Christmas Day CLOSE EARLY, \"Normal trading ceases at 14:10 (Sydney time)\"; ec has no early closes before 2010"
+  :source "https://web.archive.org/web/20110707053534/http://asx.com.au/about/asx-trading-calendar-2009.htm")
+ (:mic "XASX" :date (2009 12 31) :kind :early-close :gold nil :ours (14 10)
+  :why "ASX Trading Calendar 2009: Last Business Day of the Year CLOSE EARLY, \"Normal trading ceases at 14:10 (Sydney time)\""
+  :source "https://web.archive.org/web/20110707053534/http://asx.com.au/about/asx-trading-calendar-2009.htm")
+ (:mic "XASX" :date (2017 12 22) :kind :early-close :gold (14 10) :ours nil
+  :why "Notice 1357.16.11: \"From 2017 ASX will only close early when the last trading day before Christmas and New Year's Holidays are the respective Eve ... ASX trade will not observe an early close on the 22nd or 29th December 2017\""
+  :source "https://asxonline.com/public/notices/2016/nov/1357.16.11.html")
+ (:mic "XASX" :date (2017 12 29) :kind :early-close :gold (14 10) :ours nil
+  :why "Notice 1357.16.11 (see 2017-12-22); 2017 calendar page has no CLOSE EARLY row"
+  :source "https://asxonline.com/public/notices/2016/nov/1357.16.11.html")
+ (:mic "XASX" :date (2023 12 22) :kind :early-close :gold (14 10) :ours nil
+  :why "ASX Trade 2023 calendar: \"Last Business day before Christmas Day Friday 22 December OPEN\" (normal hours; 24 Dec 2023 is a Sunday)"
+  :source "https://asxonline.com/content/dam/asxonline/public/notices/2022/august/asx-trade-2023-notice-attachment.pdf")
+ (:mic "XASX" :date (2023 12 29) :kind :early-close :gold (14 10) :ours nil
+  :why "ASX Trade 2023 calendar: \"Last Business day of the Year Friday 29 December OPEN\""
+  :source "https://asxonline.com/content/dam/asxonline/public/notices/2022/august/asx-trade-2023-notice-attachment.pdf")
+ (:mic "XASX" :date (2028 12 22) :kind :early-close :gold (14 10) :ours nil
+  :why "Rule-derived (no 2028 calendar yet): since 2017 ASX closes early only when the last trading day is Christmas Eve itself; 24 Dec 2028 is a Sunday"
+  :source "https://asxonline.com/public/notices/2016/nov/1357.16.11.html")
+ (:mic "XASX" :date (2028 12 29) :kind :early-close :gold (14 10) :ours nil
+  :why "Rule-derived (no 2028 calendar yet): 31 Dec 2028 is a Sunday, so Fri 29 Dec is not New Year's Eve"
+  :source "https://asxonline.com/public/notices/2016/nov/1357.16.11.html")
+ (:mic "XNSE" :date (2009 4 30) :kind :session :gold nil :ours t
+  :why "exchange_calendars closes the day (Lok Sabha poll in Mumbai). The NSE 2009 list (NSE/CMTR/11733) does not list it and no partial-modification circular was found (download numbers 12260-12420 probed); the day stays a session until the circular is cited (follow-up issue)."
+  :source "https://nsearchives.nseindia.com/content/circulars/cmtr11733.htm")
+ (:mic "XBOM" :date (2009 4 30) :kind :session :gold nil :ours t
+  :why "exchange_calendars closes the day (Lok Sabha poll in Mumbai). The NSE 2009 list (NSE/CMTR/11733) does not list it and no partial-modification circular was found (download numbers 12260-12420 probed); the day stays a session until the circular is cited (follow-up issue)."
+  :source "https://nsearchives.nseindia.com/content/circulars/cmtr11733.htm"))

@@ -34,6 +34,22 @@ holiday or Saturday)')."
 an hour late for the market opening ceremony."
   (first-business-day-of-year "XKRX" year))
 
+(defun last-business-day-before (calendar-name date)
+  "The last business day before DATE on the registered calendar CALENDAR-NAME."
+  (let ((calendar (find-calendar calendar-name)))
+    (loop for d = (- date 1) then (- d 1)
+          when (business-day-p calendar d)
+            return d)))
+
+(defun asx-last-trading-day-before-christmas (year)
+  "The last ASX trading day before Christmas Day of YEAR (early close 14:10
+until 2016, whatever its weekday)."
+  (last-business-day-before "XASX" (make-date year 12 25)))
+
+(defun asx-last-trading-day-of-year (year)
+  "The last ASX trading day of YEAR (early close 14:10 until 2016)."
+  (last-business-day-before "XASX" (make-date (1+ year) 1 1)))
+
 ;;; --- Lunar New Year ---------------------------------------------------------
 
 (defun hk-lunar-new-year-eve (year)

@@ -3,7 +3,7 @@
  :mic "XIMC"
  :name "Multi Commodity Exchange of India"
  :zone "Asia/Kolkata"
- :calendar "IN"
+ :calendar "XIMC"
  :kind :commodities
  :source "MCX / SEBI CDMRD: non-agri 09:00–23:30 (23:45 in US DST)"
  :eras (

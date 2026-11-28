@@ -187,10 +187,10 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | BVMF | B3 S.A. - Brasil, Bolsa, Balcão | BR | normative | — | — | — | — | — | — |
 | IFEU | ICE Futures Europe | IFEU | exchange | 16 (2013–2027) | — | — | — | — | — |
 | XAMS | Euronext Amsterdam | XAMS | exchange | 27 (2001–2027) | 2001–2028 | 7166 | 39 | 0 | 21 |
-| XASX | Australian Securities Exchange | AU | normative | — | — | — | — | — | — |
+| XASX | Australian Securities Exchange | XASX | exchange | 18 (2009–2027) | 2000–2028 | 7339 | 36 | 0 | 8 |
 | XATH | Athens Stock Exchange | XATH | exchange | 28 (2000–2027) | 2000–2028 | 7201 | 0 | 0 | 12 |
 | XBKK | Stock Exchange of Thailand | TH-BANK | normative | — | — | — | — | — | — |
-| XBOM | BSE Ltd. | IN | normative | — | — | — | — | — | — |
+| XBOM | BSE Ltd. | XBOM | exchange | 37 (2009–2026) | 2009–2026 | 4433 | 0 | 0 | 11 |
 | XBRU | Euronext Brussels | XBRU | exchange | 27 (2001–2027) | 2001–2028 | 7167 | 39 | 0 | 20 |
 | XBUD | Budapest Stock Exchange | XBUD | exchange | 9 (2018–2026) | 2018–2028 | 2743 | 0 | 0 | 0 |
 | XCBT | CBOT grains | USFED | normative | — | — | — | — | — | — |
@@ -206,7 +206,7 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XHKG | Hong Kong Exchanges and Clearing | XHKG | exchange | 31 (2003–2027) | 2000–2028 | 7148 | 53 | 0 | 9 |
 | XICE | Nasdaq Iceland | XICE | exchange | 20 (2008–2027) | 2008–2028 | 5229 | 0 | 0 | 7 |
 | XIDX | Indonesia Stock Exchange | ID | normative | — | — | — | — | — | — |
-| XIMC | Multi Commodity Exchange of India | IN | normative | — | — | — | — | — | — |
+| XIMC | Multi Commodity Exchange of India | XIMC | exchange | 1 (2025–2025) | — | — | — | — | — |
 | XINE | Shanghai International Energy Exchange | XINE | exchange | 8 (2019–2024) | — | — | — | — | — |
 | XIST | Borsa Istanbul | XIST | exchange | 28 (2000–2026) | 2016–2026 | 2541 | 21 | 0 | 1 |
 | XKLS | Bursa Malaysia | MY | normative | — | — | — | — | — | — |
@@ -218,7 +218,7 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XMAT | Euronext Paris commodities | XMAT | exchange | 32 (2000–2027) | — | — | — | — | — |
 | XMIL | Euronext Milan | XMIL | exchange | 22 (2003–2027) | 2010–2028 | 4827 | 0 | 0 | 2 |
 | XNAS | Nasdaq | NYSE | normative | — | — | — | — | — | — |
-| XNSE | National Stock Exchange of India | IN | normative | — | — | — | — | — | — |
+| XNSE | National Stock Exchange of India | XNSE | exchange | 35 (2009–2026) | 2009–2026 | 4433 | 0 | 0 | 11 |
 | XNYM | NYMEX | USFED | normative | — | — | — | — | — | — |
 | XNYS | New York Stock Exchange | NYSE | normative | — | — | — | — | — | — |
 | XOSE | Osaka Exchange / JPX derivatives | XOSE | exchange | 9 (2021–2027) | — | — | — | — | — |

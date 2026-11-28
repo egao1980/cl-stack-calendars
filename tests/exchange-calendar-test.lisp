@@ -9,15 +9,16 @@
     "XSTO" "XCSE" "XHEL" "XICE" "XOSL"
     "XWAR" "XBUD" "XPRA" "XATH" "XIST"
     "XTKS" "XOSE" "XKRX" "XTAI"
-    "XHKG" "XSHG" "XSHE" "XSGE" "XINE" "XDCE" "XZCE")
+    "XHKG" "XSHG" "XSHE" "XSGE" "XINE" "XDCE" "XZCE"
+    "XNSE" "XBOM" "XIMC" "XASX")
   "MICs whose exchange queries use the exchange's own calendar (provenance
 :EXCHANGE). #49 moves the rest off their national civil calendars by region.")
 
 (defparameter *exchange-calendar-mics-without-gold*
-  '("IFEU" "XLME" "XMAT" "XOSE" "XSGE" "XINE" "XDCE" "XZCE")
+  '("IFEU" "XLME" "XMAT" "XOSE" "XSGE" "XINE" "XDCE" "XZCE" "XIMC")
   "Exchange-calendar MICs that Python exchange_calendars does not cover;
-their key dates are checked in EXCHANGE-CALENDARS-WITHOUT-GOLD,
-NORTH-ASIA-EXCHANGE-KEY-DATES and GREATER-CHINA-EXCHANGE-KEY-DATES.")
+their key dates are checked in EXCHANGE-CALENDARS-WITHOUT-GOLD and the
+regional *-EXCHANGE-KEY-DATES tests.")
 
 (deftest exchange-calendars-are-the-exchanges-own
   (dolist (mic *exchange-calendar-mics*)
@@ -145,6 +146,33 @@ exchanges' notices (#49, #92)."
   (ok (equal (%trading-days "XHKG" '(2024 9 6)) '(nil)))
   ;; SSE index circuit breaker 2016-01-07: halted from 09:58.
   (ok (equal (%early-close-hm "XSHG" '(2016 1 7)) '(9 58))))
+
+(deftest india-asx-exchange-key-dates
+  "XNSE, XBOM, XIMC and XASX: key dates from the exchanges' notices."
+  ;; NSE/CMTR/57285 moves Bakri Id 2023 from 28 to 29 June: a later notice's
+  ;; opening revokes the yearly list's closure.
+  (ok (equal (%trading-days "XNSE" '(2023 6 28) '(2023 6 29)) '(t nil)))
+  (ok (equal (%trading-days "XBOM" '(2023 6 28) '(2023 6 29)) '(t nil)))
+  ;; Budget-day weekend sessions; Diwali Laxmi Pujan with Muhurat.
+  (ok (equal (%trading-days "XNSE" '(2026 2 1) '(2015 2 28) '(2026 11 8)) '(t t nil)))
+  (ok (equal (%segments-hm (exchange-special-sessions-for-date
+                            (find-exchange "XNSE") (make-date 2026 11 8)))
+             '(((14 20) (15 15)))))
+  (ok (equal (%segments-hm (exchange-special-sessions-for-date
+                            (find-exchange "XBOM") (make-date 2026 11 8)))
+             '(((14 20) (15 30)))))
+  ;; NSE hours eras: 09:55 open until 2010-01-01.
+  (ok (equal (%session-hm "XNSE" '(2009 12 31)) '(((9 55) (15 30)))))
+  ;; MCX 2025: morning-only and evening-only holidays (secondary copy).
+  (ok (equal (%trading-days "XIMC" '(2025 10 21) '(2025 2 26)) '(nil t)))
+  (ok (equal (%session-hm "XIMC" '(2025 2 26)) '(((17 0) (23 30)))))
+  (ok (equal (%early-close-hm "XIMC" '(2025 1 1)) '(17 0)))
+  ;; ASX: 14:10 early closes; from 2017 only on 24/31 Dec; Day of Mourning.
+  (ok (equal (%early-close-hm "XASX" '(2016 12 23)) '(14 10)))
+  (ok (equal (%early-close-hm "XASX" '(2011 12 30)) '(14 10)))
+  (ok (null (%early-close-hm "XASX" '(2017 12 22))))
+  (ok (equal (%early-close-hm "XASX" '(2024 12 24)) '(14 10)))
+  (ok (equal (%trading-days "XASX" '(2022 9 22) '(2024 6 10) '(2024 3 11)) '(nil nil t))))
 
 (deftest civil-fixes-found-by-exchange-lists
   "#123: Norway's Ascension Day; #124: Iceland's First Day of Summer is the
