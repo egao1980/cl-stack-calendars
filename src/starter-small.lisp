@@ -740,47 +740,6 @@ New Year, Mid-Autumn and Christmas substitutes are rules of their own."
   (:computed "Eid al-Adha" #'eid-al-adha :from 1943 :authority "Public holiday (tabular)")
   (:computed "Mawlid" #'mawlid-date :from 1943 :authority "Public holiday (tabular)"))
 
-(define-calendar oman-holidays-calendar (:register "OM")
-  (:fixed "Renaissance Day" 7 23 :from 1970
-   :authority "Renaissance Day — accession of Sultan Qaboos 1970")
-  (:fixed "National Day" 11 18 :from 1970 :authority "National Day — 18 November")
-  (:fixed "National Day" 11 19 :from 1970 :authority "National Day holiday")
-  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1970 :authority "Public holiday (tabular)")
-  (:computed "Eid al-Fitr"
-   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
-   :from 1970 :authority "Eid al-Fitr Day 2")
-  (:computed "Eid al-Adha" #'eid-al-adha :from 1970 :authority "Public holiday (tabular)")
-  (:computed "Eid al-Adha"
-   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 1))))
-   :from 1970 :authority "Eid al-Adha Day 2")
-  (:computed "Eid al-Adha"
-   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 2))))
-   :from 1970 :authority "Eid al-Adha Day 3")
-  (:computed "Islamic New Year" #'islamic-new-year-date :from 1970
-   :authority "1 Muharram (tabular)")
-  (:computed "Mawlid" #'mawlid-date :from 1970 :authority "Public holiday (tabular)"))
-
-(define-calendar kuwait-holidays-calendar (:register "KW")
-  (:fixed "New Year's Day" 1 1 :from 1961 :authority "Public holiday")
-  (:fixed "National Day" 2 25 :from 1961 :authority "National Day — 25 February 1950")
-  (:fixed "Liberation Day" 2 26 :from 1991
-   :authority "Liberation Day — 26 February 1991")
-  (:fixed "Labour Day" 5 1 :from 1961 :authority "Public holiday")
-  (:computed "Eid al-Fitr" #'eid-al-fitr :from 1961 :authority "Public holiday (tabular)")
-  (:computed "Eid al-Fitr"
-   (lambda (y) (let ((d (eid-al-fitr y))) (and d (+ d 1))))
-   :from 1961 :authority "Eid al-Fitr Day 2")
-  (:computed "Eid al-Adha" #'eid-al-adha :from 1961 :authority "Public holiday (tabular)")
-  (:computed "Eid al-Adha"
-   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 1))))
-   :from 1961 :authority "Eid al-Adha Day 2")
-  (:computed "Eid al-Adha"
-   (lambda (y) (let ((d (eid-al-adha y))) (and d (+ d 2))))
-   :from 1961 :authority "Eid al-Adha Day 3")
-  (:computed "Islamic New Year" #'islamic-new-year-date :from 1961
-   :authority "1 Muharram (tabular)")
-  (:computed "Mawlid" #'mawlid-date :from 1961 :authority "Public holiday (tabular)"))
-
 (define-calendar israel-holidays-calendar (:register "IL")
   (:computed "Rosh Hashanah"
    (lambda (y) (hebrew-holiday-in-gregorian-year y 1 1)) :from 1948
@@ -871,6 +830,4 @@ applies (the registered \"SG\" calendar); with YEAR, only that year's days."
 (defun azerbaijan-holidays-calendar () (make-instance 'azerbaijan-holidays-calendar))
 (defun libya-holidays-calendar () (make-instance 'libya-holidays-calendar))
 (defun lebanon-holidays-calendar () (make-instance 'lebanon-holidays-calendar))
-(defun oman-holidays-calendar () (make-instance 'oman-holidays-calendar))
-(defun kuwait-holidays-calendar () (make-instance 'kuwait-holidays-calendar))
 (defun israel-holidays-calendar () (make-instance 'israel-holidays-calendar))

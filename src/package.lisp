@@ -477,6 +477,11 @@
    #:thai-lunar-rule-day
    #:thai-buddhist-day
    #:*thai-lunar-uncertain-years*
-   #:*th-substitute-eras*))
+   #:*th-substitute-eras*
+   #:mena-confidence
+   #:mena-provisional-year-p
+   #:mena-estimated-year-p
+   #:mena-decree-rows
+   #:*mena-statute-eras*))
 
 (in-package #:cl-stack-calendars)

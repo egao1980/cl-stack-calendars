@@ -25,7 +25,14 @@
     ("CL" chile-holidays-calendar)
     ("AR" argentina-holidays-calendar)
     ("TW" taiwan-holidays-calendar)
-    ("VN" vietnam-holidays-calendar))
+    ("VN" vietnam-holidays-calendar)
+    ("KW" kuwait-holidays-calendar)
+    ("OM" oman-holidays-calendar)
+    ("IQ" iraq-holidays-calendar)
+    ("EG" egypt-holidays-calendar)
+    ("DZ" algeria-holidays-calendar)
+    ("MA" morocco-holidays-calendar)
+    ("IR" iran-holidays-calendar))
   "Registered code → constructor that takes :YEAR. Every registered calendar
 whose constructor takes :YEAR is listed here or in *YEAR-DATA-EXCEPTIONS*.")
 

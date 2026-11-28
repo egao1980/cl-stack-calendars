@@ -77,7 +77,7 @@ Signals INVALID-HOLIDAY-RULE for a malformed spec."
     ("LY" ((nil 4 5) ((2012 1 15) 5) ((2012 8 3) 5 6))
      "Decree 1257/1990 (Thu–Fri); Cabinet Decree 10/2012 (Friday rest) — https://security-legislation.ly/latest-laws/decree-no-10-of-2012-on-adopting-certain-provisions-on-official-hours ; Cabinet Decision 356/2012 of 2012-08-03 (Fri–Sat) — https://anba.com.br/en/libyans-two-resting-days-a-week/")
     ("IQ" ((nil 5) ((2005 2 26) 5 6))
-     "Interim government decision, February 2005: Saturday added to Friday (AP 2005-02-26, first-ever two-day weekend) — https://www.nbcnews.com/id/wbna7036528 ; Official Holidays Law 2024 art. 1 (Fri–Sat) — https://moj.gov.iq/upload/pdf/4777_453.pdf")
+     "Order No. 18 of 2005 (PM Allawi, signed 2005-02-15), amending Law 110/1972 art. 1(1): Friday and Saturday — https://wiki.dorar-aliraq.net/iraqilaws/law/17148.html ; first Saturday off 2005-02-26 (AP, first-ever two-day weekend) — https://www.nbcnews.com/id/wbna7036528 ; Official Holidays Law No. 12 of 2024 art. 1 (Fri–Sat) — https://moj.gov.iq/upload/pdf/4777_453.pdf")
     ("SD" ((nil 5) ((2008 1 26) 5 6))
      "Council of Ministers, January 2008: Fri–Sat from 2008-01-26 — https://sudantribune.com/?p=25544")
     ("BD" ((nil 5) ((1997 6 1) 5 6) ((2001 11 10) 5) ((2005 9 9) 5 6))
