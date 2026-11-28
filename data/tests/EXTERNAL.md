@@ -91,3 +91,6 @@ Middle East and North Africa holidays live in `<cc>-holiday-gold.sexp` too, buil
 | `BG` | 2004–2040: КТ чл. 154 (lex.bg), ДВ 15/2010 and 105/2016 and every Council of Ministers decision 2004–2016, 2025 (dv.parliament.bg); `bg-secondary` 2000–2003. Python `holidays` agrees. |
 | `GR` | 2000–2040, `:confidence :secondary`: the public-sector list and the 1 May moves (secondary copies; ministry press releases for 2021, 2022, 2024). Python `holidays` keeps 1 May in 2013, 2016, 2021, 2022 and projects 2027. |
 | `CY` | 2000–2040, `:confidence :secondary`: the Central Bank lists 2015–2028 less Easter Tuesday. Python `holidays` lists Easter Sunday. |
+| `LV` | 2000–2040 (gaps 2018, 2023): the holiday law and amendments, Darba likums art. 133(4) and every Cabinet transfer order 2001–2026 (likumi.lv); `lv-secondary` 2018, 2023 (festival closing days). Python `holidays` agrees (it leaves out the closing Sundays). |
+| `EE` | 2000–2040, `:confidence :secondary`: PTS § 2 as search results quote it. Python `holidays` agrees. |
+| `LT` | 2000–2040, `:confidence :secondary`: Darbo kodeksas art. 162 / 123 as search results quote it. Python `holidays` agrees. |

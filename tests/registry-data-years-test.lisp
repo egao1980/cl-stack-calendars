@@ -57,7 +57,10 @@
     ("RO" romania-holidays-calendar)
     ("BG" bulgaria-holidays-calendar)
     ("GR" greece-holidays-calendar)
-    ("CY" cyprus-holidays-calendar))
+    ("CY" cyprus-holidays-calendar)
+    ("EE" estonia-holidays-calendar)
+    ("LV" latvia-holidays-calendar)
+    ("LT" lithuania-holidays-calendar))
   "Registered code → constructor that takes :YEAR. Every registered calendar
 whose constructor takes :YEAR is listed here or in *YEAR-DATA-EXCEPTIONS*.")
 
