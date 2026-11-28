@@ -103,7 +103,13 @@ unless the calendar was loaded with :STRICT NIL."))
     ("NL" . netherlands-holidays-calendar)
     ("DE" . germany-holidays-calendar)
     ("IE" . ireland-holidays-calendar)
-    ("PT" . portugal-holidays-calendar))
+    ("PT" . portugal-holidays-calendar)
+    ("HR" . croatia-holidays-calendar)
+    ("SI" . slovenia-holidays-calendar)
+    ("SK" . slovakia-holidays-calendar)
+    ("CZ" . czechia-holidays-calendar)
+    ("HU" . hungary-holidays-calendar)
+    ("PL" . poland-holidays-calendar))
   "Corpus codes whose COUNTRY-CALENDAR defers to a hand starter: alist CODE →
 starter constructor. The date-holidays dump for these codes is known to be
 wrong (RU: no 2–5 January from 2005, no ТК ст. 112 transfers or decrees,
@@ -151,8 +157,12 @@ no first Sundays of L. 54/1977; NL: Easter and Whit Sunday, Oudejaarsavond
 (:bank); DE: Heiliger Abend and Silvester (:bank); IE: Good Friday, Easter
 Sunday and weekend substitutes (:bank), none in the Act, no 2001-09-14 or
 2022-03-18; PT: Corpo de Deus, 5 October, 1 November and 1 December in
-2013-2015, suspended by Lei 23/2012; #24). The corpus file stays as shipped;
-its days are no longer consulted.")
+2013-2015, suspended by Lei 23/2012; #24. HR: the 2002-2019 days in 2000-2001
+(25 June, 8 October, Tijelovo) and 6 January 2002; SI: no 2 January
+2000-2012, no 2023-08-14; SK: 17 November 2000, no 8 May / 15 September from
+2027; CZ: Velký pátek 2000-2015; HU: Easter and Whit Sunday, no munkarend
+transfers, no Szenteste 2026; PL: no 2018-11-12; #23). The corpus file stays
+as shipped; its days are no longer consulted.")
 
 (defclass normative-country-calendar (country-holiday-calendar)
   ((normative :initarg :normative :reader country-calendar-normative

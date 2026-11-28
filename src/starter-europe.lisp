@@ -13,7 +13,7 @@
 ;;;; Sundays (NL, IE, DE) are not listed. No weekend substitutes: none of these
 ;;;; statutes has one (IE s. 21 is a per-employee entitlement, #25 item 9).
 
-(defparameter *europe-list-codes* '("IT" "NL" "DE" "IE" "PT" "TARGET")
+(defparameter *europe-list-codes* '("IT" "NL" "DE" "IE" "PT" "TARGET" "HR" "SI" "SK" "CZ" "HU" "PL")
   "Codes whose acts and one-off days are data/<cc>/statutes.sexp and
 data/<cc>/holidays.sexp.")
 
@@ -203,3 +203,170 @@ substitutes."
   "Feriados obrigatórios of Portugal (\"PT\"): Código do Trabalho art. 234.º(1),
 the four days suspended 2013-2015 (Lei 23/2012) and restored by Lei 8/2016."
   (%mena-calendar 'portugal-holidays-calendar "PT" year transfers suppressed working-days))
+
+;;; --- Croatia (#23) -------------------------------------------------------------
+
+(define-calendar croatia-holidays-calendar (:register "HR" :constructor croatia-holidays-calendar)
+  ;; Zakon o blagdanima: NN 33/1996, 96/2001, 13/2002, 55/2008, then NN 110/2019.
+  ;; No Sunday move. Floors before 1996 are the earlier starter's.
+  (:fixed "Nova godina" 1 1 :from 1991 :authority "NN 33/1996 čl. 1; NN 110/2019 čl. 1")
+  (:fixed "Bogojavljenje ili Sveta tri kralja" 1 6 :from 1991 :to (2001 11 14)
+   :authority "NN 33/1996 čl. 1; not in the list NN 96/2001 put in force on 15 Nov 2001")
+  (:fixed "Bogojavljenje ili Sveta tri kralja" 1 6 :from (2002 2 16)
+   :authority "NN 13/2002 (in force 16 Feb 2002); NN 110/2019 čl. 1")
+  (:easter "Uskrs" 0 :from (2008 5 16) :authority "NN 55/2008 (»Uskrs i Uskrsni ponedjeljak«)")
+  (:easter "Uskrsni ponedjeljak" 1 :from 1991 :authority "NN 33/1996 čl. 1")
+  (:easter "Tijelovo" 60 :from 2002 :authority "NN 96/2001 (in force 15 Nov 2001)")
+  (:fixed "Praznik rada" 5 1 :from 1991 :authority "NN 33/1996 čl. 1")
+  (:fixed "Dan državnosti" 5 30 :from 1991 :to 2001 :authority "NN 33/1996 čl. 1 (to 14 Nov 2001)")
+  (:fixed "Dan državnosti" 5 30 :from 2020 :authority "NN 110/2019 čl. 1 (from 1 Jan 2020)")
+  (:fixed "Dan antifašističke borbe" 6 22 :from 1991 :authority "NN 33/1996 čl. 1")
+  (:fixed "Dan državnosti" 6 25 :from 2002 :to 2019 :authority "NN 96/2001; a spomendan from 2020 (NN 110/2019)")
+  (:fixed "Dan pobjede i domovinske zahvalnosti i Dan hrvatskih branitelja" 8 5 :from 1995
+   :authority "NN 33/1996 čl. 1; NN 55/2008")
+  (:fixed "Velika Gospa" 8 15 :from 1991 :authority "NN 33/1996 čl. 1")
+  (:fixed "Dan neovisnosti" 10 8 :from 2002 :to 2019 :authority "NN 96/2001; a spomendan from 2020 (NN 110/2019)")
+  (:fixed "Svi sveti" 11 1 :from 1991 :authority "NN 33/1996 čl. 1")
+  (:fixed "Dan sjećanja na žrtve Domovinskog rata" 11 18 :from 2020 :authority "NN 110/2019 čl. 1")
+  (:fixed "Božić" 12 25 :from 1991 :authority "NN 33/1996 čl. 1; NN 55/2008")
+  (:fixed "Sveti Stjepan" 12 26 :from 1991 :authority "NN 33/1996 čl. 1; NN 55/2008"))
+
+(defun croatia-holidays-calendar (&key year transfers suppressed working-days)
+  "Blagdani i neradni dani of Croatia (\"HR\"): the Zakon o blagdanima by era (no
+Bogojavljenje 15 Nov 2001–15 Feb 2002, so 6 January 2002 is a working day)."
+  (%mena-calendar 'croatia-holidays-calendar "HR" year transfers suppressed working-days))
+
+;;; --- Slovenia (#23) ------------------------------------------------------------
+
+(define-calendar slovenia-holidays-calendar (:register "SI" :constructor slovenia-holidays-calendar)
+  ;; ZPDPD-UPB1 čl. 1-2: the dela prosti dnevi only. 14 August 2023 is a
+  ;; data/si/holidays.sexp row (ZOPNN-F 15. člen).
+  (:fixed "Novo leto" 1 1 :from 1991 :authority "ZPDPD čl. 1")
+  (:fixed "Novo leto" 1 2 :from 1991 :to 2012 :authority "ZPDPD čl. 1; removed by ZUJF 82. člen (from 2013)")
+  (:fixed "Novo leto" 1 2 :from 2017 :authority "ZPDPD-D (Ur. l. RS 83/2016)")
+  (:fixed "Prešernov dan, slovenski kulturni praznik" 2 8 :from 1991 :authority "ZPDPD čl. 1")
+  (:easter "Velikonočna nedelja" 0 :from 1991 :authority "ZPDPD čl. 2")
+  (:easter "Velikonočni ponedeljek" 1 :from 1991 :authority "ZPDPD čl. 2")
+  (:fixed "Dan upora proti okupatorju" 4 27 :from 1991 :authority "ZPDPD čl. 1")
+  (:fixed "Praznik dela" 5 1 :from 1991 :authority "ZPDPD čl. 1")
+  (:fixed "Praznik dela" 5 2 :from 1991 :authority "ZPDPD čl. 1")
+  (:easter "Binkoštna nedelja" 49 :from 1991 :authority "ZPDPD čl. 2")
+  (:fixed "Dan državnosti" 6 25 :from 1991 :authority "ZPDPD čl. 1")
+  (:fixed "Marijino vnebovzetje" 8 15 :from 1991 :authority "ZPDPD čl. 2")
+  (:fixed "Dan reformacije" 10 31 :from 1991 :authority "ZPDPD čl. 2")
+  (:fixed "Dan spomina na mrtve" 11 1 :from 1991 :authority "ZPDPD čl. 1")
+  (:fixed "Božič" 12 25 :from 1991 :authority "ZPDPD čl. 2")
+  (:fixed "Dan samostojnosti in enotnosti" 12 26 :from 1991 :authority "ZPDPD čl. 1"))
+
+(defun slovenia-holidays-calendar (&key year transfers suppressed working-days)
+  "Dela prosti dnevi of Slovenia (\"SI\"): ZPDPD čl. 1-2 by era (no 2 January in
+2013–2016) and 14 August 2023 (data/si/holidays.sexp)."
+  (%mena-calendar 'slovenia-holidays-calendar "SI" year transfers suppressed working-days))
+
+;;; --- Slovakia (#23) ------------------------------------------------------------
+
+(define-calendar slovakia-holidays-calendar (:register "SK" :constructor slovakia-holidays-calendar)
+  ;; Zákon 241/1993 Z. z. § 2: the days of rest. 30 October 2018 (§ 4a) is a
+  ;; data/sk/holidays.sexp row.
+  (:fixed "Deň vzniku Slovenskej republiky" 1 1 :from 1993 :authority "Zákon 241/1993 Z. z. § 1 a), § 2(1)")
+  (:fixed "Zjavenie Pána" 1 6 :from 1993 :authority "Zákon 241/1993 Z. z. § 2(2)")
+  (:easter "Veľký piatok" -2 :from 1993 :authority "Zákon 241/1993 Z. z. § 2(2)")
+  (:easter "Veľkonočný pondelok" 1 :from 1993 :authority "Zákon 241/1993 Z. z. § 2(2)")
+  (:fixed "Sviatok práce" 5 1 :from 1993 :authority "Zákon 241/1993 Z. z. § 2(2)")
+  (:fixed "Deň víťazstva nad fašizmom" 5 8 :from 1993 :to 2025 :authority "Zákon 241/1993 Z. z. § 2(2)")
+  (:fixed "Deň víťazstva nad fašizmom" 5 8 :from 2027
+   :authority "Zákon 241/1993 Z. z. § 2(2) j); not a day of rest in 2026 (§ 4b, 261/2025 Z. z.)")
+  (:fixed "Sviatok svätého Cyrila a svätého Metoda" 7 5 :from 1993 :authority "Zákon 241/1993 Z. z. § 1, § 2(1)")
+  (:fixed "Výročie Slovenského národného povstania" 8 29 :from 1993 :authority "Zákon 241/1993 Z. z. § 1, § 2(1)")
+  (:fixed "Deň Ústavy Slovenskej republiky" 9 1 :from 1993 :to 2023
+   :authority "Zákon 241/1993 Z. z. § 1 d); not a day of rest from 2024 (530/2023 Z. z.)")
+  (:fixed "Sedembolestná Panna Mária" 9 15 :from 1993 :to 2025 :authority "Zákon 241/1993 Z. z. § 2(2)")
+  (:fixed "Sedembolestná Panna Mária" 9 15 :from 2027
+   :authority "Zákon 241/1993 Z. z. § 2(2) e); not a day of rest in 2026 (§ 4b, 261/2025 Z. z.)")
+  (:fixed "Sviatok Všetkých svätých" 11 1 :from 1993 :authority "Zákon 241/1993 Z. z. § 2(2)")
+  (:fixed "Deň boja za slobodu a demokraciu" 11 17 :from (2001 11 15) :to (2025 10 31)
+   :authority "442/2001 Z. z. (from 15 Nov 2001); not a day of rest from 1 Nov 2025 (261/2025 Z. z.)")
+  (:fixed "Štedrý deň" 12 24 :from 1993 :authority "Zákon 241/1993 Z. z. § 2(2)")
+  (:fixed "Prvý sviatok vianočný" 12 25 :from 1993 :authority "Zákon 241/1993 Z. z. § 2(2)")
+  (:fixed "Druhý sviatok vianočný" 12 26 :from 1993 :authority "Zákon 241/1993 Z. z. § 2(2)"))
+
+(defun slovakia-holidays-calendar (&key year transfers suppressed working-days)
+  "Dni pracovného pokoja of Slovakia (\"SK\"): zákon 241/1993 Z. z. § 2 by era (17
+November 2001–2024, 1 September to 2023, no 8 May / 15 September in 2026) and 30
+October 2018 (data/sk/holidays.sexp)."
+  (%mena-calendar 'slovakia-holidays-calendar "SK" year transfers suppressed working-days))
+
+;;; --- Czechia (#23) -------------------------------------------------------------
+
+(define-calendar czechia-holidays-calendar (:register "CZ" :constructor czechia-holidays-calendar)
+  ;; Zákon 245/2000 Sb. § 3 (from 9 Aug 2000; before it 93/1951 Sb. and 204/1990 Sb.).
+  (:fixed "Den obnovy samostatného českého státu / Nový rok" 1 1 :from 1993 :authority "Zákon 245/2000 Sb. § 1-2")
+  (:easter "Velký pátek" -2 :from 2016 :authority "Zákon 359/2015 Sb. (in force 21 Dec 2015)")
+  (:easter "Velikonoční pondělí" 1 :from 1993 :authority "Zákon 245/2000 Sb. § 2")
+  (:fixed "Svátek práce" 5 1 :from 1993 :authority "Zákon 245/2000 Sb. § 2")
+  (:fixed "Den vítězství" 5 8 :from 1993 :authority "Zákon 245/2000 Sb. § 1")
+  (:fixed "Den slovanských věrozvěstů Cyrila a Metoděje" 7 5 :from 1993 :authority "Zákon 245/2000 Sb. § 1")
+  (:fixed "Den upálení mistra Jana Husa" 7 6 :from 1993 :authority "Zákon 245/2000 Sb. § 1; before it 204/1990 Sb.")
+  (:fixed "Den české státnosti" 9 28 :from (2000 8 9) :authority "Zákon 245/2000 Sb. § 1 (in force 9 Aug 2000)")
+  (:fixed "Den vzniku samostatného československého státu" 10 28 :from 1993 :authority "Zákon 245/2000 Sb. § 1")
+  (:fixed "Den boje za svobodu a demokracii" 11 17 :from (2000 8 9)
+   :authority "Zákon 245/2000 Sb. § 1 (before it only a významný den under 93/1951 Sb.)")
+  (:fixed "Štědrý den" 12 24 :from 1993 :authority "Zákon 245/2000 Sb. § 2")
+  (:fixed "1. svátek vánoční" 12 25 :from 1993 :authority "Zákon 245/2000 Sb. § 2")
+  (:fixed "2. svátek vánoční" 12 26 :from 1993 :authority "Zákon 245/2000 Sb. § 2"))
+
+(defun czechia-holidays-calendar (&key year transfers suppressed working-days)
+  "Dny pracovního klidu of Czechia (\"CZ\"): zákon 245/2000 Sb. by era, Velký
+pátek from 2016."
+  (%mena-calendar 'czechia-holidays-calendar "CZ" year transfers suppressed working-days))
+
+;;; --- Hungary (#23) -------------------------------------------------------------
+
+(define-calendar hungary-holidays-calendar (:register "HU" :constructor hungary-holidays-calendar)
+  ;; Munkaszüneti napok: 1992. évi XXII. tv. § 125 (3), Mt. 2012 § 102 (1). Easter
+  ;; and Whit Sunday are not munkaszüneti napok. The yearly munkarend decrees'
+  ;; transfers are data/hu/holidays.sexp rows (rest days and working Saturdays).
+  (:fixed "Újév" 1 1 :from 1900 :authority "Mt. § 102 (1); 1992. évi XXII. tv. § 125 (3)")
+  (:fixed "Nemzeti ünnep (1848)" 3 15 :from 1990 :authority "Mt. § 102 (1); 1992. évi XXII. tv. § 125 (3)")
+  (:easter "Nagypéntek" -2 :from 2017 :authority "2017. évi XIII. tv. (in force 24 Mar 2017)")
+  (:easter "Húsvéthétfő" 1 :from 1900 :authority "Mt. § 102 (1); 1992. évi XXII. tv. § 125 (3)")
+  (:fixed "A munka ünnepe" 5 1 :from 1900 :authority "Mt. § 102 (1); 1992. évi XXII. tv. § 125 (3)")
+  (:easter "Pünkösdhétfő" 50 :from 1900 :authority "Mt. § 102 (1); 1992. évi XXII. tv. § 125 (3)")
+  (:fixed "Az államalapítás ünnepe" 8 20 :from 1900 :authority "Mt. § 102 (1); 1992. évi XXII. tv. § 125 (3)")
+  (:fixed "Nemzeti ünnep (1956)" 10 23 :from 1991 :authority "Mt. § 102 (1); 1992. évi XXII. tv. § 125 (3)")
+  (:fixed "Mindenszentek" 11 1 :from 1900 :authority "Mt. § 102 (1); 1992. évi XXII. tv. § 125 (3)")
+  (:fixed "Szenteste" 12 24 :from (2026 11 14) :authority "2026. évi LXXII. tv. § 3 (in force 14 Nov 2026)")
+  (:fixed "Karácsony" 12 25 :from 1900 :authority "Mt. § 102 (1); 1992. évi XXII. tv. § 125 (3)")
+  (:fixed "Karácsony másnapja" 12 26 :from 1900 :authority "Mt. § 102 (1); 1992. évi XXII. tv. § 125 (3)"))
+
+(defun hungary-holidays-calendar (&key year transfers suppressed working-days)
+  "Munkaszüneti napok of Hungary (\"HU\"): Mt. § 102 (1) by era (Nagypéntek from
+2017, Szenteste from 2026) and every yearly munkarend decree 2001–2026: the
+transferred rest days and the working Saturdays (data/hu/holidays.sexp)."
+  (%mena-calendar 'hungary-holidays-calendar "HU" year transfers suppressed working-days))
+
+;;; --- Poland (#23) --------------------------------------------------------------
+
+(define-calendar poland-holidays-calendar (:register "PL" :constructor poland-holidays-calendar)
+  ;; Ustawa z 18 stycznia 1951 r. o dniach wolnych od pracy, art. 1 pkt 1 (the
+  ;; named Sundays included). 12 November 2018 is a data/pl/holidays.sexp row.
+  (:fixed "Nowy Rok" 1 1 :from 1918 :authority "Ustawa o dniach wolnych od pracy art. 1 pkt 1 lit. a")
+  (:fixed "Święto Trzech Króli" 1 6 :from 2011 :authority "Dz.U. 2010 nr 224 poz. 1459 (from 1 Jan 2011)")
+  (:easter "Wielkanoc (pierwszy dzień)" 0 :from 1918 :authority "Ustawa o dniach wolnych od pracy art. 1 pkt 1 lit. c")
+  (:easter "Poniedziałek Wielkanocny" 1 :from 1918 :authority "Ustawa o dniach wolnych od pracy art. 1 pkt 1 lit. d")
+  (:fixed "Święto Państwowe" 5 1 :from 1918 :authority "Ustawa o dniach wolnych od pracy art. 1 pkt 1 lit. e")
+  (:fixed "Święto Narodowe Trzeciego Maja" 5 3 :from 1990 :authority "Dz.U. 1990 nr 28 poz. 160; art. 1 pkt 1 lit. f")
+  (:easter "Zielone Świątki (pierwszy dzień)" 49 :from 1918
+   :authority "Ustawa o dniach wolnych od pracy art. 1 pkt 1 lit. g")
+  (:easter "Boże Ciało" 60 :from 1918 :authority "Ustawa o dniach wolnych od pracy art. 1 pkt 1 lit. h")
+  (:fixed "Wniebowzięcie Najświętszej Maryi Panny" 8 15 :from 1918 :authority "Ustawa o dniach wolnych od pracy art. 1 pkt 1 lit. i")
+  (:fixed "Wszystkich Świętych" 11 1 :from 1918 :authority "Ustawa o dniach wolnych od pracy art. 1 pkt 1 lit. j")
+  (:fixed "Narodowe Święto Niepodległości" 11 11 :from 1989 :authority "Dz.U. 1989 nr 29 poz. 154; art. 1 pkt 1 lit. k")
+  (:fixed "Wigilia Bożego Narodzenia" 12 24 :from 2025 :authority "Dz.U. 2024 poz. 1965 (in force 1 Feb 2025)")
+  (:fixed "Boże Narodzenie (pierwszy dzień)" 12 25 :from 1918 :authority "Ustawa o dniach wolnych od pracy art. 1 pkt 1 lit. l")
+  (:fixed "Boże Narodzenie (drugi dzień)" 12 26 :from 1918 :authority "Ustawa o dniach wolnych od pracy art. 1 pkt 1 lit. m"))
+
+(defun poland-holidays-calendar (&key year transfers suppressed working-days)
+  "Dni wolne od pracy of Poland (\"PL\"): the 1951 act art. 1 pkt 1 by era (Trzech
+Króli from 2011, Wigilia from 2025) and 12 November 2018 (data/pl/holidays.sexp)."
+  (%mena-calendar 'poland-holidays-calendar "PL" year transfers suppressed working-days))
