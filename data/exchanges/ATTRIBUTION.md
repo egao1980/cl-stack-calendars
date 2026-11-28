@@ -35,7 +35,7 @@ Those libraries are Apache-2.0; we independently encode published dates.
 | XNYS / XNAS | [NYSE timeline (trading hours)](https://web.archive.org/web/20081106132928/http://www.nyse.com/about/history/timeline_trading.html) — 1952-09-29 10:00–15:30 + Saturday retired; 1974 close 16:00; 1985-09-30 open 09:30. Last Saturday session 1952-05-24. Early closes from NYSE notices (13:00 from 1993). |
 | XLON | Big Bang 1986-10-27 SEAQ 09:00–17:00; SETS 1997-10-20 08:00–16:30 |
 | XTKS | [JPX 2024-11-05](https://www.jpx.co.jp/english/corporate/news/news-releases/1030/20241105-01.html) afternoon to 15:30; 09:00–11:30 / 12:30–15:00 from [2011-11-21](https://www.jpx.co.jp/files/tse/about/press/b7gje60000029nqk-att/shiryou20110927.pdf); morning to 11:00 before; first/last-day half-holidays (morning only) until 2009-01-05 |
-| XHKG | [HKEX 2011-01-24](https://www.hkex.com.hk/News/News-Release/2011/1101243news?sc_lang=en) phase 1 2011-03-07, phase 2 2012-03-05 |
+| XHKG | [HKEX 2011-01-24](https://www.hkex.com.hk/News/News-Release/2011/1101243news?sc_lang=en) phase 1 2011-03-07, phase 2 2012-03-05; Rule 501(1) half days on the eves of Christmas, New Year and Lunar New Year (`hk-lunar-new-year-eve`, from 2008) |
 | XSHG / XSHE | SSE/SZSE cash 09:30–11:30 / 13:00–15:00 from 1990/1991 |
 | XETR | Xetra 09:00–17:30; 09:00–20:00 from 2000-06-02 to 2003-10-31 ([Eurex circular 116/03](https://www.eurex.com/resource/blob/294630/0f1d69ec085846ab4fc215e24d592449/data/cf1162003e.pdf.pdf)); 14:00 close on the last trading day of the year |
 | XPAR | Euronext cash 09:00–17:30 (CET clock) |
@@ -66,7 +66,7 @@ Those libraries are Apache-2.0; we independently encode published dates.
 | XCBT | CBOT grains night 19:00–07:45 + day 08:30–13:20 CT |
 | IFEU | [ICE Brent](https://www.ice.com/products/219/Brent-Crude-Futures) 01:00–23:00 London |
 | XLME | [LMEselect](https://www.lme.com/trading/systems/lmeselect) 01:00–19:00 |
-| XSGE XDCE XZCE XINE | SHFE/DCE/CZCE day breaks; SHFE night previous 21:00; INE SC night to 02:30 |
+| XSGE XDCE XZCE XINE | SHFE/DCE/CZCE day breaks; SHFE base-metals night 21:00–01:00 from the evening of [2013-12-20](https://www.shfe.com.cn/publicnotice/notice/201311/t20131125_790028.html); INE SC night to 02:30; no night session on the evening before a statutory holiday (`:after-weekday-closure` rule) or during the 2020-02-03..05-06 suspension; DCE / CZCE night sessions not modelled (sites unreachable) |
 | XIMC | MCX non-agri 09:00–23:30 IST |
 | XOSE | JPX/OSE index derivatives: day 08:45–15:15 + night 16:30–05:30 from 2016-07-19, night to 06:00 from 2021-09-21, day 08:45–15:45 + night 17:00–06:00 from 2024-11-05 (`:labeled-by :open`); holiday trading from 2022-09-23 |
 | XEUR XEEE XMAT | Eurex 08:00–22:00 (simplified; product hours vary); EEX 08:00–18:00; Euronext agri 10:45–18:30, 10:45–20:15 from 2026-04-13 |

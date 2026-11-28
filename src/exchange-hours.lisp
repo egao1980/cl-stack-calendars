@@ -366,18 +366,48 @@ EXCHANGE-SESSIONS-FOR-DATE leave them out."
 day's regular hours (KRX first trading day), not an overlay on them."
   (getf (exchange-early-close-rule-args rule) :regular))
 
+(defun %after-weekday-closure-p (exchange date)
+  "True when a weekday holiday of EXCHANGE's calendar falls between DATE and
+the trading day before it (DATE is the first trading day after a holiday,
+not after a plain weekend). Looks back at most 31 days."
+  (let ((calendar (exchange-calendar exchange)))
+    (and calendar
+         (loop for d = (- date 1) then (- d 1)
+               repeat 31
+               until (business-day-p calendar d)
+               thereis (and (%weekday-p d) (holiday-p calendar d))))))
+
+(defun %regular-rule-open (exchange rule date)
+  "The open a :REGULAR late-open RULE gives DATE, or NIL. Besides the
+early-close rule kinds: :EVERY-DAY (each day of the rule's window) and
+:AFTER-WEEKDAY-CLOSURE (the first trading day after a weekday holiday: SHFE
+and INE hold no night session on the evening before a statutory holiday)."
+  (when (%rule-in-window-p rule date)
+    (case (exchange-early-close-rule-kind rule)
+      (:every-day (exchange-early-close-rule-close rule))
+      (:after-weekday-closure
+       (when (%after-weekday-closure-p exchange date)
+         (exchange-early-close-rule-close rule)))
+      (t (%early-close-from-rule rule date)))))
+
 (defun %regular-late-open (exchange date)
-  "The open a :REGULAR late-open rule of EXCHANGE gives DATE, or NIL."
+  "The open a :REGULAR late-open rule of EXCHANGE gives DATE, or NIL. Second
+value is true when that rule has :OVERNIGHT NIL: the day has no overnight
+(night) leg either."
   (loop for rule in (exchange-hours-late-open-rules exchange)
-        for tod = (and (%regular-rule-p rule) (%early-close-from-rule rule date))
-        when tod return tod))
+        for tod = (and (%regular-rule-p rule) (%regular-rule-open exchange rule date))
+        when tod
+          return (let ((args (exchange-early-close-rule-args rule)))
+                   (values tod (and (member :overnight args)
+                                    (not (getf args :overnight)))))))
 
 (defun %era-week-sessions (exchange date)
   "The regular segments for DATE (no holidays, no early close or late open):
 the hours a calendar notice gives the day (:SESSIONS), else the hours era's
-sessions for DATE's weekday, opened later by a :REGULAR late-open rule. NIL
-on a weekend of the era, unless a calendar notice opens the day (then the
-era's weekday hours), or between eras."
+sessions for DATE's weekday, opened later by a :REGULAR late-open rule (one
+with :OVERNIGHT NIL also drops the night leg). NIL on a weekend of the era,
+unless a calendar notice opens the day (then the era's weekday hours), or
+between eras."
   (let ((override (%notice-sessions exchange date)))
     (when override
       (return-from %era-week-sessions override)))
@@ -394,7 +424,11 @@ era's weekday hours), or between eras."
                                  (exchange-era-sessions era))
                                (exchange-era-sessions era)))))
         (when sessions
-          (%apply-late-open sessions (%regular-late-open exchange date)))))))
+          (multiple-value-bind (late no-overnight) (%regular-late-open exchange date)
+            (%apply-late-open (if no-overnight
+                                  (remove-if #'exchange-session-spec-overnight sessions)
+                                  sessions)
+                              late)))))))
 
 (defun %apply-late-open (sessions late)
   "Drop/shorten segments so the first remaining open is LATE (same-day

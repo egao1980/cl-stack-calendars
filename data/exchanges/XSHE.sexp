@@ -3,7 +3,7 @@
  :mic "XSHE"
  :name "Shenzhen Stock Exchange"
  :zone "Asia/Shanghai"
- :calendar "CN"
+ :calendar "XSHE"
  :source "SZSE trading rules (aligned with SSE cash hours)"
  :eras (
    (:from (1991 7 3)
