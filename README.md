@@ -77,6 +77,31 @@ Since 0.13.0 `(calendar-provenance cal)` says where a calendar's days come from:
 
 The 93 corpus codes without a hand starter (`BH`, `XK`, `GU` and so on) used to be registered as inferred rule calendars and reported as normative. Those calendars missed 10,413 of their own corpus days in 2000–2040: every Eid, nth-weekday holiday, Orthodox Easter and substitute day. Now `find-calendar` returns the inferred calendar only when it reproduces at least 99% of the corpus (`calendar-corpus-agreement`, `*corpus-inference-min-agreement*`); 22 codes pass. The other 71 get `(country-calendar CODE)`. `normative-coverage-by-population` reports these codes as `:corpus-derived` or `:corpus`, never `:normative`. [`docs/AUTHORITIES.md`](docs/AUTHORITIES.md#corpus-only-codes-corpus-derived-or-corpus) lists which code is which.
 
+### Holiday types: public, bank, …
+
+Since 0.37.0 (#35) the corpus types are exposed and can be filtered:
+
+- **Types.** Each corpus row is `:public` (108,702 rows) or `:bank` (1,950 rows, in 26 files: AD AL AR AS AT AX BL BM BR CL DE FI GT GU IE JP LI MX NL NO PR PY SE SJ US VI). The type vocabulary is `*holiday-type-precedence*`: `:public` `:bank` `:optional` `:observance`, strongest first. The date-holidays generator dropped optional and observance days, so the corpus has no rows of those two types (`data/countries/ATTRIBUTION.md`).
+- **Filter.** `(country-calendar "GT" :types '(:public))` counts only the public rows, so Día del Empleado Bancario is a business day. `:types '(:bank)` counts only the bank rows. Without `:types` every row of the file counts, as before, and `calendar-holiday-types` reports which types count. An unknown type, or a non-list, signals `type-error`. The cache is keyed on the normalized type list too.
+- **Every name on a date.** 820 corpus rows share their date with an earlier row (AL 42, EG 35, IR 30, AZ 25, TW 25, …). The earlier name used to be overwritten. Now every row is kept. `holiday-p` returns every counted name, joined with `"; "` and strongest type first: GT 2000-06-30 is `"Día de las Fuerzas Armadas; Día del Empleado Bancario"`. `(holiday-info cal date)` returns one `holiday-observance` per row, each with its `holiday-observance-type`.
+- **No demotion.** A date's type is its strongest row, so public beats bank. In 34 cases a later `:bank` row used to demote a `:public` date: AR Malvinas / Jueves Santo, AS substitute days / eves, GT Fuerzas Armadas / Empleado Bancario, JP 元日 (振替休日) / 銀行休業日. These dates are `:public` again. `holidays-between` fills `holiday-observance-type` with that resolved type.
+- **Codes that defer to a starter** (`*country-calendar-normative*`: DE, AR, SE, …). The starter replaces the corpus public rows, and its holidays count as `:public`.
+  - Without `:types`, the calendar is the starter, as before.
+  - With `:types`, `:public` is the starter's holidays, and every other type adds the corpus rows of that type. `(country-calendar "DE" :types '(:public :bank))` adds Heiliger Abend and Silvester, typed `:bank`. `:types '(:bank)` gives only those rows.
+
+`holiday-info` works on every calendar. Calendars that do not type their days give one observance with type `nil`.
+
+```lisp
+(holiday-p (country-calendar "DE") (make-date 2024 12 24))                       ; => NIL
+(holiday-p (country-calendar "DE" :types '(:public :bank)) (make-date 2024 12 24)) ; => T, "Heiliger Abend"
+(business-day-p (country-calendar "GT" :types '(:public)) (make-date 2001 7 2))    ; => T
+(holiday-info (country-calendar "GT") (make-date 2000 6 30))
+;; => (#<HOLIDAY-OBSERVANCE 2000-06-30 "Día de las Fuerzas Armadas" :PUBLIC>
+;;     #<HOLIDAY-OBSERVANCE 2000-06-30 "Día del Empleado Bancario" :BANK>)
+```
+
+**Consumer-visible changes.** `calendar-holidays-table` of a country calendar now maps an RD to a *list* of `(name . type)`, not to one pair. On the 820 shared dates, `holiday-p`'s name is the joined string.
+
 ### Caching and threads
 
 Since 0.9.1 a `rule-calendar` builds each year's holiday map once and keeps it, together with its working-day and suppressed-date sets, in a per-instance synchronized table (`:synchronized t` on SBCL). Queries from several threads are safe. As an example, `holidays-between` over 41 years of KR now takes milliseconds; it used to take about a minute. A `setf` of any rule-calendar accessor (`calendar-rules`, `calendar-transfers`, `calendar-working-days`, `calendar-suppressed-dates`, `calendar-weekend-days`, the sandwich and furikae settings, `calendar-observance-pass`) drops the cache. After changing a rule struct or a list in place, call `(clear-calendar-cache cal)`.

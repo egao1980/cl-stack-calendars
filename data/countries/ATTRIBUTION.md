@@ -23,6 +23,18 @@ ros -l scripts/extract-gazette-corpus.lisp -q
 ros -l scripts/backfill-decrees.lisp -q
 ```
 
+## Holiday types
+
+The generator kept two date-holidays types, `public` and `bank`, which the
+file headers record as `types=public,bank`. Each row ends in `:public` or `:bank`.
+A row with no type is read as `:public`. date-holidays also has `optional`
+days (taken at the employee's choice) and `observance` days (marked, but not
+days off). The generator **dropped both**, so no file has them, and
+`(country-calendar CODE :types '(:optional))` or `'(:observance)` matches no
+row. Since 0.37.0 (#35) every row of a date is kept. 820 rows share their date
+with another row, and the date's type is the strongest of them
+(`*holiday-type-precedence*`: public before bank).
+
 ## Hand corrections
 
 - **GB** (0.12.0, #14): scoped to England and Wales, the scope of
