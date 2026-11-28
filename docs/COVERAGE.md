@@ -98,7 +98,6 @@ Column meanings are in [AUTHORITIES.md](AUTHORITIES.md#coverage-per-calendar). "
 | NL | normative | yes | nationwide | 2000–2040 | — | vacanza 2020–2026 | — | — | 2: Algemene termijnenwet (wet van 5 juni 1964, Stb. 1964, 314), art. 3, … |
 | NO | normative | — | — | — | — | — | — | — | — |
 | NP | normative | — | — | — | — | — | — | — | — |
-| NYSE | normative | — | — | — | — | exchange_calendars XNYS 1970–2030 | — | — | — |
 | NZ | normative | — | — | — | — | — | — | — | — |
 | OM | normative | — | nationwide | 2020–2040 | — | — | 2027 | estimated 2000–2019; provisional 2027–2040 | 56: المرسوم السلطاني رقم 56/91 بتحديد أيام العطلات الرسمية (Royal Decree … |
 | PA | normative | — | — | — | — | — | — | — | — |
@@ -181,7 +180,7 @@ For each gold year that has an official list (not provisional, not :estimated), 
 
 ## Exchanges
 
-One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exchange queries use, with its provenance: `exchange` for the exchange's own trading-holiday calendar (`data/exchanges/calendars/`, rules and notices from the exchange), otherwise the civil calendar the MIC still uses. "Notices" counts the exchange notice rows (each with `:issued` / `:published`) and the years they date. "Gold" is the `exchange_calendars` cross-check in `data/tests/exchanges/` (every session, regular hours, early close and late open of those years); "Recorded differences" are the gold days where the exchange's own notice wins (`data/tests/exchanges/differences.sexp`).
+One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exchange queries use, with its provenance: `exchange` for the exchange's own trading-holiday calendar (`data/exchanges/calendars/`, rules and notices from the exchange), otherwise the civil calendar the MIC still uses. "Notices" counts the exchange notice rows (each with `:issued` / `:published`) and the years they date. "Gold" is the `exchange_calendars` cross-check in `data/tests/exchanges/` (every session, regular hours, early close and late open of those years); "Recorded differences" are the gold days where the exchange's own notice wins (`data/tests/exchanges/differences.sexp`). XNYS's gold is `data/tests/xnys-gold.sexp`: 1953–1969 built from the NYSE's own record (every row with its source URL), 1970–2030 `exchange_calendars`; the `NYSE` calendar is modeled from 1953 and signals `calendar-out-of-range` before (#50).
 
 | MIC | Name | Calendar | Provenance | Notices | Gold | Sessions | Early closes | Late opens | Recorded differences |
 |---|---|---|---|---|---|---|---|---|---|
@@ -218,10 +217,10 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XMAD | Bolsa de Madrid | XMAD | exchange | 4 (2024–2027) | 2024–2028 | 1280 | 8 | 0 | 0 |
 | XMAT | Euronext Paris commodities | XMAT | exchange | 32 (2000–2027) | — | — | — | — | — |
 | XMIL | Euronext Milan | XMIL | exchange | 22 (2003–2027) | 2010–2028 | 4827 | 0 | 0 | 2 |
-| XNAS | Nasdaq | NYSE | normative | — | — | — | — | — | — |
+| XNAS | Nasdaq | NYSE | exchange | 34 (1954–2025) | — | — | — | — | — |
 | XNSE | National Stock Exchange of India | XNSE | exchange | 35 (2009–2026) | 2009–2026 | 4433 | 0 | 0 | 11 |
 | XNYM | NYMEX on CME Globex (energy) | CME-ENERGY | exchange | 150 (2009–2027) | 2009–2027 | 4900 | 150 | 0 | 119 |
-| XNYS | New York Stock Exchange | NYSE | normative | — | — | — | — | — | — |
+| XNYS | New York Stock Exchange | NYSE | exchange | 34 (1954–2025) | 1953–2030 | 19628 | 146 | 5 | 0 |
 | XOSE | Osaka Exchange / JPX derivatives | XOSE | exchange | 9 (2021–2027) | — | — | — | — | — |
 | XOSL | Euronext Oslo / Oslo Børs | XOSL | exchange | 15 (2002–2027) | 2006–2028 | 5775 | 18 | 0 | 2 |
 | XPAR | Euronext Paris | XPAR | exchange | 28 (2000–2027) | 2000–2028 | 7420 | 39 | 0 | 20 |

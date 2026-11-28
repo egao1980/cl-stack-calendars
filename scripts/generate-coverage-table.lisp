@@ -11,7 +11,7 @@
 ;;;;   gold              :FROM-:TO of data/tests/<cc>-holiday-gold.sexp
 ;;;;                     (primary) and <cc>-secondary-holiday-gold.sexp
 ;;;;   other checks      data/tests/external-gold.sexp blocks, the RU
-;;;;                     production calendar, the XNYS sessions
+;;;;                     production calendar
 ;;;;   provisional from  the first year <CC>-PROVISIONAL-YEAR-P (or
 ;;;;                     MENA-PROVISIONAL-YEAR-P) is true
 ;;;;   confidence        the runs of years 2000-2040 whose <CC>-CONFIDENCE
@@ -21,6 +21,8 @@
 ;;;; Then the Islamic table: for every gold fixture year whose Eid al-Fitr
 ;;;; days come from a list (their names do not say "estimated"), the first
 ;;;; listed Eid al-Fitr day minus the tabular 1 Shawwal of datetime-protocol.
+;;;; Then the exchanges table: one row per MIC (XNYS's gold is
+;;;; data/tests/xnys-gold.sexp, 1953-2030).
 
 (setf *debugger-hook*
       (lambda (c h)
@@ -100,7 +102,8 @@ holidays 2000-2040: …\", else \"nationwide\"."
            golds))
 
 (defun external-checks ()
-  "Hash table code → list of \"<source> <from>–<to>\" from the external fixtures."
+  "Hash table code → list of \"<source> <from>–<to>\" from the external fixtures.
+The XNYS gold is in the exchanges table (EXCHANGE-GOLD)."
   (let ((out (make-hash-table :test #'equal)))
     (flet ((add (code text)
              (setf (gethash code out) (append (gethash code out) (list text)))))
@@ -112,10 +115,7 @@ holidays 2000-2040: …\", else \"nationwide\"."
                          (span (getf block :from) (getf block :to)))))))
       (let ((ru (read-fixture (repo-path "data/tests/ru-production-calendar-gold.sexp"))))
         (add "RU" (format nil "production calendar ~a"
-                          (span (getf ru :from) (getf ru :to)))))
-      (let ((xnys (read-fixture (repo-path "data/tests/xnys-gold.sexp"))))
-        (add "NYSE" (format nil "exchange_calendars XNYS ~a"
-                            (span (getf xnys :from) (getf xnys :to))))))
+                          (span (getf ru :from) (getf ru :to))))))
     out))
 
 ;;; --- what the code says --------------------------------------------------------
@@ -230,7 +230,12 @@ year (LISTED-YEAR-P), minus the tabular 1 Shawwal, when within 3 days."
 ;;; --- output ---------------------------------------------------------------------
 
 (defun exchange-gold (mic)
-  (let ((path (repo-path (format nil "data/tests/exchanges/~a-gold.sexp" mic))))
+  "The gold fixture of MIC: data/tests/exchanges/<MIC>-gold.sexp, or for XNYS
+data/tests/xnys-gold.sexp (the NYSE's own record 1953–1969, exchange_calendars
+1970–2030; #50)."
+  (let ((path (repo-path (if (string= mic "XNYS")
+                             "data/tests/xnys-gold.sexp"
+                             (format nil "data/tests/exchanges/~a-gold.sexp" mic)))))
     (when (probe-file path) (read-fixture path))))
 
 (defun exchange-differences ()
@@ -254,7 +259,10 @@ calendar the MIC still uses. \"Notices\" counts the exchange notice rows (each w
 `:published`) and the years they date. \"Gold\" is the `exchange_calendars` cross-check in ~
 `data/tests/exchanges/` (every session, regular hours, early close and late open of those ~
 years); \"Recorded differences\" are the gold days where the exchange's own notice wins ~
-(`data/tests/exchanges/differences.sexp`).~%~%")
+(`data/tests/exchanges/differences.sexp`). XNYS's gold is `data/tests/xnys-gold.sexp`: ~
+1953–1969 built from the NYSE's own record (every row with its source URL), 1970–2030 ~
+`exchange_calendars`; the `NYSE` calendar is modeled from 1953 and signals ~
+`calendar-out-of-range` before (#50).~%~%")
   (format stream "| MIC | Name | Calendar | Provenance | Notices | Gold | Sessions | Early closes | Late opens | Recorded differences |~%")
   (format stream "|---|---|---|---|---|---|---|---|---|---|~%")
   (let ((differences (exchange-differences)))

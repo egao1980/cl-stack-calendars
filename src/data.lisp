@@ -140,7 +140,7 @@ against a different data root."
                  *bd-holidays*
                  *pk-holidays*
                  *np-gazette* *lk-poya* *sg-gazette* *kh-gazette*
-                 *co-transfers* *cl-transfers* *ar-transfers* *nyse-special-closures*))
+                 *co-transfers* *cl-transfers* *ar-transfers*))
     (when (boundp sym)
       (setf (symbol-value sym) nil)))
   (%bump-data-generation)

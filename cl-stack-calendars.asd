@@ -1,5 +1,5 @@
 (defsystem "cl-stack-calendars"
-  :version "0.49.0"
+  :version "0.50.0"
   :description "Holiday and trading calendars for cl-stack (business days, sessions, versioned as-of)"
   :author "egao1980"
   :license "MIT"
@@ -22,7 +22,6 @@
                (:file "trading-session")
                (:file "registry")
                (:file "starter-calendars")
-               (:file "starter-nyse")
                (:file "starter-russian")
                (:file "starter-japan")
                (:file "starter-china")

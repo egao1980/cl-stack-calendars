@@ -97,17 +97,20 @@ kind must implement this."))
 (defgeneric calendar-coverage (calendar)
   (:documentation "The years CALENDAR has holiday data for: NIL when it is not
 bounded (rule calendars built from statute), (FROM-YEAR . TO-YEAR) for a
-data-derived calendar, or :NONE for an empty stub. A strict calendar signals
+data-derived calendar, (FROM-YEAR . NIL) for one modeled from FROM-YEAR on
+(the NYSE from 1953), or :NONE for an empty stub. A strict calendar signals
 CALENDAR-OUT-OF-RANGE from HOLIDAY-P outside its coverage."))
 
 (defmethod calendar-coverage ((calendar holiday-calendar))
   nil)
 
 (defun date-covered-p (coverage date)
-  "True when DATE lies inside COVERAGE (see CALENDAR-COVERAGE)."
+  "True when DATE lies inside COVERAGE (see CALENDAR-COVERAGE). A NIL TO-YEAR
+is open-ended: (1953) covers 1953 onward."
   (cond ((null coverage) t)
         ((eq coverage :none) nil)
-        (t (<= (car coverage) (date-year date) (cdr coverage)))))
+        (t (and (<= (car coverage) (date-year date))
+                (or (null (cdr coverage)) (<= (date-year date) (cdr coverage)))))))
 
 (defun call-with-coverage (calendar date strict thunk)
   "Call THUNK (HOLIDAY-P's body) when DATE is covered or STRICT is NIL.

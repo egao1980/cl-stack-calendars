@@ -79,7 +79,8 @@ day, or an unbroken run of holidays).")
   ((calendar :initarg :calendar :reader calendar-out-of-range-calendar)
    (date :initarg :date :reader calendar-out-of-range-date)
    (coverage :initarg :coverage :initform nil :reader calendar-out-of-range-coverage
-             :documentation "(FROM-YEAR . TO-YEAR), or :NONE for a stub."))
+             :documentation "(FROM-YEAR . TO-YEAR), (FROM-YEAR . NIL) when
+open-ended, or :NONE for a stub."))
   (:documentation "Signaled by HOLIDAY-P when DATE lies outside the years a
 data-derived calendar covers (see CALENDAR-COVERAGE), or the calendar is an
 empty stub. Restarts: USE-VALUE (return that as HOLIDAY-P's value) and
@@ -90,6 +91,8 @@ get NIL without a signal.")
                (format stream "~a: ~a is outside the calendar's data (~a)"
                        (calendar-name (calendar-out-of-range-calendar condition))
                        (calendar-out-of-range-date condition)
-                       (if (consp coverage)
-                           (format nil "covers ~d–~d" (car coverage) (cdr coverage))
-                           "stub with no holiday data"))))))
+                       (cond ((and (consp coverage) (cdr coverage))
+                              (format nil "covers ~d–~d" (car coverage) (cdr coverage)))
+                             ((consp coverage)
+                              (format nil "covers ~d onward" (car coverage)))
+                             (t "stub with no holiday data")))))))

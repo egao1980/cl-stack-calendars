@@ -6,6 +6,8 @@
 ;;;;
 ;;;; Data: data/exchanges/calendars/<NAME>.sexp
 ;;;;   (:name "XPAR" :title "…" :authority "…" :authority-uri "…"
+;;;;    :coverage (1953 nil)            ; years modeled (TO NIL = open-ended);
+;;;;                                    ; outside: CALENDAR-OUT-OF-RANGE
 ;;;;    :weekend (6 7)                  ; or eras ((NIL 5 6) ((2026 1 4) 6 7))
 ;;;;    :include ("EURONEXT")           ; family files whose rules, bases and
 ;;;;                                    ; notices also apply (before ours)
@@ -101,6 +103,11 @@ A :COMPUTED clause names its date function (EXCHANGE-DATE-FUNCTION)."
    (authority :initarg :authority :initform nil :reader exchange-calendar-authority)
    (authority-uri :initarg :authority-uri :initform nil
                   :reader exchange-calendar-authority-uri)
+   (coverage :initarg :coverage :initform nil :reader %exchange-calendar-coverage
+             :documentation "Years the calendar is modeled for, (FROM-YEAR . TO-YEAR)
+with TO-YEAR NIL for open-ended, or NIL (unbounded). Outside it a strict
+calendar signals CALENDAR-OUT-OF-RANGE (CALENDAR-COVERAGE).")
+   (strict :initarg :strict :initform t :reader calendar-strict-p)
    (rules :initarg :rules :initform nil :reader exchange-calendar-rules
           :documentation "A RULE-CALENDAR of the exchange's recurring closures, or NIL.")
    (no-settlement-rules :initarg :no-settlement-rules :initform nil
@@ -199,6 +206,17 @@ circular moving a holiday) revokes the closure."
           (when (and hp (not (member name (getf base :except) :test #'equal)))
             (return-from holiday-p (values t name))))))
     (values nil nil)))
+
+(defmethod calendar-coverage ((calendar exchange-holiday-calendar))
+  (%exchange-calendar-coverage calendar))
+
+(defmethod holiday-p :around ((calendar exchange-holiday-calendar) date)
+  "Outside the calendar's :COVERAGE a strict calendar signals
+CALENDAR-OUT-OF-RANGE (USE-VALUE and CONTINUE restarts, CALL-WITH-COVERAGE)."
+  (if (%exchange-calendar-coverage calendar)
+      (call-with-coverage calendar date (calendar-strict-p calendar)
+                          (lambda () (call-next-method)))
+      (call-next-method)))
 
 (defun exchange-calendar-opened-p (calendar date)
   "True when a notice of CALENDAR opens DATE (:OPEN or :SESSIONS) and no
@@ -313,8 +331,10 @@ notices that names none, so an included family file keeps its own clock."
 
 (defun make-exchange-calendar (plist)
   "Build an EXCHANGE-HOLIDAY-CALENDAR from PLIST, the data-file format above
-with any :INCLUDE files already merged in (as LOAD-EXCHANGE-CALENDAR does)."
-  (let ((weekend (or (getf plist :weekend) '(6 7))))
+with any :INCLUDE files already merged in (as LOAD-EXCHANGE-CALENDAR does).
+:COVERAGE (FROM-YEAR TO-YEAR-OR-NIL) bounds the years it is modeled for."
+  (let ((weekend (or (getf plist :weekend) '(6 7)))
+        (coverage (getf plist :coverage)))
     (flet ((rule-calendar (clauses)
              (when clauses
                (make-instance 'rule-calendar
@@ -327,6 +347,7 @@ with any :INCLUDE files already merged in (as LOAD-EXCHANGE-CALENDAR does)."
                      :title (getf plist :title)
                      :authority (getf plist :authority)
                      :authority-uri (getf plist :authority-uri)
+                     :coverage (and coverage (cons (first coverage) (second coverage)))
                      :weekend-days weekend
                      :rules (rule-calendar (getf plist :rules))
                      :no-settlement-rules (rule-calendar (getf plist :no-settlement-rules))
@@ -385,5 +406,20 @@ ones), as (NAME . NOTICE-PLIST)."
   (loop for name in names
         append (mapcar (lambda (notice) (cons name notice))
                        (getf (read-data-form (%exchange-calendar-path name)) :notices))))
+
+(defun nyse-holidays-calendar ()
+  "The NYSE trading-holiday calendar: data/exchanges/calendars/NYSE.sexp (the
+NYSE's holiday rules and its closing notices, modeled from 1953; #11, #50)."
+  (load-exchange-calendar "NYSE"))
+
+(defun load-nyse-special-closures ()
+  "CALENDAR-TRANSFERs (nil FROM) for every closed day of the NYSE calendar's
+notices (data/exchanges/calendars/NYSE.sexp), one per :CLOSED row."
+  (loop for notice in (exchange-calendar-notices (find-calendar "NYSE"))
+        nconc (loop for (ymd name) in (getf notice :closed)
+                    collect (make-calendar-transfer
+                             :from nil :to (%ymd->date ymd)
+                             :name name
+                             :authority (getf notice :uri)))))
 
 (register-exchange-calendars)
