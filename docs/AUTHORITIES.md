@@ -350,7 +350,7 @@ trading day; a day between two eras is closed.
 
 ### Exchange trading-holiday calendars (#49)
 
-Since 0.39.0 (Western Europe; 0.40.0 the Nordics; 0.41.0 CEE, Athens and Istanbul; 0.43.0 XTKS, XOSE, XKRX and XTAI; 0.44.0 XHKG, XSHG, XSHE, XSGE, XINE, XDCE and XZCE; 0.45.0 XNSE, XBOM, XIMC and XASX; 0.46.0 XSES, XKLS, XIDX, XPHS, XBKK and XSTC; 0.47.0 BVMF, XTSE, XSAU and XTAE) a MIC can use the exchange's own holiday calendar instead of the
+Since 0.39.0 (Western Europe; 0.40.0 the Nordics; 0.41.0 CEE, Athens and Istanbul; 0.43.0 XTKS, XOSE, XKRX and XTAI; 0.44.0 XHKG, XSHG, XSHE, XSGE, XINE, XDCE and XZCE; 0.45.0 XNSE, XBOM, XIMC and XASX; 0.46.0 XSES, XKLS, XIDX, XPHS, XBKK and XSTC; 0.47.0 BVMF, XTSE, XSAU and XTAE; 0.49.0 the CME family XCME, XCBT, XCEC and XNYM) a MIC can use the exchange's own holiday calendar instead of the
 national civil one: `data/exchanges/calendars/<NAME>.sexp`, an
 `exchange-holiday-calendar` whose `calendar-provenance` is `:exchange`. Each file
 holds the exchange's recurring rules (`define-calendar` clause syntax, each with
@@ -410,9 +410,36 @@ no longer differs. Before the gold's first year the rules are applied unverified
 `docs/COVERAGE.md` lists each MIC's calendar, notices, gold range and recorded
 differences.
 
+### CME Globex (#48, 0.49.0)
+
+`CME` (family) holds CME Group's Globex holidays: closures (New Year's Day
+Sunday→Monday, Good Friday, Christmas nearest weekday) as `:rules`, the Globex
+holidays that trade without a settlement as `:no-settlement-rules` (MLK,
+Presidents, Memorial, Juneteenth from 2022 with a Saturday moving to no weekday,
+Independence nearest weekday, Labor, Thanksgiving), and one notice per yearly
+CME Globex holiday schedule 2009–2022 (cmegroup.com holiday calendar; Wayback
+copies, since cmegroup.com refuses automated fetches), each with a `:groups`
+section per product group: closures, openings (Good Friday sessions 2010, 2012,
+2015, 2021), no-settlement and settlement days, early closes and halts, per-day
+hours (05:00 CT opens after New Year's / Christmas 2009–2013, grains 08:30 opens
+with no night session). 2018-12-05 and 2025-01-09 (National Days of Mourning)
+are CME press-release / trading-schedule notices; 2023–2027 are CME Clearing
+holiday advisories and the trading-hours page (Good Friday 2023 and 2026
+abbreviated equity sessions without a settlement). The product-group calendars
+`CME-EQUITY`, `CME-INTEREST-RATE`, `CME-FX`, `CME-ENERGY`, `CME-METALS` and
+`CME-GRAINS` include it; `CME-GRAINS` also closes the no-settlement holidays.
+The hours files give each group's regular close by era as the schedules print
+it (equity 15:15 → 16:15 at the end of 2012 → 16:00 after Labor Day 2015;
+energy/metals 16:15 → 16:00; grains 13:15 / 14:00 / 13:15 / 13:20) and, from
+2023, the 2021–2022 halt and early-close pattern as rules (unverified: CME
+publishes no schedule files after 2022). Each extracted schedule day is gold
+(`data/tests/exchanges/CME-notices.sexp`, `tests/cme-calendar-test.lisp`).
+
 | MIC | Current RTH | Last hour-change |
 |-----|-------------|------------------|
 | XNYS / XNAS | 09:30–16:00 ET | 1985-09-30 open 09:30 (NYSE timeline) |
+| XCME / XNYM / XCEC | 17:00–16:00 CT (Globex, labelled by close) | equity, energy, metals close 16:15 → 16:00 after Labor Day 2015 |
+| XCBT (grains) | 19:00–07:45 / 08:30–13:20 CT | 13:15 → 13:20 in 2015 |
 | XLON | 08:00–16:30 | SETS 1997-10-20 |
 | XTKS | 09:00–11:30 / 12:30–15:30 | JPX arrowhead 4.0 2024-11-05 |
 | XHKG | 09:30–12:00 / 13:00–16:00 | HKEX phase 2 2012-03-05 |

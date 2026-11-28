@@ -12,7 +12,10 @@
 ;;;;            :days ((ISO-WEEKDAY (:open (H M) :close (H M)) …) …) ; same, any weekday
 ;;;;            :weekend (7) :authority "…") …)
 ;;;;    :early-close-rules ((:kind :black-friday :from … :close (13 0) :authority "…") …)
-;;;;    :early-closes (((Y M D) (H M) "note") …))
+;;;;    :early-closes (((Y M D) (H M) "note") …)
+;;;;    :product-group :equity            ; the group the file's own hours are for
+;;;;    :product-groups ((:id :fx :calendar "CME-FX" :eras (…)
+;;;;                      :early-close-rules (…)) …))   ; other groups of the MIC
 ;;;;
 ;;;; Regular hours are exchange-rule eras (not TZ — TZ is resolved per
 ;;;; boundary via TRADING-SESSION). A notice of the exchange calendar can give
@@ -20,7 +23,12 @@
 ;;;; weekday hours (:OPEN), or hold special sessions apart from regular trading
 ;;;; (:SPECIAL-SESSIONS, EXCHANGE-SPECIAL-SESSIONS-FOR-DATE). Early closes
 ;;;; override the last segment. Overnight segments use TRADING-SESSION
-;;;; :OVERNIGHT / :LABELED-BY.
+;;;; :OVERNIGHT / :LABELED-BY. A MIC with product groups (CME Group: equity,
+;;;; interest-rate, FX, energy, metals, grains) has one hours and calendar
+;;;; per group: FIND-EXCHANGE and every exchange session function take
+;;;; :PRODUCT-GROUP (NIL = the headline group). The early-close kind
+;;;; :NO-SETTLEMENT-DAY closes early on the calendar's no-settlement days
+;;;; (Globex holiday halts; :NAMES limits it to some holidays).
 
 (defvar *exchange-hours-cache*
   #+sbcl (make-hash-table :test #'equal :synchronized t)
@@ -44,7 +52,13 @@
 
 (defstruct (exchange-hours (:constructor %make-exchange-hours))
   mic name zone calendar-name kind weekend eras early-close-rules early-closes
-  late-open-rules late-opens source)
+  late-open-rules late-opens source
+  ;; The product group these hours are for (CME: :EQUITY, :ENERGY …), or NIL
+  ;; for a MIC with one schedule.
+  product-group
+  ;; ((ID . EXCHANGE-HOURS) …): every product group of the MIC, headline
+  ;; first (:PRODUCT-GROUP and :PRODUCT-GROUPS in the data); NIL without groups.
+  group-hours)
 
 (defun %ymd->date (ymd)
   (when ymd
@@ -107,7 +121,7 @@
               (list (%ymd->date ymd) (%tod-list tod) note)))
           rows))
 
-(defun load-exchange-hours-plist (plist)
+(defun %exchange-hours-from-plist (plist)
   (%make-exchange-hours
    :mic (string-upcase (getf plist :mic))
    :name (getf plist :name)
@@ -120,7 +134,41 @@
    :early-closes (%parse-early-closes (getf plist :early-closes))
    :late-open-rules (mapcar #'%parse-early-rule (getf plist :late-open-rules))
    :late-opens (%parse-early-closes (getf plist :late-opens))
-   :source (getf plist :source)))
+   :source (getf plist :source)
+   :product-group (getf plist :product-group)))
+
+(defun %product-group-plist (parent group)
+  "The hours plist of product GROUP (a :PRODUCT-GROUPS entry, :ID naming it):
+GROUP's keys, then PARENT's for the ones GROUP leaves out (:ZONE, :KIND, …).
+The parent's early closes and late opens are its own, never inherited."
+  (let ((plist (list :product-group (getf group :id))))
+    (loop for (key value) on group by #'cddr
+          unless (eq key :id)
+            do (setf plist (list* key value plist)))
+    (loop for (key value) on parent by #'cddr
+          unless (or (member key '(:product-group :product-groups :early-close-rules
+                                   :early-closes :late-open-rules :late-opens))
+                     (nth-value 2 (get-properties plist (list key))))
+            do (setf plist (list* key value plist)))
+    plist))
+
+(defun load-exchange-hours-plist (plist)
+  "EXCHANGE-HOURS from a data/exchanges/<MIC>.sexp PLIST. With :PRODUCT-GROUP
+the file's own hours are that (headline) group's, and each :PRODUCT-GROUPS
+entry (:ID keyword plus the keys that differ: :NAME :CALENDAR :ERAS
+:EARLY-CLOSE-RULES …) is another group of the MIC (FIND-EXCHANGE
+:PRODUCT-GROUP)."
+  (let* ((headline (%exchange-hours-from-plist plist))
+         (groups (cons (cons (exchange-hours-product-group headline) headline)
+                       (mapcar (lambda (group)
+                                 (cons (getf group :id)
+                                       (%exchange-hours-from-plist
+                                        (%product-group-plist plist group))))
+                               (getf plist :product-groups)))))
+    (when (exchange-hours-product-group headline)
+      (dolist (entry groups)
+        (setf (exchange-hours-group-hours (cdr entry)) groups)))
+    headline))
 
 (defun load-exchange-hours-file (path)
   (load-exchange-hours-plist (read-data-form path)))
@@ -142,14 +190,46 @@
         (setf (gethash (exchange-hours-mic ex) *exchange-hours-cache*) ex))))
   *exchange-hours-cache*)
 
-(defun find-exchange (mic &key (errorp t))
-  "Look up EXCHANGE-HOURS by ISO 10383 MIC (e.g. \"XNYS\")."
+(defun find-exchange (mic &key (errorp t) product-group)
+  "Look up EXCHANGE-HOURS by ISO 10383 MIC (e.g. \"XNYS\"). PRODUCT-GROUP
+(a keyword, CME: :EQUITY :INTEREST-RATE :FX :ENERGY :METALS :GRAINS) picks
+the hours and calendar of one product group of the MIC; NIL is the MIC's
+headline group (EXCHANGE-HOURS-PRODUCT-GROUP of the result). An unknown
+group signals EXCHANGE-PRODUCT-GROUP-NOT-FOUND (restart USE-VALUE)."
   (load-all-exchange-hours)
   (let ((ex (gethash (string-upcase mic) *exchange-hours-cache*)))
-    (cond (ex ex)
-          (errorp (error 'calendar-not-found :calendar-name (string-upcase mic)
-                         :message (format nil "no exchange hours for MIC ~s" mic)))
-          (t nil))))
+    (cond ((null ex)
+           (when errorp
+             (error 'calendar-not-found :calendar-name (string-upcase mic)
+                                        :message (format nil "no exchange hours for MIC ~s" mic))))
+          (t (%exchange-product-group ex product-group)))))
+
+(defun %exchange-product-group (exchange product-group)
+  "The hours of EXCHANGE's MIC for PRODUCT-GROUP (NIL: EXCHANGE itself)."
+  (if (or (null product-group)
+          (eq product-group (exchange-hours-product-group exchange)))
+      exchange
+      (let ((entry (assoc product-group (exchange-hours-group-hours exchange))))
+        (if entry
+            (cdr entry)
+            (restart-case
+                (error 'exchange-product-group-not-found
+                       :mic (exchange-hours-mic exchange)
+                       :product-group product-group
+                       :known (exchange-product-groups exchange))
+              (use-value (group)
+                :report "Use another product group (NIL for the headline one)."
+                :interactive (lambda ()
+                               (format *query-io* "Product group: ")
+                               (list (read *query-io*)))
+                (%exchange-product-group
+                 (find-exchange (exchange-hours-mic exchange)) group)))))))
+
+(defun exchange-product-groups (exchange)
+  "The product groups of EXCHANGE (EXCHANGE-HOURS or MIC), headline first,
+or NIL for a MIC with one schedule."
+  (let ((ex (if (exchange-hours-p exchange) exchange (find-exchange exchange))))
+    (mapcar #'car (exchange-hours-group-hours ex))))
 
 (defun list-exchanges ()
   (load-all-exchange-hours)
@@ -200,10 +280,23 @@ or return NIL when ERRORP is NIL."
 (defun %weekday-p (date)
   (<= 1 (date-day-of-week date) 5))
 
-(defun %early-close-from-rule (rule date)
+(defun %early-close-from-rule (rule date &optional exchange)
+  "The close (or open) RULE gives DATE, or NIL. EXCHANGE is needed by the
+kinds that look at its calendar (:NO-SETTLEMENT-DAY)."
   (when (%rule-in-window-p rule date)
     (let ((args (exchange-early-close-rule-args rule)))
       (ecase (exchange-early-close-rule-kind rule)
+        (:no-settlement-day
+         ;; (:kind :no-settlement-day [:names ("…")]): a trading day without a
+         ;; settlement on EXCHANGE's calendar (a CME Globex holiday halt),
+         ;; only those holidays when :NAMES is given.
+         (when exchange
+           (multiple-value-bind (no-settlement name)
+               (exchange-calendar-no-settlement-p (exchange-calendar exchange) date)
+             (when (and no-settlement
+                        (or (null (getf args :names))
+                            (member name (getf args :names) :test #'equal)))
+               (exchange-early-close-rule-close rule)))))
         (:easter
          ;; (:kind :easter :offset N): Easter Sunday + N days (Ash Wednesday -46).
          (when (= date (+ (easter-western (date-year date)) (getf args :offset)))
@@ -271,31 +364,32 @@ or return NIL when ERRORP is NIL."
                         (%weekday-p date)))
            (exchange-early-close-rule-close rule)))))))
 
-(defun exchange-early-close (exchange date)
+(defun exchange-early-close (exchange date &key product-group)
   "TIME-OF-DAY early close on DATE, or NIL.
 Second value is the note / rule authority when an early close applies.
 Adhoc rows are (DATE TOD NOTE); TOD is the close, not the note. Then the
 notices of the exchange calendar (a notice written on another zone's clock,
 such as Euronext's CET for Lisbon, is converted to the exchange zone), then
 the early-close rules. A notice close of :NONE cancels a rule's early close
-that day."
-  (let ((row (find date (exchange-hours-early-closes exchange)
-                   :key #'first :test #'=)))
-    (when row
-      (return-from exchange-early-close
-        (values (second row) (or (third row) "adhoc early close")))))
-  (multiple-value-bind (tod note clock)
-      (exchange-calendar-early-close (exchange-calendar exchange) date)
-    (when tod
-      (return-from exchange-early-close
-        (if (eq tod :none)
-            (values nil nil)
-            (values (%wall-time-in-zone date tod clock (exchange-hours-zone exchange))
-                    note)))))
-  (loop for rule in (exchange-hours-early-close-rules exchange)
-        for tod = (%early-close-from-rule rule date)
-        when tod
-          return (values tod (exchange-early-close-rule-authority rule))))
+that day. PRODUCT-GROUP as for FIND-EXCHANGE (NIL: EXCHANGE's own group)."
+  (let ((exchange (%exchange-product-group exchange product-group)))
+    (let ((row (find date (exchange-hours-early-closes exchange)
+                     :key #'first :test #'=)))
+      (when row
+        (return-from exchange-early-close
+          (values (second row) (or (third row) "adhoc early close")))))
+    (multiple-value-bind (tod note clock)
+        (exchange-calendar-early-close (exchange-calendar exchange) date)
+      (when tod
+        (return-from exchange-early-close
+          (if (eq tod :none)
+              (values nil nil)
+              (values (%wall-time-in-zone date tod clock (exchange-hours-zone exchange))
+                      note)))))
+    (loop for rule in (exchange-hours-early-close-rules exchange)
+          for tod = (%early-close-from-rule rule date exchange)
+          when tod
+            return (values tod (exchange-early-close-rule-authority rule)))))
 
 (defun %apply-early-close (sessions early)
   "Drop/shorten same-day segments so the last remaining close is EARLY.
@@ -351,15 +445,17 @@ shortened when EARLY is before that close on the label date."
     (when plists
       (%notice-session-specs exchange date plists clock))))
 
-(defun exchange-special-sessions-for-date (exchange date)
+(defun exchange-special-sessions-for-date (exchange date &key product-group)
   "Special sessions EXCHANGE holds on DATE apart from regular trading (NSE/BSE
 Muhurat), from its calendar's notices: (values SPECS NOTE), or NIL. They do
 not make DATE a trading day: EXCHANGE-TRADING-DAY-P and
-EXCHANGE-SESSIONS-FOR-DATE leave them out."
-  (multiple-value-bind (plists note clock)
-      (exchange-calendar-special-sessions (exchange-calendar exchange) date)
-    (when plists
-      (values (%notice-session-specs exchange date plists clock) note))))
+EXCHANGE-SESSIONS-FOR-DATE leave them out. PRODUCT-GROUP as for
+FIND-EXCHANGE."
+  (let ((exchange (%exchange-product-group exchange product-group)))
+    (multiple-value-bind (plists note clock)
+        (exchange-calendar-special-sessions (exchange-calendar exchange) date)
+      (when plists
+        (values (%notice-session-specs exchange date plists clock) note)))))
 
 (defun %regular-rule-p (rule)
   "True for a late-open rule marked :REGULAR T: the later open is part of the
@@ -388,7 +484,7 @@ and INE hold no night session on the evening before a statutory holiday)."
       (:after-weekday-closure
        (when (%after-weekday-closure-p exchange date)
          (exchange-early-close-rule-close rule)))
-      (t (%early-close-from-rule rule date)))))
+      (t (%early-close-from-rule rule date exchange)))))
 
 (defun %regular-late-open (exchange date)
   "The open a :REGULAR late-open rule of EXCHANGE gives DATE, or NIL. Second
@@ -449,29 +545,31 @@ segments only; an overnight leg is kept as it is)."
           (error 'calendar-error
                  :message (format nil "late open ~a follows all session closes" late)))))
 
-(defun exchange-late-open (exchange date)
+(defun exchange-late-open (exchange date &key product-group)
   "TIME-OF-DAY late open on DATE, or NIL. Second value is the note or rule
 authority. Adhoc rows are (DATE TOD NOTE), then the exchange calendar's
 notices (converted from their clock; :NONE cancels a rule's late open), then
 the late-open rules that are not :REGULAR (those shape the regular hours, see
-%REGULAR-LATE-OPEN)."
-  (let ((row (find date (exchange-hours-late-opens exchange)
-                   :key #'first :test #'=)))
-    (when row
-      (return-from exchange-late-open
-        (values (second row) (or (third row) "adhoc late open")))))
-  (multiple-value-bind (tod note clock)
-      (exchange-calendar-late-open (exchange-calendar exchange) date)
-    (when tod
-      (return-from exchange-late-open
-        (if (eq tod :none)
-            (values nil nil)
-            (values (%wall-time-in-zone date tod clock (exchange-hours-zone exchange))
-                    note)))))
-  (loop for rule in (exchange-hours-late-open-rules exchange)
-        for tod = (and (not (%regular-rule-p rule)) (%early-close-from-rule rule date))
-        when tod
-          return (values tod (exchange-early-close-rule-authority rule))))
+%REGULAR-LATE-OPEN). PRODUCT-GROUP as for FIND-EXCHANGE."
+  (let ((exchange (%exchange-product-group exchange product-group)))
+    (let ((row (find date (exchange-hours-late-opens exchange)
+                     :key #'first :test #'=)))
+      (when row
+        (return-from exchange-late-open
+          (values (second row) (or (third row) "adhoc late open")))))
+    (multiple-value-bind (tod note clock)
+        (exchange-calendar-late-open (exchange-calendar exchange) date)
+      (when tod
+        (return-from exchange-late-open
+          (if (eq tod :none)
+              (values nil nil)
+              (values (%wall-time-in-zone date tod clock (exchange-hours-zone exchange))
+                      note)))))
+    (loop for rule in (exchange-hours-late-open-rules exchange)
+          for tod = (and (not (%regular-rule-p rule))
+                         (%early-close-from-rule rule date exchange))
+          when tod
+            return (values tod (exchange-early-close-rule-authority rule)))))
 
 (defun %weekly-sessions-for-date (exchange date)
   "Session specs from the hours era's trading week alone (no holidays),
@@ -481,41 +579,78 @@ after the late-open and early-close overlays. NIL for a day between two eras."
       (%apply-early-close (%apply-late-open sessions (exchange-late-open exchange date))
                           (exchange-early-close exchange date)))))
 
-(defun exchange-holiday-p (exchange date)
+(defun exchange-holiday-p (exchange date &key product-group)
   "True when DATE is a holiday on EXCHANGE's attached holiday calendar.
 Second value is the holiday name. Only holidays close the Exchange: the
-hours era encodes the trading week (Sun–Thu, historical Saturdays)."
-  (let ((cal (exchange-calendar exchange)))
+hours era encodes the trading week (Sun–Thu, historical Saturdays).
+PRODUCT-GROUP as for FIND-EXCHANGE (a group can have its own calendar)."
+  (let ((cal (exchange-calendar (%exchange-product-group exchange product-group))))
     (if cal (holiday-p cal date) (values nil nil))))
 
-(defun exchange-sessions-for-date (exchange date)
+(defun exchange-sessions-for-date (exchange date &key product-group)
   "List of EXCHANGE-SESSION-SPEC for DATE (after early-close overlay).
-NIL on a weekend of the hours era or a holiday of the exchange calendar."
-  (unless (exchange-holiday-p exchange date)
-    (%weekly-sessions-for-date exchange date)))
+NIL on a weekend of the hours era or a holiday of the exchange calendar.
+PRODUCT-GROUP as for FIND-EXCHANGE: the sessions of that product group of
+EXCHANGE's MIC."
+  (let ((exchange (%exchange-product-group exchange product-group)))
+    (unless (exchange-holiday-p exchange date)
+      (%weekly-sessions-for-date exchange date))))
 
-(defun exchange-regular-sessions-for-date (exchange date)
+(defun exchange-regular-sessions-for-date (exchange date &key product-group)
   "The regular segments of EXCHANGE on DATE, without the early-close and
 late-open overlays. NIL on a weekend of the hours era or a holiday of the
-exchange calendar."
-  (unless (exchange-holiday-p exchange date)
-    (%era-week-sessions exchange date)))
+exchange calendar. PRODUCT-GROUP as for FIND-EXCHANGE."
+  (let ((exchange (%exchange-product-group exchange product-group)))
+    (unless (exchange-holiday-p exchange date)
+      (%era-week-sessions exchange date))))
 
 (defun exchange-calendar (exchange)
   (let ((name (exchange-hours-calendar-name exchange)))
     (when name (find-calendar name :errorp nil))))
 
-(defun exchange-trading-day-p (exchange date)
+(defun exchange-trading-day-p (exchange date &key product-group)
   "True if DATE has at least one cash-session segment: a trading-week day
-of the hours era that is not a holiday of the exchange calendar."
-  (and (exchange-sessions-for-date exchange date) t))
+of the hours era that is not a holiday of the exchange calendar. A day
+that trades without a settlement (a CME Globex holiday halt) is a trading
+day; see EXCHANGE-SETTLEMENT-DAY-P. PRODUCT-GROUP as for FIND-EXCHANGE."
+  (and (exchange-sessions-for-date exchange date :product-group product-group) t))
 
-(defun make-exchange-session (mic &key date calendar)
+(defun exchange-no-settlement-p (exchange date &key product-group)
+  "True when EXCHANGE's calendar holds no settlement on DATE (CME Globex
+holidays such as Martin Luther King Jr. Day: Globex trades and halts early,
+and the day's trades are for the next trade date). Second value is the
+holiday name. Says nothing about whether DATE trades. PRODUCT-GROUP as for
+FIND-EXCHANGE."
+  (exchange-calendar-no-settlement-p
+   (exchange-calendar (%exchange-product-group exchange product-group)) date))
+
+(defun exchange-settlement-day-p (exchange date &key product-group)
+  "True when DATE is a trade date of EXCHANGE with a settlement: a trading
+day (EXCHANGE-TRADING-DAY-P) that is not a no-settlement day
+(EXCHANGE-NO-SETTLEMENT-P). For a MIC without no-settlement days this is
+EXCHANGE-TRADING-DAY-P. PRODUCT-GROUP as for FIND-EXCHANGE."
+  (let ((exchange (%exchange-product-group exchange product-group)))
+    (and (exchange-trading-day-p exchange date)
+         (not (exchange-no-settlement-p exchange date)))))
+
+(defun exchange-trade-date (exchange date &key product-group)
+  "The trade date that EXCHANGE's trading on DATE (the session labelled DATE)
+clears on: DATE on a settlement day; on a trading day without settlement
+(a CME Globex holiday halt) the next settlement day, at most 31 days on;
+NIL when DATE does not trade. PRODUCT-GROUP as for FIND-EXCHANGE."
+  (let ((exchange (%exchange-product-group exchange product-group)))
+    (when (exchange-trading-day-p exchange date)
+      (loop for d = date then (+ d 1)
+            repeat 32
+            when (exchange-settlement-day-p exchange d)
+              return d))))
+
+(defun make-exchange-session (mic &key date calendar product-group)
   "TRADING-SESSION spanning first open → last close of MIC on DATE
 (defaults to today). Lunch-break interiors are still 'open' at the
 composite level — use EXCHANGE-SESSION-BOUNDS / EXCHANGE-OPEN-P for
-segment-accurate queries."
-  (let* ((ex (find-exchange mic))
+segment-accurate queries. PRODUCT-GROUP as for FIND-EXCHANGE."
+  (let* ((ex (find-exchange mic :product-group product-group))
          (d (or date (today)))
          (segs (or (exchange-sessions-for-date ex d)
                    (error 'calendar-error
@@ -533,12 +668,13 @@ segment-accurate queries."
        :labeled-by (exchange-session-spec-labeled-by first)
        :calendar (or calendar (exchange-calendar ex))))))
 
-(defun exchange-session-bounds (mic date)
+(defun exchange-session-bounds (mic date &key product-group)
   "Return (values FIRST-OPEN LAST-CLOSE) instants for MIC on DATE.
 Also returns the list of per-segment (open close) instant pairs as the
 third value. Signals CALENDAR-ERROR when DATE has no session (weekend of
-the hours era or holiday of the exchange calendar)."
-  (let ((ex (find-exchange mic)))
+the hours era or holiday of the exchange calendar). PRODUCT-GROUP as for
+FIND-EXCHANGE."
+  (let ((ex (find-exchange mic :product-group product-group)))
     (when (exchange-holiday-p ex date)
       (error 'calendar-error
              :message (format nil "~a is a holiday for ~a calendar"
@@ -563,9 +699,10 @@ the hours era or holiday of the exchange calendar)."
                 (second (car (last pairs)))
                 pairs)))))
 
-(defun %open-on-date-p (mic instant date)
+(defun %open-on-date-p (mic instant date &optional product-group)
   (handler-case
-      (multiple-value-bind (_ __ pairs) (exchange-session-bounds mic date)
+      (multiple-value-bind (_ __ pairs)
+          (exchange-session-bounds mic date :product-group product-group)
         (declare (ignore _ __))
         (some (lambda (pair)
                 (destructuring-bind (open close) pair
@@ -573,23 +710,28 @@ the hours era or holiday of the exchange calendar)."
               pairs))
     (calendar-error () nil)))
 
-(defun exchange-open-p (mic instant &key (date nil datep))
+(defun exchange-open-p (mic instant &key (date nil datep) product-group)
   "True if INSTANT falls in any session segment of MIC.
 Without :DATE, search local-date ± 1 so overnight Globex/SHFE legs
-that start on the previous calendar day still match."
-  (if datep
-      (%open-on-date-p mic instant date)
-      (let* ((ex (find-exchange mic))
-             (local (zoned-moment-date
-                     (instant-in-zone instant
-                                      (resolve-zone-id (exchange-hours-zone ex))))))
-        (or (%open-on-date-p mic instant local)
-            (%open-on-date-p mic instant (- local 1))
-            (%open-on-date-p mic instant (+ local 1))))))
+that start on the previous calendar day still match. PRODUCT-GROUP as for
+FIND-EXCHANGE."
+  ;; Resolve the group first, so an unknown one signals rather than reading
+  ;; as a closed market.
+  (let ((ex (find-exchange mic :product-group product-group)))
+    (if datep
+        (%open-on-date-p mic instant date product-group)
+        (let ((local (zoned-moment-date
+                      (instant-in-zone instant
+                                       (resolve-zone-id (exchange-hours-zone ex))))))
+          (or (%open-on-date-p mic instant local product-group)
+              (%open-on-date-p mic instant (- local 1) product-group)
+              (%open-on-date-p mic instant (+ local 1) product-group))))))
 
-(defun exchange-session-duration (mic date)
-  "Absolute duration of all cash-session segments on DATE (lunch excluded)."
-  (multiple-value-bind (_ __ pairs) (exchange-session-bounds mic date)
+(defun exchange-session-duration (mic date &key product-group)
+  "Absolute duration of all cash-session segments on DATE (lunch excluded).
+PRODUCT-GROUP as for FIND-EXCHANGE."
+  (multiple-value-bind (_ __ pairs)
+      (exchange-session-bounds mic date :product-group product-group)
     (declare (ignore _ __))
     (reduce #'+ pairs :key (lambda (p) (- (second p) (first p)))
-            :initial-value (make-duration 0))))
+                      :initial-value (make-duration 0))))

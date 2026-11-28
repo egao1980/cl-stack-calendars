@@ -87,6 +87,13 @@ CALENDARS = {
     "XTSE": ("XTSE", "2000-01-01", "2028-12-31"),
     "XSAU": ("XSAU", "2021-01-01", "2026-12-31"),
     "XTAE": ("XTAE", "2013-01-01", "2028-12-31"),
+    # CME Group (#48): exchange_calendars has one CMES calendar for every CME
+    # Group product (CME, CBOT, COMEX and NYMEX are aliases of it); each MIC is
+    # checked against it from the first CME Globex holiday schedule found.
+    "XCME": ("CMES", "2009-01-01", "2027-12-31"),
+    "XCBT": ("CMES", "2009-01-01", "2027-12-31"),
+    "XCEC": ("CMES", "2009-01-01", "2027-12-31"),
+    "XNYM": ("CMES", "2009-01-01", "2027-12-31"),
 }
 
 

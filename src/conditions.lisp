@@ -17,6 +17,23 @@ lookups) when no matching calendar/snapshot exists.")
                      (or (calendar-error-message condition)
                          (format nil "no calendar registered as ~s" (calendar-not-found-calendar-name condition)))))))
 
+(define-condition exchange-product-group-not-found (calendar-error)
+  ((mic :initarg :mic :initform nil :reader exchange-product-group-not-found-mic)
+   (product-group :initarg :product-group :initform nil
+                  :reader exchange-product-group-not-found-product-group)
+   (known :initarg :known :initform nil
+          :reader exchange-product-group-not-found-known
+          :documentation "The product groups the MIC has."))
+  (:documentation "Signaled by FIND-EXCHANGE (and every exchange function
+taking :PRODUCT-GROUP) when the MIC has no such product group. Restart
+USE-VALUE retries with another group (NIL = the headline one).")
+  (:report (lambda (condition stream)
+             (format stream "~a has no product group ~s (it has ~{~s~^ ~})"
+                     (exchange-product-group-not-found-mic condition)
+                     (exchange-product-group-not-found-product-group condition)
+                     (or (exchange-product-group-not-found-known condition)
+                         '(:none))))))
+
 (define-condition duplicate-snapshot-version (calendar-error)
   ((calendar :initarg :calendar :initform nil
              :reader duplicate-snapshot-version-calendar)
