@@ -53,6 +53,8 @@ of its own."))
 
   :NORMATIVE       hand-maintained rules, each citing its statute, decree or
                    proclamation in :AUTHORITY (DEFINE-CALENDAR starters);
+  :EXCHANGE        an exchange's own trading-holiday rules and notices
+                   (EXCHANGE-HOLIDAY-CALENDAR, data/exchanges/calendars/);
   :CORPUS-DERIVED  rules inferred from the date-holidays corpus by
                    recurrence, checked against no statute;
   :CORPUS          the corpus table itself (COUNTRY-CALENDAR);

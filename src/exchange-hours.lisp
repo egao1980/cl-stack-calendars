@@ -31,11 +31,11 @@
   from to sessions friday saturday weekend authority)
 
 (defstruct (exchange-early-close-rule (:constructor %make-exchange-early-close-rule))
-  kind from to close authority)
+  kind from to close authority args)
 
 (defstruct (exchange-hours (:constructor %make-exchange-hours))
   mic name zone calendar-name kind weekend eras early-close-rules early-closes
-  source)
+  late-open-rules late-opens source)
 
 (defun %ymd->date (ymd)
   (when ymd
@@ -70,12 +70,14 @@
    :authority (getf plist :authority)))
 
 (defun %parse-early-rule (plist)
+  "An early-close (or, with :OPEN, a late-open) rule from its data PLIST."
   (%make-exchange-early-close-rule
    :kind (getf plist :kind)
    :from (%ymd->date (getf plist :from))
    :to (%ymd->date (getf plist :to))
-   :close (%tod-list (getf plist :close))
-   :authority (getf plist :authority)))
+   :close (%tod-list (or (getf plist :close) (getf plist :open)))
+   :authority (getf plist :authority)
+   :args plist))
 
 (defun %parse-early-closes (rows)
   (mapcar (lambda (row)
@@ -94,6 +96,8 @@
    :eras (mapcar #'%parse-era (getf plist :eras))
    :early-close-rules (mapcar #'%parse-early-rule (getf plist :early-close-rules))
    :early-closes (%parse-early-closes (getf plist :early-closes))
+   :late-open-rules (mapcar #'%parse-early-rule (getf plist :late-open-rules))
+   :late-opens (%parse-early-closes (getf plist :late-opens))
    :source (getf plist :source)))
 
 (defun load-exchange-hours-file (path)
@@ -176,59 +180,90 @@ or return NIL when ERRORP is NIL."
 
 (defun %early-close-from-rule (rule date)
   (when (%rule-in-window-p rule date)
-    (ecase (exchange-early-close-rule-kind rule)
-      (:black-friday
-       (when (= date (+ (%thanksgiving-date (date-year date)) 1))
-         (exchange-early-close-rule-close rule)))
-      (:christmas-eve-weekday
-       (when (and (= (date-month date) 12) (= (date-day date) 24)
-                  (%weekday-p date))
-         (exchange-early-close-rule-close rule)))
-      (:new-years-eve-weekday
-       (when (and (= (date-month date) 12) (= (date-day date) 31)
-                  (%weekday-p date))
-         (exchange-early-close-rule-close rule)))
-      (:new-years-eve-or-preceding-friday
-       (let ((nye (make-date (date-year date) 12 31)))
-         (when (= date (if (%weekday-p nye) nye
-                           (loop for d = nye then (- d 1)
-                                 when (= (date-day-of-week d) 5) return d)))
-           (exchange-early-close-rule-close rule))))
-      (:christmas-eve-or-preceding-friday
-       (let ((eve (make-date (date-year date) 12 24)))
-         (when (= date (if (%weekday-p eve) eve
-                           (loop for d = eve then (- d 1)
-                                 when (= (date-day-of-week d) 5) return d)))
-           (exchange-early-close-rule-close rule))))
-      (:july-3-mon-tue-thu
-       (when (and (= (date-month date) 7) (= (date-day date) 3)
-                  (member (date-day-of-week date) '(1 2 4)))
-         (exchange-early-close-rule-close rule)))
-      (:july-3-wednesday
-       (when (and (= (date-month date) 7) (= (date-day date) 3)
-                  (= (date-day-of-week date) 3))
-         (exchange-early-close-rule-close rule)))
-      (:july-5-friday
-       (when (and (= (date-month date) 7) (= (date-day date) 5)
-                  (= (date-day-of-week date) 5))
-         (exchange-early-close-rule-close rule)))
-      (:hk-half-day-eves
-       ;; Christmas / NY / Lunar NY eve — morning only. Lunar NY is adhoc.
-       (when (or (and (= (date-month date) 12) (= (date-day date) 24)
-                      (%weekday-p date))
-                 (and (= (date-month date) 12) (= (date-day date) 31)
-                      (%weekday-p date)))
-         (exchange-early-close-rule-close rule))))))
+    (let ((args (exchange-early-close-rule-args rule)))
+      (ecase (exchange-early-close-rule-kind rule)
+        (:easter
+         ;; (:kind :easter :offset N): Easter Sunday + N days (Ash Wednesday -46).
+         (when (= date (+ (easter-western (date-year date)) (getf args :offset)))
+           (exchange-early-close-rule-close rule)))
+        (:fixed-weekday
+         ;; (:kind :fixed-weekday :month M :day D): that day when a weekday.
+         (when (and (= (date-month date) (getf args :month))
+                    (= (date-day date) (getf args :day))
+                    (%weekday-p date))
+           (exchange-early-close-rule-close rule)))
+        (:last-weekday-before-new-years-eve
+         ;; The last weekday of 27–30 December: the year's last trading day
+         ;; where 24–26 and 31 December are closed (Xetra, Wiener Börse).
+         (when (and (= (date-month date) 12) (<= 27 (date-day date) 30)
+                    (%weekday-p date)
+                    (loop for d from (1+ (date-day date)) to 30
+                          never (%weekday-p (make-date (date-year date) 12 d))))
+           (exchange-early-close-rule-close rule)))
+        (:black-friday
+         (when (= date (+ (%thanksgiving-date (date-year date)) 1))
+           (exchange-early-close-rule-close rule)))
+        (:christmas-eve-weekday
+         (when (and (= (date-month date) 12) (= (date-day date) 24)
+                    (%weekday-p date))
+           (exchange-early-close-rule-close rule)))
+        (:new-years-eve-weekday
+         (when (and (= (date-month date) 12) (= (date-day date) 31)
+                    (%weekday-p date))
+           (exchange-early-close-rule-close rule)))
+        (:new-years-eve-or-preceding-friday
+         (let ((nye (make-date (date-year date) 12 31)))
+           (when (= date (if (%weekday-p nye) nye
+                             (loop for d = nye then (- d 1)
+                                   when (= (date-day-of-week d) 5) return d)))
+             (exchange-early-close-rule-close rule))))
+        (:christmas-eve-or-preceding-friday
+         (let ((eve (make-date (date-year date) 12 24)))
+           (when (= date (if (%weekday-p eve) eve
+                             (loop for d = eve then (- d 1)
+                                   when (= (date-day-of-week d) 5) return d)))
+             (exchange-early-close-rule-close rule))))
+        (:july-3-mon-tue-thu
+         (when (and (= (date-month date) 7) (= (date-day date) 3)
+                    (member (date-day-of-week date) '(1 2 4)))
+           (exchange-early-close-rule-close rule)))
+        (:july-3-wednesday
+         (when (and (= (date-month date) 7) (= (date-day date) 3)
+                    (= (date-day-of-week date) 3))
+           (exchange-early-close-rule-close rule)))
+        (:july-5-friday
+         (when (and (= (date-month date) 7) (= (date-day date) 5)
+                    (= (date-day-of-week date) 5))
+           (exchange-early-close-rule-close rule)))
+        (:hk-half-day-eves
+         ;; Christmas / NY / Lunar NY eve — morning only. Lunar NY is adhoc.
+         (when (or (and (= (date-month date) 12) (= (date-day date) 24)
+                        (%weekday-p date))
+                   (and (= (date-month date) 12) (= (date-day date) 31)
+                        (%weekday-p date)))
+           (exchange-early-close-rule-close rule)))))))
 
 (defun exchange-early-close (exchange date)
   "TIME-OF-DAY early close on DATE, or NIL.
 Second value is the note / rule authority when an early close applies.
-Adhoc rows are (DATE TOD NOTE); TOD is the close, not the note."
+Adhoc rows are (DATE TOD NOTE); TOD is the close, not the note. Then the
+notices of the exchange calendar (a notice written on another zone's clock,
+such as Euronext's CET for Lisbon, is converted to the exchange zone), then
+the early-close rules. A notice close of :NONE cancels a rule's early close
+that day."
   (let ((row (find date (exchange-hours-early-closes exchange)
                    :key #'first :test #'=)))
     (when row
       (return-from exchange-early-close
         (values (second row) (or (third row) "adhoc early close")))))
+  (multiple-value-bind (tod note clock)
+      (exchange-calendar-early-close (exchange-calendar exchange) date)
+    (when tod
+      (return-from exchange-early-close
+        (if (eq tod :none)
+            (values nil nil)
+            (values (%wall-time-in-zone date tod clock (exchange-hours-zone exchange))
+                    note)))))
   (loop for rule in (exchange-hours-early-close-rules exchange)
         for tod = (%early-close-from-rule rule date)
         when tod
@@ -268,9 +303,9 @@ shortened when EARLY is before that close on the label date."
                    :message (format nil "early close ~a precedes all session opens"
                                     early))))))
 
-(defun %weekly-sessions-for-date (exchange date)
-  "Session specs from the hours era's trading week alone (no holidays).
-NIL for a day between two eras."
+(defun %era-week-sessions (exchange date)
+  "The hours era's regular segments for DATE's weekday (no holidays, no
+early close or late open). NIL on a weekend of the era or between eras."
   (let ((era (exchange-era-for-date exchange date
                                     :errorp (not (%era-gap-p exchange date)))))
     (when era
@@ -280,15 +315,60 @@ NIL for a day between two eras."
             (friday (exchange-era-friday era))
             (saturday (exchange-era-saturday era)))
         (cond
-          ((and (= dow 5) friday)
-           (%apply-early-close friday (exchange-early-close exchange date)))
-          ((and (= dow 6) saturday)
-           (%apply-early-close saturday (exchange-early-close exchange date)))
-          ((member dow weekend)
-           nil)
-          (t
-           (%apply-early-close (exchange-era-sessions era)
-                               (exchange-early-close exchange date))))))))
+          ((and (= dow 5) friday) friday)
+          ((and (= dow 6) saturday) saturday)
+          ((member dow weekend) nil)
+          (t (exchange-era-sessions era)))))))
+
+(defun %apply-late-open (sessions late)
+  "Drop/shorten segments so the first remaining open is LATE (same-day
+segments only; an overnight leg is kept as it is)."
+  (if (null late)
+      sessions
+      (or (loop for seg in sessions
+                for open = (exchange-session-spec-open seg)
+                for close = (exchange-session-spec-close seg)
+                if (exchange-session-spec-overnight seg)
+                  collect seg
+                else if (<= late open)
+                       collect seg
+                else if (< late close)
+                       collect (%make-exchange-session-spec
+                                :open late :close close :overnight nil
+                                :labeled-by (exchange-session-spec-labeled-by seg)))
+          (error 'calendar-error
+                 :message (format nil "late open ~a follows all session closes" late)))))
+
+(defun exchange-late-open (exchange date)
+  "TIME-OF-DAY late open on DATE, or NIL. Second value is the note or rule
+authority. Adhoc rows are (DATE TOD NOTE), then the exchange calendar's
+notices (converted from their clock; :NONE cancels a rule's late open), then
+the late-open rules."
+  (let ((row (find date (exchange-hours-late-opens exchange)
+                   :key #'first :test #'=)))
+    (when row
+      (return-from exchange-late-open
+        (values (second row) (or (third row) "adhoc late open")))))
+  (multiple-value-bind (tod note clock)
+      (exchange-calendar-late-open (exchange-calendar exchange) date)
+    (when tod
+      (return-from exchange-late-open
+        (if (eq tod :none)
+            (values nil nil)
+            (values (%wall-time-in-zone date tod clock (exchange-hours-zone exchange))
+                    note)))))
+  (loop for rule in (exchange-hours-late-open-rules exchange)
+        for tod = (%early-close-from-rule rule date)
+        when tod
+          return (values tod (exchange-early-close-rule-authority rule))))
+
+(defun %weekly-sessions-for-date (exchange date)
+  "Session specs from the hours era's trading week alone (no holidays),
+after the late-open and early-close overlays. NIL for a day between two eras."
+  (let ((sessions (%era-week-sessions exchange date)))
+    (when sessions
+      (%apply-early-close (%apply-late-open sessions (exchange-late-open exchange date))
+                          (exchange-early-close exchange date)))))
 
 (defun exchange-holiday-p (exchange date)
   "True when DATE is a holiday on EXCHANGE's attached holiday calendar.
@@ -302,6 +382,13 @@ hours era encodes the trading week (Sun–Thu, historical Saturdays)."
 NIL on a weekend of the hours era or a holiday of the exchange calendar."
   (unless (exchange-holiday-p exchange date)
     (%weekly-sessions-for-date exchange date)))
+
+(defun exchange-regular-sessions-for-date (exchange date)
+  "The regular segments of EXCHANGE on DATE, without the early-close and
+late-open overlays. NIL on a weekend of the hours era or a holiday of the
+exchange calendar."
+  (unless (exchange-holiday-p exchange date)
+    (%era-week-sessions exchange date)))
 
 (defun exchange-calendar (exchange)
   (let ((name (exchange-hours-calendar-name exchange)))

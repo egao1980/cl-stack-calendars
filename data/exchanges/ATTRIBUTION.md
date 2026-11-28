@@ -7,16 +7,20 @@ Each era and early-close rule cites an `:authority` (exchange notice / official 
 
 - Regular-hours (RTH / zaraba / CTS) wall-clock segments in the exchange zone
 - Historical hour changes (open/close/lunch) when an official effective date is known
-- Recurring early closes (Black Friday, Christmas Eve, …) plus a few adhoc NYSE dates
+- Recurring early closes (Black Friday, Christmas Eve, …) and late opens (`:late-open-rules`, `:late-opens`), plus adhoc dates and the early closes in the exchange calendar's notices
 
 ## What is not modeled
 
 - Pre-market / post-market / ToSTNeT / after-hours
 - Opening/closing *auctions* as separate segments (RTH spans first open → last continuous/close)
-- Exchange-only holidays for MICs whose `:calendar` is a civil one (CME family on
-  `USFED`; most non-US MICs on the national calendar). XNYS / XNAS use the
-  exchange's own `NYSE` calendar (src/starter-nyse.lisp, data/us/nyse-closures.sexp)
-- Late opens, circuit-breaker cuts, weather/disaster adhocs beyond the listed NYSE dates
+- Exchange-only holidays for MICs whose `:calendar` is still a civil one (CME family on
+  `USFED`; the MICs outside Western Europe on the national calendar, #49).
+  XNYS / XNAS use the exchange's own `NYSE` calendar (src/starter-nyse.lisp,
+  data/us/nyse-closures.sexp). Since 0.39.0 XLON, IFEU, XLME, the Euronext markets
+  (XPAR XAMS XBRU XLIS XDUB XMIL XMAT), XETR, XEUR, XEEE, XSWX, XWBO and XMAD use
+  their exchange's own calendar in `calendars/` (rules and notices, each cited;
+  docs/AUTHORITIES.md#exchange-trading-holiday-calendars-49)
+- Circuit-breaker cuts, weather/disaster adhocs beyond the listed notices
 
 The holiday calendar closes the session for every exchange query
 (`exchange-trading-day-p`, `exchange-sessions-for-date`, `exchange-session-bounds`). Hours themselves live in the sexp, not in the holiday rules.
@@ -33,16 +37,18 @@ Those libraries are Apache-2.0; we independently encode published dates.
 | XTKS | [JPX 2024-11-05](https://www.jpx.co.jp/english/corporate/news/news-releases/1030/20241105-01.html) afternoon to 15:30; prior 09:00–11:30 / 12:30–15:00 |
 | XHKG | [HKEX 2011-01-24](https://www.hkex.com.hk/News/News-Release/2011/1101243news?sc_lang=en) phase 1 2011-03-07, phase 2 2012-03-05 |
 | XSHG / XSHE | SSE/SZSE cash 09:30–11:30 / 13:00–15:00 from 1990/1991 |
-| XETR / XPAR | Xetra/Euronext cash 09:00–17:30 |
+| XETR | Xetra 09:00–17:30; 09:00–20:00 from 2000-06-02 to 2003-10-31 ([Eurex circular 116/03](https://www.eurex.com/resource/blob/294630/0f1d69ec085846ab4fc215e24d592449/data/cf1162003e.pdf.pdf)); 14:00 close on the last trading day of the year |
+| XPAR | Euronext cash 09:00–17:30 (CET clock) |
 | XASX | ASX 10:00–16:00 from SEATS 1987-10-19 |
 | XTSE | TSX 09:30–16:00 Eastern |
 | XNSE | [NSE PR 17 Dec 2009](https://nsearchives.nseindia.com/content/press/17122009.htm) 09:00 from 2010-01-04; SEBI pre-open → continuous 09:15 from 2010-10-18; prior open 09:55 |
 | BVMF | B3 cash 10:00–17:00 |
 | XKRX | Lunch abolished 2000; [close 15:30 from 2016-08-01](https://www.koreaherald.com/article/1038609) |
 | XSES | CAT 2011-08-01; [lunch restored 2017-11-13](https://www.businesstimes.com.sg/companies-markets/sgx-reintroduce-lunch-break-widen-bid-spreads-nov-13) |
-| XAMS XBRU XLIS XMIL XMAD | Euronext / BME cash 09:00–17:30 + eve 14:00 |
-| XDUB | Euronext Dublin 08:00–16:30 local (not CET 17:30) |
-| XSWX | [SIX shares](https://www.six-group.com/en/products-services/the-swiss-stock-exchange/trading/trading-provisions/trading-hours.html) 09:00–17:30 |
+| XAMS XBRU XMIL XMAD | Euronext / Borsa Italiana / BME cash 09:00–17:30; Euronext half days from the yearly notices, BME 24/31 Dec 14:00 |
+| XLIS | Euronext CET clock: 08:00–16:30 Lisbon, half days 13:00 / 13:05 |
+| XDUB | Euronext Dublin 08:00–16:28 local (continuous end; closing auction to 16:28–16:30) |
+| XSWX | [SIX shares](https://www.six-group.com/en/products-services/the-swiss-stock-exchange/trading/trading-provisions/trading-hours.html) 09:00–17:30, no early closes |
 | XSTO XCSE XHEL XICE | [Nasdaq Nordic Market Model](https://www.nasdaq.com/european-market-activity/trading-hours) — Stockholm 09:00–17:30, Copenhagen 09:00–17:00, Helsinki 10:00–18:30, Iceland 09:30–15:30 |
 | XOSL | Oslo Børs 09:00–16:20 |
 | XWBO XWAR XBUD XPRA XATH | Vienna 09:00–17:30; GPW 09:00–16:50; Budapest 09:00–17:00; Prague 09:00–16:20; ATHEX 10:15–17:20 |
@@ -63,7 +69,7 @@ Those libraries are Apache-2.0; we independently encode published dates.
 | XSGE XDCE XZCE XINE | SHFE/DCE/CZCE day breaks; SHFE night previous 21:00; INE SC night to 02:30 |
 | XIMC | MCX non-agri 09:00–23:30 IST |
 | XOSE | JPX/OSE day 08:45–15:45 + night 16:30–06:00 (`:labeled-by :open`) |
-| XEUR XEEE XMAT | Eurex 08:00–22:00; EEX 08:00–18:00; Euronext agri 10:45–18:30 |
+| XEUR XEEE XMAT | Eurex 08:00–22:00 (simplified; product hours vary); EEX 08:00–18:00; Euronext agri 10:45–18:30, 10:45–20:15 from 2026-04-13 |
 
 Overnight legs use `:overnight t` and `:labeled-by :close` (Globex/SHFE night belongs
 to the next civil date) or `:open` (JPX night follows the same calendar day).
