@@ -6,10 +6,12 @@
 ;;;; This file is the sweep: gold table, protocol invariants, every registered
 ;;;; calendar, country corpus, starter↔corpus agreement, exchange attachments.
 
-(defun load-holiday-gold (&optional (path (data-path "tests/holiday-gold.sexp")))
+(defun load-holiday-suite-gold (&optional (path (data-path "tests/holiday-gold.sexp")))
+  "The cross-calendar gold table of this suite (data/tests/holiday-gold.sexp).
+Not LOAD-HOLIDAY-GOLD, which loads one country's gold by code (#92)."
   (read-data-form path))
 
-(defparameter *holiday-gold-rows* (load-holiday-gold))
+(defparameter *holiday-gold-rows* (load-holiday-suite-gold))
 
 (defun suite-year-calendar (code year)
   (cond
@@ -155,6 +157,23 @@
   "MICs whose :calendar code has no starter. Empty now that IS is inferred.")
 
 ;;; --- gold table -------------------------------------------------------
+
+(deftest holiday-gold-loaders-are-distinct
+  "#92: the per-country gold loader (LOAD-HOLIDAY-GOLD CODE) and this suite's
+table loader have different names, so reloading one test file does not
+redefine the other's function."
+  (ok (fboundp 'load-holiday-suite-gold))
+  (ok (equal "CN" (getf (load-holiday-gold "CN") :country))
+      "LOAD-HOLIDAY-GOLD takes a country code after a full load"))
+
+(deftest cn-2007-banfa-cites-gov-cn
+  "#92: 国务院令第513号 (the 2007 放假办法) is cited from www.gov.cn."
+  (dolist (file '("tests/cn-holiday-gold.sexp" "tests/cn-secondary-holiday-gold.sexp"))
+    (let ((source (find-if (lambda (s) (search "第513号" (getf s :title)))
+                           (getf (read-data-form (data-path file)) :sources))))
+      (ok source (format nil "~a cites 令第513号" file))
+      (ok (and source (search "://www.gov.cn/" (getf source :uri)))
+          (format nil "~a cites it from gov.cn" file)))))
 
 (deftest holiday-gold
   (ok (>= (length *holiday-gold-rows*) 80) "gold table is populated")
