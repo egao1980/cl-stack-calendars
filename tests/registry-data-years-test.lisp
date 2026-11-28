@@ -47,7 +47,13 @@
     ("DE" germany-holidays-calendar)
     ("IE" ireland-holidays-calendar)
     ("PT" portugal-holidays-calendar)
-    ("TARGET" target-calendar))
+    ("TARGET" target-calendar)
+    ("HR" croatia-holidays-calendar)
+    ("SI" slovenia-holidays-calendar)
+    ("SK" slovakia-holidays-calendar)
+    ("CZ" czechia-holidays-calendar)
+    ("HU" hungary-holidays-calendar)
+    ("PL" poland-holidays-calendar))
   "Registered code → constructor that takes :YEAR. Every registered calendar
 whose constructor takes :YEAR is listed here or in *YEAR-DATA-EXCEPTIONS*.")
 

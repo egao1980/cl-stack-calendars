@@ -907,6 +907,39 @@ FIXTURES: dict[str, dict] = {
                         "Friday, Easter Monday, 1 May, 25 and 26 December (ECB press releases 15 Jul 1999, 25 May "
                         "2000); from 2002 the long-term calendar of 14 Dec 2000 (the same six days); plus 31 December "
                         "1999 (Y2K, 31 Mar 1999) and 31 December 2001 (euro cash changeover, 25 May 2000)."),
+    # --- #23: Croatia, Slovenia, Slovakia, Czechia, Hungary, Poland ---
+    "HR": dict(name="Croatia", region="europe", first=2000, weekends=[(None, (6, 7))],
+               data_note="no one-off days; the Zakon o blagdanima days are rules",
+               note="Blagdani i neradni dani of Croatia: NN 33/1996, NN 96/2001 (from 15 Nov 2001: 25 June Dan "
+                    "državnosti, 8 October Dan neovisnosti, Tijelovo; no 6 January), NN 13/2002 (6 January again from "
+                    "16 Feb 2002), NN 55/2008 (Uskrs named) and NN 110/2019 (from 2020: 30 May, 18 November; 25 June "
+                    "and 8 October memorial days). No Sunday move."),
+    "SI": dict(name="Slovenia", region="europe", first=2000, weekends=[(None, (6, 7))],
+               data_note="the one-off day off 14 August 2023 (ZOPNN-F)",
+               note="Dela prosti dnevi of Slovenia: ZPDPD-UPB1 čl. 1-2 (Easter Sunday and Monday, Whit Sunday "
+                    "included); 2 January not a day off 2013-2016 (ZUJF art. 82; restored by ZPDPD-D); 14 August "
+                    "2023 (ZOPNN-F art. 15). Prazniki that are not days off are left out. No Sunday move."),
+    "CZ": dict(name="Czechia", region="europe", first=2000, weekends=[(None, (6, 7))],
+               data_note="no one-off days; the zákon 245/2000 Sb. days are rules",
+               note="Dny pracovního klidu of Czechia: zákon 245/2000 Sb. § 1-3 (in force 9 Aug 2000; before it 93/1951 "
+                    "Sb. and 204/1990 Sb.), Velký pátek from 2016 (359/2015 Sb.)."),
+    "HU": dict(name="Hungary", region="europe", first=2000, weekends=[(None, (6, 7))],
+               data_note="the transferred rest days and working Saturdays of each year's ministerial decree "
+                         "(a 20XX. évi munkaszüneti napok körüli munkarendről)",
+               note="Munkaszüneti napok of Hungary: 1992. évi XXII. tv. § 125 (3), Mt. 2012 § 102 (1), Nagypéntek from "
+                    "2017, Szenteste from 14 Nov 2026 (2026. évi LXXII. tv.); every yearly munkarend decree 2001-2026 "
+                    "(rest days as holidays, the Saturdays as working days). Easter and Whit Sunday are not "
+                    "munkaszüneti napok. 2027-2040 are provisional: the statutory days only."),
+    "PL": dict(name="Poland", region="europe", first=2000, weekends=[(None, (6, 7))],
+               data_note="the one-off day off 12 November 2018 (Dz.U. 2018 poz. 2117)",
+               note="Dni wolne od pracy of Poland: ustawa z 18 stycznia 1951 r. art. 1 pkt 1 as amended (Easter Sunday "
+                    "and Pentecost Sunday named), Trzech Króli from 2011 (Dz.U. 2010 nr 224 poz. 1459), Wigilia from "
+                    "2025 (Dz.U. 2024 poz. 1965), 12 November 2018 (Dz.U. 2018 poz. 2117)."),
+    "SK": dict(name="Slovakia", region="europe", first=2000, weekends=[(None, (6, 7))],
+               data_note="the one-off state holiday 30 October 2018 (§ 4a)",
+               note="Dni pracovného pokoja of Slovakia: zákon 241/1993 Z. z. § 2 as amended: 17 November from 15 Nov "
+                    "2001 (442/2001) to 31 Oct 2025 (261/2025), 1 September to 2023 (530/2023), 28 October never a "
+                    "day of rest, 30 October 2018 (§ 4a), no 8 May and 15 September in 2026 (§ 4b)."),
 }
 
 
