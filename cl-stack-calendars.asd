@@ -1,9 +1,9 @@
 (defsystem "cl-stack-calendars"
-  :version "0.27.0"
+  :version "0.28.0"
   :description "Holiday and trading calendars for cl-stack (business days, sessions, versioned as-of)"
   :author "egao1980"
   :license "MIT"
-  :depends-on ((:version "datetime-protocol" "0.2.0") (:version "datetime-protocol/calendars" "0.2.0") "cl-stack-pathlib")
+  :depends-on ((:version "datetime-protocol" "0.3.0") (:version "datetime-protocol/calendars" "0.3.0") "cl-stack-pathlib")
 
   :serial t
   :pathname "src"
@@ -35,6 +35,7 @@
                (:file "starter-africa")
                (:file "starter-mena")
                (:file "starter-small")
+               (:file "starter-middle-east")
                (:file "coverage")
                (:file "country-calendar")
                (:file "corpus-inference")
@@ -53,6 +54,7 @@
                (:file "russian-production-gold-test")
                (:file "americas-holiday-gold-test")
                (:file "asia-holiday-gold-test")
+               (:file "mena-holiday-gold-test")
                (:file "normative-calendar-test")
                (:file "country-calendar-test")
                (:file "holiday-suite-test")

@@ -331,7 +331,8 @@ Wednesday 16 (Cabinet overview 2568). Saturday 12 April is no holiday (#40)."
     (ok (holiday-p sd (make-date 1956 1 1)))
     (ok (holiday-p sd (make-date 2019 12 19)))
     (ng (holiday-p sd (make-date 2018 12 19)))
-    (ok (holiday-p iq (make-date 1932 10 3)))
+    (ng (holiday-p iq (make-date 2019 10 3)) "3 October: Council of Ministers, 1 Sep 2020 (#44)")
+    (ok (holiday-p iq (make-date 2021 10 3)))
     (ok (holiday-p iq (make-date 2018 12 10)))
     (ok (holiday-p ao (make-date 1975 11 11)))
     (ok (holiday-p ao (make-date 2002 4 4)))
@@ -340,7 +341,9 @@ Wednesday 16 (Cabinet overview 2568). Saturday 12 April is no holiday (#40)."
     (ok (holiday-p uz (make-date 1991 9 1)))
     (ok (holiday-p uz (make-date 1991 3 21)))
     (ok (holiday-p af (make-date 1919 8 19)))
-    (ok (holiday-p af (make-date 2020 3 21)))
+    (ok (holiday-p af (make-date 2020 3 20)) "1 Hamal 1399 = 2020-03-20 (astronomical Solar Hijri)")
+    (ng (holiday-p af (make-date 2020 3 21)))
+    (ok (holiday-p af (make-date 2021 3 21)) "Nowruz 2021, before the August 2021 takeover (#44 item 9)")
     (ng (holiday-p af (make-date 2022 3 21)))))
 
 (deftest vietnam-hung-kings-and-national-day-era
