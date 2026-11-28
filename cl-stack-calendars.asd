@@ -65,6 +65,7 @@
                (:file "observance-order-test")
                (:file "hijri-occurrence-test")
                (:file "composite-semantics-test")
+               (:file "versioned-calendar-test")
                (:file "weekend-eras-test")
                (:file "year-map-cache-test")
                (:file "coverage-test")
