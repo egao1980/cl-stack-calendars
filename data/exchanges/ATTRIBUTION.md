@@ -40,9 +40,9 @@ Those libraries are Apache-2.0; we independently encode published dates.
 | XETR | Xetra 09:00–17:30; 09:00–20:00 from 2000-06-02 to 2003-10-31 ([Eurex circular 116/03](https://www.eurex.com/resource/blob/294630/0f1d69ec085846ab4fc215e24d592449/data/cf1162003e.pdf.pdf)); 14:00 close on the last trading day of the year |
 | XPAR | Euronext cash 09:00–17:30 (CET clock) |
 | XASX | ASX 10:00–16:00 from SEATS 1987-10-19; early close 14:10 on the last trading day before Christmas and of the year 2009–2016, only on 24/31 Dec from 2017 ([notice 1357.16.11](https://asxonline.com/public/notices/2016/nov/1357.16.11.html)) |
-| XTSE | TSX 09:30–16:00 Eastern |
+| XTSE | TSX 09:30–16:00 Eastern ([market hours](https://www.tsx.com/en/trading/calendars-and-trading-hours/trading-hours)); Christmas Eve 13:00, New Year's Eve regular hours |
 | XNSE | [NSE PR 17 Dec 2009](https://nsearchives.nseindia.com/content/press/17122009.htm) 09:00 from 2010-01-04; SEBI pre-open → continuous 09:15 from 2010-10-18; prior open 09:55; Diwali Muhurat as `:special-sessions` (2026: 14:20–15:15) |
-| BVMF | B3 cash 10:00–17:00 |
+| BVMF | B3 cash 10:00–17:00; 11:00–18:00 in the 2010/11 and 2011/12 summer seasons, 10:00–18:00 2015-12-21..2016-03-11; from 2019-11-04 18:00 on US standard time and 17:00 on US daylight time (Ofícios Circulares); Ash Wednesday opens 13:00; no early closes |
 | XKRX | Lunch abolished 2000-05-22 (secondary); [close 15:30 from 2016-08-01](https://www.koreaherald.com/article/1038609); first trading day opens 10:00 (`:regular` late-open rule); CSAT day 10:00–16:30 (`:sessions` notices) |
 | XSES | CAT 2011-08-01; [lunch restored 2017-11-13](https://www.businesstimes.com.sg/companies-markets/sgx-reintroduce-lunch-break-widen-bid-spreads-nov-13); half days on the eves of Chinese New Year, Christmas and New Year, Trading Phase to 12:30 until 2017-11-12 and 12:00 after ([RN 8.2.1](https://rulebook.sgx.com/node/1771)) |
 | XAMS XBRU XMIL XMAD | Euronext / Borsa Italiana / BME cash 09:00–17:30; Euronext half days from the yearly notices, BME 24/31 Dec 14:00 |
@@ -60,8 +60,8 @@ Those libraries are Apache-2.0; we independently encode published dates.
 | XSTC | HOSE 09:15–11:30 / 13:00–14:45 |
 | XBOM | Same SEBI hour changes as XNSE; Muhurat 2026 continuous trading 14:20–15:30 (BSE notice 20261019-9) |
 | XIST | BIST continuous 10:00–18:00, lunch break removed 2019-10-04 (notice 2019/56); 10:00–13:00 / 14:00–18:00 from 2016-11-14; half days 12:30 |
-| XSAU | Tadawul 10:00–15:00; weekend Thu–Fri → Fri–Sat **2013-06-29** |
-| XTAE | TASE Sun–Thu ~10:00–17:15 |
+| XSAU | Tadawul 11:00–15:30 Sat–Wed from 2006-09, Sun–Thu from 2013-06-30; 10:00–15:00 from 2016-04-03 (10:00–13:00 2020-03-26..05-28) |
+| XTAE | TASE Sun–Thu: 09:45–16:17 from 2009, 17:15 (Sunday 16:15) from 2013-06-16, 09:59 open from 2020-02-02, Sunday 15:40 from 2020-03-08; Mon–Fri from 2026-01-05 with Friday to 13:35 |
 | XCME XNYM XCEC | [CME Globex](https://www.cftc.gov/filings/orgrules/rule021422cmedcm007.pdf) 17:00–16:00 CT, labeled by close |
 | XCBT | CBOT grains night 19:00–07:45 + day 08:30–13:20 CT |
 | IFEU | [ICE Brent](https://www.ice.com/products/219/Brent-Crude-Futures) 01:00–23:00 London |

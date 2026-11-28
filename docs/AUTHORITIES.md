@@ -350,7 +350,7 @@ trading day; a day between two eras is closed.
 
 ### Exchange trading-holiday calendars (#49)
 
-Since 0.39.0 (Western Europe; 0.40.0 the Nordics; 0.41.0 CEE, Athens and Istanbul; 0.43.0 XTKS, XOSE, XKRX and XTAI; 0.44.0 XHKG, XSHG, XSHE, XSGE, XINE, XDCE and XZCE; 0.45.0 XNSE, XBOM, XIMC and XASX; 0.46.0 XSES, XKLS, XIDX, XPHS, XBKK and XSTC) a MIC can use the exchange's own holiday calendar instead of the
+Since 0.39.0 (Western Europe; 0.40.0 the Nordics; 0.41.0 CEE, Athens and Istanbul; 0.43.0 XTKS, XOSE, XKRX and XTAI; 0.44.0 XHKG, XSHG, XSHE, XSGE, XINE, XDCE and XZCE; 0.45.0 XNSE, XBOM, XIMC and XASX; 0.46.0 XSES, XKLS, XIDX, XPHS, XBKK and XSTC; 0.47.0 BVMF, XTSE, XSAU and XTAE) a MIC can use the exchange's own holiday calendar instead of the
 national civil one: `data/exchanges/calendars/<NAME>.sexp`, an
 `exchange-holiday-calendar` whose `calendar-provenance` is `:exchange`. Each file
 holds the exchange's recurring rules (`define-calendar` clause syntax, each with
@@ -420,9 +420,9 @@ differences.
 | XETR | 09:00–17:30 | Xetra to 20:00 2000-06-02 – 2003-10-31 |
 | XPAR | 09:00–17:30 | Euronext 2007-02-19 (continuous to 17:30) |
 | XASX | 10:00–16:00 | SEATS 1987-10-19 |
-| XTSE | 09:30–16:00 | NYSE-aligned |
+| XTSE | 09:30–16:00 | TSX market hours (16:00 close in 2000 per TSE notice 2000-011) |
 | XNSE | 09:15–15:30 | SEBI pre-open 2010-10-18 |
-| BVMF | 10:00–17:00 | B3 cash |
+| BVMF | 10:00–17:00 / 18:00 | B3 OCs: 18:00 on US standard time from 2019-11-04 |
 | XKRX | 09:00–15:30 | KRX 2016-08-01 |
 | XSES | 09:00–12:00 / 13:00–17:00 | lunch restored 2017-11-13 |
 | XAMS XBRU XMIL XMAD | 09:00–17:30 | Euronext / Borsa Italiana / BME cash |
@@ -436,7 +436,7 @@ differences.
 | XBKK | 10:00–12:30 / 14:00–16:30 | SET 2024-03-25; holidays `TH-BANK` (#40) |
 | XIDX | 09:00–12:00 / 13:30–15:50 | 2013-01-02; Friday shorter |
 | XPHS | 09:30–12:00 / 13:30–15:30 | PSE 2012-01-02 |
-| XSAU | 10:00–15:00 Sun–Thu | weekend flip 2013-06-29 |
+| XSAU | 10:00–15:00 Sun–Thu | Tadawul 2016-04-03; weekend flip 2013-06-29 |
 | XCME / XNYM / XCEC | 17:00–16:00 CT overnight | CME Globex |
 | IFEU | 01:00–23:00 London | ICE Brent |
 | XLME | 01:00–19:00 | LMEselect |

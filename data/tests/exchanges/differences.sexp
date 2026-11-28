@@ -1098,4 +1098,206 @@
   :source "https://web.archive.org/web/20121219163825/http://www.idx.co.id:80/en-us/home/newsannouncement/tradingholiday.aspx")
  (:mic "XIDX" :date (2009 12 31) :kind :session :gold nil :ours t
   :why "No IDX list for 2008-2009 (see the calendar's :gaps): exchange_calendars closes 31 Dec; the IDX year-end Libur Bursa rule is evidenced from 2010 only. Kept until an IDX list or announcement is cited."
-  :source "https://web.archive.org/web/20121219163825/http://www.idx.co.id:80/en-us/home/newsannouncement/tradingholiday.aspx"))
+  :source "https://web.archive.org/web/20121219163825/http://www.idx.co.id:80/en-us/home/newsannouncement/tradingholiday.aspx")
+ ;; BVMF
+ ; BVMF: dates where B3 / BM&FBOVESPA sources disagree with exchange_calendars (gold-later/BVMF-gold.sexp).
+ ; Holidays 2011-2026: no disagreement. Every :SESSION NIL T row in diffs/BVMF.txt (ec closed, BR civil calendar open)
+ ; is a B3 closure: Carnaval Mon/Tue, Corpus Christi, 25/1, 9/7, 20/11 (SP, to 2021), 24/12, last weekday of the
+
+ (:mic "BVMF" :date (2011 3 9) :kind :late-open :gold nil :ours (13 0)
+  :why "Quarta-Feira de Cinzas 2011: 'a negociação nos mercados da BM&FBOVESPA começará às 13h' (2011 calendar news 05/11/2010). ec's late opens start in 2016."
+  :source "http://web.archive.org/web/2011id_/http://www.bmfbovespa.com.br/pt-br/noticias/2010/Confira-o-calendario-de-feriados-do-mercado-para-2011-2010-11-05.aspx?idioma=pt-br")
+ (:mic "BVMF" :date (2012 2 22) :kind :late-open :gold nil :ours (13 0)
+  :why "Quarta-Feira de Cinzas 2012: trading from 13h (2012 calendar news 29/11/2011)."
+  :source "http://web.archive.org/web/20120101000000id_/http://www.bmfbovespa.com.br/pt-br/noticias/2011/BMFBOVESPA-divulga-o-calendario-do-mercado-2012-2011-11-29.aspx?idioma=pt-br")
+ (:mic "BVMF" :date (2013 2 13) :kind :late-open :gold nil :ours (13 0)
+  :why "Quarta-Feira de Cinzas 2013: trading from 13h (2013 calendar news 07/12/2012)."
+  :source "http://web.archive.org/web/2013id_/http://www.bmfbovespa.com.br/pt-br/noticias/2012/BMFBOVESPA-divulga-o-calendario-do-mercado-2013-2012-12-07.aspx?idioma=pt-br")
+ (:mic "BVMF" :date (2014 3 5) :kind :late-open :gold nil :ours (13 0)
+  :why "Quarta-Feira de Cinzas 2014: 'Das 13h às 17h – fase de negociação' (news 27/02/2014)."
+  :source "http://web.archive.org/web/2014id_/http://www.bmfbovespa.com.br/pt-br/noticias/2014/Horarios-de-Negociacao-em-05-03-2014-Quarta-Feira-de-Cinzas-2014-02-27.aspx")
+ (:mic "BVMF" :from (2010 10 18) :to (2011 3 11) :kind :hours :gold ((10 0) nil nil (17 0)) :ours ((11 0) nil nil (18 0))
+  :why "Brazilian summer time: 'a partir de 18 de outubro ... O pregão regular funcionará em sessão contínua, das 11h às 18h' (news 13/10/2010); back to 10h-17h from 14/03/2011 (news 11/03/2011). Gold starts 2011, so the effective run is 2011-01-03..2011-03-11."
+  :source "http://web.archive.org/web/2010id_/http://www.bmfbovespa.com.br/pt-br/noticias/2010/BMFBOVESPA-divulga-novos-horarios-de-negociacao-nos-segmentos-de-acoes-e-derivativos-2010-10-13.aspx")
+ (:mic "BVMF" :from (2011 10 17) :to (2012 3 9) :kind :hours :gold ((10 0) nil nil (17 0)) :ours ((11 0) nil nil (18 0))
+  :why "'a partir de 17/10/2011 ... O pregão regular funcionará em sessão contínua, das 11h às 18h' (news 07/10/2011); 'O pregão regular volta a abrir às 10h a partir de 12/03' with 10h-17h (news 24/02/2012)."
+  :source "http://web.archive.org/web/2011id_/http://www.bmfbovespa.com.br/pt-br/noticias/2011/BMFBOVESPA-tera-novos-horarios-de-negociacao-a-partir-de-1710-2011-10-07.aspx")
+ (:mic "BVMF" :from (2015 12 21) :to (2016 3 11) :kind :hours :gold ((10 0) nil nil (17 0)) :ours ((10 0) nil nil (18 0))
+  :why "'o horário de negociação no segmento Bovespa passará a ser das 10h às 18h do dia 21/12/2015 ao dia 11/03/2016' (news 26/11/2015, Ofício Circular 127/2015-DP not retrieved). Includes Ash Wednesday 2016-02-10 (late open 13:00 in both)."
+  :source "http://web.archive.org/web/2015id_/http://www.bmfbovespa.com.br/pt-br/noticias/2015/Horario-de-verao-2015-11-26.aspx")
+ (:mic "BVMF" :from (2018 2 14) :to (2018 2 14) :kind :hours :gold ((10 0) nil nil (17 0)) :ours ((10 0) nil nil (18 0))
+  :why "Ash Wednesday 14/02/2018: 13h-17h55 continuous, closing call 17h55-18h (OC 008/2018-PRE). Regular grid on that day (late open 13:00 in both ec and B3) closes 18:00, i.e. an 18:00 close in the 2017/18 summer-time era; the era's start/end dates were not found (see BVMF-hours.md)."
+  :source "https://www.b3.com.br/data/files/12/A3/6B/AB/75761610C2BD3316790D8AA8/OC%20008-2018-PRE%20-%20Horarios%20de%20Negociacao,%20de%20Pos-Negociacao%20e%20de%20Registro%20de%20Operacoes%2014022018.pdf")
+ (:mic "BVMF" :from (2019 3 6) :to (2019 3 6) :kind :hours :gold ((10 0) nil nil (17 0)) :ours ((10 0) nil nil (18 0))
+  :why "Ash Wednesday 06/03/2019: 13h-17h55, call 17h55-18h (OC 016/2019, 22/02/2019). Regular close 18:00 (late open 13:00 in both) before the US DST start (10/03/2019); era bounds not found."
+  :source "https://www.b3.com.br/data/files/38/56/FE/B3/707196100FB88096AC094EA8/OC%20016-2019%20Hor%C3%A1rios%20de%20Negocia%C3%A7%C3%A3o,%20de%20P%C3%B3s-Negocia%C3%A7%C3%A3o,%20do%20Tesouro%20Direto%20e%20da%20Unidade%20de%20Financiamentos%20em%2006.03.19%20PT.pdf")
+ (:mic "BVMF" :from (2022 3 14) :to (2022 11 4) :kind :hours :gold ((10 0) nil nil (18 0)) :ours ((10 0) nil nil (17 0))
+  :why "US summer time: from 14/03/2022 mercado a vista 10:00-16:55 + closing call 16:55-17:00 (OC 020/2022-PRE; B3 news 14/03/2022 'voltam a terminar suas negociações às 17h'); back to 17:55/18:00 from 07/11/2022 (OC 125/2022-PRE)."
+  :source "https://www.b3.com.br/data/files/40/B4/53/5E/BC4EE710301EBDE7AC094EA8/OC%20020-2022%20PRE%20Novos%20Hor%C3%A1rios%20de%20Negocia%C3%A7%C3%A3o%20(PT).pdf")
+ (:mic "BVMF" :from (2025 3 10) :to (2025 10 31) :kind :hours :gold ((10 0) nil nil (18 0)) :ours ((10 0) nil nil (17 0))
+  :why "From 10/03/2025 mercado a vista 10:00-16:55, call 16:55-17:00 (OC 014/2025-PRE; reaffirmed OC 017/2025-VNC from 30/06/2025); 10:00-17:55, call to 18:00 from 03/11/2025 (OC 040/2025-VNC, OC 043/2025-VNC)."
+  :source "https://b3.com.br/data/files/63/C3/B3/53/16A1591029BEEC39AC094EA8/OC%20014-2025%20PRE%20Novos%20Horarios%20de%20Negociacao%202025%20vf%20(PT).pdf")
+ (:mic "BVMF" :from (2026 3 9) :to (2026 10 30) :kind :hours :gold ((10 0) nil nil (18 0)) :ours ((10 0) nil nil (17 0))
+  :why "From 09/03/2026 mercado à vista 10:00-16:55, call 16:55-17:00 (OC 005/2026-PRE Anexo 3); 10:00-17:55, call to 18:00 from 03/11/2026 (OC 050/2026-VNC, OC 055/2026-VNC; 02/11 is Finados)."
+  :source "https://www.b3.com.br/data/files/E3/B2/C2/12/BC09C910F37907C9AC094EA8/OC%20005-2026%20PRE%20NOVOS%20HORARIOS%20DE%20NEGOCIACAO_PT.pdf")
+ ;; XTSE
+ ; XTSE: dates where the TMX/TSE source disagrees with exchange_calendars 4.13.3.
+ ; Holidays 2000-2027: no disagreement. The TMX rules (XTSE.sexp) reproduce ec's closures exactly, including Family Day from 2008,
+ ;   the Civic Holiday, the in-lieu Mondays/Tuesdays, Remembrance Day and NDTR as sessions, and 2001-09-11/12 as closed.
+
+ (:mic "XTSE" :date (2001 12 24) :kind :early-close :gold nil :ours (13 0)
+  :why "TSE Notice 2001-228 (27 Aug 2001): 'the Exchange will close at 1:00 p.m. on Monday, December 24th, 2001.'"
+  :source "https://web.archive.org/web/2010id_/http://www.tsx.com:80/en/pdf/notices/2001/999016868__27Aug01.Holiday.Schedule..228.kd.pdf")
+ (:mic "XTSE" :date (2002 12 24) :kind :early-close :gold nil :ours (13 0)
+  :why "TSE Notice 2002-241 (13 Nov 2002): 'the Exchange will close at 1:00 p.m. (EST) on Tuesday, December 24th, 2002'; notice 2002-262 adds an extended (last-sale) session until 1:30 p.m."
+  :source "https://web.archive.org/web/2010id_/http://www.tsx.com/en/pdf/notices/November13-2002_ChristmasNewYearClosing-241.pdf")
+ (:mic "XTSE" :date (2003 12 24) :kind :early-close :gold nil :ours (13 0)
+  :why "TSX Notice 2003-173 (26 Nov 2003): 'the Exchange will close at 1:00 p.m. (EST) on Wednesday, December 24th, 2003', with a 30-minute last-sale session to 1:30 p.m."
+  :source "https://web.archive.org/web/2010id_/http://www.tsx.com/en/pdf/notices/November26-2003_YearEndHolidayClosings-173.pdf")
+ (:mic "XTSE" :date (2004 12 24) :kind :early-close :gold nil :ours (13 0)
+  :why "TSX Notice 2004-036 (3 Dec 2004): 'will close at 1:00 PM on Friday, December 24, 2004, with an Extended Trading Session until 1:30 p.m.'"
+  :source "https://web.archive.org/web/2005id_/http://www.tsx.com:80/en/pdf/notices/December3-2004_YearEndHolidaySettlementsBulletin-036.pdf")
+ (:mic "XTSE" :date (2008 12 24) :kind :early-close :gold nil :ours (13 0)
+  :why "TSX Group 'Stock Market Hours & Holidays' page (snapshot 2008-11-21): 'Christmas Eve - December 24, 2008 - markets close at 1:00 p.m. ET'."
+  :source "https://web.archive.org/web/20081121id_/http://www.tsx.com/en/about_tsx/market_hours.html")
+ ;; XSAU
+ ; XSAU: dates where Tadawul / Saudi Exchange sources disagree with exchange_calendars 4.13.3 (gold 2021-2026).
+ ; Pattern: ec reads the Saudi Exchange Holiday Calendar's "DD/MM/YYYY - DD/MM/YYYY" range literally as the
+ ; closed days, but in most entries that range is (last trading day) - (resumption day); the entry text
+
+ (:mic "XSAU" :date (2021 2 22) :kind :session :gold NIL :ours T
+  :why "Founding Day became a holiday in 2022; Tadawul's 2021 calendar has no February holiday (first Founding Day entry is 22/02/2022)."
+  :source "https://web.archive.org/web/20230401222718id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2021 5 11) :kind :session :gold T :ours NIL
+  :why "Eid Al-Fitr 2021: trading ends Monday 28/9/1442 = 10/5/2021, resumes Monday 5/10/1442 = 17/5/2021 (Tadawul Ramadan/Eid press release 2021-04-06; Argaam 2021-05-11 'closed ... starting from today, May 11')."
+  :source "https://mondovisione.com/media-and-resources/news/trading-hours-during-the-holy-month-of-ramadan-eid-al-fiter-holiday-for-the-saud-202146/")
+ (:mic "XSAU" :date (2021 5 12) :kind :session :gold T :ours NIL
+  :why "Eid Al-Fitr 2021 closure 11-16 May (as above)."
+  :source "https://mondovisione.com/media-and-resources/news/trading-hours-during-the-holy-month-of-ramadan-eid-al-fiter-holiday-for-the-saud-202146/")
+ (:mic "XSAU" :date (2022 4 28) :kind :session :gold NIL :ours T
+  :why "Eid Al-Fitr 2022: trading discontinues at the end of Thursday 28 April 2022, resumes Sunday 8 May 2022; 28 Apr is the last session."
+  :source "https://mondovisione.com/media-and-resources/news/trading-hours-during-the-holy-month-of-ramadan-eid-al-fiter-holiday-for-the-saud-1-2022320")
+ (:mic "XSAU" :date (2022 5 8) :kind :session :gold NIL :ours T
+  :why "Eid Al-Fitr 2022: trading resumes Sunday 8 May 2022 (7 Shawwal 1443)."
+  :source "https://mondovisione.com/media-and-resources/news/trading-hours-during-the-holy-month-of-ramadan-eid-al-fiter-holiday-for-the-saud-1-2022320")
+ (:mic "XSAU" :date (2022 7 13) :kind :session :gold NIL :ours T
+  :why "Eid Al-Adha 2022: 'Trading will discontinue at the end of trading day 6/7/2022. Trading will resume after the holiday on 13/7/2022.'"
+  :source "https://web.archive.org/web/20230401222718id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2022 9 22) :kind :session :gold T :ours NIL
+  :why "National Day 2022 (23 Sep = Friday) observed Thursday: 'National Day of Saudi Arabia is on 22/9/2022.'"
+  :source "https://web.archive.org/web/20230401222718id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2023 4 25) :kind :session :gold NIL :ours T
+  :why "Eid Al-Fitr 2023: 'discontinue at the end of trading day 17-04-2023. Trading will resume after the holiday on 25-04-2023.'"
+  :source "https://web.archive.org/web/20230401222718id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2023 6 25) :kind :session :gold T :ours NIL
+  :why "Eid Al-Adha 2023 (final): 'discontinue at the end of trading day Thursday 22-06-2023 ... resume ... Sunday 02-07-2023'. ec follows the provisional entry (ends 26-06-2023)."
+  :source "https://web.archive.org/web/20260719180652id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2023 6 26) :kind :session :gold T :ours NIL
+  :why "Eid Al-Adha 2023 closure 25-29 June (as above)."
+  :source "https://web.archive.org/web/20260719180652id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2023 7 2) :kind :session :gold NIL :ours T
+  :why "Eid Al-Adha 2023: trading resumes Sunday 02-07-2023."
+  :source "https://web.archive.org/web/20260719180652id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2023 9 24) :kind :session :gold T :ours NIL
+  :why "National Day 2023 (23 Sep = Saturday): 'Trading will discontinue at the end of trading day 21-09-2023. Trading will resume after the holiday on 25-09-2023.' Sunday 24 Sep closed."
+  :source "https://web.archive.org/web/20260719180652id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2024 4 14) :kind :session :gold NIL :ours T
+  :why "Eid Al-Fitr 2024: 'Trading will discontinue at the end of trading day 04/04/2024. Trading will resume after the holiday on 14/04/2024.'"
+  :source "https://web.archive.org/web/20250317103459id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2024 4 15) :kind :session :gold NIL :ours T
+  :why "Eid Al-Fitr 2024: trading resumed 14/04/2024, so 15 Apr is a session."
+  :source "https://web.archive.org/web/20250317103459id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2024 6 13) :kind :session :gold NIL :ours T
+  :why "Eid Al-Adha 2024: 'Trading will discontinue at the end of trading day 13/06/2024.' (13 Jun is the last session)."
+  :source "https://web.archive.org/web/20250317103459id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2024 6 23) :kind :session :gold NIL :ours T
+  :why "Eid Al-Adha 2024: 'Trading will resume after the holiday on 23/06/2024.'"
+  :source "https://web.archive.org/web/20250317103459id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2025 2 23) :kind :session :gold T :ours NIL
+  :why "Founding Day 2025 (22 Feb = Saturday) observed Sunday: 'Founding Day of Saudi Arabia is on 23/02/2025.'; Argaam 2025-02-16: 'closed on Sunday, Feb. 23 ... resume on Monday, Feb. 24'."
+  :source "https://web.archive.org/web/20250317103459id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2025 3 27) :kind :session :gold NIL :ours T
+  :why "Eid Al-Fitr 2025: 'Trading will discontinue at the end of trading day 27/03/2025. Trading will resume after the holiday on 03/04/2025.' (range printed 27/03/2025 - 02/04/2025)."
+  :source "https://web.archive.org/web/20260719180652id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2025 6 4) :kind :session :gold NIL :ours T
+  :why "Eid Al-Adha 2025: 'Trading will discontinue at the end of trading day 04/06/2025.' (4 Jun is the last session)."
+  :source "https://web.archive.org/web/20260719180652id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ (:mic "XSAU" :date (2025 6 10) :kind :session :gold T :ours NIL
+  :why "Eid Al-Adha 2025: 'Trading will resume after the holiday on 11/06/2025.' (range 05/06/2025 - 10/06/2025), so 10 Jun is closed."
+  :source "https://web.archive.org/web/20260719180652id_/https://www.saudiexchange.sa/wps/portal/saudiexchange/about-saudi-exchange/exchange-media-centre/saudi-exchange-holiday-calendar")
+ ;; XTAE
+ (:mic "XTAE" :date (2013 1 22) :kind :session :gold t :ours nil
+  :why "Knesset (19th) election day: TASE vacation schedule 2013 lists Election Day Tuesday 22 January as non-trading."
+  :source "https://content.tase.co.il/media/pqrowxtp/file_0010_vacation_schedule_2013_eng.pdf")
+ (:mic "XTAE" :date (2015 3 17) :kind :session :gold t :ours nil
+  :why "Knesset (20th) election day: TASE vacation schedule 2015 lists Election Day Tuesday 17 March as non-trading."
+  :source "https://content.tase.co.il/media/dp0kghj1/file_0010_vacation_schedule_2015_eng.pdf")
+ (:mic "XTAE" :date (2018 10 30) :kind :session :gold t :ours nil
+  :why "Municipal election day: TASE vacation schedule 2018 lists 'Israel Municipal Election Day' Tuesday 30 October as non-trading."
+  :source "https://content.tase.co.il/media/fz0nyrzy/file_0010_vacation_schedule_2018_eng.pdf")
+ (:mic "XTAE" :date (2020 6 7) :kind :session :gold t :ours nil
+  :why "No trading on Sunday 7 June 2020: TASE management cancelled the trading day during a Histadrut-directed workers' sanction (Globes, 7 June 2020; secondary, no TASE notice found)."
+  :source "https://en.globes.co.il/en/article-1001331393")
+ (:mic "XTAE" :date (2024 2 27) :kind :session :gold t :ours nil
+  :why "Municipal election day (postponed from 31 Oct 2023): market closed (Globes 26 Feb 2024: 'The market will be closed tomorrow for the municipal elections'; secondary, not in the TASE 2024 PDF)."
+  :source "https://en.globes.co.il/en/article-1001472244")
+ (:mic "XTAE" :date (2026 1 4) :kind :session :gold t :ours nil
+  :why "First week of the Monday-Friday trading week: 'As of January 4th, 2026, the trading on TASE takes place Monday to Friday'; no Sunday session on 4 Jan 2026 (Globes 4 Jan 2026: 'From today, the trading week ... changes')."
+  :source "https://www.tase.co.il/en/content/knowledge_center/trading_vacation_schedule")
+ (:mic "XTAE" :date (2026 10 27) :kind :session :gold t :ours nil
+  :why "Knesset election day: TASE vacation schedule 2026 lists 'Knesset Election Day' Tuesday 27 October as non-trading."
+  :source "https://www.tase.co.il/en/content/knowledge_center/trading_vacation_schedule")
+ (:mic "XTAE" :date (2028 3 10) :kind :session :gold t :ours nil
+  :why "Friday before Purim on Sunday 12 March 2028: TASE vacation schedule 2028 lists Friday 10 March as non-trading ('*Friday before holiday Sunday is a non-trading day')."
+  :source "https://www.tase.co.il/en/content/knowledge_center/trading_vacation_schedule")
+ (:mic "XTAE" :date (2020 3 2) :kind :session :gold nil :ours t
+  :why "Knesset election day 2020: exchange_calendars closes it. The TASE 2020 vacation schedule (created 2019-02-03, before the election was called) does not list it and no TASE notice was found; every other Knesset election day in the lists is a non-trading day, so the closure is likely. Kept as a session until a source is cited (follow-up issue)."
+  :source "https://content.tase.co.il/media/hk4pgzy4/file_0010_vacation_schedule_2020_eng.pdf")
+ (:mic "XTAE" :from (2013 1 1) :to (2013 6 13) :kind :hours :gold ((9 59) nil nil (17 15)) :ours ((9 45) nil nil (16 17))
+  :why "2009-01-01..2013-06-13 timetable: TA-100 opening 09:45, pre-closing 16:16-16:17 (TASE notice of 2008-12-18). exchange_calendars has the 2020 hours throughout."
+  :source "https://mondovisione.com/news/start-of-new-tel-aviv-stock-exchange-trading-hours-2011124")
+ (:mic "XTAE" :from (2013 1 6) :to (2013 6 9) :kind :early-close :gold (15 40) :ours nil
+  :why "Before 2013-06-16 Sunday hours were those of the other days (16:17 close); exchange_calendars has a 15:40 Sunday early close throughout."
+  :source "https://mondovisione.com/news/start-of-new-tel-aviv-stock-exchange-trading-hours-2011124")
+ (:mic "XTAE" :from (2013 6 16) :to (2020 1 26) :kind :early-close :gold (15 40) :ours nil
+  :why "2013-06-16..2020-01-30: Sunday trading ends 16:15, as the era's regular Sunday hours (:sunday), not an early close (Globes 2013-05-23)."
+  :source "https://en.globes.co.il/en/article-1000846491")
+ (:mic "XTAE" :from (2013 6 16) :to (2020 1 26) :kind :hours :gold ((9 59) nil nil (17 15)) :ours ((9 45) nil nil (16 15))
+  :why "Sundays 2013-06-16..2020-01-26: 09:45 opening, pre-closing 16:14-16:15 (Globes 2013-05-23; the 16:15 time is inferred from the 10-minute gap to the closing trade)."
+  :source "https://en.globes.co.il/en/article-1000846491")
+ (:mic "XTAE" :from (2013 6 17) :to (2020 1 30) :kind :hours :gold ((9 59) nil nil (17 15)) :ours ((9 45) nil nil (17 15))
+  :why "Monday-Thursday 2013-06-17..2020-01-30: opening auction of index shares at 09:45; it moved to 10:00 (window 09:59-10:00) on 2020-02-02 (WFE Focus, Feb 2020)."
+  :source "https://focus.world-exchanges.org/articles/tase-announces-new-trading-hours")
+ (:mic "XTAE" :from (2020 2 2) :to (2020 3 1) :kind :early-close :gold (15 40) :ours nil
+  :why "Sundays 2020-02-02..2020-03-01 still ended 16:15; the 15:40 Sunday close starts on 2020-03-08 (WFE Focus, Feb 2020)."
+  :source "https://focus.world-exchanges.org/articles/tase-announces-new-trading-hours")
+ (:mic "XTAE" :from (2020 2 2) :to (2020 3 1) :kind :hours :gold ((9 59) nil nil (17 15)) :ours ((9 59) nil nil (16 15))
+  :why "Sundays 2020-02-02..2020-03-01: pre-closing 16:15 until the 35-minute shortening of 2020-03-08 (WFE Focus, Feb 2020)."
+  :source "https://focus.world-exchanges.org/articles/tase-announces-new-trading-hours")
+ (:mic "XTAE" :from (2020 3 8) :to (2025 12 28) :kind :early-close :gold (15 40) :ours nil
+  :why "2020-03-08..2025-12-28: the 15:40 Sunday close is the era's regular Sunday hours (:sunday), not an early close; the session times agree with exchange_calendars."
+  :source "https://focus.world-exchanges.org/articles/tase-announces-new-trading-hours")
+ (:mic "XTAE" :from (2020 3 8) :to (2025 12 28) :kind :hours :gold ((9 59) nil nil (17 15)) :ours ((9 59) nil nil (15 40))
+  :why "Sundays 2020-03-08..2025-12-28: regular Sunday hours 09:59-15:40 (WFE Focus, Feb 2020); exchange_calendars models the same day as 17:15 hours with a 15:40 early close."
+  :source "https://focus.world-exchanges.org/articles/tase-announces-new-trading-hours")
+ (:mic "XTAE" :from (2026 1 9) :to (2028 12 29) :kind :early-close :gold (13 50) :ours nil
+  :why "Fridays from 2026-01-09: regular Friday hours (:friday), pre-closing 13:34-13:35; exchange_calendars gives 13:50, the end of trade-at-last, as an early close. Under this model's convention (close = end of continuous trading) the Friday close is 13:35."
+  :source "https://www.tase.co.il/en/content/knowledge_center/trading_vacation_schedule")
+ (:mic "XTAE" :from (2026 1 9) :to (2028 12 22) :kind :hours :gold ((9 59) nil nil (17 15)) :ours ((9 59) nil nil (13 35))
+  :why "Fridays from 2026-01-09: regular Friday hours 09:59-13:35 (TASE vacation page: Friday pre-closing 13:34-13:35)."
+  :source "https://www.tase.co.il/en/content/knowledge_center/trading_vacation_schedule")
+ (:mic "XTAE" :from (2026 4 3) :to (2028 10 6) :kind :early-close :gold (14 15) :ours nil
+  :why "Interim days of Passover / Sukkot that fall on a Friday keep the standard Friday hours from 2026 (TASE 2026 list: 'Trading hours on a Friday that falls during the interim days (e.g. April 3, 2026) will follow the standard Friday trading hours'); exchange_calendars gives the 14:15 interim close."
+  :source "https://www.tase.co.il/en/content/knowledge_center/trading_vacation_schedule")
+ (:mic "BVMF" :from (2020 3 9) :to (2024 11 1) :kind :hours :gold ((10 0) nil nil (18 0)) :ours ((10 0) nil nil (17 0))
+  :why "From 2020 B3 closes at 17:00 while New York is on daylight time and at 18:00 on standard time (OC 094/2020-PRE, OC 020/2022-PRE, OC 027/2023-PRE, OC 132/2024-PRE, OC 014/2025-PRE, OC 005/2026-PRE); exchange_calendars keeps 18:00 from 2019-11-04 on. The 2020, 2021 and 2024 daylight-time eras are inferred from the pattern (their OCs were not retrieved)."
+  :source "https://www.b3.com.br/pt_br/noticias/inicio-do-horario-de-verao-dos-estados-unidos.htm")
+ (:mic "BVMF" :date (2015 2 18) :kind :late-open :gold nil :ours (13 0)
+  :why "Ash Wednesday: B3 opens at 13:00 in every year evidenced, 2011-2014 and 2016-2026 (notices in calendars/BVMF.sexp); the 2015 notice is in the web.archive.org index but would not fetch, so the rule is applied unverified. exchange_calendars starts the late open in 2016."
+  :source "http://web.archive.org/web/2015id_/http://www.bmfbovespa.com.br/pt-br/noticias/2015/Horario-de-verao-2015-11-26.aspx")
+ (:mic "XTSE" :date (2007 12 24) :kind :early-close :gold nil :ours (13 0)
+  :why "Christmas Eve on a weekday closes at 13:00 in every year a TSE/TSX notice was found (2001-2004, 2008, 2010, 2012-2015, 2018-2021, 2024-2027); no notice was found for this year, so the rule is applied. exchange_calendars has a full day."
+  :source "https://web.archive.org/web/20081121id_/http://www.tsx.com/en/about_tsx/market_hours.html")
+ (:mic "XTSE" :date (2009 12 24) :kind :early-close :gold nil :ours (13 0)
+  :why "Christmas Eve on a weekday closes at 13:00 in every year a TSE/TSX notice was found (2001-2004, 2008, 2010, 2012-2015, 2018-2021, 2024-2027); no notice was found for this year, so the rule is applied. exchange_calendars has a full day."
+  :source "https://web.archive.org/web/20081121id_/http://www.tsx.com/en/about_tsx/market_hours.html"))

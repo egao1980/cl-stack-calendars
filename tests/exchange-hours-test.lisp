@@ -155,13 +155,17 @@
              '(((9 0) (11 30)) ((14 0) (15 50)))))) ; Friday
 
 (deftest sun-thu-markets
-  (ok (equal (%session-hms "XSAU" (make-date 2013 6 26)) '(((10 0) (15 0))))) ; Wed
+  ;; Tadawul 11:00-15:30 until 2016-04-02 (Trading Times pages), 10:00-15:00 after.
+  (ok (equal (%session-hms "XSAU" (make-date 2013 6 26)) '(((11 0) (15 30))))) ; Wed
   (ok (null (%session-hms "XSAU" (make-date 2013 6 27)))) ; Thu old weekend
   (ok (null (%session-hms "XSAU" (make-date 2013 6 29)))) ; transition
-  (ok (equal (%session-hms "XSAU" (make-date 2013 6 30)) '(((10 0) (15 0))))) ; Sun
+  (ok (equal (%session-hms "XSAU" (make-date 2013 6 30)) '(((11 0) (15 30))))) ; Sun
+  (ok (equal (%session-hms "XSAU" (make-date 2024 6 2)) '(((10 0) (15 0))))) ; Sun
   (ok (null (%session-hms "XSAU" (make-date 2024 6 7))))  ; Friday
-  (ok (equal (%session-hms "XTAE" (make-date 2024 6 2)) '(((10 0) (17 15))))) ; Sun
-  (ok (null (%session-hms "XTAE" (make-date 2024 6 7))))) ; Fri
+  ;; TASE Sunday 09:59-15:40 (2020-03-08..2025-12-28), weekday 09:59-17:15.
+  (ok (equal (%session-hms "XTAE" (make-date 2024 6 2)) '(((9 59) (15 40))))) ; Sun
+  (ok (equal (%session-hms "XTAE" (make-date 2024 6 3)) '(((9 59) (17 15))))) ; Mon
+  (ok (null (%session-hms "XTAE" (make-date 2024 6 7))))) ; Fri ; Fri
 
 (deftest commodity-overnight-sessions
   (ok (eq (exchange-hours-kind (find-exchange "XCME")) :commodities))

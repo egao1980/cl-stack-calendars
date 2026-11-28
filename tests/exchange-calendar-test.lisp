@@ -11,9 +11,11 @@
     "XTKS" "XOSE" "XKRX" "XTAI"
     "XHKG" "XSHG" "XSHE" "XSGE" "XINE" "XDCE" "XZCE"
     "XNSE" "XBOM" "XIMC" "XASX"
-    "XSES" "XKLS" "XIDX" "XPHS" "XBKK" "XSTC")
+    "XSES" "XKLS" "XIDX" "XPHS" "XBKK" "XSTC"
+    "BVMF" "XTSE" "XSAU" "XTAE")
   "MICs whose exchange queries use the exchange's own calendar (provenance
-:EXCHANGE). #49 moves the rest off their national civil calendars by region.")
+:EXCHANGE). #49 moved them off their national civil calendars by region; the
+CME family (#48) is next.")
 
 (defparameter *exchange-calendar-mics-without-gold*
   '("IFEU" "XLME" "XMAT" "XOSE" "XSGE" "XINE" "XDCE" "XZCE" "XIMC" "XSTC")
@@ -198,6 +200,35 @@ exchanges' notices (#49, #92)."
   (ok (equal (%trading-days "XBKK" '(2006 9 20)) '(nil)))
   ;; HOSE: Tết closures from the yearly notices.
   (ok (equal (%trading-days "XSTC" '(2021 2 10) '(2021 2 17)) '(nil t))))
+
+(deftest americas-mena-exchange-key-dates
+  "BVMF, XTSE, XSAU and XTAE: key dates from the exchanges' notices."
+  ;; B3: no session on 24 Dec or the last weekday of the year; Ash Wednesday
+  ;; opens 13:00; São Paulo 9 July closed through 2021, open from 2022.
+  (ok (equal (%trading-days "BVMF" '(2024 12 24) '(2023 12 29) '(2021 7 9) '(2022 7 8))
+             '(nil nil nil t)))
+  (ok (equal (%session-hm "BVMF" '(2025 3 5)) '(((13 0) (18 0)))))
+  (ok (equal (%session-hm "BVMF" '(2025 6 2)) '(((10 0) (17 0)))))
+  (ok (equal (%session-hm "BVMF" '(2010 12 1)) '(((11 0) (18 0)))))
+  (ok (null (%early-close-hm "BVMF" '(2024 12 23))))
+  ;; TSX: Christmas Eve 13:00, New Year's Eve regular hours; open on the
+  ;; 2022-09-19 State Funeral and on Remembrance Day.
+  (ok (equal (%early-close-hm "XTSE" '(2024 12 24)) '(13 0)))
+  (ok (null (%early-close-hm "XTSE" '(2024 12 31))))
+  (ok (equal (%trading-days "XTSE" '(2022 9 19) '(2024 11 11)) '(t t)))
+  ;; Tadawul: Thu-Fri weekend to 2013-06-26, Fri-Sat after; 10:00-13:00 in
+  ;; the 2020 COVID era.
+  (ok (equal (%trading-days "XSAU" '(2012 6 2) '(2012 6 7) '(2014 6 1) '(2014 6 6))
+             '(t nil t nil)))
+  (ok (equal (%session-hm "XSAU" '(2020 4 5)) '(((10 0) (13 0)))))
+  ;; TASE: Sun-Thu until 2025-12-28, Mon-Fri from 2026-01-05; Sunday and
+  ;; Friday hours; Hebrew-calendar closures; Knesset election day.
+  (ok (equal (%session-hm "XTAE" '(2024 6 2)) '(((9 59) (15 40)))))
+  (ok (equal (%session-hm "XTAE" '(2026 1 9)) '(((9 59) (13 35)))))
+  (ok (equal (%trading-days "XTAE" '(2025 12 28) '(2026 1 4) '(2026 1 9)) '(t nil t)))
+  (ok (equal (%trading-days "XTAE" '(2024 3 24) '(2024 3 25) '(2022 5 4) '(2022 11 1))
+             '(nil t nil nil))
+      "Purim closed, Shushan Purim trades, Memorial Day moved up, election day"))
 
 (deftest civil-fixes-found-by-exchange-lists
   "#123: Norway's Ascension Day; #124: Iceland's First Day of Summer is the
