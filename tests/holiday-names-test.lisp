@@ -19,12 +19,13 @@ weekend date itself is not a day off (deliberate, see README)."
     (ok (equal "Christmas Day (observed)" (%name-on us 2022 12 26)))
     (ok (equal "Juneteenth (observed)" (%name-on us 2022 6 20)))))
 
-(deftest gb-substitute-day-label
-  "gov.uk bank-holidays.json notes \"Substitute day\" on these days."
+(deftest gb-substitute-day-keeps-govuk-title
+  "gov.uk bank-holidays.json titles the substitute day with the holiday's own
+name (its notes field says \"Substitute day\"): GB keeps that title."
   (let ((gb (find-calendar "GB")))
     (ok (equal "Boxing Day" (%name-on gb 2022 12 26)))
-    (ok (equal "Christmas Day (substitute day)" (%name-on gb 2022 12 27)))
-    (ok (equal "New Year's Day (substitute day)" (%name-on gb 2023 1 2)))
+    (ok (equal "Christmas Day" (%name-on gb 2022 12 27)))
+    (ok (equal "New Year's Day" (%name-on gb 2023 1 2)))
     (ng (holiday-p gb (make-date 2022 12 25)))))
 
 (deftest au-substitute-day-label

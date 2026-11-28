@@ -420,7 +420,9 @@ feriados con fines turísticos and one-off feriados, each with its decree."
   (:fixed "Navidad" 12 25 :from 1900 :authority "DL 713 art. 6"))
 
 ;;; Australia, national subset (2000–2040 checked against data/tests/au-holiday-gold.sexp, #17)
-(define-calendar australia-holidays-calendar (:register "AU")
+(define-calendar australia-holidays-calendar (:register "AU"
+                                                        ;; The PM&C public holiday data set (data.gov.au) names the added day so.
+                                              :substitute-name "~a (substitute day)")
   ;; National subset: the Fair Work Act 2009 s. 115 holidays that every State
   ;; and Territory keeps on the same day, with the substitute days every one of
   ;; them gives. The King's (Queen's) Birthday is a state day (WA and QLD keep

@@ -16,7 +16,9 @@
 ;;;; observance for Mon–Fri schedules under § 6103(b) (Sat→Fri) and
 ;;;; Exec. Order No. 11582 § 3(a) (Sun→Mon). Uniform Monday Holiday Act
 ;;;; (Pub. L. 90-363) effective 1971-01-01.
-(define-calendar us-federal-holidays-calendar (:register "USFED")
+(define-calendar us-federal-holidays-calendar (:register "USFED"
+                                                         ;; OPM: the in-lieu day is the holiday "for pay and leave purposes".
+                                               :substitute-name "~a (observed)")
   (:fixed "New Year's Day" 1 1 :from 1900
    :observed :us-federal-in-lieu
    :authority ("5 U.S.C. § 6103(a)–(b)" "Exec. Order No. 11582 § 3(a)"))
