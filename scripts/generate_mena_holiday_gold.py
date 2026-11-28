@@ -993,6 +993,21 @@ FIXTURES: dict[str, dict] = {
                note="LOWER CONFIDENCE. Švenčių dienos of Lithuania (Darbo kodeksas art. 162 / 123): Joninės from 2003, "
                     "Vėlinės from 2020, Mother's and Father's Day (first Sundays of May and June); no act was read "
                     "(e-seimas and e-tar refuse automated fetches)."),
+    # --- #20: Sweden, Finland ---
+    "SE": dict(name="Sweden", region="europe", first=2000, weekends=[(None, (6, 7))],
+               data_note="no one-off days; the Lag (1989:253) days are rules",
+               note="Allmänna helgdagar of Sweden: Lag (1989:253) 1-2 § (påskdagen and pingstdagen named; other "
+                    "Sundays not listed), annandag pingst to 2004 and nationaldagen from 2005 (SFS 2004:1320, in force "
+                    "1 Apr 2005). The eves are no allmänna helgdagar."),
+    "FI": dict(name="Finland", region="europe", first=2005, weekends=[(None, (6, 7))],
+               data_note="no one-off days; the statutory days are rules",
+               note="Public holidays of Finland: the kirkolliset juhlapäivät (kirkkolaki 1054/1993 4:3, 652/2023 1:6), "
+                    "itsenäisyyspäivä (388/1937), and the days vuosilomalaki 162/2005 § 4(3) counts with them "
+                    "(vapunpäivä, jouluaatto, juhannusaatto, pääsiäislauantai). No uudenvuodenaatto."),
+    "FI-SECONDARY": dict(name="Finland (secondary sources)", country="FI", region="europe", first=2000, last=2004,
+                         file="fi-secondary-holiday-gold.sexp", confidence="secondary", weekends=[(None, (6, 7))],
+                         note="LOWER CONFIDENCE. 2000-2004: the eves rest on the 1973 annual-leave act, not read; the "
+                              "other days are primary."),
 }
 
 

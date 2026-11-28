@@ -295,6 +295,36 @@
     (ng (holiday-p lt (make-date 2002 6 24)) "Joninės from 2003 (#21)")
     (ok (holiday-p lt (make-date 2003 6 24)))))
 
+;;; --- #20: Sweden, Finland ----------------------------------------------------------
+
+(define-mena-gold-tests "SE" sweden-holidays-calendar 2000)
+
+(deftest se-issue-20-days
+  (let ((se (find-calendar "SE")))
+    (flet ((holiday (y m d) (holiday-p se (make-date y m d))))
+      (ok (holiday 2000 6 12) "Annandag pingst to 2004 (#20)")
+      (ok (holiday 2001 6 4))
+      (ok (holiday 2002 5 20))
+      (ok (holiday 2003 6 9))
+      (ok (holiday 2004 5 31))
+      (ng (holiday 2005 5 16) "replaced by Nationaldagen (SFS 2004:1320, in force 1 Apr 2005)")
+      (ok (holiday 2005 6 6))
+      (ng (holiday 2024 12 24) "julafton is no allmän helgdag"))))
+
+(define-mena-gold-tests "FI" finland-holidays-calendar 2005)
+
+(define-secondary-gold-test fi-secondary-gold-lower-confidence "FI"
+  "2000-2004: the eves rest on the 1973 annual-leave act, not read.")
+
+(deftest fi-issue-20-days
+  (let ((fi (find-calendar "FI")))
+    (flet ((holiday (y m d) (holiday-p fi (make-date y m d))))
+      (ok (holiday 2025 11 1) "Pyhäinpäivä, the Saturday 31 Oct - 6 Nov (#20)")
+      (ok (holiday 2026 10 31))
+      (ok (holiday 2025 6 20) "Juhannusaatto (vuosilomalaki § 4(3); #25 item 5)")
+      (ok (holiday 2025 12 24) "Jouluaatto")
+      (ng (holiday 2025 12 31) "uudenvuodenaatto is in no statute"))))
+
 (deftest europe-rows-and-statutes-carry-issued-and-published
   "Every block, row and act of the European lists has :ISSUED and :PUBLISHED
 (or a :DATES-NOTE) and every act :IN-FORCE (or a :DATES-NOTE) (#93)."

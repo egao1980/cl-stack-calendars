@@ -14,7 +14,7 @@
 ;;;; statutes has one (IE s. 21 is a per-employee entitlement, #25 item 9).
 
 (defparameter *europe-list-codes* '("IT" "NL" "DE" "IE" "PT" "TARGET" "HR" "SI" "SK" "CZ" "HU" "PL"
-                                    "RO" "BG" "GR" "CY" "EE" "LV" "LT")
+                                    "RO" "BG" "GR" "CY" "EE" "LV" "LT" "SE" "FI")
   "Codes whose acts and one-off days are data/<cc>/statutes.sexp and
 data/<cc>/holidays.sexp.")
 
@@ -566,3 +566,62 @@ one-off days (data/lv/holidays.sexp)."
   "Švenčių dienos of Lithuania (\"LT\"): the Darbo kodeksas list by era (Joninės
 from 2003, Vėlinės from 2020), :secondary."
   (%mena-calendar 'lithuania-holidays-calendar "LT" year transfers suppressed working-days))
+
+;;; --- Sweden (#20) --------------------------------------------------------------
+
+(define-calendar sweden-holidays-calendar (:register "SE" :constructor sweden-holidays-calendar)
+  ;; Lag (1989:253) om allmänna helgdagar 1-2 §; the named Sundays only.
+  (:fixed "Nyårsdagen" 1 1 :from 1900 :authority "Lag (1989:253) 1 §")
+  (:fixed "Trettondedag jul" 1 6 :from 1900 :authority "Lag (1989:253) 1 §")
+  (:easter "Långfredagen" -2 :from 1900 :authority "Lag (1989:253) 1 §")
+  (:easter "Påskdagen" 0 :from 1900 :authority "Lag (1989:253) 1 § (söndagar, däribland påskdagen)")
+  (:easter "Annandag påsk" 1 :from 1900 :authority "Lag (1989:253) 1 §")
+  (:fixed "Första maj" 5 1 :from 1900 :authority "Lag (1989:253) 1 §")
+  (:easter "Kristi himmelsfärdsdag" 39 :from 1900 :authority "Lag (1989:253) 1 §")
+  (:easter "Pingstdagen" 49 :from 1900 :authority "Lag (1989:253) 1 § (söndagar, däribland pingstdagen)")
+  (:easter "Annandag pingst" 50 :from 1900 :to 2004
+   :authority "Lag (1989:253) 1 § before SFS 2004:1320 (in force 1 Apr 2005)")
+  (:fixed "Nationaldagen" 6 6 :from 2005 :authority "SFS 2004:1320 (in force 1 Apr 2005)")
+  (:computed "Midsommardagen" (lambda (y) (%saturday-in-range y 6 20 6 26)) :from 1900
+   :authority "Lag (1989:253) 2 § (lördagen 20-26 juni)")
+  (:computed "Alla helgons dag" (lambda (y) (%saturday-in-range y 10 31 11 6)) :from 1953
+   :authority "Lag (1989:253) 2 § (lördagen 31 oktober-6 november)")
+  (:fixed "Juldagen" 12 25 :from 1900 :authority "Lag (1989:253) 1 §")
+  (:fixed "Annandag jul" 12 26 :from 1900 :authority "Lag (1989:253) 1 §"))
+
+(defun sweden-holidays-calendar (&key year transfers suppressed working-days)
+  "Allmänna helgdagar of Sweden (\"SE\"): Lag (1989:253) by era (annandag pingst
+to 2004, nationaldagen from 2005); the eves are no allmänna helgdagar."
+  (%mena-calendar 'sweden-holidays-calendar "SE" year transfers suppressed working-days))
+
+;;; --- Finland (#20) -------------------------------------------------------------
+
+(define-calendar finland-holidays-calendar (:register "FI" :constructor finland-holidays-calendar)
+  ;; Kirkolliset juhlapäivät (kirkkolaki 1054/1993 4:3, 652/2023 1:6),
+  ;; itsenäisyyspäivä (388/1937), and the days vuosilomalaki 162/2005 § 4(3)
+  ;; counts with them (#25 item 5). No uudenvuodenaatto.
+  (:fixed "Uudenvuodenpäivä" 1 1 :from 1917 :authority "Kirkkolaki 1054/1993 4:3; 652/2023 1:6")
+  (:fixed "Loppiainen" 1 6 :from 1917 :authority "Kirkkolaki 1054/1993 4:3; 652/2023 1:6")
+  (:easter "Pitkäperjantai" -2 :from 1917 :authority "Kirkkolaki 1054/1993 4:3; 652/2023 1:6")
+  (:easter "Pääsiäislauantai" -1 :from 1917 :authority "Vuosilomalaki 162/2005 4 § 3 kohta")
+  (:easter "Pääsiäispäivä" 0 :from 1917 :authority "Kirkkolaki 1054/1993 4:3; 652/2023 1:6")
+  (:easter "2. pääsiäispäivä" 1 :from 1917 :authority "Kirkkolaki 1054/1993 4:3; 652/2023 1:6")
+  (:fixed "Vapunpäivä" 5 1 :from 1917 :authority "Vuosilomalaki 162/2005 4 § 3 kohta")
+  (:easter "Helatorstai" 39 :from 1917 :authority "Kirkkolaki 1054/1993 4:3; 652/2023 1:6")
+  (:easter "Helluntaipäivä" 49 :from 1917 :authority "Kirkkolaki 1054/1993 4:3; 652/2023 1:6")
+  (:computed "Juhannusaatto" (lambda (y) (- (%saturday-in-range y 6 20 6 26) 1)) :from 1917
+   :authority "Vuosilomalaki 162/2005 4 § 3 kohta (the Friday before juhannuspäivä)")
+  (:computed "Juhannuspäivä" (lambda (y) (%saturday-in-range y 6 20 6 26)) :from 1917
+   :authority "Kirkkolaki 1054/1993 4:3 (lauantai kesäkuun 19 päivän jälkeen)")
+  (:computed "Pyhäinpäivä" (lambda (y) (%saturday-in-range y 10 31 11 6)) :from 1955
+   :authority "Kirkkolaki 1054/1993 4:3 (lauantai lokakuun 30 päivän jälkeen)")
+  (:fixed "Itsenäisyyspäivä" 12 6 :from 1917 :authority "Laki 388/1937 1 §")
+  (:fixed "Jouluaatto" 12 24 :from 1917 :authority "Vuosilomalaki 162/2005 4 § 3 kohta")
+  (:fixed "Joulupäivä" 12 25 :from 1917 :authority "Kirkkolaki 1054/1993 4:3; 652/2023 1:6")
+  (:fixed "Tapaninpäivä" 12 26 :from 1917 :authority "Kirkkolaki 1054/1993 4:3; 652/2023 1:6"))
+
+(defun finland-holidays-calendar (&key year transfers suppressed working-days)
+  "Public holidays of Finland (\"FI\"): the church holidays, itsenäisyyspäivä and
+the vuosilomalaki § 4(3) days (vapunpäivä, jouluaatto, juhannusaatto,
+pääsiäislauantai), with pyhäinpäivä on the Saturday 31 Oct–6 Nov."
+  (%mena-calendar 'finland-holidays-calendar "FI" year transfers suppressed working-days))
