@@ -5,3 +5,4 @@
 .DS_Store
 .cl-repository/
 cl-repo.lock
+__pycache__/

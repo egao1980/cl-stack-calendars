@@ -32,7 +32,9 @@
     ("EG" egypt-holidays-calendar)
     ("DZ" algeria-holidays-calendar)
     ("MA" morocco-holidays-calendar)
-    ("IR" iran-holidays-calendar))
+    ("IR" iran-holidays-calendar)
+    ("KZ" kazakhstan-holidays-calendar)
+    ("SN" senegal-holidays-calendar))
   "Registered code → constructor that takes :YEAR. Every registered calendar
 whose constructor takes :YEAR is listed here or in *YEAR-DATA-EXCEPTIONS*.")
 
