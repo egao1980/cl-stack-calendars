@@ -350,7 +350,7 @@ trading day; a day between two eras is closed.
 
 ### Exchange trading-holiday calendars (#49)
 
-Since 0.39.0 (Western Europe; 0.40.0 the Nordics) a MIC can use the exchange's own holiday calendar instead of the
+Since 0.39.0 (Western Europe; 0.40.0 the Nordics; 0.41.0 CEE, Athens and Istanbul) a MIC can use the exchange's own holiday calendar instead of the
 national civil one: `data/exchanges/calendars/<NAME>.sexp`, an
 `exchange-holiday-calendar` whose `calendar-provenance` is `:exchange`. Each file
 holds the exchange's recurring rules (`define-calendar` clause syntax, each with
@@ -400,7 +400,8 @@ differences.
 | XDUB | 08:00–16:28 | Euronext Dublin local (closing auction to 16:28–16:30) |
 | XSWX | 09:00–17:30 | SIX shares |
 | XSTO / XCSE / XHEL / XICE | 09:00–17:30 / 09:00–17:00 / 10:00–18:30 / 09:30–15:30 | SAXESS 2004-09-27; Iceland 2010-01-04 |
-| XOSL / XWAR | 09:00–16:20 / 09:00–16:50 | Oslo 2012-08-06 / GPW |
+| XOSL / XWAR | 09:00–16:20 / 09:00–16:50 | Oslo 2012-08-06 / GPW UTP 2013-04-15 |
+| XIST | 10:00–18:00 | lunch break removed 2019-10-04 |
 | XTAI | 09:00–13:30 | TWSE 2001-01-02 |
 | XBKK | 10:00–12:30 / 14:00–16:30 | SET 2024-03-25; holidays `TH-BANK` (#40) |
 | XIDX | 09:00–12:00 / 13:30–15:50 | 2013-01-02; Friday shorter |
