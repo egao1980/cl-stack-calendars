@@ -194,9 +194,9 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XBOM | BSE Ltd. | XBOM | exchange | 37 (2009–2026) | 2009–2026 | 4433 | 0 | 0 | 11 |
 | XBRU | Euronext Brussels | XBRU | exchange | 27 (2001–2027) | 2001–2028 | 7167 | 39 | 0 | 20 |
 | XBUD | Budapest Stock Exchange | XBUD | exchange | 9 (2018–2026) | 2018–2028 | 2743 | 0 | 0 | 0 |
-| XCBT | CBOT grains | USFED | normative | — | — | — | — | — | — |
-| XCEC | COMEX | USFED | normative | — | — | — | — | — | — |
-| XCME | CME Globex (equity / FX / energy template) | USFED | normative | — | — | — | — | — | — |
+| XCBT | CBOT on CME Globex (grains and oilseeds) | CME-GRAINS | exchange | 150 (2009–2027) | 2009–2027 | 4900 | 150 | 0 | 199 |
+| XCEC | COMEX on CME Globex (metals) | CME-METALS | exchange | 150 (2009–2027) | 2009–2027 | 4900 | 150 | 0 | 119 |
+| XCME | CME Globex (Chicago Mercantile Exchange) | CME-EQUITY | exchange | 150 (2009–2027) | 2009–2027 | 4900 | 150 | 0 | 90 |
 | XCSE | Nasdaq Copenhagen | XCSE | exchange | 22 (2003–2027) | 2003–2028 | 6507 | 0 | 0 | 0 |
 | XDCE | Dalian Commodity Exchange | XDCE | exchange | 2 (2003–2024) | — | — | — | — | — |
 | XDUB | Euronext Dublin | XDUB | exchange | 10 (2018–2027) | 2019–2028 | 2523 | 20 | 0 | 0 |
@@ -220,7 +220,7 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XMIL | Euronext Milan | XMIL | exchange | 22 (2003–2027) | 2010–2028 | 4827 | 0 | 0 | 2 |
 | XNAS | Nasdaq | NYSE | normative | — | — | — | — | — | — |
 | XNSE | National Stock Exchange of India | XNSE | exchange | 35 (2009–2026) | 2009–2026 | 4433 | 0 | 0 | 11 |
-| XNYM | NYMEX | USFED | normative | — | — | — | — | — | — |
+| XNYM | NYMEX on CME Globex (energy) | CME-ENERGY | exchange | 150 (2009–2027) | 2009–2027 | 4900 | 150 | 0 | 119 |
 | XNYS | New York Stock Exchange | NYSE | normative | — | — | — | — | — | — |
 | XOSE | Osaka Exchange / JPX derivatives | XOSE | exchange | 9 (2021–2027) | — | — | — | — | — |
 | XOSL | Euronext Oslo / Oslo Børs | XOSL | exchange | 15 (2002–2027) | 2006–2028 | 5775 | 18 | 0 | 2 |

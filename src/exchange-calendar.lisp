@@ -9,9 +9,12 @@
 ;;;;    :weekend (6 7)                  ; or eras ((NIL 5 6) ((2026 1 4) 6 7))
 ;;;;    :include ("EURONEXT")           ; family files whose rules, bases and
 ;;;;                                    ; notices also apply (before ours)
+;;;;    :product-group :equity          ; take this section of :GROUPS notices
 ;;;;    :bases ((:calendar "FR" :from (Y M D) :to (Y M D) :except ("…")
 ;;;;             :authority "…") …)     ; civil holidays the exchange follows
 ;;;;    :rules ((:fixed "Christmas Day" 12 25 :from 2001 :authority "…") …)
+;;;;    :no-settlement-rules (…)        ; same syntax: trading days without a
+;;;;                                    ; settlement (CME Globex holidays)
 ;;;;    :notices ((:title "…" :uri "…" :issued (Y M D) :issued-uri "…"
 ;;;;               :published (Y M D) :published-uri "…" :published-in "…"
 ;;;;               :dates-note "…"
@@ -19,7 +22,10 @@
 ;;;;               :sessions (((Y M D) ((:open (H M) :close (H M)) …) "note") …)
 ;;;;               :special-sessions (((Y M D) ((:open (H M) :close (H M))) "note") …)
 ;;;;               :early-closes (((Y M D) (H M) "note") …)
-;;;;               :late-opens (((Y M D) (H M) "note") …)) …))
+;;;;               :late-opens (((Y M D) (H M) "note") …)
+;;;;               :no-settlement (((Y M D) "name") …)
+;;;;               :settlement (((Y M D) "why") …)
+;;;;               :groups ((:equity :early-closes (…) …) …)) …))
 ;;;;
 ;;;; A day is closed when a notice closes it, else open when a notice opens
 ;;;; it (:OPEN, or :SESSIONS, which also gives that day's hours in place of
@@ -27,7 +33,13 @@
 ;;;; :EXCEPT names) has a holiday. A notice that opens a weekend day (TWSE
 ;;;; make-up Saturdays) makes it a trading day with the era's weekday hours.
 ;;;; :SPECIAL-SESSIONS (NSE/BSE Muhurat) are held apart from regular trading
-;;;; and do not open the day (EXCHANGE-SPECIAL-SESSIONS-FOR-DATE). Rules use
+;;;; and do not open the day (EXCHANGE-SPECIAL-SESSIONS-FOR-DATE). A day of
+;;;; :NO-SETTLEMENT-RULES or a notice's :NO-SETTLEMENT row may trade but has
+;;;; no settlement: its trades clear on the next trade date (a :SETTLEMENT row
+;;;; revokes the rule for one day; EXCHANGE-TRADE-DATE). A notice of a family
+;;;; file can carry per-product-group rows under :GROUPS (one CME Globex
+;;;; holiday schedule covers equity, interest-rate, FX, energy, metals and
+;;;; grains); a calendar with :PRODUCT-GROUP sees its own section. Rules use
 ;;;; DEFINE-CALENDAR clause syntax; :COMPUTED takes a function name
 ;;;; (src/exchange-date-functions.lisp). CALENDAR-PROVENANCE is :EXCHANGE.
 
@@ -91,6 +103,10 @@ A :COMPUTED clause names its date function (EXCHANGE-DATE-FUNCTION)."
                   :reader exchange-calendar-authority-uri)
    (rules :initarg :rules :initform nil :reader exchange-calendar-rules
           :documentation "A RULE-CALENDAR of the exchange's recurring closures, or NIL.")
+   (no-settlement-rules :initarg :no-settlement-rules :initform nil
+                        :reader exchange-calendar-no-settlement-rules
+                        :documentation "A RULE-CALENDAR of the recurring days the
+exchange trades without a settlement (CME Globex holiday sessions), or NIL.")
    (bases :initarg :bases :initform nil :reader exchange-calendar-bases
           :documentation "Plists (:CALENDAR :FROM :TO :EXCEPT :AUTHORITY): the
 exchange also closes on the holidays of the registered calendar :CALENDAR
@@ -99,6 +115,7 @@ between :FROM and :TO (dates, NIL = open-ended), except those named in :EXCEPT."
             :documentation "Notice plists, as in the data file.")
    (closures :initform (make-hash-table) :reader %exchange-closures)
    (openings :initform (make-hash-table) :reader %exchange-openings)
+   (no-settlement :initform (make-hash-table) :reader %exchange-notice-no-settlement)
    (early-closes :initform (make-hash-table) :reader %exchange-notice-early-closes)
    (late-opens :initform (make-hash-table) :reader %exchange-notice-late-opens)
    (sessions :initform (make-hash-table) :reader %exchange-notice-sessions)
@@ -107,8 +124,8 @@ between :FROM and :TO (dates, NIL = open-ended), except those named in :EXCEPT."
   (:documentation "A HOLIDAY-CALENDAR for one exchange: its own recurring
 rules, the civil calendars it follows by era (:BASES), and its notices of
 one-off closures, sessions on holidays and weekend days, per-day hours,
-special sessions, early closes and late opens. See src/exchange-calendar.lisp
-for the data format."))
+special sessions, early closes, late opens and days without a settlement.
+See src/exchange-calendar.lisp for the data format."))
 
 (defmethod initialize-instance :after ((calendar exchange-holiday-calendar) &key)
   (flet ((tod (spec) (if (eq spec :none) :none (%tod-list spec))))
@@ -134,7 +151,14 @@ for the data format."))
                (put (%exchange-notice-early-closes calendar) (getf notice :early-closes)
                     (lambda (row) (list (tod (second row)) (third row) notice)))
                (put (%exchange-notice-late-opens calendar) (getf notice :late-opens)
-                    (lambda (row) (list (tod (second row)) (third row) notice)))))))
+                    (lambda (row) (list (tod (second row)) (third row) notice)))
+               ;; :NO-SETTLEMENT rows mark a trading day without a settlement;
+               ;; :SETTLEMENT rows (later in the same or a later notice) revoke one
+               ;; a rule gives.
+               (put (%exchange-notice-no-settlement calendar) (getf notice :no-settlement)
+                    (lambda (row) (list t (second row) notice)))
+               (put (%exchange-notice-no-settlement calendar) (getf notice :settlement)
+                    (lambda (row) (list nil (second row) notice)))))))
 
 (defmethod calendar-provenance ((calendar exchange-holiday-calendar))
   :exchange)
@@ -184,6 +208,23 @@ day even on a weekend day or holiday. Second value is the notice's note."
     (multiple-value-bind (state row) (%notice-day-state calendar (date-rd date))
       (when (eq state :open)
         (values t (first row))))))
+
+(defun exchange-calendar-no-settlement-p (calendar date)
+  "True when CALENDAR says the exchange holds no settlement on DATE although
+it may trade (a CME Globex holiday session: trading halts early and the
+day's trades clear on the next trade date). A notice's :NO-SETTLEMENT row
+says so, a :SETTLEMENT row says the day settles after all, else a
+:NO-SETTLEMENT-RULES holiday. Second value is the name or note. Says nothing
+about whether DATE trades (EXCHANGE-SETTLEMENT-DAY-P)."
+  (when (typep calendar 'exchange-holiday-calendar)
+    (let ((row (gethash (date-rd date) (%exchange-notice-no-settlement calendar))))
+      (when row
+        (return-from exchange-calendar-no-settlement-p
+          (if (first row) (values t (second row)) (values nil nil)))))
+    (let ((rules (exchange-calendar-no-settlement-rules calendar)))
+      (if rules
+          (holiday-p rules date)
+          (values nil nil)))))
 
 (defmethod weekend-day-p ((calendar exchange-holiday-calendar) date)
   "A weekend day that a notice opens (a make-up Saturday) is not a weekend day."
@@ -264,6 +305,7 @@ notices that names none, so an included family file keeps its own clock."
              (append (loop for p in included append (getf p key))
                      (getf plist key))))
       (list* :rules (merged :rules)
+             :no-settlement-rules (merged :no-settlement-rules)
              :bases (merged :bases)
              :notices (append (loop for p in included append (getf p :notices))
                               own-notices)
@@ -272,27 +314,55 @@ notices that names none, so an included family file keeps its own clock."
 (defun make-exchange-calendar (plist)
   "Build an EXCHANGE-HOLIDAY-CALENDAR from PLIST, the data-file format above
 with any :INCLUDE files already merged in (as LOAD-EXCHANGE-CALENDAR does)."
-  (let ((weekend (or (getf plist :weekend) '(6 7)))
-        (clauses (getf plist :rules)))
-    (make-instance 'exchange-holiday-calendar
-                   :name (getf plist :name)
-                   :title (getf plist :title)
-                   :authority (getf plist :authority)
-                   :authority-uri (getf plist :authority-uri)
-                   :weekend-days weekend
-                   :rules (when clauses
-                            (make-instance 'rule-calendar
-                                           :name (getf plist :name)
-                                           :provenance :exchange
-                                           :weekend-days weekend
-                                           :rules (mapcar #'%holiday-rule-from-clause
-                                                          clauses)))
-                   :bases (getf plist :bases)
-                   :notices (getf plist :notices))))
+  (let ((weekend (or (getf plist :weekend) '(6 7))))
+    (flet ((rule-calendar (clauses)
+             (when clauses
+               (make-instance 'rule-calendar
+                              :name (getf plist :name)
+                              :provenance :exchange
+                              :weekend-days weekend
+                              :rules (mapcar #'%holiday-rule-from-clause clauses)))))
+      (make-instance 'exchange-holiday-calendar
+                     :name (getf plist :name)
+                     :title (getf plist :title)
+                     :authority (getf plist :authority)
+                     :authority-uri (getf plist :authority-uri)
+                     :weekend-days weekend
+                     :rules (rule-calendar (getf plist :rules))
+                     :no-settlement-rules (rule-calendar (getf plist :no-settlement-rules))
+                     :bases (getf plist :bases)
+                     :notices (getf plist :notices)))))
+
+(defparameter *exchange-notice-row-keys*
+  '(:closed :open :sessions :special-sessions :early-closes :late-opens
+    :no-settlement :settlement)
+  "Notice keys whose values are lists of day rows.")
+
+(defun %notice-for-product-group (notice group)
+  "NOTICE with the rows of its :GROUPS section for product GROUP appended to
+its own. A family notice (CME: one holiday schedule for every product group)
+lists per-group rows as :GROUPS ((:EQUITY :EARLY-CLOSES (…) …) …); a
+calendar with :PRODUCT-GROUP GROUP sees its section, others see none."
+  (let ((groups (getf notice :groups)))
+    (if (null groups)
+        notice
+        (let ((section (cdr (assoc group groups)))
+              (merged (copy-list notice)))
+          (dolist (key *exchange-notice-row-keys* merged)
+            (let ((rows (getf section key)))
+              (when rows
+                (setf (getf merged key) (append (getf merged key) rows)))))))))
 
 (defun load-exchange-calendar (name)
-  "Build the EXCHANGE-HOLIDAY-CALENDAR from data/exchanges/calendars/NAME.sexp."
-  (make-exchange-calendar (%read-exchange-calendar-plist name)))
+  "Build the EXCHANGE-HOLIDAY-CALENDAR from data/exchanges/calendars/NAME.sexp.
+A file with :PRODUCT-GROUP takes that group's section of every notice that
+has :GROUPS (%NOTICE-FOR-PRODUCT-GROUP), its included family files' too."
+  (let* ((plist (%read-exchange-calendar-plist name))
+         (group (getf plist :product-group)))
+    (make-exchange-calendar
+     (list* :notices (mapcar (lambda (notice) (%notice-for-product-group notice group))
+                             (getf plist :notices))
+            plist))))
 
 (defun exchange-calendar-names ()
   "Names of the calendars in data/exchanges/calendars/."

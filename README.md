@@ -300,7 +300,31 @@ Holiday verification: `data/tests/holiday-gold.sexp` + `tests/holiday-suite-test
 
 ### Exchange holidays
 
-Every exchange query — `exchange-trading-day-p`, `exchange-sessions-for-date`, `exchange-session-bounds`, `exchange-open-p` — honours the exchange's holiday calendar (`exchange-hours-calendar-name`; `exchange-holiday-p`). Since 0.5.0 XNYS and XNAS use the `"NYSE"` calendar (NYSE Rule 7.2 holidays from 1954 + special closures in `data/us/nyse-closures.sexp`), not `"USFED"`: Good Friday is closed, Columbus Day and Veterans Day are open, and a Saturday New Year's Day leaves Friday Dec 31 open. The CME-family MICs (XCME, XCBT, XCEC, XNYM) still use `"USFED"` as an approximation (Globex trades through most US holidays; #48). Other MICs use the national civil calendar, which can differ from the exchange's own list (#49).
+Every exchange query — `exchange-trading-day-p`, `exchange-sessions-for-date`, `exchange-session-bounds`, `exchange-open-p` — honours the exchange's holiday calendar (`exchange-hours-calendar-name`; `exchange-holiday-p`). Since 0.5.0 XNYS and XNAS use the `"NYSE"` calendar (NYSE Rule 7.2 holidays from 1954 + special closures in `data/us/nyse-closures.sexp`), not `"USFED"`: Good Friday is closed, Columbus Day and Veterans Day are open, and a Saturday New Year's Day leaves Friday Dec 31 open. Since 0.49.0 the CME-family MICs use CME Group's own Globex calendars (#48), one per product group. Other MICs use the exchange's own calendar where `data/exchanges/calendars/` has one (#49), else the national civil calendar.
+
+### CME Globex: product groups and settlement days
+
+A CME Globex holiday is a full closure (New Year's Day, Good Friday in most years, Christmas), a **no-settlement** day (Martin Luther King Jr., Presidents, Memorial, Juneteenth, Independence, Labor and Thanksgiving days: Globex trades, halts early, and the trades are for the next trade date), or a regular day (Columbus, Veterans). Halts and early closes differ by product group, so `find-exchange` and every exchange session function take `:product-group` (`nil` = the MIC's headline group):
+
+| MIC | headline | other groups |
+|-----|----------|--------------|
+| XCME | `:equity` (E-mini S&P 500) | `:interest-rate` (SOFR), `:fx` |
+| XCBT | `:grains` (corn, soybeans, wheat) | `:interest-rate` (Treasuries), `:equity` (Dow) |
+| XNYM | `:energy` | — |
+| XCEC | `:metals` | — |
+
+```lisp
+(let ((cme (find-exchange "XCME")) (mlk (make-date 2024 1 15)))
+  (exchange-trading-day-p cme mlk)            ; T   — Globex trades, halts 12:00 CT
+  (exchange-settlement-day-p cme mlk)         ; NIL — no settlement
+  (exchange-trade-date cme mlk)               ; 2024-01-16
+  (exchange-trading-day-p cme mlk :product-group :fx))  ; T
+(exchange-trading-day-p (find-exchange "XCBT") (make-date 2024 1 15)) ; NIL — grains closed
+(exchange-product-groups "XCME")              ; (:EQUITY :INTEREST-RATE :FX)
+(exchange-session-bounds "XCBT" date :product-group :interest-rate)
+```
+
+`exchange-no-settlement-p`, `exchange-settlement-day-p` and `exchange-trade-date` work for every MIC (one without no-settlement days settles on each trading day). An unknown group signals `exchange-product-group-not-found` (restart `use-value`). The data: `data/exchanges/calendars/CME.sexp` (family rules, `:no-settlement-rules`, one notice per CME Globex holiday schedule 2009–2022 with a `:groups` section per product group, CME Clearing advisories 2023–2027) and `CME-EQUITY` … `CME-GRAINS`, which include it. Every day of the 2009–2022 schedules is checked per group (`data/tests/exchanges/CME-notices.sexp`, extracted from CME's documents); `exchange_calendars` CMES (one calendar for all CME products) is the cross-check, with each difference recorded. 2023 on, CME publishes the Globex hours only in a date picker, so halt and early-close times are the 2021–2022 pattern (unverified); livestock, dairy, softs and crypto are not modelled.
 
 ## Data path / client zip
 

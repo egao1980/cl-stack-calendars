@@ -1,5 +1,5 @@
 (defsystem "cl-stack-calendars"
-  :version "0.48.0"
+  :version "0.49.0"
   :description "Holiday and trading calendars for cl-stack (business days, sessions, versioned as-of)"
   :author "egao1980"
   :license "MIT"
@@ -85,6 +85,7 @@
                (:file "exchange-gold-test")
                (:file "exchange-calendar-test")
                (:file "exchange-engine-test")
+               (:file "cme-calendar-test")
                (:file "data-root-test"))
   :perform (test-op (o c)
                     (unless (symbol-call :rove :run c)

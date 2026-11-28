@@ -13,8 +13,9 @@ Each era and early-close rule cites an `:authority` (exchange notice / official 
 
 - Pre-market / post-market / ToSTNeT / after-hours
 - Opening/closing *auctions* as separate segments (RTH spans first open → last continuous/close)
-- Exchange-only holidays for MICs whose `:calendar` is still a civil one (CME family on
-  `USFED`; the MICs outside Western Europe on the national calendar, #49).
+- Exchange-only holidays for MICs whose `:calendar` is still a civil one (#49). Since
+  0.49.0 the CME family (XCME XCBT XCEC XNYM) uses CME Group's Globex calendars, one per
+  product group (`CME.sexp` and `CME-*.sexp`, #48).
   XNYS / XNAS use the exchange's own `NYSE` calendar (src/starter-nyse.lisp,
   data/us/nyse-closures.sexp). Since 0.39.0 XLON, IFEU, XLME, the Euronext markets
   (XPAR XAMS XBRU XLIS XDUB XMIL XMAT), XETR, XEUR, XEEE, XSWX, XWBO, XMAD and (0.40.0) the
@@ -62,8 +63,8 @@ Those libraries are Apache-2.0; we independently encode published dates.
 | XIST | BIST continuous 10:00–18:00, lunch break removed 2019-10-04 (notice 2019/56); 10:00–13:00 / 14:00–18:00 from 2016-11-14; half days 12:30 |
 | XSAU | Tadawul 11:00–15:30 Sat–Wed from 2006-09, Sun–Thu from 2013-06-30; 10:00–15:00 from 2016-04-03 (10:00–13:00 2020-03-26..05-28) |
 | XTAE | TASE Sun–Thu: 09:45–16:17 from 2009, 17:15 (Sunday 16:15) from 2013-06-16, 09:59 open from 2020-02-02, Sunday 15:40 from 2020-03-08; Mon–Fri from 2026-01-05 with Friday to 13:35 |
-| XCME XNYM XCEC | [CME Globex](https://www.cftc.gov/filings/orgrules/rule021422cmedcm007.pdf) 17:00–16:00 CT, labeled by close |
-| XCBT | CBOT grains night 19:00–07:45 + day 08:30–13:20 CT |
+| XCME XNYM XCEC | [CME Globex](https://www.cftc.gov/filings/orgrules/rule021422cmedcm007.pdf) 17:00–16:00 CT, labeled by close; regular closes by era from the CME Globex holiday schedules 2009–2022 (equity 15:15 / 16:15 / 16:00, energy and metals 16:15 / 16:00); XCME groups `:equity` `:interest-rate` `:fx` |
+| XCBT | CBOT grains night 19:00–07:45 + day 08:30–13:20 CT (eras from the CME schedules: 18:00 / 09:30–13:15 to 2012, 19:00–14:00 2012–2013, 13:15 to 2015); groups `:grains` `:interest-rate` `:equity` |
 | IFEU | [ICE Brent](https://www.ice.com/products/219/Brent-Crude-Futures) 01:00–23:00 London |
 | XLME | [LMEselect](https://www.lme.com/trading/systems/lmeselect) 01:00–19:00 |
 | XSGE XDCE XZCE XINE | SHFE/DCE/CZCE day breaks; SHFE base-metals night 21:00–01:00 from the evening of [2013-12-20](https://www.shfe.com.cn/publicnotice/notice/201311/t20131125_790028.html); INE SC night to 02:30; no night session on the evening before a statutory holiday (`:after-weekday-closure` rule) or during the 2020-02-03..05-06 suspension; DCE / CZCE night sessions not modelled (sites unreachable) |

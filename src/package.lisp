@@ -526,6 +526,17 @@
    #:il-erev-yom-kippur
    #:il-erev-sukkot
    #:il-erev-simchat-torah
-   #:lunar-new-year-eve))
+   #:lunar-new-year-eve
+   #:exchange-product-group-not-found
+   #:exchange-product-group-not-found-mic
+   #:exchange-product-group-not-found-product-group
+   #:exchange-product-group-not-found-known
+   #:exchange-product-groups
+   #:exchange-hours-product-group
+   #:exchange-no-settlement-p
+   #:exchange-settlement-day-p
+   #:exchange-trade-date
+   #:exchange-calendar-no-settlement-p
+   #:exchange-calendar-no-settlement-rules))
 
 (in-package #:cl-stack-calendars)

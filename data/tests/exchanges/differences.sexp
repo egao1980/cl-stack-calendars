@@ -1300,4 +1300,1594 @@
   :source "https://web.archive.org/web/20081121id_/http://www.tsx.com/en/about_tsx/market_hours.html")
  (:mic "XTSE" :date (2009 12 24) :kind :early-close :gold nil :ours (13 0)
   :why "Christmas Eve on a weekday closes at 13:00 in every year a TSE/TSX notice was found (2001-2004, 2008, 2010, 2012-2015, 2018-2021, 2024-2027); no notice was found for this year, so the rule is applied. exchange_calendars has a full day."
-  :source "https://web.archive.org/web/20081121id_/http://www.tsx.com/en/about_tsx/market_hours.html"))
+  :source "https://web.archive.org/web/20081121id_/http://www.tsx.com/en/about_tsx/market_hours.html")
+ ;; CME Group (#48): XCME equity, XCBT grains, XCEC metals, XNYM energy against exchange_calendars CMES
+ (:mic "XCBT" :date (2009 1 2) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((9 30) nil nil (13 15))
+  :why "CME Globex New Year's holiday schedule 2009: grains trades ((9 30) nil nil (13 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20130309115356/http://www.cmegroup.com/tools-information/holiday-calendar/files/2009-holiday-calendars.zip")
+ (:mic "XCBT" :date (2011 12 27) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((9 30) nil nil (13 15))
+  :why "CME Globex Christmas holiday schedule 2011: grains trades ((9 30) nil nil (13 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCBT" :date (2012 1 3) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((9 30) nil nil (13 15))
+  :why "CME Globex New Year's holiday schedule 2012: grains trades ((9 30) nil nil (13 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20130309115256/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-holiday-calendars.zip")
+ (:mic "XCBT" :from (2009 1 5) :to (2012 5 11) :kind :hours
+  :gold ((17 0) nil nil (16 0)) :ours ((18 0) (7 15) (9 30) (13 15))
+  :why "exchange_calendars CMES gives every CME Group product one 17:00-16:00 CT day; the CME Globex holiday schedules give the grains regular session of this era (hours file eras, cited per era)."
+  :source "https://web.archive.org/web/20171210124214/http://www.cmegroup.com:80/tools-information/holiday-calendar.html")
+ (:mic "XCBT" :from (2012 5 14) :to (2013 4 5) :kind :hours
+  :gold ((17 0) nil nil (16 0)) :ours ((19 0) nil nil (14 0))
+  :why "exchange_calendars CMES gives every CME Group product one 17:00-16:00 CT day; the CME Globex holiday schedules give the grains regular session of this era (hours file eras, cited per era)."
+  :source "https://web.archive.org/web/20171210124214/http://www.cmegroup.com:80/tools-information/holiday-calendar.html")
+ (:mic "XCBT" :date (2012 7 5) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((9 30) nil nil (14 0))
+  :why "CME Globex Memorial Day holiday schedule 2012: grains trades ((9 30) nil nil (14 0)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20120915003402/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-4th-of-july.xls")
+ (:mic "XCBT" :date (2012 12 26) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((9 30) nil nil (14 0))
+  :why "CME Globex Christmas holiday schedule 2012: grains trades ((9 30) nil nil (14 0)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20120107060254/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-christmas.pdf")
+ (:mic "XCBT" :date (2013 1 2) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((9 30) nil nil (14 0))
+  :why "CME Globex New Year's holiday schedule 2013: grains trades ((9 30) nil nil (14 0)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20130309115301/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-martin-luther-king.xls")
+ (:mic "XCBT" :from (2013 4 8) :to (2015 5 26) :kind :hours
+  :gold ((17 0) nil nil (16 0)) :ours ((19 0) (7 45) (8 30) (13 15))
+  :why "exchange_calendars CMES gives every CME Group product one 17:00-16:00 CT day; the CME Globex holiday schedules give the grains regular session of this era (hours file eras, cited per era)."
+  :source "https://web.archive.org/web/20171210124214/http://www.cmegroup.com:80/tools-information/holiday-calendar.html")
+ (:mic "XCBT" :date (2013 7 5) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 15))
+  :why "CME Globex Independence Day holiday schedule 2013: grains trades ((8 30) nil nil (13 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCBT" :date (2013 12 26) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 15))
+  :why "CME Globex Christmas holiday schedule 2013: grains trades ((8 30) nil nil (13 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCBT" :date (2014 1 2) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 15))
+  :why "CME Globex Christmas holiday schedule 2013: grains trades ((8 30) nil nil (13 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCBT" :date (2014 7 7) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 15))
+  :why "CME Globex Independence Day holiday schedule 2014: grains trades ((8 30) nil nil (13 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCBT" :date (2014 12 26) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 15))
+  :why "CME Globex Christmas holiday schedule 2014: grains trades ((8 30) nil nil (13 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCBT" :date (2015 1 2) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 15))
+  :why "CME Globex New Year's holiday schedule 2015: grains trades ((8 30) nil nil (13 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20140326160333/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-new-years-holiday-schedule.xls")
+ (:mic "XCBT" :date (2013 11 29) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (12 0))
+  :why "CME Globex Thanksgiving holiday schedule 2013: grains trades ((8 30) nil nil (12 0)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCBT" :date (2014 11 28) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (12 0))
+  :why "CME Globex Thanksgiving holiday schedule 2014: grains trades ((8 30) nil nil (12 0)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCBT" :from (2015 5 27) :to (2027 12 31) :kind :hours
+  :gold ((17 0) nil nil (16 0)) :ours ((19 0) (7 45) (8 30) (13 20))
+  :why "exchange_calendars CMES gives every CME Group product one 17:00-16:00 CT day; the CME Globex holiday schedules give the grains regular session of this era (hours file eras, cited per era)."
+  :source "https://web.archive.org/web/20171210124214/http://www.cmegroup.com:80/tools-information/holiday-calendar.html")
+ (:mic "XCBT" :date (2015 11 27) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (12 5))
+  :why "CME Globex Thanksgiving holiday schedule 2015: grains trades ((8 30) nil nil (12 5)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCBT" :date (2016 11 25) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (12 5))
+  :why "CME Globex Thanksgiving holiday schedule 2016: grains trades ((8 30) nil nil (12 5)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20170628115819/http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-holiday-calendars.zip")
+ (:mic "XCBT" :date (2017 11 24) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (12 5))
+  :why "CME Globex Thanksgiving holiday schedule 2017: grains trades ((8 30) nil nil (12 5)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCBT" :date (2018 11 23) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (12 5))
+  :why "CME Globex Thanksgiving holiday schedule 2018: grains trades ((8 30) nil nil (12 5)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCBT" :date (2019 11 29) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (12 5))
+  :why "CME Globex Thanksgiving holiday schedule 2019: grains trades ((8 30) nil nil (12 5)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCBT" :date (2020 11 27) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (12 5))
+  :why "CME Globex Thanksgiving holiday schedule 2020: grains trades ((8 30) nil nil (12 5)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20201125140635/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-thanksgiving-schedule.xls")
+ (:mic "XCBT" :date (2021 11 26) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (12 5))
+  :why "CME Globex Thanksgiving holiday schedule 2021: grains trades ((8 30) nil nil (12 5)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20220917175604/https://www.cmegroup.com/tools-information/holiday-calendar/files/2021-thanksgiving-holiday-schedule.xls")
+ (:mic "XCBT" :date (2022 11 25) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (12 5))
+  :why "CME Globex Thanksgiving holiday schedule 2022: grains trades ((8 30) nil nil (12 5)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20220704065423/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-thanksgiving-holiday-schedule.xls")
+ (:mic "XCBT" :date (2016 7 5) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex Independence Day holiday schedule 2016: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20170628115819/http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-holiday-calendars.zip")
+ (:mic "XCBT" :date (2017 7 5) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex Independence Day holiday schedule 2017: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCBT" :date (2017 12 26) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex Christmas holiday schedule 2017: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCBT" :date (2018 1 2) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex New Year's holiday schedule 2018: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCBT" :date (2018 7 5) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex Independence Day holiday schedule 2018: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCBT" :date (2018 12 26) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex Christmas holiday schedule 2018: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCBT" :date (2019 1 2) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex New Year's holiday schedule 2019: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCBT" :date (2019 7 5) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex Independence Day holiday schedule 2019: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCBT" :date (2019 12 26) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex Christmas holiday schedule 2019: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20201111233949/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-christmas-holiday-schedule.xls")
+ (:mic "XCBT" :date (2020 1 2) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex New Year's holiday schedule 2020: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCBT" :date (2021 7 6) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex Independence Day holiday schedule 2021: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20260830100327/https://www.cmegroup.com/tools-information/holiday-calendar/files/2021-holiday-calendars.zip")
+ (:mic "XCBT" :date (2022 7 5) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex Independence Day holiday schedule 2022: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20220704065450/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-independence-day-holiday-schedule.xls")
+ (:mic "XCBT" :date (2023 11 24) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex holiday schedule: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2024 11 29) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex holiday schedule: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2025 11 28) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex holiday schedule: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCBT" :date (2026 11 27) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex holiday schedule: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2027 11 26) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((8 30) nil nil (13 20))
+  :why "CME Globex holiday schedule: grains trades ((8 30) nil nil (13 20)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :from (2009 1 2) :to (2015 9 8) :kind :hours
+  :gold ((17 0) nil nil (16 0)) :ours ((17 0) nil nil (16 15))
+  :why "exchange_calendars CMES gives every CME Group product one 17:00-16:00 CT day; the CME Globex holiday schedules give the metals regular session of this era (hours file eras, cited per era)."
+  :source "https://web.archive.org/web/20171210124214/http://www.cmegroup.com:80/tools-information/holiday-calendar.html")
+ (:mic "XCME" :date (2009 1 2) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((5 0) nil nil (15 15))
+  :why "CME Globex New Year's holiday schedule 2009: equity trades ((5 0) nil nil (15 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20130309115356/http://www.cmegroup.com/tools-information/holiday-calendar/files/2009-holiday-calendars.zip")
+ (:mic "XCME" :date (2011 12 27) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((5 0) nil nil (15 15))
+  :why "CME Globex Christmas holiday schedule 2011: equity trades ((5 0) nil nil (15 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCME" :date (2012 1 3) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((5 0) nil nil (15 15))
+  :why "CME Globex New Year's holiday schedule 2012: equity trades ((5 0) nil nil (15 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20130309115256/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-holiday-calendars.zip")
+ (:mic "XCME" :date (2012 12 26) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((5 0) nil nil (15 15))
+  :why "CME Globex Christmas holiday schedule 2012: equity trades ((5 0) nil nil (15 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20120107060254/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-christmas.pdf")
+ (:mic "XCME" :from (2009 1 5) :to (2012 12 24) :kind :hours
+  :gold ((17 0) nil nil (16 0)) :ours ((17 0) nil nil (15 15))
+  :why "exchange_calendars CMES gives every CME Group product one 17:00-16:00 CT day; the CME Globex holiday schedules give the equity regular session of this era (hours file eras, cited per era)."
+  :source "https://web.archive.org/web/20171210124214/http://www.cmegroup.com:80/tools-information/holiday-calendar.html")
+ (:mic "XCME" :from (2012 12 27) :to (2015 9 8) :kind :hours
+  :gold ((17 0) nil nil (16 0)) :ours ((17 0) nil nil (16 15))
+  :why "exchange_calendars CMES gives every CME Group product one 17:00-16:00 CT day; the CME Globex holiday schedules give the equity regular session of this era (hours file eras, cited per era)."
+  :source "https://web.archive.org/web/20171210124214/http://www.cmegroup.com:80/tools-information/holiday-calendar.html")
+ (:mic "XCME" :date (2013 1 2) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((5 0) nil nil (16 15))
+  :why "CME Globex New Year's holiday schedule 2013: equity trades ((5 0) nil nil (16 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20130309115301/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-martin-luther-king.xls")
+ (:mic "XCME" :date (2013 12 26) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((5 0) nil nil (16 15))
+  :why "CME Globex Christmas holiday schedule 2013: equity trades ((5 0) nil nil (16 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCME" :date (2014 1 2) :kind :hours :gold ((17 0) nil nil (16 0)) :ours ((5 0) nil nil (16 15))
+  :why "CME Globex Christmas holiday schedule 2013: equity trades ((5 0) nil nil (16 15)) that day (a late open with no overnight session, or the day's own hours); CMES keeps 17:00-16:00."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XNYM" :from (2009 1 2) :to (2015 9 8) :kind :hours
+  :gold ((17 0) nil nil (16 0)) :ours ((17 0) nil nil (16 15))
+  :why "exchange_calendars CMES gives every CME Group product one 17:00-16:00 CT day; the CME Globex holiday schedules give the energy regular session of this era (hours file eras, cited per era)."
+  :source "https://web.archive.org/web/20171210124214/http://www.cmegroup.com:80/tools-information/holiday-calendar.html")
+ (:mic "XCBT" :date (2009 1 19) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20090126144353/http://cmegroup.com:80/tools-information/holiday-calendar/files/2009-martin-luther-king.pdf")
+ (:mic "XCBT" :date (2009 2 16) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20090206002053/http://cmegroup.com:80/tools-information/holiday-calendar/files/2009-presidents-day.pdf")
+ (:mic "XCBT" :date (2009 5 25) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20090611163557/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-memorial-day.pdf")
+ (:mic "XCBT" :date (2009 7 3) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20090612061133/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-4th-of-july.pdf")
+ (:mic "XCBT" :date (2009 9 7) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20091007030433/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-labor-day.pdf")
+ (:mic "XCBT" :date (2009 11 26) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20130309115356/http://www.cmegroup.com/tools-information/holiday-calendar/files/2009-holiday-calendars.zip")
+ (:mic "XCBT" :date (2010 1 18) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20100331064226/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-martin-luther-king.pdf")
+ (:mic "XCBT" :date (2010 2 15) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20100215064641/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-presidents-day.pdf")
+ (:mic "XCBT" :date (2010 5 31) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20100601094225/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-memorial-day.pdf")
+ (:mic "XCBT" :date (2010 7 5) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20100602005637/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-4th-of-july.pdf")
+ (:mic "XCBT" :date (2010 9 6) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20100602005641/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-labor-day.pdf")
+ (:mic "XCBT" :date (2010 11 25) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20101122094012/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-thanksgiving.pdf")
+ (:mic "XCBT" :date (2010 12 31) :kind :early-close :gold nil :ours (12 0)
+  :why "CME Globex New Year's holiday schedule 2011: grains closes 12:00 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20101214061245/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2011-new-years.pdf")
+ (:mic "XCBT" :date (2011 1 17) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCBT" :date (2011 2 21) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCBT" :date (2011 5 30) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCBT" :date (2011 7 4) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCBT" :date (2011 9 5) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCBT" :date (2011 11 10) :kind :session :gold t :ours nil
+  :why "CME Globex Veterans Day holiday schedule 2011: grains closed (Veterans Day); CMES has a session."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCBT" :date (2011 11 24) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCBT" :date (2012 1 16) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20120105160459/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2012-martin-luther-king.pdf")
+ (:mic "XCBT" :date (2012 2 20) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20120107064434/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-presidents-day.pdf")
+ (:mic "XCBT" :date (2012 5 28) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20120915003402/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-4th-of-july.xls")
+ (:mic "XCBT" :date (2012 7 3) :kind :early-close :gold nil :ours (12 0)
+  :why "CME Globex Memorial Day holiday schedule 2012: grains closes 12:00 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20120915003402/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-4th-of-july.xls")
+ (:mic "XCBT" :date (2012 7 4) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20120915003402/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-4th-of-july.xls")
+ (:mic "XCBT" :date (2012 9 3) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20120915003609/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-labor-day.xls")
+ (:mic "XCBT" :date (2012 11 22) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20111125001004/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2012-thanksgiving.pdf")
+ (:mic "XCBT" :date (2013 1 21) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCBT" :date (2013 2 18) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCBT" :date (2013 5 27) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCBT" :date (2013 7 3) :kind :early-close :gold nil :ours (12 0)
+  :why "CME Globex Independence Day holiday schedule 2013: grains closes 12:00 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCBT" :date (2013 7 4) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCBT" :date (2013 9 2) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCBT" :date (2013 11 28) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCBT" :date (2013 11 29) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex Thanksgiving holiday schedule 2013: grains no early close; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCBT" :date (2014 1 20) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCBT" :date (2014 2 17) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCBT" :date (2014 5 26) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCBT" :date (2014 7 3) :kind :early-close :gold nil :ours (12 0)
+  :why "CME Globex Independence Day holiday schedule 2014: grains closes 12:00 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCBT" :date (2014 7 4) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCBT" :date (2014 9 1) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCBT" :date (2014 11 27) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCBT" :date (2014 11 28) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex Thanksgiving holiday schedule 2014: grains no early close; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCBT" :date (2015 1 19) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCBT" :date (2015 2 16) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCBT" :date (2015 5 25) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCBT" :date (2015 7 2) :kind :early-close :gold nil :ours (12 0)
+  :why "CME Globex Independence Day holiday schedule 2015: grains closes 12:00 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCBT" :date (2015 7 3) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCBT" :date (2015 9 7) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCBT" :date (2015 11 26) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCBT" :date (2015 11 27) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex Thanksgiving holiday schedule 2015: grains no early close; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCBT" :date (2015 12 24) :kind :early-close :gold (12 0) :ours (12 5)
+  :why "CME Globex Christmas holiday schedule 2015: grains closes 12:05 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCBT" :date (2016 1 18) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20170628115819/http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-holiday-calendars.zip")
+ (:mic "XCBT" :date (2016 2 15) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20170628115819/http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-holiday-calendars.zip")
+ (:mic "XCBT" :date (2016 5 30) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20170628115819/http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-holiday-calendars.zip")
+ (:mic "XCBT" :date (2016 7 4) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20170628115819/http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-holiday-calendars.zip")
+ (:mic "XCBT" :date (2016 9 5) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20170628115819/http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-holiday-calendars.zip")
+ (:mic "XCBT" :date (2016 11 24) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20170628115819/http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-holiday-calendars.zip")
+ (:mic "XCBT" :date (2016 11 25) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex Thanksgiving holiday schedule 2016: grains no early close; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20170628115819/http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-holiday-calendars.zip")
+ (:mic "XCBT" :date (2016 12 23) :kind :early-close :gold nil :ours (12 5)
+  :why "CME Globex Christmas holiday schedule 2016: grains closes 12:05 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20170628115819/http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-holiday-calendars.zip")
+ (:mic "XCBT" :date (2017 1 16) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCBT" :date (2017 2 20) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCBT" :date (2017 5 29) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCBT" :date (2017 7 3) :kind :early-close :gold nil :ours (12 5)
+  :why "CME Globex Independence Day holiday schedule 2017: grains closes 12:05 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCBT" :date (2017 7 4) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCBT" :date (2017 9 4) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCBT" :date (2017 11 23) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCBT" :date (2017 11 24) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex Thanksgiving holiday schedule 2017: grains no early close; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCBT" :date (2017 12 22) :kind :early-close :gold nil :ours (12 5)
+  :why "CME Globex Christmas holiday schedule 2017: grains closes 12:05 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCBT" :date (2018 1 15) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCBT" :date (2018 2 19) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCBT" :date (2018 5 28) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCBT" :date (2018 7 3) :kind :early-close :gold nil :ours (12 5)
+  :why "CME Globex Independence Day holiday schedule 2018: grains closes 12:05 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCBT" :date (2018 7 4) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCBT" :date (2018 9 3) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCBT" :date (2018 11 22) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCBT" :date (2018 11 23) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex Thanksgiving holiday schedule 2018: grains no early close; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCBT" :date (2018 12 5) :kind :session :gold nil :ours t
+  :why "CME Group press release, 2 Dec 2018: only U.S. equity and interest-rate products close for the National Day of Mourning; \"All other markets on CME Globex ... will remain open for regular trading hours\": grains trades; CMES has no session."
+  :source "https://web.archive.org/web/20181205161404/https://www.cmegroup.com/media-room/press-releases/2018/12/02/cme_group_u_s_equityinterestratemarketstoclosefornationaldayofmo.html")
+ (:mic "XCBT" :date (2018 12 24) :kind :early-close :gold (12 0) :ours (12 5)
+  :why "CME Globex Christmas holiday schedule 2018: grains closes 12:05 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCBT" :date (2019 1 21) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCBT" :date (2019 2 18) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCBT" :date (2019 5 27) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCBT" :date (2019 7 3) :kind :early-close :gold nil :ours (12 5)
+  :why "CME Globex Independence Day holiday schedule 2019: grains closes 12:05 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCBT" :date (2019 7 4) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCBT" :date (2019 9 2) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCBT" :date (2019 11 28) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCBT" :date (2019 11 29) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex Thanksgiving holiday schedule 2019: grains no early close; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCBT" :date (2019 12 24) :kind :early-close :gold (12 0) :ours (12 5)
+  :why "CME Globex Christmas holiday schedule 2019: grains closes 12:05 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20201111233949/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-christmas-holiday-schedule.xls")
+ (:mic "XCBT" :date (2020 1 20) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20260815194202/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-mlk-day-schedule.xls")
+ (:mic "XCBT" :date (2020 2 17) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20260730111834/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-holiday-calendars.zip")
+ (:mic "XCBT" :date (2020 5 25) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20221226124229/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-memorial-day-schedule.xls")
+ (:mic "XCBT" :date (2020 7 2) :kind :early-close :gold nil :ours (12 5)
+  :why "CME Globex Independence Day holiday schedule 2020: grains closes 12:05 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20220707015539/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-independence-day-schedule.xls")
+ (:mic "XCBT" :date (2020 7 3) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20220707015539/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-independence-day-schedule.xls")
+ (:mic "XCBT" :date (2020 9 7) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20210126094838/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-labor-day-schedule.xls")
+ (:mic "XCBT" :date (2020 11 26) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20201125140635/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-thanksgiving-schedule.xls")
+ (:mic "XCBT" :date (2020 11 27) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex Thanksgiving holiday schedule 2020: grains no early close; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20201125140635/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-thanksgiving-schedule.xls")
+ (:mic "XCBT" :date (2020 12 24) :kind :early-close :gold (12 0) :ours (12 5)
+  :why "CME Globex Christmas holiday schedule 2020: grains closes 12:05 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20260730111834/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-holiday-calendars.zip")
+ (:mic "XCBT" :date (2021 1 18) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20260830100327/https://www.cmegroup.com/tools-information/holiday-calendar/files/2021-holiday-calendars.zip")
+ (:mic "XCBT" :date (2021 2 15) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20210214015315/https://www.cmegroup.com/tools-information/holiday-calendar/files/2021-presidents-day-holiday-schedule.xls")
+ (:mic "XCBT" :date (2021 5 31) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20220917171238/https://www.cmegroup.com/tools-information/holiday-calendar/files/2021-memorial-day-holiday-schedule.xls")
+ (:mic "XCBT" :date (2021 7 5) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20260830100327/https://www.cmegroup.com/tools-information/holiday-calendar/files/2021-holiday-calendars.zip")
+ (:mic "XCBT" :date (2021 9 6) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20260830100327/https://www.cmegroup.com/tools-information/holiday-calendar/files/2021-holiday-calendars.zip")
+ (:mic "XCBT" :date (2021 11 25) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20220917175604/https://www.cmegroup.com/tools-information/holiday-calendar/files/2021-thanksgiving-holiday-schedule.xls")
+ (:mic "XCBT" :date (2021 11 26) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex Thanksgiving holiday schedule 2021: grains no early close; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220917175604/https://www.cmegroup.com/tools-information/holiday-calendar/files/2021-thanksgiving-holiday-schedule.xls")
+ (:mic "XCBT" :date (2022 1 17) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session."
+  :source "https://web.archive.org/web/20220117212230/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-mlk-day-holiday-schedule.xls")
+ (:mic "XCBT" :date (2022 2 21) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Presidents Day); CMES has a session."
+  :source "https://web.archive.org/web/20220704073810/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-presidents-day-holiday-schedule.xls")
+ (:mic "XCBT" :date (2022 5 30) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Memorial Day); CMES has a session."
+  :source "https://web.archive.org/web/20220704065438/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-memorial-day-holiday-schedule.xls")
+ (:mic "XCBT" :date (2022 6 20) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Juneteenth); CMES has a session."
+  :source "https://web.archive.org/web/20220620200210/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-juneteenth-holiday-schedule.xls")
+ (:mic "XCBT" :date (2022 7 4) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Independence Day); CMES has a session."
+  :source "https://web.archive.org/web/20220704065450/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-independence-day-holiday-schedule.xls")
+ (:mic "XCBT" :date (2022 9 5) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Labor Day); CMES has a session."
+  :source "https://web.archive.org/web/20220704065441/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-labor-day-holiday-schedule.xls")
+ (:mic "XCBT" :date (2022 11 24) :kind :session :gold t :ours nil
+  :why "CME Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session."
+  :source "https://web.archive.org/web/20220704065423/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-thanksgiving-holiday-schedule.xls")
+ (:mic "XCBT" :date (2022 11 25) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex Thanksgiving holiday schedule 2022: grains no early close; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704065423/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-thanksgiving-holiday-schedule.xls")
+ (:mic "XCBT" :date (2023 1 16) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2023: grains closed (Martin Luther King Jr. Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2023 2 20) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2023: grains closed (Presidents Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2023 5 29) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2023: grains closed (Memorial Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2023 6 19) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2023: grains closed (Juneteenth); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2023 7 4) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2023: grains closed (Independence Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2023 9 4) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2023: grains closed (Labor Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2023 11 23) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2023: grains closed (Thanksgiving Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2023 11 24) :kind :early-close :gold (12 0) :ours (12 5)
+  :why "CME Clearing holiday advisories 2023: grains closes 12:05 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2024 1 15) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2024: grains closed (Martin Luther King Jr. Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2024 2 19) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2024: grains closed (Presidents Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2024 5 27) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2024: grains closed (Memorial Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2024 6 19) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2024: grains closed (Juneteenth); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2024 7 4) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2024: grains closed (Independence Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2024 9 2) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2024: grains closed (Labor Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2024 11 28) :kind :session :gold t :ours nil
+  :why "CME Clearing holiday advisories 2024: grains closed (Thanksgiving Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2024 11 29) :kind :early-close :gold (12 0) :ours (12 5)
+  :why "CME Clearing holiday advisories 2024: grains closes 12:05 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2024 12 24) :kind :early-close :gold (12 0) :ours (12 5)
+  :why "CME Clearing holiday advisories 2024: grains closes 12:05 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCBT" :date (2025 1 9) :kind :session :gold nil :ours t
+  :why "CME Group U.S. National Day of Mourning Trading Schedule, January 9, 2025 (President Jimmy Carter): grains trades; CMES has no session."
+  :source "https://web.archive.org/web/20250218194143/https://www.cmegroup.com/trading-hours/files/day-of-mourning-january-9-2024.pdf")
+ (:mic "XCBT" :date (2025 1 20) :kind :session :gold t :ours nil
+  :why "CME Clearing New Year's advisory 2025: grains closed (Martin Luther King Jr. Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCBT" :date (2025 2 17) :kind :session :gold t :ours nil
+  :why "CME Clearing New Year's advisory 2025: grains closed (Presidents Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCBT" :date (2025 5 26) :kind :session :gold t :ours nil
+  :why "CME Clearing New Year's advisory 2025: grains closed (Memorial Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCBT" :date (2025 6 19) :kind :session :gold t :ours nil
+  :why "CME Clearing New Year's advisory 2025: grains closed (Juneteenth); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCBT" :date (2025 7 4) :kind :session :gold t :ours nil
+  :why "CME Clearing New Year's advisory 2025: grains closed (Independence Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCBT" :date (2025 9 1) :kind :session :gold t :ours nil
+  :why "CME Clearing New Year's advisory 2025: grains closed (Labor Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCBT" :date (2025 11 27) :kind :session :gold t :ours nil
+  :why "CME Clearing New Year's advisory 2025: grains closed (Thanksgiving Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCBT" :date (2025 11 28) :kind :early-close :gold (12 0) :ours (12 5)
+  :why "CME Clearing New Year's advisory 2025: grains closes 12:05 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCBT" :date (2025 12 24) :kind :early-close :gold (12 0) :ours (12 5)
+  :why "CME Clearing New Year's advisory 2025: grains closes 12:05 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCBT" :date (2026 1 19) :kind :session :gold t :ours nil
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2026 2 16) :kind :session :gold t :ours nil
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: grains closed (Presidents Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2026 5 25) :kind :session :gold t :ours nil
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: grains closed (Memorial Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2026 6 19) :kind :session :gold t :ours nil
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: grains closed (Juneteenth); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2026 7 3) :kind :session :gold t :ours nil
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: grains closed (Independence Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2026 9 7) :kind :session :gold t :ours nil
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: grains closed (Labor Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2026 11 26) :kind :session :gold t :ours nil
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2026 11 27) :kind :early-close :gold (12 0) :ours (12 5)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: grains closes 12:05 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2026 12 24) :kind :early-close :gold (12 0) :ours (12 5)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: grains closes 12:05 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2027 1 18) :kind :session :gold t :ours nil
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: grains closed (Martin Luther King Jr. Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2027 2 15) :kind :session :gold t :ours nil
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: grains closed (Presidents Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2027 5 31) :kind :session :gold t :ours nil
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: grains closed (Memorial Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2027 6 18) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: grains no early close; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2027 7 5) :kind :session :gold t :ours nil
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: grains closed (Independence Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2027 9 6) :kind :session :gold t :ours nil
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: grains closed (Labor Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2027 11 25) :kind :session :gold t :ours nil
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: grains closed (Thanksgiving Day); CMES has a session. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCBT" :date (2027 11 26) :kind :early-close :gold (12 0) :ours (12 5)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: grains closes 12:05 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2009 1 19) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex holiday schedule: metals no early close on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20090126144353/http://cmegroup.com:80/tools-information/holiday-calendar/files/2009-martin-luther-king.pdf")
+ (:mic "XCEC" :date (2009 2 16) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex holiday schedule: metals no early close on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20090206002053/http://cmegroup.com:80/tools-information/holiday-calendar/files/2009-presidents-day.pdf")
+ (:mic "XCEC" :date (2009 5 22) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Memorial Day holiday schedule 2009: metals closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20090611163557/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-memorial-day.pdf")
+ (:mic "XCEC" :date (2009 5 25) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Memorial Day holiday schedule 2009: metals closes 12:15 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20090611163557/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-memorial-day.pdf")
+ (:mic "XCEC" :date (2009 7 3) :kind :early-close :gold (12 0) :ours (12 30)
+  :why "CME Globex Independence Day holiday schedule 2009: metals closes 12:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20090612061133/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-4th-of-july.pdf")
+ (:mic "XCEC" :date (2009 9 4) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Labor Day holiday schedule 2009: metals closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20091007030433/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-labor-day.pdf")
+ (:mic "XCEC" :date (2009 9 7) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Labor Day holiday schedule 2009: metals closes 12:15 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20091007030433/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-labor-day.pdf")
+ (:mic "XCEC" :date (2009 10 9) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Columbus Day holiday schedule 2009: metals closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20130309115356/http://www.cmegroup.com/tools-information/holiday-calendar/files/2009-holiday-calendars.zip")
+ (:mic "XCEC" :date (2009 11 26) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2009: metals closes 12:15 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115356/http://www.cmegroup.com/tools-information/holiday-calendar/files/2009-holiday-calendars.zip")
+ (:mic "XCEC" :date (2009 11 27) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2009: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115356/http://www.cmegroup.com/tools-information/holiday-calendar/files/2009-holiday-calendars.zip")
+ (:mic "XCEC" :date (2009 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2009: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100215055401/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-christmas.pdf")
+ (:mic "XCEC" :date (2010 1 15) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2010: metals closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20100331064226/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-martin-luther-king.pdf")
+ (:mic "XCEC" :date (2010 1 18) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2010: metals closes 12:15 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100331064226/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-martin-luther-king.pdf")
+ (:mic "XCEC" :date (2010 2 12) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Presidents Day holiday schedule 2010: metals closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20100215064641/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-presidents-day.pdf")
+ (:mic "XCEC" :date (2010 2 15) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Presidents Day holiday schedule 2010: metals closes 12:15 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100215064641/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-presidents-day.pdf")
+ (:mic "XCEC" :date (2010 5 28) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Memorial Day holiday schedule 2010: metals closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20100601094225/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-memorial-day.pdf")
+ (:mic "XCEC" :date (2010 5 31) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Memorial Day holiday schedule 2010: metals closes 12:15 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100601094225/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-memorial-day.pdf")
+ (:mic "XCEC" :date (2010 7 2) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Independence Day holiday schedule 2010: metals closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20100602005637/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-4th-of-july.pdf")
+ (:mic "XCEC" :date (2010 7 5) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Independence Day holiday schedule 2010: metals closes 12:15 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100602005637/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-4th-of-july.pdf")
+ (:mic "XCEC" :date (2010 9 3) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Labor Day holiday schedule 2010: metals closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20100602005641/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-labor-day.pdf")
+ (:mic "XCEC" :date (2010 9 6) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Labor Day holiday schedule 2010: metals closes 12:15 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100602005641/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-labor-day.pdf")
+ (:mic "XCEC" :date (2010 10 8) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Columbus Day holiday schedule 2010: metals closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20100821133122/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-columbus-day.pdf")
+ (:mic "XCEC" :date (2010 11 25) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2010: metals closes 12:15 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20101122094012/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-thanksgiving.pdf")
+ (:mic "XCEC" :date (2010 11 26) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2010: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20101122094012/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-thanksgiving.pdf")
+ (:mic "XCEC" :date (2010 12 31) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex New Year's holiday schedule 2011: metals closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20101214061245/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2011-new-years.pdf")
+ (:mic "XCEC" :date (2011 1 14) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2011: metals closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCEC" :date (2011 1 17) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2011: metals closes 12:15 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCEC" :date (2011 2 21) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Presidents Day holiday schedule 2011: metals closes 12:15 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCEC" :date (2011 5 30) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Memorial Day holiday schedule 2011: metals closes 12:15 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCEC" :date (2011 7 4) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Independence Day holiday schedule 2011: metals closes 12:15 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCEC" :date (2011 9 5) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Labor Day holiday schedule 2011: metals closes 12:15 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCEC" :date (2011 11 10) :kind :session :gold t :ours nil
+  :why "CME Globex Veterans Day holiday schedule 2011: metals closed (Veterans Day); CMES has a session."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCEC" :date (2011 11 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2011: metals closes 12:15 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCEC" :date (2011 11 25) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2011: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCEC" :date (2012 1 16) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2012: metals closes 12:15 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120105160459/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2012-martin-luther-king.pdf")
+ (:mic "XCEC" :date (2012 2 20) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Presidents Day holiday schedule 2012: metals closes 12:15 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120107064434/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-presidents-day.pdf")
+ (:mic "XCEC" :date (2012 5 28) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Memorial Day holiday schedule 2012: metals closes 12:15 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120915003402/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-4th-of-july.xls")
+ (:mic "XCEC" :date (2012 7 4) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Memorial Day holiday schedule 2012: metals closes 12:15 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120915003402/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-4th-of-july.xls")
+ (:mic "XCEC" :date (2012 9 3) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Labor Day holiday schedule 2012: metals closes 12:15 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120915003609/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-labor-day.xls")
+ (:mic "XCEC" :date (2012 11 22) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2012: metals closes 12:15 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20111125001004/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2012-thanksgiving.pdf")
+ (:mic "XCEC" :date (2012 11 23) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2012: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20111125001004/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2012-thanksgiving.pdf")
+ (:mic "XCEC" :date (2012 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2012: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120107060254/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-christmas.pdf")
+ (:mic "XCEC" :date (2013 1 21) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2013: metals closes 12:15 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCEC" :date (2013 2 18) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Presidents Day holiday schedule 2013: metals closes 12:15 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCEC" :date (2013 5 27) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Memorial Day holiday schedule 2013: metals closes 12:15 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCEC" :date (2013 7 4) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Independence Day holiday schedule 2013: metals closes 12:15 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCEC" :date (2013 9 2) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Labor Day holiday schedule 2013: metals closes 12:15 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCEC" :date (2013 11 28) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2013: metals closes 12:15 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCEC" :date (2013 11 29) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2013: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCEC" :date (2013 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2013: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCEC" :date (2014 1 20) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2014: metals closes 12:15 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCEC" :date (2014 2 17) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Presidents Day holiday schedule 2014: metals closes 12:15 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCEC" :date (2014 11 28) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2014: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCEC" :date (2014 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2014: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCEC" :date (2015 11 27) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2015: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCEC" :date (2015 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2015: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCEC" :date (2016 11 25) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2016: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20170628115819/http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-holiday-calendars.zip")
+ (:mic "XCEC" :date (2017 11 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2017: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCEC" :date (2018 11 23) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2018: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCEC" :date (2018 12 5) :kind :session :gold nil :ours t
+  :why "CME Group press release, 2 Dec 2018: only U.S. equity and interest-rate products close for the National Day of Mourning; \"All other markets on CME Globex ... will remain open for regular trading hours\": metals trades; CMES has no session."
+  :source "https://web.archive.org/web/20181205161404/https://www.cmegroup.com/media-room/press-releases/2018/12/02/cme_group_u_s_equityinterestratemarketstoclosefornationaldayofmo.html")
+ (:mic "XCEC" :date (2018 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2018: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCEC" :date (2019 11 29) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2019: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCEC" :date (2019 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2019: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20201111233949/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-christmas-holiday-schedule.xls")
+ (:mic "XCEC" :date (2020 11 27) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2020: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20201125140635/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-thanksgiving-schedule.xls")
+ (:mic "XCEC" :date (2020 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2020: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20260730111834/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-holiday-calendars.zip")
+ (:mic "XCEC" :date (2021 11 26) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2021: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220917175604/https://www.cmegroup.com/tools-information/holiday-calendar/files/2021-thanksgiving-holiday-schedule.xls")
+ (:mic "XCEC" :date (2022 1 17) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2022: metals closes 13:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220117212230/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-mlk-day-holiday-schedule.xls")
+ (:mic "XCEC" :date (2022 2 21) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Presidents Day holiday schedule 2022: metals closes 13:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704073810/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-presidents-day-holiday-schedule.xls")
+ (:mic "XCEC" :date (2022 5 30) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Memorial Day holiday schedule 2022: metals closes 13:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704065438/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-memorial-day-holiday-schedule.xls")
+ (:mic "XCEC" :date (2022 6 20) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Juneteenth holiday schedule 2022: metals closes 13:30 CT on Juneteenth; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220620200210/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-juneteenth-holiday-schedule.xls")
+ (:mic "XCEC" :date (2022 7 4) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Independence Day holiday schedule 2022: metals closes 13:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704065450/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-independence-day-holiday-schedule.xls")
+ (:mic "XCEC" :date (2022 9 5) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Labor Day holiday schedule 2022: metals closes 13:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704065441/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-labor-day-holiday-schedule.xls")
+ (:mic "XCEC" :date (2022 11 24) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Thanksgiving holiday schedule 2022: metals closes 13:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704065423/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-thanksgiving-holiday-schedule.xls")
+ (:mic "XCEC" :date (2022 11 25) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2022: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704065423/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-thanksgiving-holiday-schedule.xls")
+ (:mic "XCEC" :date (2023 1 16) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: metals closes 13:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2023 2 20) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: metals closes 13:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2023 5 29) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: metals closes 13:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2023 6 19) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: metals closes 13:30 CT on Juneteenth; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2023 7 4) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: metals closes 13:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2023 9 4) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: metals closes 13:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2023 11 23) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: metals closes 13:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2023 11 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Clearing holiday advisories 2023: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2024 1 15) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: metals closes 13:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2024 2 19) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: metals closes 13:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2024 5 27) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: metals closes 13:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2024 6 19) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: metals closes 13:30 CT on Juneteenth; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2024 7 4) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: metals closes 13:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2024 9 2) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: metals closes 13:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2024 11 28) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: metals closes 13:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2024 11 29) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Clearing holiday advisories 2024: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2024 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Clearing holiday advisories 2024: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCEC" :date (2025 1 9) :kind :session :gold nil :ours t
+  :why "CME Group National Day of Mourning trading schedule, 9 Jan 2025: equities close 08:30 CT, interest rates and ags 12:15 CT, FX, energy and metals normal hours: metals trades; CMES has no session."
+  :source "https://web.archive.org/web/20250218194143/https://www.cmegroup.com/trading-hours/files/day-of-mourning-january-9-2024.pdf")
+ (:mic "XCEC" :date (2025 1 20) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: metals closes 13:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCEC" :date (2025 2 17) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: metals closes 13:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCEC" :date (2025 5 26) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: metals closes 13:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCEC" :date (2025 6 19) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: metals closes 13:30 CT on Juneteenth; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCEC" :date (2025 7 4) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: metals closes 13:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCEC" :date (2025 9 1) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: metals closes 13:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCEC" :date (2025 11 27) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: metals closes 13:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCEC" :date (2025 11 28) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Clearing New Year's advisory 2025: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCEC" :date (2025 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Clearing New Year's advisory 2025: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCEC" :date (2026 1 19) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: metals closes 13:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2026 2 16) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: metals closes 13:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2026 5 25) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: metals closes 13:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2026 6 19) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: metals closes 13:30 CT on Juneteenth; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2026 7 3) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: metals closes 13:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2026 9 7) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: metals closes 13:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2026 11 26) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: metals closes 13:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2026 11 27) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2026 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2027 1 18) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: metals closes 13:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2027 2 15) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: metals closes 13:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2027 5 31) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: metals closes 13:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2027 6 18) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: metals no early close; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2027 7 5) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: metals closes 13:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2027 9 6) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: metals closes 13:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2027 11 25) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: metals closes 13:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCEC" :date (2027 11 26) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: metals closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCME" :date (2009 1 19) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2009: equity closes 10:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20090126144353/http://cmegroup.com:80/tools-information/holiday-calendar/files/2009-martin-luther-king.pdf")
+ (:mic "XCME" :date (2009 2 16) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Presidents Day holiday schedule 2009: equity closes 10:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20090206002053/http://cmegroup.com:80/tools-information/holiday-calendar/files/2009-presidents-day.pdf")
+ (:mic "XCME" :date (2009 5 25) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Memorial Day holiday schedule 2009: equity closes 10:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20090611163557/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-memorial-day.pdf")
+ (:mic "XCME" :date (2009 7 3) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Independence Day holiday schedule 2009: equity closes 10:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20090612061133/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-4th-of-july.pdf")
+ (:mic "XCME" :date (2009 9 7) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Labor Day holiday schedule 2009: equity closes 10:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20091007030433/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-labor-day.pdf")
+ (:mic "XCME" :date (2009 11 26) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Thanksgiving holiday schedule 2009: equity closes 10:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115356/http://www.cmegroup.com/tools-information/holiday-calendar/files/2009-holiday-calendars.zip")
+ (:mic "XCME" :date (2009 11 27) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2009: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115356/http://www.cmegroup.com/tools-information/holiday-calendar/files/2009-holiday-calendars.zip")
+ (:mic "XCME" :date (2009 12 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Christmas holiday schedule 2009: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100215055401/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-christmas.pdf")
+ (:mic "XCME" :date (2010 1 18) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2010: equity closes 10:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100331064226/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-martin-luther-king.pdf")
+ (:mic "XCME" :date (2010 2 15) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Presidents Day holiday schedule 2010: equity closes 10:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100215064641/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-presidents-day.pdf")
+ (:mic "XCME" :date (2010 4 2) :kind :session :gold nil :ours t
+  :why "CME Globex Good Friday holiday schedule 2010: equity trades; CMES has no session."
+  :source "https://web.archive.org/web/20100601111916/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-good-friday.pdf")
+ (:mic "XCME" :date (2010 5 31) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Memorial Day holiday schedule 2010: equity closes 10:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100601094225/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-memorial-day.pdf")
+ (:mic "XCME" :date (2010 7 5) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Independence Day holiday schedule 2010: equity closes 10:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100602005637/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-4th-of-july.pdf")
+ (:mic "XCME" :date (2010 9 6) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Labor Day holiday schedule 2010: equity closes 10:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100602005641/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-labor-day.pdf")
+ (:mic "XCME" :date (2010 11 25) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Thanksgiving holiday schedule 2010: equity closes 10:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20101122094012/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-thanksgiving.pdf")
+ (:mic "XCME" :date (2010 11 26) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2010: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20101122094012/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-thanksgiving.pdf")
+ (:mic "XCME" :date (2011 1 17) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2011: equity closes 10:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCME" :date (2011 2 21) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Presidents Day holiday schedule 2011: equity closes 10:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCME" :date (2011 5 30) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Memorial Day holiday schedule 2011: equity closes 10:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCME" :date (2011 7 4) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Independence Day holiday schedule 2011: equity closes 10:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCME" :date (2011 9 5) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Labor Day holiday schedule 2011: equity closes 10:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCME" :date (2011 11 10) :kind :session :gold t :ours nil
+  :why "CME Globex Veterans Day holiday schedule 2011: equity closed (Veterans Day); CMES has a session."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCME" :date (2011 11 24) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Thanksgiving holiday schedule 2011: equity closes 10:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCME" :date (2011 11 25) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2011: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XCME" :date (2012 1 16) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2012: equity closes 10:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120105160459/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2012-martin-luther-king.pdf")
+ (:mic "XCME" :date (2012 2 20) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Presidents Day holiday schedule 2012: equity closes 10:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120107064434/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-presidents-day.pdf")
+ (:mic "XCME" :date (2012 4 6) :kind :session :gold nil :ours t
+  :why "CME Globex Good Friday holiday schedule 2012: equity trades; CMES has no session."
+  :source "https://web.archive.org/web/20120107070731/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-good-friday.pdf")
+ (:mic "XCME" :date (2012 5 28) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Memorial Day holiday schedule 2012: equity closes 10:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120915003402/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-4th-of-july.xls")
+ (:mic "XCME" :date (2012 7 3) :kind :early-close :gold nil :ours (12 15)
+  :why "CME Globex Memorial Day holiday schedule 2012: equity closes 12:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20120915003402/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-4th-of-july.xls")
+ (:mic "XCME" :date (2012 7 4) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Memorial Day holiday schedule 2012: equity closes 10:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120915003402/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-4th-of-july.xls")
+ (:mic "XCME" :date (2012 9 3) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Labor Day holiday schedule 2012: equity closes 10:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120915003609/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-labor-day.xls")
+ (:mic "XCME" :date (2012 11 22) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Thanksgiving holiday schedule 2012: equity closes 10:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20111125001004/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2012-thanksgiving.pdf")
+ (:mic "XCME" :date (2012 11 23) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2012: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20111125001004/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2012-thanksgiving.pdf")
+ (:mic "XCME" :date (2012 12 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Christmas holiday schedule 2012: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120107060254/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-christmas.pdf")
+ (:mic "XCME" :date (2013 1 21) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2013: equity closes 10:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCME" :date (2013 2 18) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Presidents Day holiday schedule 2013: equity closes 10:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCME" :date (2013 5 27) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Memorial Day holiday schedule 2013: equity closes 10:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCME" :date (2013 7 3) :kind :early-close :gold nil :ours (12 15)
+  :why "CME Globex Independence Day holiday schedule 2013: equity closes 12:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCME" :date (2013 7 4) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Independence Day holiday schedule 2013: equity closes 10:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCME" :date (2013 9 2) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Labor Day holiday schedule 2013: equity closes 10:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCME" :date (2013 11 28) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Thanksgiving holiday schedule 2013: equity closes 10:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCME" :date (2013 11 29) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2013: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCME" :date (2013 12 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Christmas holiday schedule 2013: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XCME" :date (2014 1 20) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2014: equity closes 10:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCME" :date (2014 2 17) :kind :early-close :gold (12 0) :ours (10 30)
+  :why "CME Globex Presidents Day holiday schedule 2014: equity closes 10:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCME" :date (2014 7 3) :kind :early-close :gold nil :ours (12 15)
+  :why "CME Globex Independence Day holiday schedule 2014: equity closes 12:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCME" :date (2014 11 28) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2014: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCME" :date (2014 12 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Christmas holiday schedule 2014: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XCME" :date (2015 4 3) :kind :session :gold nil :ours t
+  :why "CME Globex Good Friday holiday schedule 2015: equity trades; CMES has no session."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCME" :date (2015 11 27) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2015: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCME" :date (2015 12 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Christmas holiday schedule 2015: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XCME" :date (2016 11 25) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2016: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20170628115819/http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-holiday-calendars.zip")
+ (:mic "XCME" :date (2017 7 3) :kind :early-close :gold nil :ours (12 15)
+  :why "CME Globex Independence Day holiday schedule 2017: equity closes 12:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCME" :date (2017 11 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2017: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XCME" :date (2018 7 3) :kind :early-close :gold nil :ours (12 15)
+  :why "CME Globex Independence Day holiday schedule 2018: equity closes 12:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCME" :date (2018 11 23) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2018: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCME" :date (2018 12 5) :kind :session :gold nil :ours t
+  :why "CME Group press release: U.S. Equity, Interest Rate Markets to Close for National Day of Mourning (President George H. W. Bush): equity trades; CMES has no session."
+  :source "https://web.archive.org/web/20181205161404/https://www.cmegroup.com/media-room/press-releases/2018/12/02/cme_group_u_s_equityinterestratemarketstoclosefornationaldayofmo.html")
+ (:mic "XCME" :date (2018 12 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Christmas holiday schedule 2018: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XCME" :date (2019 7 3) :kind :early-close :gold nil :ours (12 15)
+  :why "CME Globex Independence Day holiday schedule 2019: equity closes 12:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCME" :date (2019 11 29) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2019: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XCME" :date (2019 12 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Christmas holiday schedule 2019: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20201111233949/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-christmas-holiday-schedule.xls")
+ (:mic "XCME" :date (2020 11 27) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2020: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20201125140635/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-thanksgiving-schedule.xls")
+ (:mic "XCME" :date (2020 12 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Christmas holiday schedule 2020: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20260730111834/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-holiday-calendars.zip")
+ (:mic "XCME" :date (2021 4 2) :kind :session :gold nil :ours t
+  :why "CME Globex Good Friday holiday schedule 2021: equity trades (Good Friday); CMES has no session."
+  :source "https://web.archive.org/web/20210402141803/https://www.cmegroup.com/tools-information/holiday-calendar/files/2021-good-friday-holiday-schedule.xls")
+ (:mic "XCME" :date (2021 11 26) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2021: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220917175604/https://www.cmegroup.com/tools-information/holiday-calendar/files/2021-thanksgiving-holiday-schedule.xls")
+ (:mic "XCME" :date (2022 11 25) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2022: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704065423/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-thanksgiving-holiday-schedule.xls")
+ (:mic "XCME" :date (2023 4 7) :kind :session :gold nil :ours t
+  :why "CME Clearing Good Friday advisory 2023 (second correction): equity trades (Good Friday: \"Equities will trade an abbreviated session ... but will not be settled\"); CMES has no session."
+  :source "https://web.archive.org/web/20230203065333/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-good-friday-advisory.pdf")
+ (:mic "XCME" :date (2023 7 3) :kind :early-close :gold nil :ours (12 15)
+  :why "CME Clearing holiday advisories 2023: equity closes 12:15 CT; CMES gives every CME Group product no early close. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCME" :date (2023 11 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Clearing holiday advisories 2023: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XCME" :date (2024 7 3) :kind :early-close :gold nil :ours (12 15)
+  :why "CME Clearing holiday advisories 2024: equity closes 12:15 CT; CMES gives every CME Group product no early close. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCME" :date (2024 11 29) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Clearing holiday advisories 2024: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCME" :date (2024 12 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Clearing holiday advisories 2024: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XCME" :date (2025 1 9) :kind :session :gold nil :ours t
+  :why "CME Group U.S. National Day of Mourning Trading Schedule, January 9, 2025 (President Jimmy Carter): equity trades (National Day of Mourning: equity settlements \"copy/pasted from the prior business day\"); CMES has no session."
+  :source "https://web.archive.org/web/20250218194143/https://www.cmegroup.com/trading-hours/files/day-of-mourning-january-9-2024.pdf")
+ (:mic "XCME" :date (2025 7 3) :kind :early-close :gold nil :ours (12 15)
+  :why "CME Clearing New Year's advisory 2025: equity closes 12:15 CT; CMES gives every CME Group product no early close. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCME" :date (2025 11 28) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Clearing New Year's advisory 2025: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCME" :date (2025 12 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Clearing New Year's advisory 2025: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XCME" :date (2026 4 3) :kind :session :gold nil :ours t
+  :why "CME Clearing Good Friday advisory and settlement times 2026: equity trades (Good Friday: equities abbreviated session, not settled); CMES has no session."
+  :source "https://web.archive.org/web/20260202002306/https://www.cmegroup.com/tools-information/holiday-calendar/files/2026/2026-good-friday-clearing-advisory.pdf")
+ (:mic "XCME" :date (2026 11 27) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCME" :date (2026 12 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCME" :date (2027 6 18) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: equity no early close; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XCME" :date (2027 11 26) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: equity closes 12:15 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2009 1 19) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex holiday schedule: energy no early close on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20090126144353/http://cmegroup.com:80/tools-information/holiday-calendar/files/2009-martin-luther-king.pdf")
+ (:mic "XNYM" :date (2009 2 16) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Globex holiday schedule: energy no early close on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20090206002053/http://cmegroup.com:80/tools-information/holiday-calendar/files/2009-presidents-day.pdf")
+ (:mic "XNYM" :date (2009 5 22) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Memorial Day holiday schedule 2009: energy closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20090611163557/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-memorial-day.pdf")
+ (:mic "XNYM" :date (2009 5 25) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Memorial Day holiday schedule 2009: energy closes 12:15 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20090611163557/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-memorial-day.pdf")
+ (:mic "XNYM" :date (2009 7 3) :kind :early-close :gold (12 0) :ours (12 30)
+  :why "CME Globex Independence Day holiday schedule 2009: energy closes 12:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20090612061133/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-4th-of-july.pdf")
+ (:mic "XNYM" :date (2009 9 4) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Labor Day holiday schedule 2009: energy closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20091007030433/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-labor-day.pdf")
+ (:mic "XNYM" :date (2009 9 7) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Labor Day holiday schedule 2009: energy closes 12:15 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20091007030433/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-labor-day.pdf")
+ (:mic "XNYM" :date (2009 10 9) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Columbus Day holiday schedule 2009: energy closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20130309115356/http://www.cmegroup.com/tools-information/holiday-calendar/files/2009-holiday-calendars.zip")
+ (:mic "XNYM" :date (2009 11 26) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2009: energy closes 12:15 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115356/http://www.cmegroup.com/tools-information/holiday-calendar/files/2009-holiday-calendars.zip")
+ (:mic "XNYM" :date (2009 11 27) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2009: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115356/http://www.cmegroup.com/tools-information/holiday-calendar/files/2009-holiday-calendars.zip")
+ (:mic "XNYM" :date (2009 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2009: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100215055401/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2009-christmas.pdf")
+ (:mic "XNYM" :date (2010 1 15) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2010: energy closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20100331064226/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-martin-luther-king.pdf")
+ (:mic "XNYM" :date (2010 1 18) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2010: energy closes 12:15 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100331064226/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-martin-luther-king.pdf")
+ (:mic "XNYM" :date (2010 2 12) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Presidents Day holiday schedule 2010: energy closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20100215064641/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-presidents-day.pdf")
+ (:mic "XNYM" :date (2010 2 15) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Presidents Day holiday schedule 2010: energy closes 12:15 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100215064641/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-presidents-day.pdf")
+ (:mic "XNYM" :date (2010 5 28) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Memorial Day holiday schedule 2010: energy closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20100601094225/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-memorial-day.pdf")
+ (:mic "XNYM" :date (2010 5 31) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Memorial Day holiday schedule 2010: energy closes 12:15 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100601094225/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-memorial-day.pdf")
+ (:mic "XNYM" :date (2010 7 2) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Independence Day holiday schedule 2010: energy closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20100602005637/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-4th-of-july.pdf")
+ (:mic "XNYM" :date (2010 7 5) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Independence Day holiday schedule 2010: energy closes 12:15 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100602005637/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-4th-of-july.pdf")
+ (:mic "XNYM" :date (2010 9 3) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Labor Day holiday schedule 2010: energy closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20100602005641/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-labor-day.pdf")
+ (:mic "XNYM" :date (2010 9 6) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Labor Day holiday schedule 2010: energy closes 12:15 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20100602005641/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-labor-day.pdf")
+ (:mic "XNYM" :date (2010 10 8) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Columbus Day holiday schedule 2010: energy closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20100821133122/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-columbus-day.pdf")
+ (:mic "XNYM" :date (2010 11 25) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2010: energy closes 12:15 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20101122094012/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-thanksgiving.pdf")
+ (:mic "XNYM" :date (2010 11 26) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2010: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20101122094012/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2010-thanksgiving.pdf")
+ (:mic "XNYM" :date (2010 12 31) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex New Year's holiday schedule 2011: energy closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20101214061245/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2011-new-years.pdf")
+ (:mic "XNYM" :date (2011 1 14) :kind :early-close :gold nil :ours (15 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2011: energy closes 15:15 CT; CMES gives every CME Group product no early close."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XNYM" :date (2011 1 17) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2011: energy closes 12:15 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XNYM" :date (2011 2 21) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Presidents Day holiday schedule 2011: energy closes 12:15 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XNYM" :date (2011 5 30) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Memorial Day holiday schedule 2011: energy closes 12:15 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XNYM" :date (2011 7 4) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Independence Day holiday schedule 2011: energy closes 12:15 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XNYM" :date (2011 9 5) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Labor Day holiday schedule 2011: energy closes 12:15 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XNYM" :date (2011 11 10) :kind :session :gold t :ours nil
+  :why "CME Globex Veterans Day holiday schedule 2011: energy closed (Veterans Day); CMES has a session."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XNYM" :date (2011 11 24) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2011: energy closes 12:15 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XNYM" :date (2011 11 25) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2011: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20130309115411/http://www.cmegroup.com/tools-information/holiday-calendar/files/2011-holiday-calendars.zip")
+ (:mic "XNYM" :date (2012 1 16) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2012: energy closes 12:15 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120105160459/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2012-martin-luther-king.pdf")
+ (:mic "XNYM" :date (2012 2 20) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Presidents Day holiday schedule 2012: energy closes 12:15 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120107064434/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-presidents-day.pdf")
+ (:mic "XNYM" :date (2012 5 28) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Memorial Day holiday schedule 2012: energy closes 12:15 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120915003402/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-4th-of-july.xls")
+ (:mic "XNYM" :date (2012 7 4) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Memorial Day holiday schedule 2012: energy closes 12:15 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120915003402/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-4th-of-july.xls")
+ (:mic "XNYM" :date (2012 9 3) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Labor Day holiday schedule 2012: energy closes 12:15 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120915003609/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-labor-day.xls")
+ (:mic "XNYM" :date (2012 11 22) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2012: energy closes 12:15 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20111125001004/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2012-thanksgiving.pdf")
+ (:mic "XNYM" :date (2012 11 23) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2012: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20111125001004/http://www.cmegroup.com:80/tools-information/holiday-calendar/files/2012-thanksgiving.pdf")
+ (:mic "XNYM" :date (2012 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2012: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20120107060254/http://www.cmegroup.com/tools-information/holiday-calendar/files/2012-christmas.pdf")
+ (:mic "XNYM" :date (2013 1 21) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2013: energy closes 12:15 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XNYM" :date (2013 2 18) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Presidents Day holiday schedule 2013: energy closes 12:15 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XNYM" :date (2013 5 27) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Memorial Day holiday schedule 2013: energy closes 12:15 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XNYM" :date (2013 7 4) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Independence Day holiday schedule 2013: energy closes 12:15 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XNYM" :date (2013 9 2) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Labor Day holiday schedule 2013: energy closes 12:15 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XNYM" :date (2013 11 28) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Thanksgiving holiday schedule 2013: energy closes 12:15 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XNYM" :date (2013 11 29) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2013: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XNYM" :date (2013 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2013: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20140326193052/http://www.cmegroup.com/tools-information/holiday-calendar/files/2013-holiday-calendars.zip")
+ (:mic "XNYM" :date (2014 1 20) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2014: energy closes 12:15 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XNYM" :date (2014 2 17) :kind :early-close :gold (12 0) :ours (12 15)
+  :why "CME Globex Presidents Day holiday schedule 2014: energy closes 12:15 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XNYM" :date (2014 11 28) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2014: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XNYM" :date (2014 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2014: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20150326121739/http://www.cmegroup.com/tools-information/holiday-calendar/files/2014-holiday-calendars.zip")
+ (:mic "XNYM" :date (2015 11 27) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2015: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XNYM" :date (2015 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2015: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20160808150227/http://www.cmegroup.com/tools-information/holiday-calendar/files/2015-holiday-calendars.zip")
+ (:mic "XNYM" :date (2016 11 25) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2016: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20170628115819/http://www.cmegroup.com/tools-information/holiday-calendar/files/2016-holiday-calendars.zip")
+ (:mic "XNYM" :date (2017 11 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2017: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20210126094835/https://www.cmegroup.com/tools-information/holiday-calendar/files/2017-holiday-calendars.zip")
+ (:mic "XNYM" :date (2018 11 23) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2018: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XNYM" :date (2018 12 5) :kind :session :gold nil :ours t
+  :why "CME Group press release, 2 Dec 2018: only U.S. equity and interest-rate products close for the National Day of Mourning; \"All other markets on CME Globex ... will remain open for regular trading hours\": energy trades; CMES has no session."
+  :source "https://web.archive.org/web/20181205161404/https://www.cmegroup.com/media-room/press-releases/2018/12/02/cme_group_u_s_equityinterestratemarketstoclosefornationaldayofmo.html")
+ (:mic "XNYM" :date (2018 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2018: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20260830100225/https://www.cmegroup.com/tools-information/holiday-calendar/files/2018-holiday-calendars.zip")
+ (:mic "XNYM" :date (2019 11 29) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2019: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20210126094837/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-holiday-calendars.zip")
+ (:mic "XNYM" :date (2019 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2019: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20201111233949/https://www.cmegroup.com/tools-information/holiday-calendar/files/2019-christmas-holiday-schedule.xls")
+ (:mic "XNYM" :date (2020 11 27) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2020: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20201125140635/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-thanksgiving-schedule.xls")
+ (:mic "XNYM" :date (2020 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Christmas holiday schedule 2020: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20260730111834/https://www.cmegroup.com/tools-information/holiday-calendar/files/2020-holiday-calendars.zip")
+ (:mic "XNYM" :date (2021 11 26) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2021: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220917175604/https://www.cmegroup.com/tools-information/holiday-calendar/files/2021-thanksgiving-holiday-schedule.xls")
+ (:mic "XNYM" :date (2022 1 17) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Martin Luther King Jr. Day holiday schedule 2022: energy closes 13:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220117212230/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-mlk-day-holiday-schedule.xls")
+ (:mic "XNYM" :date (2022 2 21) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Presidents Day holiday schedule 2022: energy closes 13:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704073810/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-presidents-day-holiday-schedule.xls")
+ (:mic "XNYM" :date (2022 5 30) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Memorial Day holiday schedule 2022: energy closes 13:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704065438/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-memorial-day-holiday-schedule.xls")
+ (:mic "XNYM" :date (2022 6 20) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Juneteenth holiday schedule 2022: energy closes 13:30 CT on Juneteenth; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220620200210/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-juneteenth-holiday-schedule.xls")
+ (:mic "XNYM" :date (2022 7 4) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Independence Day holiday schedule 2022: energy closes 13:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704065450/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-independence-day-holiday-schedule.xls")
+ (:mic "XNYM" :date (2022 9 5) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Labor Day holiday schedule 2022: energy closes 13:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704065441/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-labor-day-holiday-schedule.xls")
+ (:mic "XNYM" :date (2022 11 24) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Globex Thanksgiving holiday schedule 2022: energy closes 13:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704065423/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-thanksgiving-holiday-schedule.xls")
+ (:mic "XNYM" :date (2022 11 25) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Globex Thanksgiving holiday schedule 2022: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT."
+  :source "https://web.archive.org/web/20220704065423/https://www.cmegroup.com/tools-information/holiday-calendar/files/2022-thanksgiving-holiday-schedule.xls")
+ (:mic "XNYM" :date (2023 1 16) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: energy closes 13:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2023 2 20) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: energy closes 13:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2023 5 29) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: energy closes 13:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2023 6 19) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: energy closes 13:30 CT on Juneteenth; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2023 7 4) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: energy closes 13:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2023 9 4) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: energy closes 13:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2023 11 23) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2023: energy closes 13:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2023 11 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Clearing holiday advisories 2023: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20230203071256/https://www.cmegroup.com/tools-information/holiday-calendar/files/2023-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2024 1 15) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: energy closes 13:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2024 2 19) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: energy closes 13:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2024 5 27) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: energy closes 13:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2024 6 19) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: energy closes 13:30 CT on Juneteenth; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2024 7 4) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: energy closes 13:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2024 9 2) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: energy closes 13:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2024 11 28) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing holiday advisories 2024: energy closes 13:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2024 11 29) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Clearing holiday advisories 2024: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2024 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Clearing holiday advisories 2024: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241214013801/https://www.cmegroup.com/tools-information/holiday-calendar/files/2024-mlk-day-advisory.pdf")
+ (:mic "XNYM" :date (2025 1 9) :kind :session :gold nil :ours t
+  :why "CME Group National Day of Mourning trading schedule, 9 Jan 2025: equities close 08:30 CT, interest rates and ags 12:15 CT, FX, energy and metals normal hours: energy trades; CMES has no session."
+  :source "https://web.archive.org/web/20250218194143/https://www.cmegroup.com/trading-hours/files/day-of-mourning-january-9-2024.pdf")
+ (:mic "XNYM" :date (2025 1 20) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: energy closes 13:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XNYM" :date (2025 2 17) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: energy closes 13:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XNYM" :date (2025 5 26) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: energy closes 13:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XNYM" :date (2025 6 19) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: energy closes 13:30 CT on Juneteenth; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XNYM" :date (2025 7 4) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: energy closes 13:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XNYM" :date (2025 9 1) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: energy closes 13:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XNYM" :date (2025 11 27) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Clearing New Year's advisory 2025: energy closes 13:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XNYM" :date (2025 11 28) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Clearing New Year's advisory 2025: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XNYM" :date (2025 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Clearing New Year's advisory 2025: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20241212010848/https://www.cmegroup.com/tools-information/holiday-calendar/files/2025-new-years-advisory.pdf")
+ (:mic "XNYM" :date (2026 1 19) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: energy closes 13:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2026 2 16) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: energy closes 13:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2026 5 25) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: energy closes 13:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2026 6 19) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: energy closes 13:30 CT on Juneteenth; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2026 7 3) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: energy closes 13:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2026 9 7) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: energy closes 13:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2026 11 26) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: energy closes 13:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2026 11 27) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2026 12 24) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Group trading-hours page, 2026 Globex holiday schedule: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2027 1 18) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: energy closes 13:30 CT on Martin Luther King Jr. Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2027 2 15) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: energy closes 13:30 CT on Presidents Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2027 5 31) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: energy closes 13:30 CT on Memorial Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2027 6 18) :kind :early-close :gold (12 0) :ours nil
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: energy no early close; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2027 7 5) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: energy closes 13:30 CT on Independence Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2027 9 6) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: energy closes 13:30 CT on Labor Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2027 11 25) :kind :early-close :gold (12 0) :ours (13 30)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: energy closes 13:30 CT on Thanksgiving Day; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html")
+ (:mic "XNYM" :date (2027 11 26) :kind :early-close :gold (12 0) :ours (12 45)
+  :why "CME Group trading-hours page, 2027 Globex holiday schedule: energy closes 12:45 CT; CMES gives every CME Group product a close at 12:00 CT. 2023 on: the hours-file rule from the 2021-2022 CME schedules (CME publishes no schedule files after 2022); the document cited confirms the holiday."
+  :source "https://web.archive.org/web/20261030143142/https://www.cmegroup.com/trading-hours.html"))
