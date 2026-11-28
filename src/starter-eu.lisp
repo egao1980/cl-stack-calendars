@@ -20,29 +20,6 @@
 
 ;;; --- Existing major EU (upgraded eras) --------------------------------
 
-;;; Germany — bundeseinheitliche Feiertage (common to all Länder). Floor 1949.
-(define-calendar germany-holidays-calendar (:register "DE")
-  (:fixed "Neujahr" 1 1 :from 1949
-   :authority "Feiertagsgesetze der Länder / bundeseinheitlich")
-  (:easter "Karfreitag" -2 :from 1949
-   :authority "Feiertagsgesetze der Länder (Karfreitag)")
-  (:easter "Ostermontag" 1 :from 1949
-   :authority "Feiertagsgesetze der Länder (Ostermontag)")
-  (:fixed "Tag der Arbeit" 5 1 :from 1949
-   :authority "Feiertagsgesetze der Länder (1. Mai)")
-  (:easter "Christi Himmelfahrt" 39 :from 1949
-   :authority "Feiertagsgesetze der Länder (Christi Himmelfahrt)")
-  (:easter "Pfingstmontag" 50 :from 1949
-   :authority "Feiertagsgesetze der Länder (Pfingstmontag)")
-  (:fixed "Tag der Deutschen Einheit" 6 17 :from 1954 :to 1990
-   :authority "17. Juni — Tag der deutschen Einheit (BRD, Aufstand 1953; bis Wiedervereinigung)")
-  (:fixed "Tag der Deutschen Einheit" 10 3 :from 1990
-   :authority "Einigungsvertrag Art. 2 Abs. 2; Tag der Deutschen Einheit (3. Oktober)")
-  (:fixed "1. Weihnachtstag" 12 25 :from 1949
-   :authority "Feiertagsgesetze der Länder")
-  (:fixed "2. Weihnachtstag" 12 26 :from 1949
-   :authority "Feiertagsgesetze der Länder"))
-
 ;;; France — Code du travail L.3133-1; research window from 1900 with statute eras.
 (define-calendar france-holidays-calendar (:register "FR")
   (:fixed "Jour de l'an" 1 1 :from 1900
@@ -70,25 +47,6 @@
   (:fixed "Noël" 12 25 :from 1900
    :authority "Code du travail L.3133-1"))
 
-;;; Italy — L. 260/1949 e successive.
-(define-calendar italy-holidays-calendar (:register "IT")
-  (:fixed "Capodanno" 1 1 :from 1900 :authority "L. 260/1949 e successive")
-  (:fixed "Epifania" 1 6 :from 1900 :to 1976
-   :authority "Epifania — festività fino alla riforma 1977")
-  (:fixed "Epifania" 1 6 :from 1985
-   :authority "L. 54/1977 soppressa; ripristinata L. 144/1985")
-  (:easter "Pasquetta" 1 :from 1900 :authority "L. 260/1949 e successive")
-  (:fixed "Liberazione" 4 25 :from 1946
-   :authority "Anniversario della Liberazione")
-  (:fixed "Festa del Lavoro" 5 1 :from 1900 :authority "L. 260/1949 e successive")
-  (:fixed "Festa della Repubblica" 6 2 :from 1946
-   :authority "Festa della Repubblica (2 giugno)")
-  (:fixed "Ferragosto" 8 15 :from 1900 :authority "L. 260/1949 e successive")
-  (:fixed "Tutti i Santi" 11 1 :from 1900 :authority "L. 260/1949 e successive")
-  (:fixed "Immacolata" 12 8 :from 1900 :authority "L. 260/1949 e successive")
-  (:fixed "Natale" 12 25 :from 1900 :authority "L. 260/1949 e successive")
-  (:fixed "Santo Stefano" 12 26 :from 1900 :authority "L. 260/1949 e successive"))
-
 ;;; Spain — fiestas laborales de ámbito nacional (BOE).
 (define-calendar spain-holidays-calendar (:register "ES")
   (:fixed "Año Nuevo" 1 1 :from 1900 :authority "Estatuto de los Trabajadores / BOE")
@@ -105,25 +63,6 @@
    :authority "Constitución 1978 — fiesta nacional")
   (:fixed "Inmaculada Concepción" 12 8 :from 1900 :authority "BOE fiestas laborales nacionales")
   (:fixed "Navidad" 12 25 :from 1900 :authority "BOE fiestas laborales nacionales"))
-
-;;; Netherlands — algemeen erkende feestdagen.
-(define-calendar netherlands-holidays-calendar (:register "NL")
-  (:fixed "Nieuwjaarsdag" 1 1 :from 1900 :authority "Algemeen erkende feestdagen")
-  (:easter "Tweede paasdag" 1 :from 1900 :authority "Algemeen erkende feestdagen")
-  (:fixed "Koninginnedag" 4 30 :from 1949 :to 2013
-   :authority "Koninginnedag (30 april) tot 2013")
-  (:computed "Koningsdag"
-   (lambda (y)
-     (let ((d (make-date y 4 27)))
-       (if (= (date-day-of-week d) 7) (make-date y 4 26) d)))
-   :from 2014
-   :authority "Koningsdag (27 april; indien zondag → 26 april)")
-  (:fixed "Bevrijdingsdag" 5 5 :from 1945
-   :authority "Bevrijdingsdag (nationale feestdag)")
-  (:easter "Hemelvaartsdag" 39 :from 1900 :authority "Algemeen erkende feestdagen")
-  (:easter "Tweede pinksterdag" 50 :from 1900 :authority "Algemeen erkende feestdagen")
-  (:fixed "Eerste kerstdag" 12 25 :from 1900 :authority "Algemeen erkende feestdagen")
-  (:fixed "Tweede kerstdag" 12 26 :from 1900 :authority "Algemeen erkende feestdagen"))
 
 ;;; Belgium — wettelijke feestdagen (fédéral).
 (define-calendar belgium-holidays-calendar (:register "BE")
@@ -267,35 +206,6 @@
   (:fixed "Χριστούγεννα" 12 25 :from 1900 :authority "Επίσημη αργία")
   (:fixed "Σύναξις Θεοτόκου" 12 26 :from 1900 :authority "Δεύτερη μέρα Χριστουγέννων"))
 
-;;; Portugal — Código do Trabalho art. 234.º (suspensions 2013–2015).
-(define-calendar portugal-holidays-calendar (:register "PT")
-  (:fixed "Ano Novo" 1 1 :from 1900 :authority "Código do Trabalho art. 234.º")
-  (:easter "Sexta-Feira Santa" -2 :from 1900 :authority "Código do Trabalho")
-  (:easter "Páscoa" 0 :from 1900 :authority "Código do Trabalho")
-  (:fixed "Dia da Liberdade" 4 25 :from 1974
-   :authority "25 de Abril — Dia da Liberdade")
-  (:fixed "Dia do Trabalhador" 5 1 :from 1900 :authority "Código do Trabalho")
-  (:easter "Corpo de Deus" 60 :from 1900 :to 2012
-   :authority "Corpo de Deus — suspenso 2013–2015")
-  (:easter "Corpo de Deus" 60 :from 2016
-   :authority "Lei 8/2016 — Corpo de Deus reposto")
-  (:fixed "Dia de Portugal" 6 10 :from 1900 :authority "Dia de Portugal, de Camões e das Comunidades")
-  (:fixed "Assunção de Maria" 8 15 :from 1900 :authority "Código do Trabalho")
-  (:fixed "Implantação da República" 10 5 :from 1910 :to 2012
-   :authority "5 de outubro — suspenso 2013–2015")
-  (:fixed "Implantação da República" 10 5 :from 2016
-   :authority "Lei 8/2016 — 5 de outubro reposto")
-  (:fixed "Todos os Santos" 11 1 :from 1900 :to 2012
-   :authority "Todos-os-Santos — suspenso 2013–2015")
-  (:fixed "Todos os Santos" 11 1 :from 2016
-   :authority "Lei 8/2016 — Todos-os-Santos reposto")
-  (:fixed "Restauração da Independência" 12 1 :from 1900 :to 2012
-   :authority "1 de dezembro — suspenso 2013–2015")
-  (:fixed "Restauração da Independência" 12 1 :from 2016
-   :authority "Lei 8/2016 — 1 de dezembro reposto")
-  (:fixed "Imaculada Conceição" 12 8 :from 1900 :authority "Código do Trabalho")
-  (:fixed "Natal" 12 25 :from 1900 :authority "Código do Trabalho"))
-
 ;;; Hungary — munkaszüneti napok.
 (define-calendar hungary-holidays-calendar (:register "HU")
   (:fixed "Újév" 1 1 :from 1900 :authority "Munkaszüneti nap")
@@ -393,28 +303,6 @@
   (:fixed "Štedrý deň" 12 24 :from 1993 :authority "Zákon o štátnych sviatkoch")
   (:fixed "1. sviatok vianočný" 12 25 :from 1993 :authority "Zákon o štátnych sviatkoch")
   (:fixed "2. sviatok vianočný" 12 26 :from 1993 :authority "Zákon o štátnych sviatkoch"))
-
-;;; Ireland — Organisation of Working Time Act bank holidays.
-(define-calendar ireland-holidays-calendar (:register "IE")
-  (:fixed "New Year's Day" 1 1 :from 1922 :authority "Organisation of Working Time Act / bank holidays")
-  (:computed "St. Brigid's Day"
-   (lambda (y)
-     (let ((d (make-date y 2 1)))
-       (if (= (date-day-of-week d) 5) d (%first-monday-on-or-after d))))
-   :from 2023
-   :authority "Organisation of Working Time Act — St Brigid's Day from 2023")
-  (:fixed "St. Patrick's Day" 3 17 :from 1922 :authority "Bank holiday")
-  (:easter "Easter Monday" 1 :from 1922 :authority "Bank holiday")
-  (:nth-weekday "May Bank Holiday" 5 :monday 1 :from 1994
-   :authority "May Day bank holiday (first Monday of May) from 1994")
-  (:nth-weekday "June Bank Holiday" 6 :monday 1 :from 1922
-   :authority "First Monday of June")
-  (:nth-weekday "August Bank Holiday" 8 :monday 1 :from 1922
-   :authority "First Monday of August")
-  (:nth-weekday "October Bank Holiday" 10 :monday -1 :from 1977
-   :authority "Last Monday of October")
-  (:fixed "Christmas Day" 12 25 :from 1922 :authority "Bank holiday")
-  (:fixed "St. Stephen's Day" 12 26 :from 1922 :authority "Bank holiday"))
 
 ;;; Croatia — Zakon o blagdanima (eras 2019–2020 reform).
 (define-calendar croatia-holidays-calendar (:register "HR")
@@ -562,11 +450,8 @@
   (:fixed "Republic Day" 12 13 :from 1974 :authority "Republic Day")
   (:fixed "Christmas Day" 12 25 :from 1964 :authority "Public holiday"))
 
-(defun germany-holidays-calendar () (make-instance 'germany-holidays-calendar))
 (defun france-holidays-calendar () (make-instance 'france-holidays-calendar))
-(defun italy-holidays-calendar () (make-instance 'italy-holidays-calendar))
 (defun spain-holidays-calendar () (make-instance 'spain-holidays-calendar))
-(defun netherlands-holidays-calendar () (make-instance 'netherlands-holidays-calendar))
 (defun belgium-holidays-calendar () (make-instance 'belgium-holidays-calendar))
 (defun austria-holidays-calendar () (make-instance 'austria-holidays-calendar))
 (defun poland-holidays-calendar () (make-instance 'poland-holidays-calendar))
@@ -574,13 +459,11 @@
 (defun romania-holidays-calendar () (make-instance 'romania-holidays-calendar))
 (defun czechia-holidays-calendar () (make-instance 'czechia-holidays-calendar))
 (defun greece-holidays-calendar () (make-instance 'greece-holidays-calendar))
-(defun portugal-holidays-calendar () (make-instance 'portugal-holidays-calendar))
 (defun hungary-holidays-calendar () (make-instance 'hungary-holidays-calendar))
 (defun bulgaria-holidays-calendar () (make-instance 'bulgaria-holidays-calendar))
 (defun denmark-holidays-calendar () (make-instance 'denmark-holidays-calendar))
 (defun finland-holidays-calendar () (make-instance 'finland-holidays-calendar))
 (defun slovakia-holidays-calendar () (make-instance 'slovakia-holidays-calendar))
-(defun ireland-holidays-calendar () (make-instance 'ireland-holidays-calendar))
 (defun croatia-holidays-calendar () (make-instance 'croatia-holidays-calendar))
 (defun lithuania-holidays-calendar () (make-instance 'lithuania-holidays-calendar))
 (defun slovenia-holidays-calendar () (make-instance 'slovenia-holidays-calendar))

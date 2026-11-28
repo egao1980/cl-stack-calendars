@@ -10,23 +10,7 @@
   ;; no holiday rules — Saturday/Sunday only
   )
 
-;;;; TARGET closing days — ECB Governing Council decision of 14 Dec 2000
-;;;; (long-term calendar from 2002); calendar dates, no weekend in-lieu
-;;;; (weekends are already non-settlement).
-;;;; https://www.ecb.europa.eu/press/pr/date/2000/html/pr001214_4.en.html
-(define-calendar target-calendar (:register "TARGET")
-  (:fixed "New Year's Day" 1 1 :from 1999
-   :authority "ECB Governing Council decision 14 Dec 2000 (TARGET closing days)")
-  (:fixed "Labour Day" 5 1 :from 1999
-   :authority "ECB Governing Council decision 14 Dec 2000 (TARGET closing days)")
-  (:fixed "Christmas Day" 12 25 :from 1999
-   :authority "ECB Governing Council decision 14 Dec 2000 (TARGET closing days)")
-  (:fixed "Christmas Holiday" 12 26 :from 1999
-   :authority "ECB Governing Council decision 14 Dec 2000 (TARGET closing days)")
-  (:easter "Good Friday" -2 :from 1999
-   :authority "ECB Governing Council decision 14 Dec 2000 (TARGET closing days)")
-  (:easter "Easter Monday" 1 :from 1999
-   :authority "ECB Governing Council decision 14 Dec 2000 (TARGET closing days)"))
+;;;; TARGET closing days are in starter-europe.lisp (ECB decisions, #24).
 
 ;;;; US federal legal public holidays — 5 U.S.C. § 6103(a) list; in-lieu
 ;;;; observance for Mon–Fri schedules under § 6103(b) (Sat→Fri) and
@@ -167,7 +151,6 @@ file, fresh."
                "https://www.gov.uk/bank-holidays")))
 
 (defun weekend-only-calendar () (make-instance 'weekend-only-calendar))
-(defun target-calendar () (make-instance 'target-calendar))
 (defun us-federal-holidays-calendar () (make-instance 'us-federal-holidays-calendar))
 
 (defun uk-bank-holidays-calendar (&key year transfers suppressed-dates)
