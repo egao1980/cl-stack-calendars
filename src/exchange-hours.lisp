@@ -361,25 +361,40 @@ EXCHANGE-SESSIONS-FOR-DATE leave them out."
     (when plists
       (values (%notice-session-specs exchange date plists clock) note))))
 
+(defun %regular-rule-p (rule)
+  "True for a late-open rule marked :REGULAR T: the later open is part of the
+day's regular hours (KRX first trading day), not an overlay on them."
+  (getf (exchange-early-close-rule-args rule) :regular))
+
+(defun %regular-late-open (exchange date)
+  "The open a :REGULAR late-open rule of EXCHANGE gives DATE, or NIL."
+  (loop for rule in (exchange-hours-late-open-rules exchange)
+        for tod = (and (%regular-rule-p rule) (%early-close-from-rule rule date))
+        when tod return tod))
+
 (defun %era-week-sessions (exchange date)
   "The regular segments for DATE (no holidays, no early close or late open):
 the hours a calendar notice gives the day (:SESSIONS), else the hours era's
-sessions for DATE's weekday. NIL on a weekend of the era, unless a calendar
-notice opens the day (then the era's weekday hours), or between eras."
+sessions for DATE's weekday, opened later by a :REGULAR late-open rule. NIL
+on a weekend of the era, unless a calendar notice opens the day (then the
+era's weekday hours), or between eras."
   (let ((override (%notice-sessions exchange date)))
     (when override
       (return-from %era-week-sessions override)))
   (let ((era (exchange-era-for-date exchange date
                                     :errorp (not (%era-gap-p exchange date)))))
     (when era
-      (let ((dow (date-day-of-week date))
-            (weekend (or (exchange-era-weekend era)
-                         (exchange-hours-weekend exchange))))
-        (or (cdr (assoc dow (exchange-era-days era)))
-            (if (member dow weekend)
-                (when (exchange-calendar-opened-p (exchange-calendar exchange) date)
-                  (exchange-era-sessions era))
-                (exchange-era-sessions era)))))))
+      (let* ((dow (date-day-of-week date))
+             (weekend (or (exchange-era-weekend era)
+                          (exchange-hours-weekend exchange)))
+             (sessions (or (cdr (assoc dow (exchange-era-days era)))
+                           (if (member dow weekend)
+                               (when (exchange-calendar-opened-p
+                                      (exchange-calendar exchange) date)
+                                 (exchange-era-sessions era))
+                               (exchange-era-sessions era)))))
+        (when sessions
+          (%apply-late-open sessions (%regular-late-open exchange date)))))))
 
 (defun %apply-late-open (sessions late)
   "Drop/shorten segments so the first remaining open is LATE (same-day
@@ -404,7 +419,8 @@ segments only; an overnight leg is kept as it is)."
   "TIME-OF-DAY late open on DATE, or NIL. Second value is the note or rule
 authority. Adhoc rows are (DATE TOD NOTE), then the exchange calendar's
 notices (converted from their clock; :NONE cancels a rule's late open), then
-the late-open rules."
+the late-open rules that are not :REGULAR (those shape the regular hours, see
+%REGULAR-LATE-OPEN)."
   (let ((row (find date (exchange-hours-late-opens exchange)
                    :key #'first :test #'=)))
     (when row
@@ -419,7 +435,7 @@ the late-open rules."
             (values (%wall-time-in-zone date tod clock (exchange-hours-zone exchange))
                     note)))))
   (loop for rule in (exchange-hours-late-open-rules exchange)
-        for tod = (%early-close-from-rule rule date)
+        for tod = (and (not (%regular-rule-p rule)) (%early-close-from-rule rule date))
         when tod
           return (values tod (exchange-early-close-rule-authority rule))))
 

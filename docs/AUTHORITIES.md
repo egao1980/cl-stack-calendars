@@ -350,7 +350,7 @@ trading day; a day between two eras is closed.
 
 ### Exchange trading-holiday calendars (#49)
 
-Since 0.39.0 (Western Europe; 0.40.0 the Nordics; 0.41.0 CEE, Athens and Istanbul) a MIC can use the exchange's own holiday calendar instead of the
+Since 0.39.0 (Western Europe; 0.40.0 the Nordics; 0.41.0 CEE, Athens and Istanbul; 0.43.0 XTKS, XOSE, XKRX and XTAI) a MIC can use the exchange's own holiday calendar instead of the
 national civil one: `data/exchanges/calendars/<NAME>.sexp`, an
 `exchange-holiday-calendar` whose `calendar-provenance` is `:exchange`. Each file
 holds the exchange's recurring rules (`define-calendar` clause syntax, each with
@@ -377,7 +377,9 @@ Since 0.42.0 a notice can also
 
 An hours era can give one weekday its own sessions with `:sunday` (like
 `:friday` / `:saturday`) or `:days ((ISO-WEEKDAY session …) …)` (TASE Sunday
-closes). Rule functions named by data files live in
+closes). A late-open rule with `:regular t` shapes the day's regular hours instead
+of overlaying them (0.43.0: the KRX first trading day opens at 10:00,
+`krx-first-trading-day`). Rule functions named by data files live in
 `src/exchange-date-functions.lisp`: `last-weekday-of-year`,
 `krx-year-end-closing-day`, `hk-lunar-new-year-eve` and the TASE Hebrew-calendar
 days (`il-purim`, `il-erev-pesach`, `il-erev-pesach-seventh`,
