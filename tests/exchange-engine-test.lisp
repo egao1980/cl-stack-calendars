@@ -143,7 +143,8 @@
   (ok (functionp (cl-stack-calendars::exchange-date-function "hk-lunar-new-year-eve"))))
 
 (defun %tase-hebrew-gold ()
-  (read-data-form (data-path "tests/exchanges/XTAE-hebrew-gold.sexp")))
+  ;; Not named *-gold.sexp: that suffix is the exchange_calendars fixtures.
+  (read-data-form (data-path "tests/exchanges/XTAE-hebrew-dates.sexp")))
 
 (deftest tase-hebrew-dates-gold
   "Every holiday eve (date function) and festival (IL calendar) on the TASE

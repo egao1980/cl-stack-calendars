@@ -8,13 +8,19 @@
 ;;;;    :weekend (6 7)  ; ISO dow; Fri–Sat markets use (5 6)
 ;;;;    :eras ((:from (Y M D) :to (Y M D)
 ;;;;            :sessions ((:open (H M) :close (H M) :overnight t :labeled-by :close) …)
-;;;;            :friday (…) :saturday (…) :weekend (7) :authority "…") …)
+;;;;            :friday (…) :saturday (…) :sunday (…)   ; one weekday's own sessions
+;;;;            :days ((ISO-WEEKDAY (:open (H M) :close (H M)) …) …) ; same, any weekday
+;;;;            :weekend (7) :authority "…") …)
 ;;;;    :early-close-rules ((:kind :black-friday :from … :close (13 0) :authority "…") …)
 ;;;;    :early-closes (((Y M D) (H M) "note") …))
 ;;;;
 ;;;; Regular hours are exchange-rule eras (not TZ — TZ is resolved per
-;;;; boundary via TRADING-SESSION). Early closes override the last segment.
-;;;; Overnight segments use TRADING-SESSION :OVERNIGHT / :LABELED-BY.
+;;;; boundary via TRADING-SESSION). A notice of the exchange calendar can give
+;;;; one day its own hours (:SESSIONS), open a weekend day with the era's
+;;;; weekday hours (:OPEN), or hold special sessions apart from regular trading
+;;;; (:SPECIAL-SESSIONS, EXCHANGE-SPECIAL-SESSIONS-FOR-DATE). Early closes
+;;;; override the last segment. Overnight segments use TRADING-SESSION
+;;;; :OVERNIGHT / :LABELED-BY.
 
 (defvar *exchange-hours-cache*
   #+sbcl (make-hash-table :test #'equal :synchronized t)
@@ -28,7 +34,10 @@
   (labeled-by :open))
 
 (defstruct (exchange-era (:constructor %make-exchange-era))
-  from to sessions friday saturday weekend authority)
+  from to sessions friday saturday weekend authority
+  ;; ((ISO-WEEKDAY . SESSION-SPECS) …): sessions of one weekday that differ
+  ;; from :SESSIONS (:FRIDAY, :SATURDAY, :SUNDAY and :DAYS in the data).
+  days)
 
 (defstruct (exchange-early-close-rule (:constructor %make-exchange-early-close-rule))
   kind from to close authority args)
@@ -57,6 +66,18 @@
                              (if (getf s :overnight) :close :open))))
           sessions))
 
+(defun %parse-era-days (plist)
+  "The era's weekday-specific sessions as ((ISO-WEEKDAY . SPECS) …): :DAYS rows
+(WEEKDAY SESSION-PLIST …), then :FRIDAY (5), :SATURDAY (6) and :SUNDAY (7)."
+  (let ((days (mapcar (lambda (row)
+                        (cons (first row) (%parse-session-specs (rest row))))
+                      (getf plist :days))))
+    (loop for (key dow) in '((:friday 5) (:saturday 6) (:sunday 7))
+          for specs = (getf plist key)
+          when (and specs (not (assoc dow days)))
+            do (push (cons dow (%parse-session-specs specs)) days))
+    (sort days #'< :key #'car)))
+
 (defun %parse-era (plist)
   (%make-exchange-era
    :from (%ymd->date (getf plist :from))
@@ -66,6 +87,7 @@
              (when fri (%parse-session-specs fri)))
    :saturday (let ((sat (getf plist :saturday)))
                (when sat (%parse-session-specs sat)))
+   :days (%parse-era-days plist)
    :weekend (getf plist :weekend)
    :authority (getf plist :authority)))
 
@@ -309,22 +331,55 @@ shortened when EARLY is before that close on the label date."
                    :message (format nil "early close ~a precedes all session opens"
                                     early))))))
 
+(defun %notice-session-specs (exchange date plists clock)
+  "Session PLISTS a calendar notice gives DATE as specs on EXCHANGE's clock
+(a notice written on another zone's CLOCK is converted)."
+  (let ((zone (exchange-hours-zone exchange)))
+    (mapcar (lambda (spec)
+              (%make-exchange-session-spec
+               :open (%wall-time-in-zone date (exchange-session-spec-open spec) clock zone)
+               :close (%wall-time-in-zone date (exchange-session-spec-close spec) clock zone)
+               :overnight (exchange-session-spec-overnight spec)
+               :labeled-by (exchange-session-spec-labeled-by spec)))
+            (%parse-session-specs plists))))
+
+(defun %notice-sessions (exchange date)
+  "The hours a notice of EXCHANGE's calendar gives DATE (:SESSIONS), or NIL."
+  (multiple-value-bind (plists note clock)
+      (exchange-calendar-sessions (exchange-calendar exchange) date)
+    (declare (ignore note))
+    (when plists
+      (%notice-session-specs exchange date plists clock))))
+
+(defun exchange-special-sessions-for-date (exchange date)
+  "Special sessions EXCHANGE holds on DATE apart from regular trading (NSE/BSE
+Muhurat), from its calendar's notices: (values SPECS NOTE), or NIL. They do
+not make DATE a trading day: EXCHANGE-TRADING-DAY-P and
+EXCHANGE-SESSIONS-FOR-DATE leave them out."
+  (multiple-value-bind (plists note clock)
+      (exchange-calendar-special-sessions (exchange-calendar exchange) date)
+    (when plists
+      (values (%notice-session-specs exchange date plists clock) note))))
+
 (defun %era-week-sessions (exchange date)
-  "The hours era's regular segments for DATE's weekday (no holidays, no
-early close or late open). NIL on a weekend of the era or between eras."
+  "The regular segments for DATE (no holidays, no early close or late open):
+the hours a calendar notice gives the day (:SESSIONS), else the hours era's
+sessions for DATE's weekday. NIL on a weekend of the era, unless a calendar
+notice opens the day (then the era's weekday hours), or between eras."
+  (let ((override (%notice-sessions exchange date)))
+    (when override
+      (return-from %era-week-sessions override)))
   (let ((era (exchange-era-for-date exchange date
                                     :errorp (not (%era-gap-p exchange date)))))
     (when era
       (let ((dow (date-day-of-week date))
             (weekend (or (exchange-era-weekend era)
-                         (exchange-hours-weekend exchange)))
-            (friday (exchange-era-friday era))
-            (saturday (exchange-era-saturday era)))
-        (cond
-          ((and (= dow 5) friday) friday)
-          ((and (= dow 6) saturday) saturday)
-          ((member dow weekend) nil)
-          (t (exchange-era-sessions era)))))))
+                         (exchange-hours-weekend exchange))))
+        (or (cdr (assoc dow (exchange-era-days era)))
+            (if (member dow weekend)
+                (when (exchange-calendar-opened-p (exchange-calendar exchange) date)
+                  (exchange-era-sessions era))
+                (exchange-era-sessions era)))))))
 
 (defun %apply-late-open (sessions late)
   "Drop/shorten segments so the first remaining open is LATE (same-day

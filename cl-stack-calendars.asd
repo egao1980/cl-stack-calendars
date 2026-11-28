@@ -1,5 +1,5 @@
 (defsystem "cl-stack-calendars"
-  :version "0.41.0"
+  :version "0.42.0"
   :description "Holiday and trading calendars for cl-stack (business days, sessions, versioned as-of)"
   :author "egao1980"
   :license "MIT"
@@ -43,6 +43,7 @@
                (:file "corpus-inference")
                (:file "starter-territories")
                (:file "starter-subnational")
+               (:file "exchange-date-functions")
                (:file "exchange-calendar")
                (:file "exchange-hours"))
   :in-order-to ((test-op (test-op "cl-stack-calendars/tests"))))

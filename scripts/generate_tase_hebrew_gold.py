@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build data/tests/exchanges/XTAE-hebrew-gold.sexp: the date of every
+"""Build data/tests/exchanges/XTAE-hebrew-dates.sexp: the date of every
 Hebrew-calendar holiday and holiday eve that a TASE "Vacation Schedule"
 lists, 2013-2028, from the exchange's own documents (no third-party table).
 
@@ -28,7 +28,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = Path.home() / ".cache" / "cl-stack-calendars" / "exchanges" / "xtae"
-OUT = ROOT / "data" / "tests" / "exchanges" / "XTAE-hebrew-gold.sexp"
+OUT = ROOT / "data" / "tests" / "exchanges" / "XTAE-hebrew-dates.sexp"
 PAGE_URI = "https://www.tase.co.il/en/content/knowledge_center/trading_vacation_schedule"
 
 MONTHS = {m: i + 1 for i, m in enumerate(

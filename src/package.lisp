@@ -505,6 +505,26 @@
    #:exchange-calendar-notices
    #:exchange-calendar-bases
    #:exchange-calendar-rules
-   #:exchange-calendar))
+   #:exchange-calendar
+   #:make-exchange-calendar
+   #:exchange-calendar-opened-p
+   #:exchange-calendar-sessions
+   #:exchange-calendar-special-sessions
+   #:exchange-special-sessions-for-date
+   #:exchange-era-days
+   #:last-weekday-of-year
+   #:krx-year-end-closing-day
+   #:hk-lunar-new-year-eve
+   #:il-purim
+   #:il-erev-pesach
+   #:il-erev-pesach-seventh
+   #:il-independence-day-observed
+   #:il-memorial-day-observed
+   #:il-erev-shavuot
+   #:il-tisha-bav-observed
+   #:il-erev-rosh-hashanah
+   #:il-erev-yom-kippur
+   #:il-erev-sukkot
+   #:il-erev-simchat-torah))
 
 (in-package #:cl-stack-calendars)
