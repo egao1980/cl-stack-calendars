@@ -7,14 +7,16 @@
     "XPAR" "XAMS" "XBRU" "XLIS" "XDUB" "XMIL" "XMAT"
     "XETR" "XEUR" "XEEE" "XSWX" "XWBO" "XMAD"
     "XSTO" "XCSE" "XHEL" "XICE" "XOSL"
-    "XWAR" "XBUD" "XPRA" "XATH" "XIST")
+    "XWAR" "XBUD" "XPRA" "XATH" "XIST"
+    "XTKS" "XOSE" "XKRX" "XTAI")
   "MICs whose exchange queries use the exchange's own calendar (provenance
 :EXCHANGE). #49 moves the rest off their national civil calendars by region.")
 
 (defparameter *exchange-calendar-mics-without-gold*
-  '("IFEU" "XLME" "XMAT")
+  '("IFEU" "XLME" "XMAT" "XOSE")
   "Exchange-calendar MICs that Python exchange_calendars does not cover;
-their key dates are checked in EXCHANGE-CALENDARS-WITHOUT-GOLD.")
+their key dates are checked in EXCHANGE-CALENDARS-WITHOUT-GOLD and
+NORTH-ASIA-EXCHANGE-CALENDARS.")
 
 (deftest exchange-calendars-are-the-exchanges-own
   (dolist (mic *exchange-calendar-mics*)
@@ -76,6 +78,38 @@ key dates."
              '(nil nil t)))
   (ok (equal (%early-close-hm "XIST" '(2024 10 28)) '(12 30)))
   (ok (equal (%early-close-hm "XIST" '(2027 10 28)) '(12 30))))
+
+(defun %session-hm (mic ymd)
+  (mapcar (lambda (s) (list (%hm (exchange-session-spec-open s))
+                            (%hm (exchange-session-spec-close s))))
+          (exchange-sessions-for-date (find-exchange mic) (apply #'make-date ymd))))
+
+(deftest north-asia-exchange-key-dates
+  "XTKS, XOSE, XKRX and XTAI: key dates from the exchanges' own notices."
+  ;; TSE: 1-3 Jan and 31 Dec closed (Rule 3); 2020-10-01 arrowhead halt;
+  ;; half-holiday (morning only) on the first/last day until 2009-01-05.
+  (ok (equal (%trading-days "XTKS" '(2024 1 2) '(2024 1 3) '(2024 12 31) '(2020 10 1))
+             '(nil nil nil nil)))
+  (ok (equal (%session-hm "XTKS" '(2008 12 30)) '(((9 0) (11 0)))))
+  (ok (equal (%session-hm "XTKS" '(2009 12 30)) '(((9 0) (11 0)) ((12 30) (15 0)))))
+  (ok (equal (%session-hm "XTKS" '(2011 11 21)) '(((9 0) (11 30)) ((12 30) (15 0)))))
+  ;; OSE: holiday trading from 2022-09-23; the 2021-09-17 night session was cancelled.
+  (ok (equal (%trading-days "XOSE" '(2022 9 23) '(2023 1 3) '(2022 9 22)) '(t t t)))
+  (ok (equal (%trading-days "XOSE" '(2022 1 3) '(2024 1 1)) '(nil nil)))
+  (ok (equal (%session-hm "XOSE" '(2021 9 17)) '(((8 45) (15 15)))))
+  (ok (equal (%session-hm "XOSE" '(2024 11 5)) '(((8 45) (15 45)) ((17 0) (6 0)))))
+  ;; KRX: year-end closing day, first trading day 10:00, CSAT day 10:00-16:30.
+  (ok (equal (%trading-days "XKRX" '(2023 12 29) '(2022 12 30) '(2024 12 31)) '(nil nil nil)))
+  (ok (equal (%session-hm "XKRX" '(2025 1 2)) '(((10 0) (15 30)))))
+  (ok (equal (%session-hm "XKRX" '(2025 1 3)) '(((9 0) (15 30)))))
+  (ok (equal (%session-hm "XKRX" '(2021 11 18)) '(((10 0) (16 30)))))
+  (ok (null (exchange-late-open (find-exchange "XKRX") (make-date 2025 1 2)))
+      "the first-day open is regular hours, not an overlay")
+  ;; TWSE: make-up Saturday 2018-12-22 traded, 2019 make-up Saturdays did not;
+  ;; Lunar New Year no-trading days; Labor Day.
+  (ok (equal (%trading-days "XTAI" '(2018 12 22) '(2000 1 15)) '(t t)))
+  (ok (equal (%session-hm "XTAI" '(2018 12 22)) '(((9 0) (13 30)))))
+  (ok (equal (%trading-days "XTAI" '(2023 1 18) '(2024 5 1) '(2024 10 31)) '(nil nil nil))))
 
 (deftest civil-fixes-found-by-exchange-lists
   "#123: Norway's Ascension Day; #124: Iceland's First Day of Summer is the

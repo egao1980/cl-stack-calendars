@@ -210,7 +210,7 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XINE | Shanghai International Energy Exchange | CN | normative | — | — | — | — | — | — |
 | XIST | Borsa Istanbul | XIST | exchange | 28 (2000–2026) | 2016–2026 | 2541 | 21 | 0 | 1 |
 | XKLS | Bursa Malaysia | MY | normative | — | — | — | — | — | — |
-| XKRX | Korea Exchange | KR | normative | — | — | — | — | — | — |
+| XKRX | Korea Exchange | XKRX | exchange | 33 (2000–2027) | 2000–2028 | 7144 | 0 | 0 | 30 |
 | XLIS | Euronext Lisbon | XLIS | exchange | 26 (2001–2027) | 2003–2028 | 6659 | 36 | 0 | 17 |
 | XLME | London Metal Exchange | XLME | exchange | 14 (2003–2027) | — | — | — | — | — |
 | XLON | London Stock Exchange | XLON | exchange | 24 (2003–2027) | 2003–2028 | 6570 | 52 | 0 | 0 |
@@ -221,7 +221,7 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XNSE | National Stock Exchange of India | IN | normative | — | — | — | — | — | — |
 | XNYM | NYMEX | USFED | normative | — | — | — | — | — | — |
 | XNYS | New York Stock Exchange | NYSE | normative | — | — | — | — | — | — |
-| XOSE | Osaka Exchange / JPX derivatives | JP | normative | — | — | — | — | — | — |
+| XOSE | Osaka Exchange / JPX derivatives | XOSE | exchange | 9 (2021–2027) | — | — | — | — | — |
 | XOSL | Euronext Oslo / Oslo Børs | XOSL | exchange | 15 (2002–2027) | 2006–2028 | 5775 | 18 | 0 | 2 |
 | XPAR | Euronext Paris | XPAR | exchange | 28 (2000–2027) | 2000–2028 | 7420 | 39 | 0 | 20 |
 | XPHS | Philippine Stock Exchange | PH | normative | — | — | — | — | — | — |
@@ -235,8 +235,8 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XSTO | Nasdaq Stockholm | XSTO | exchange | 20 (2008–2027) | 2008–2028 | 5277 | 92 | 0 | 0 |
 | XSWX | SIX Swiss Exchange | XSWX | exchange | 20 (2012–2027) | 2012–2028 | 4269 | 0 | 0 | 0 |
 | XTAE | Tel Aviv Stock Exchange | IL | normative | — | — | — | — | — | — |
-| XTAI | Taiwan Stock Exchange | TW | normative | — | — | — | — | — | — |
-| XTKS | Tokyo Stock Exchange | JP | normative | — | — | — | — | — | — |
+| XTAI | Taiwan Stock Exchange | XTAI | exchange | 52 (2000–2027) | 2000–2028 | 7127 | 0 | 0 | 72 |
+| XTKS | Tokyo Stock Exchange | XTKS | exchange | 5 (2008–2027) | 2000–2028 | 7102 | 0 | 0 | 20 |
 | XTSE | Toronto Stock Exchange | CA | normative | — | — | — | — | — | — |
 | XWAR | Warsaw Stock Exchange | XWAR | exchange | 23 (2003–2027) | 2011–2028 | 4497 | 0 | 0 | 2 |
 | XWBO | Wiener Börse | XWBO | exchange | 19 (2019–2027) | 2019–2028 | 2537 | 10 | 0 | 0 |

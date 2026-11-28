@@ -349,4 +349,300 @@
   :gold ((10 0) nil nil (18 0)) :ours ((10 0) (13 0) (14 0) (18 0))
   :why "Schedule effective 14 Nov 2016: continuous 10:00-13:00, midday call auction 13:00-13:55, continuous 14:00-18:00; the lunch break was removed from 2019-10-04 (notice 2019/56). exchange_calendars has no lunch break."
   :source "https://web.archive.org/web/20161117175157/http://www.borsaistanbul.com/images/default-source/kurumsal/equity-market-continuous-trading-normal-days-november-14-2016.jpg?sfvrsn=0")
-)
+ ;; XTKS
+ ;;;; XTKS: exchange source vs exchange_calendars (ec). Sessions: none differ (rule + JP base = ec on
+ ;;;; every weekday 2000-2028, incl. 2020-10-01 closed in both).
+
+ (:mic "XTKS" :kind :hours :from (2000 1 4) :to (2011 11 18)
+  :gold ((9 0) (11 30) (12 30) (15 0)) :ours ((9 0) (11 0) (12 30) (15 0))
+  :why "Morning session ended 11:00 until the lunch-break shortening on 2011-11-21 (excluding the half-holidays below, which closed 11:00 with no afternoon session)."
+  :source "https://www.jpx.co.jp/files/tse/about/press/b7gje60000029nqk-att/shiryou20110927.pdf ; https://www.jpx.co.jp/files/tse/rules-participants/public-comment/data/101124-ks_1.pdf")
+ (:mic "XTKS" :date (2000 1 4) :kind :early-close :gold nil :ours (11 0) :why "Daihakkai half-holiday, morning session only (secondary copy of TSE notice)" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2000 12 29) :kind :early-close :gold nil :ours (11 0) :why "Dainokai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2001 1 4) :kind :early-close :gold nil :ours (11 0) :why "Daihakkai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2001 12 28) :kind :early-close :gold nil :ours (11 0) :why "Dainokai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2002 1 4) :kind :early-close :gold nil :ours (11 0) :why "Daihakkai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2002 12 30) :kind :early-close :gold nil :ours (11 0) :why "Dainokai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2003 1 6) :kind :early-close :gold nil :ours (11 0) :why "Daihakkai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2003 12 30) :kind :early-close :gold nil :ours (11 0) :why "Dainokai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2004 1 5) :kind :early-close :gold nil :ours (11 0) :why "Daihakkai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2004 12 30) :kind :early-close :gold nil :ours (11 0) :why "Dainokai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2005 1 4) :kind :early-close :gold nil :ours (11 0) :why "Daihakkai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2005 12 30) :kind :early-close :gold nil :ours (11 0) :why "Dainokai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2006 1 4) :kind :early-close :gold nil :ours (11 0) :why "Daihakkai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2006 12 29) :kind :early-close :gold nil :ours (11 0) :why "Dainokai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2007 1 4) :kind :early-close :gold nil :ours (11 0) :why "Daihakkai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2007 12 28) :kind :early-close :gold nil :ours (11 0) :why "Dainokai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2008 1 4) :kind :early-close :gold nil :ours (11 0) :why "Daihakkai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2008 12 30) :kind :early-close :gold nil :ours (11 0) :why "Dainokai half-holiday" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ (:mic "XTKS" :date (2009 1 5) :kind :early-close :gold nil :ours (11 0) :why "Daihakkai half-holiday (last)" :source "https://mondovisione.com/news/tokyo-stock-exchange-sets-the-date-for-the-last-first-business-day-of-the-year-i-2011124")
+ ;; XKRX
+ ;;;; XKRX: KRX source vs exchange_calendars (ec). Everything else in the KRX lists 2009-2027 equals ec.
+ ;;;; 2028-04-12 (election) and 2028-07-17 (Constitution Day) are ec-session / KR-holiday too, but no
+ ;;;; KRX 2028 list exists yet -> no row (the KR base is probably right; re-check when KRX publishes 2028).
+
+ (:mic "XKRX" :date (2026 7 17) :kind :session :gold t :ours nil
+  :why "Constitution Day (제헌절) restored as a public holiday; KRX 2026 holiday list: 2026-07-17 제헌절"
+  :source "https://open.krx.co.kr/contents/MKD/01/0110/01100305/MKD01100305.jsp (search_bas_yy=2026, KRX)")
+ (:mic "XKRX" :date (2027 7 19) :kind :session :gold t :ours nil
+  :why "Substitute holiday for Constitution Day (Jul 17, 2027 is Saturday); KRX 2027 holiday list: 2027-07-19 제헌절(대체휴일)"
+  :source "https://open.krx.co.kr/contents/MKD/01/0110/01100305/MKD01100305.jsp (search_bas_yy=2027, KRX)")
+ (:mic "XKRX" :kind :hours :from (2026 11 19) :to (2026 11 19)
+  :gold ((9 0) nil nil (15 30)) :ours ((10 0) nil nil (16 30))
+  :why "CSAT day 2026: regular session shifted one hour (KRX announcement 2026-11-05; secondary report only)"
+  :source "https://khan.co.kr/article/202611051125001")
+ ;; XTAI
+ ;;;; XTAI: TWSE sources vs exchange_calendars (ec), Mon-Fri 2000-01-03..2027-12-31.
+ ;;;; 2000-2026: TWSE monthly statistics (FMTQIK) checked day by day; 2027: TWSE yearly list.
+
+ (:mic "XTAI" :kind :hours :from (2000 1 4) :to (2000 12 29) :gold ((9 0) nil nil (13 30)) :ours ((9 0) nil nil (12 0)) :why "Mon-Fri session 09:00-12:00 until 2000; extended to 13:30 from 2001-01-02 (Saturday trading ended)" :source "https://wwwc.twse.com.tw/downloads/zh/about/company/Annual/90/10.pdf ; https://www.twse.com.tw/staticFiles/product/publication/twse60/html/178/")
+ (:mic "XTAI" :date (2000 1 3) :kind :session :gold t :ours nil :why "No session in TWSE statistics (TWSE data for 2000 starts 2000-01-04)" :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000101&response=json")
+ (:mic "XTAI" :date (2000 2 2) :kind :session :gold t :ours nil :why "Lunar New Year market closure (TWSE statistics: no session)" :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000201&response=json")
+ (:mic "XTAI" :date (2000 2 9) :kind :session :gold nil :ours t :why "TWSE traded (session in TWSE statistics); ec closes it" :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000201&response=json")
+ (:mic "XTAI" :date (2000 4 3) :kind :session :gold t :ours nil :why "Adjusted holiday (調整放假) closed; no session in TWSE statistics" :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000401&response=json")
+ (:mic "XTAI" :date (2000 8 23) :kind :session :gold t :ours nil :why "Typhoon closure; no session in TWSE statistics" :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000801&response=json")
+ (:mic "XTAI" :date (2000 12 25) :kind :session :gold t :ours nil :why "Constitution Day (行憲紀念日, a day off until 2000); no session in TWSE statistics" :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20001201&response=json")
+ (:mic "XTAI" :date (2001 1 19) :kind :session :gold t :ours nil :why "Lunar New Year market closure; no session in TWSE statistics" :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20010101&response=json")
+ (:mic "XTAI" :date (2001 7 30) :kind :session :gold t :ours nil :why "Typhoon closure; no session in TWSE statistics" :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20010701&response=json")
+ (:mic "XTAI" :date (2001 9 12) :kind :session :gold t :ours nil :why "No session in TWSE statistics; reason unknown" :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20010901&response=json")
+ (:mic "XTAI" :date (2001 9 17) :kind :session :gold t :ours nil :why "Typhoon closure; no session in TWSE statistics" :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20010901&response=json")
+ (:mic "XTAI" :date (2001 9 18) :kind :session :gold t :ours nil :why "Typhoon closure; no session in TWSE statistics" :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20010901&response=json")
+ (:mic "XTAI" :date (2005 5 2) :kind :session :gold t :ours nil :why "Labor Day observed (May 1 Sunday); no session in TWSE statistics" :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20050501&response=json")
+ (:mic "XTAI" :date (2011 5 2) :kind :session :gold t :ours nil :why "Labor Day observed (May 1 Sunday); no session in TWSE statistics" :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20110501&response=json")
+ (:mic "XTAI" :date (2022 2 4) :kind :session :gold t :ours nil :why "Adjusted holiday (調整放假), TWSE 2022 list: 不交易亦不交割" :source "https://www.twse.com.tw/rwd/zh/holidaySchedule/holidaySchedule?date=20220101&response=json")
+ (:mic "XTAI" :date (2023 1 18) :kind :session :gold t :ours nil :why "TWSE 2023 list: 市場無交易，僅辦理結算交割作業 (no trading)" :source "https://www.twse.com.tw/rwd/zh/holidaySchedule/holidaySchedule?date=20230101&response=json")
+ (:mic "XTAI" :date (2024 10 31) :kind :session :gold t :ours nil :why "Typhoon: Taipei City work suspension, market closed (TWSE news)" :source "https://www.twse.com.tw/rwd/zh/news/newsDetail?id=8a8216d69236c2e30192dd5179d70328&response=json")
+ (:mic "XTAI" :date (2026 7 10) :kind :session :gold t :ours nil :why "Typhoon: Taipei City work suspension, market closed (TWSE news)" :source "https://www.twse.com.tw/rwd/zh/news/newsDetail?id=8a8216d69ef76943019f46cb86bf0111&response=json")
+ (:mic "XTAI" :date (2026 10 23) :kind :session :gold t :ours nil :why "Typhoon: Taipei City work suspension, market closed (TWSE news)" :source "https://www.twse.com.tw/rwd/zh/news/newsDetail?id=8a8216d6a0fa351b01a1638507a10203&response=json")
+ (:mic "XTAI" :date (2027 2 2) :kind :session :gold t :ours nil :why "TWSE 2027 list: 市場無交易，僅辦理結算交割作業 (no trading)" :source "https://www.twse.com.tw/rwd/zh/holidaySchedule/holidaySchedule?date=20270101&response=json")
+ (:mic "XTAI" :date (2027 2 3) :kind :session :gold t :ours nil :why "TWSE 2027 list: 市場無交易，僅辦理結算交割作業 (no trading)" :source "https://www.twse.com.tw/rwd/zh/holidaySchedule/holidaySchedule?date=20270101&response=json")
+ (:mic "XTAI" :date (2027 4 6) :kind :session :gold t :ours nil :why "TWSE 2027 list: 兒童節 補假 (Children's Day Apr 4 Sunday)" :source "https://www.twse.com.tw/rwd/zh/holidaySchedule/holidaySchedule?date=20270101&response=json")
+ (:mic "XTAI" :date (2027 12 24) :kind :session :gold t :ours nil :why "TWSE 2027 list: 行憲紀念日 補假 (Dec 25 Saturday)" :source "https://www.twse.com.tw/rwd/zh/holidaySchedule/holidaySchedule?date=20270101&response=json")
+ (:mic "XKRX" :date (2000 11 15) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2001 11 7) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2002 11 6) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2003 11 5) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2004 11 17) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2005 11 23) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2006 11 16) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2007 11 15) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2008 11 13) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2009 11 12) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2010 11 18) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2011 11 10) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2012 11 8) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2013 11 7) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2014 11 13) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2015 11 12) :kind :hours :gold ((10 0) nil nil (16 0)) :ours ((9 0) nil nil (15 0))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2016 11 17) :kind :hours :gold ((10 0) nil nil (16 30)) :ours ((9 0) nil nil (15 30))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2017 11 16) :kind :hours :gold ((10 0) nil nil (16 30)) :ours ((9 0) nil nil (15 30))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2017 11 23) :kind :hours :gold ((10 0) nil nil (16 30)) :ours ((9 0) nil nil (15 30))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2018 11 15) :kind :hours :gold ((10 0) nil nil (16 30)) :ours ((9 0) nil nil (15 30))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2019 11 14) :kind :hours :gold ((10 0) nil nil (16 30)) :ours ((9 0) nil nil (15 30))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2020 12 3) :kind :hours :gold ((10 0) nil nil (16 30)) :ours ((9 0) nil nil (15 30))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2022 11 17) :kind :hours :gold ((10 0) nil nil (16 30)) :ours ((9 0) nil nil (15 30))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2023 11 16) :kind :hours :gold ((10 0) nil nil (16 30)) :ours ((9 0) nil nil (15 30))
+  :why "exchange_calendars shifts the session one hour for the CSAT (대학수학능력시험) day; no KRX notice or report for this year was found (KRX press archive and KIND notices of that year not reachable), so the regular hours stand until one is cited (follow-up issue)."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2028 12 28) :kind :hours :gold ((10 0) nil nil (15 30)) :ours ((9 0) nil nil (15 30))
+  :why "exchange_calendars opens 2028-12-28 at 10:00; no KRX rule or notice gives a late open on a late-December day (the 10:00 open is the first trading day of the year)."
+  :source "https://kind.krx.co.kr/external/2024/12/17/000102/20241216000236/70780.htm")
+ (:mic "XKRX" :date (2028 4 12) :kind :session :gold t :ours nil
+  :why "National Assembly election day (공직선거법 제34조), a public holiday in the KR calendar; KRX closes on the public holidays of the Regulation on Government and Public Offices Holidays (Global KRX Trading Hours). The KRX 2028 list is not published yet; exchange_calendars has a session."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XKRX" :date (2028 7 17) :kind :session :gold t :ours nil
+  :why "Constitution Day (제헌절), a public holiday again from 2026 (KRX lists 2026-07-17 and 2027-07-19 as closed); KRX closes on the public holidays of the Regulation on Government and Public Offices Holidays (Global KRX Trading Hours). The KRX 2028 list is not published yet; exchange_calendars has a session."
+  :source "https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp")
+ (:mic "XTAI" :date (2000 1 15) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000101&response=json")
+ (:mic "XTAI" :date (2000 1 29) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000101&response=json")
+ (:mic "XTAI" :date (2000 2 19) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000201&response=json")
+ (:mic "XTAI" :date (2000 3 4) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000301&response=json")
+ (:mic "XTAI" :date (2000 4 1) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000401&response=json")
+ (:mic "XTAI" :date (2000 4 8) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000401&response=json")
+ (:mic "XTAI" :date (2000 4 15) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000401&response=json")
+ (:mic "XTAI" :date (2000 4 29) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000401&response=json")
+ (:mic "XTAI" :date (2000 5 6) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000501&response=json")
+ (:mic "XTAI" :date (2000 5 20) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000501&response=json")
+ (:mic "XTAI" :date (2000 6 3) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000601&response=json")
+ (:mic "XTAI" :date (2000 6 17) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000601&response=json")
+ (:mic "XTAI" :date (2000 7 15) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000701&response=json")
+ (:mic "XTAI" :date (2000 7 29) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000701&response=json")
+ (:mic "XTAI" :date (2000 8 5) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000801&response=json")
+ (:mic "XTAI" :date (2000 8 19) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000801&response=json")
+ (:mic "XTAI" :date (2000 9 2) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000901&response=json")
+ (:mic "XTAI" :date (2000 9 16) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000901&response=json")
+ (:mic "XTAI" :date (2000 9 30) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20000901&response=json")
+ (:mic "XTAI" :date (2000 10 7) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20001001&response=json")
+ (:mic "XTAI" :date (2000 10 21) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20001001&response=json")
+ (:mic "XTAI" :date (2000 11 4) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20001101&response=json")
+ (:mic "XTAI" :date (2000 11 18) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20001101&response=json")
+ (:mic "XTAI" :date (2000 12 2) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20001201&response=json")
+ (:mic "XTAI" :date (2000 12 16) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20001201&response=json")
+ (:mic "XTAI" :date (2000 12 30) :kind :session :gold nil :ours t
+  :why "Trading Saturday (alternate Saturdays in 2000), 09:00-12:00: a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20001201&response=json")
+ (:mic "XTAI" :date (2006 10 14) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20061001&response=json")
+ (:mic "XTAI" :date (2007 3 3) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20070301&response=json")
+ (:mic "XTAI" :date (2007 4 14) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20070401&response=json")
+ (:mic "XTAI" :date (2007 6 23) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20070601&response=json")
+ (:mic "XTAI" :date (2007 9 29) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20070901&response=json")
+ (:mic "XTAI" :date (2009 1 10) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20090101&response=json")
+ (:mic "XTAI" :date (2009 1 17) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20090101&response=json")
+ (:mic "XTAI" :date (2009 6 6) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20090601&response=json")
+ (:mic "XTAI" :date (2010 2 6) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20100201&response=json")
+ (:mic "XTAI" :date (2012 2 4) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20120201&response=json")
+ (:mic "XTAI" :date (2012 3 3) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20120301&response=json")
+ (:mic "XTAI" :date (2012 12 22) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20121201&response=json")
+ (:mic "XTAI" :date (2013 2 23) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20130201&response=json")
+ (:mic "XTAI" :date (2013 9 14) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20130901&response=json")
+ (:mic "XTAI" :date (2014 12 27) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20141201&response=json")
+ (:mic "XTAI" :date (2016 1 30) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20160101&response=json")
+ (:mic "XTAI" :date (2016 6 4) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20160601&response=json")
+ (:mic "XTAI" :date (2016 9 10) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20160901&response=json")
+ (:mic "XTAI" :date (2017 2 18) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20170201&response=json")
+ (:mic "XTAI" :date (2017 6 3) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20170601&response=json")
+ (:mic "XTAI" :date (2017 9 30) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20170901&response=json")
+ (:mic "XTAI" :date (2018 3 31) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20180301&response=json")
+ (:mic "XTAI" :date (2018 12 22) :kind :session :gold nil :ours t
+  :why "Make-up working Saturday (補行上班) with a full trading session (補行交易): a session in TWSE monthly statistics; exchange_calendars has no weekend sessions."
+  :source "https://www.twse.com.tw/rwd/zh/afterTrading/FMTQIK?date=20181201&response=json"))

@@ -22,6 +22,18 @@ a Saturday or Sunday (Global KRX: 'Last day of the year (other than a public
 holiday or Saturday)')."
   (last-weekday-of-year year))
 
+(defun first-business-day-of-year (calendar-name year)
+  "The first business day of YEAR on the registered calendar CALENDAR-NAME."
+  (let ((calendar (find-calendar calendar-name)))
+    (loop for date = (make-date year 1 1) then (+ date 1)
+          when (business-day-p calendar date)
+            return date)))
+
+(defun krx-first-trading-day (year)
+  "The first KRX trading day of YEAR (개장일), when the regular session opens
+an hour late for the market opening ceremony."
+  (first-business-day-of-year "XKRX" year))
+
 ;;; --- Lunar New Year ---------------------------------------------------------
 
 (defun hk-lunar-new-year-eve (year)
