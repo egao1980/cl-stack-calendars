@@ -3,30 +3,31 @@
 ;;;; Corpus coverage: out-of-range queries and stubs signal (#32).
 
 (deftest corpus-out-of-range-signals
-  (let ((de (country-calendar "DE")))
-    (ok (equal '(2000 . 2040) (calendar-coverage de)))
-    (ok (holiday-p de (make-date 2024 10 3)))
-    (ok (signals (holiday-p de (make-date 1999 12 25)) 'calendar-out-of-range))
-    (ok (signals (holiday-p de (make-date 2041 10 3)) 'calendar-out-of-range))
-    (ok (signals (business-days-between de (make-date 2040 12 1) (make-date 2041 2 1))
-                 'calendar-out-of-range))))
+  ;; FR: a corpus code ("DE" defers to its starter since #24).
+  (let ((fr (country-calendar "FR")))
+    (ok (equal '(2000 . 2040) (calendar-coverage fr)))
+    (ok (holiday-p fr (make-date 2024 7 14)))
+    (ok (signals (holiday-p fr (make-date 1999 12 25)) 'calendar-out-of-range))
+    (ok (signals (holiday-p fr (make-date 2041 7 14)) 'calendar-out-of-range))
+    (ok (signals (business-days-between fr (make-date 2040 12 1) (make-date 2041 2 1))
+          'calendar-out-of-range))))
 
 (deftest corpus-out-of-range-restarts
-  (let ((de (country-calendar "DE")))
+  (let ((fr (country-calendar "FR")))
     (ok (null (handler-bind ((calendar-out-of-range #'continue))
-                (holiday-p de (make-date 2041 10 3)))))
+                (holiday-p fr (make-date 2041 7 14)))))
     (ok (eq :assumed (handler-bind ((calendar-out-of-range
                                       (lambda (c) (use-value :assumed c))))
-                       (holiday-p de (make-date 2041 10 3)))))
-    (handler-case (holiday-p de (make-date 1999 12 25))
+                       (holiday-p fr (make-date 2041 7 14)))))
+    (handler-case (holiday-p fr (make-date 1999 12 25))
       (calendar-out-of-range (c)
-        (ok (eq de (calendar-out-of-range-calendar c)))
+        (ok (eq fr (calendar-out-of-range-calendar c)))
         (ok (equal '(2000 . 2040) (calendar-out-of-range-coverage c)))))))
 
 (deftest corpus-non-strict-keeps-silent-nil
-  (let ((de (country-calendar "DE" :strict nil)))
-    (ng (holiday-p de (make-date 2041 10 3)))
-    (ok (holiday-p de (make-date 2024 10 3)))))
+  (let ((fr (country-calendar "FR" :strict nil)))
+    (ng (holiday-p fr (make-date 2041 7 14)))
+    (ok (holiday-p fr (make-date 2024 7 14)))))
 
 (deftest corpus-stub-signals
   (let ((ps (country-calendar "PS")))

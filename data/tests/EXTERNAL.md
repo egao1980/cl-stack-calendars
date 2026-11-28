@@ -75,3 +75,9 @@ Middle East and North Africa holidays live in `<cc>-holiday-gold.sexp` too, buil
 | `ZM` | 2013–2040 (gap 2026): Cabinet Office notices and SIs 2013–2025 (ZambiaLII); `zm-secondary` 2000–2012 and 2026. Python `holidays` agrees on every day 2013–2025. |
 | `MW` | 2000–2040, `:confidence :secondary`: Cap. 18:05 and news reports of the Government statements. |
 | `MG` | 2006–2040 (gaps 2010, 2023): the yearly decrees (CNLEGIS); `mg-secondary` 2000–2005, 2010, 2023. Python `holidays` has no Eid days. |
+| `IT` | 2000–2040: L. 260/1949, L. 54/1977, D.P.R. 792/1985, L. 336/2000, D.L. 5/2011, L. 27/2024, L. 151/2025 (normattiva). Transcription: `scripts/europe/it.py`. Python `holidays` lists Easter Sunday, which the law does not name. |
+| `NL` | 2000–2040: Algemene termijnenwet art. 3 (BWB XML), Besluit van 30 januari 2013 (Stcrt. 2013, 4075). Python `holidays` lists Goede Vrijdag, Easter and Whit Sunday, and 5 May only every fifth year. |
+| `DE` | 2000–2040: the days in all 16 Feiertagsgesetze, Einigungsvertrag Art. 2 Abs. 2, and each Land's act for 31 October 2017. Python `holidays` agrees. |
+| `IE` | 2000–2040: Organisation of Working Time Act 1997 Sched. 2 and S.I. 392/1997, 419/2001, 50/2022 (irishstatutebook.ie). Python `holidays` has the National Day of Mourning in 2011 instead of 2001. |
+| `PT` | 2009–2040: Lei 7/2009 art. 234.º, Lei 23/2012, Lei 8/2016 (files.diariodarepublica.pt); `pt-secondary` 2000–2008 (the 2003 Code not read). Python `holidays` agrees. |
+| `TARGET` | 1999–2040: ECB press releases of 31 Mar 1999, 15 Jul 1999, 25 May 2000 and 14 Dec 2000. Python `holidays` (`financial_holidays("XECB")`) agrees. |

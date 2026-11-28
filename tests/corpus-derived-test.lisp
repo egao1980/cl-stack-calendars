@@ -54,7 +54,8 @@ almost no day the corpus lacks."
 (deftest provenance-labels
   (ok (eq :normative (calendar-provenance (find-calendar "USFED"))))
   (ok (eq :normative (calendar-provenance (find-calendar "GB"))))
-  (ok (eq :corpus (calendar-provenance (country-calendar "DE"))))
+  (ok (eq :corpus (calendar-provenance (country-calendar "FR"))))
+  (ok (eq :normative (calendar-provenance (country-calendar "DE"))) "DE defers to its starter (#24)")
   (ok (eq :corpus (calendar-provenance (find-calendar "BH"))))
   (ok (eq :corpus-derived (calendar-provenance (make-corpus-inferred-calendar "AD")))))
 
