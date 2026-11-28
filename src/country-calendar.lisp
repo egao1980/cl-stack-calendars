@@ -113,7 +113,10 @@ unless the calendar was loaded with :STRICT NIL."))
     ("RO" . romania-holidays-calendar)
     ("BG" . bulgaria-holidays-calendar)
     ("GR" . greece-holidays-calendar)
-    ("CY" . cyprus-holidays-calendar))
+    ("CY" . cyprus-holidays-calendar)
+    ("EE" . estonia-holidays-calendar)
+    ("LV" . latvia-holidays-calendar)
+    ("LT" . lithuania-holidays-calendar))
   "Corpus codes whose COUNTRY-CALENDAR defers to a hand starter: alist CODE →
 starter constructor. The date-holidays dump for these codes is known to be
 wrong (RU: no 2–5 January from 2005, no ТК ст. 112 transfers or decrees,
@@ -170,8 +173,9 @@ Vinerea Mare, 6-7 January, 30 November, Rusalii and 15 August back-dated to
 2000, no 2 January; BG: no 26 December, Good Friday before 2010, no Holy
 Saturday, no чл. 154(2) days or Council of Ministers transfers; GR: no 1 May
 moves (2024-05-01 kept); CY: Clean Monday on the Tuesday and Pentecost Sunday
-for Whit Monday; #22). The corpus file stays as shipped; its days are no
-longer consulted.")
+for Whit Monday; #22. EE: jõululaupäev before 2005; LV: 24 December before
+2007 and 4 May before 2002, no Cabinet transfers; LT: Joninės before 2003;
+#21). The corpus file stays as shipped; its days are no longer consulted.")
 
 (defclass normative-country-calendar (country-holiday-calendar)
   ((normative :initarg :normative :reader country-calendar-normative
