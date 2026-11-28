@@ -971,6 +971,28 @@ FIXTURES: dict[str, dict] = {
                     "(less the bank-only Easter Tuesday): 1 and 6 January, Clean Monday, 25 March, 1 April, Good Friday, "
                     "Easter Monday, 1 May, Whit Monday, 15 August, 1 October, 28 October, 25 and 26 December. No "
                     "holiday statute could be read."),
+    # --- #21: Estonia, Latvia, Lithuania ---
+    "EE": dict(name="Estonia", region="europe", first=2000, confidence="secondary", data=True,
+               weekends=[(None, (6, 7))], data_note="no one-off days",
+               note="LOWER CONFIDENCE. Riigipühad of Estonia (Pühade ja tähtpäevade seadus § 2), jõululaupäev from 2005 "
+                    "(RT I 2005, 24, 185); the act was not read (Riigi Teataja did not render)."),
+    "LV": dict(name="Latvia", region="europe", first=2000, gaps=(2018, 2023), weekends=[(None, (6, 7))],
+               data_note="the Cabinet orders moving working days to Saturdays (rest days and working Saturdays), the "
+                         "festival closing days and the one-off days off by law",
+               note="Svētku dienas of Latvia: likums \"Par svētku, atceres un atzīmējamām dienām\" art. 1 (Easter and "
+                    "Pentecost Sundays and Mother's Day named), 4 May from 23 Apr 2002, 24 December from 2007, and from "
+                    "26 Jun 2007 the next working day off after a 4 May or 18 November on a Saturday or Sunday; every "
+                    "Cabinet order moving a working day 2001-2026. 2018 and 2023 are gaps (LV-SECONDARY)."),
+    "LV-SECONDARY": dict(name="Latvia (festival years)", country="LV", region="europe", first=2018, last=2023,
+                         gaps=(2019, 2020, 2021, 2022), file="lv-secondary-holiday-gold.sexp", confidence="secondary",
+                         weekends=[(None, (6, 7))],
+                         note="LOWER CONFIDENCE. 2018 and 2023: the Song and Dance Festival closing days (8 Jul 2018, 9 "
+                              "Jul 2023) were not read on a primary page; the rest of each year is primary."),
+    "LT": dict(name="Lithuania", region="europe", first=2000, confidence="secondary", data=True,
+               weekends=[(None, (6, 7))], data_note="no one-off days",
+               note="LOWER CONFIDENCE. Švenčių dienos of Lithuania (Darbo kodeksas art. 162 / 123): Joninės from 2003, "
+                    "Vėlinės from 2020, Mother's and Father's Day (first Sundays of May and June); no act was read "
+                    "(e-seimas and e-tar refuse automated fetches)."),
 }
 
 

@@ -14,7 +14,7 @@
 ;;;; statutes has one (IE s. 21 is a per-employee entitlement, #25 item 9).
 
 (defparameter *europe-list-codes* '("IT" "NL" "DE" "IE" "PT" "TARGET" "HR" "SI" "SK" "CZ" "HU" "PL"
-                                    "RO" "BG" "GR" "CY")
+                                    "RO" "BG" "GR" "CY" "EE" "LV" "LT")
   "Codes whose acts and one-off days are data/<cc>/statutes.sexp and
 data/<cc>/holidays.sexp.")
 
@@ -485,3 +485,84 @@ and the Council of Ministers transfers and one-off days (data/bg/holidays.sexp).
   "Public holidays of Cyprus (\"CY\") as the Central Bank lists carry them
 (:secondary; no statute read)."
   (%mena-calendar 'cyprus-holidays-calendar "CY" year transfers suppressed working-days))
+
+;;; --- Estonia (#21) -------------------------------------------------------------
+
+(define-calendar estonia-holidays-calendar (:register "EE" :constructor estonia-holidays-calendar)
+  ;; Pühade ja tähtpäevade seadus § 2 (not read: Riigi Teataja did not render).
+  (:fixed "uusaasta" 1 1 :from 1991 :authority "Pühade ja tähtpäevade seadus § 2")
+  (:fixed "iseseisvuspäev" 2 24 :from 1991 :authority "Pühade ja tähtpäevade seadus § 2")
+  (:easter "suur reede" -2 :from 1991 :authority "Pühade ja tähtpäevade seadus § 2")
+  (:easter "ülestõusmispühade 1. püha" 0 :from 1991 :authority "Pühade ja tähtpäevade seadus § 2")
+  (:fixed "kevadpüha" 5 1 :from 1991 :authority "Pühade ja tähtpäevade seadus § 2")
+  (:easter "nelipühade 1. püha" 49 :from 1991 :authority "Pühade ja tähtpäevade seadus § 2")
+  (:fixed "võidupüha" 6 23 :from 1991 :authority "Pühade ja tähtpäevade seadus § 2")
+  (:fixed "jaanipäev" 6 24 :from 1991 :authority "Pühade ja tähtpäevade seadus § 2")
+  (:fixed "taasiseseisvumispäev" 8 20 :from 1991 :authority "Pühade ja tähtpäevade seadus § 2")
+  (:fixed "jõululaupäev" 12 24 :from 2005 :authority "RT I 2005, 24, 185 (in force 20 May 2005)")
+  (:fixed "esimene jõulupüha" 12 25 :from 1991 :authority "Pühade ja tähtpäevade seadus § 2")
+  (:fixed "teine jõulupüha" 12 26 :from 1991 :authority "Pühade ja tähtpäevade seadus § 2"))
+
+(defun estonia-holidays-calendar (&key year transfers suppressed working-days)
+  "Riigipühad of Estonia (\"EE\"): PTS § 2, jõululaupäev from 2005 (:secondary)."
+  (%mena-calendar 'estonia-holidays-calendar "EE" year transfers suppressed working-days))
+
+;;; --- Latvia (#21) --------------------------------------------------------------
+
+(define-calendar latvia-holidays-calendar (:register "LV" :constructor latvia-holidays-calendar)
+  ;; Likums "Par svētku, atceres un atzīmējamām dienām" art. 1, with the art. 1
+  ;; third paragraph from 26 Jun 2007 on 4 May and 18 November. The Cabinet
+  ;; transfers and one-off days are data/lv/holidays.sexp rows.
+  (:fixed "Jaungada diena" 1 1 :from 1990 :authority "Likums Par svētku ... dienām, 1. pants")
+  (:easter "Lielā Piektdiena" -2 :from 1990 :authority "Likums Par svētku ... dienām, 1. pants")
+  (:easter "Pirmās Lieldienas" 0 :from 1990 :authority "Likums Par svētku ... dienām, 1. pants")
+  (:easter "Otrās Lieldienas" 1 :from 1990 :authority "Likums Par svētku ... dienām, 1. pants")
+  (:fixed "Darba svētki" 5 1 :from 1990 :authority "Likums Par svētku ... dienām, 1. pants")
+  (:fixed "Latvijas Republikas Neatkarības atjaunošanas diena" 5 4 :from (2002 4 23)
+   :observed :lv-holidays-law-art-1 :observed-from (2007 6 26)
+   :authority "Grozījumi (LV 53, 09.04.2002; in force 23 Apr 2002); 1. panta trešā daļa from 26 Jun 2007")
+  (:nth-weekday "Mātes diena" 5 :sunday 2 :from 1990 :authority "Likums Par svētku ... dienām, 1. pants (maija otrā svētdiena)")
+  (:easter "Vasarsvētki" 49 :from 1990 :authority "Likums Par svētku ... dienām, 1. pants")
+  (:fixed "Līgo diena" 6 23 :from 1990 :authority "Likums Par svētku ... dienām, 1. pants")
+  (:fixed "Jāņu diena" 6 24 :from 1990 :authority "Likums Par svētku ... dienām, 1. pants")
+  (:fixed "Latvijas Republikas proklamēšanas diena" 11 18 :from 1990
+   :observed :lv-holidays-law-art-1 :observed-from (2007 6 26)
+   :authority "Likums Par svētku ... dienām, 1. pants; trešā daļa from 26 Jun 2007")
+  (:fixed "Ziemassvētku vakars" 12 24 :from 2007 :authority "Grozījumi (LV 93, 12.06.2007; in force 26 Jun 2007)")
+  (:fixed "Pirmie Ziemassvētki" 12 25 :from 1990 :authority "Likums Par svētku ... dienām, 1. pants")
+  (:fixed "Otrie Ziemassvētki" 12 26 :from 1990 :authority "Likums Par svētku ... dienām, 1. pants")
+  (:fixed "Vecgada diena" 12 31 :from 1990 :authority "Likums Par svētku ... dienām, 1. pants"))
+
+(defun latvia-holidays-calendar (&key year transfers suppressed working-days)
+  "Svētku dienas of Latvia (\"LV\"): the law by era with the next working day off
+after a weekend 4 May or 18 November (from 2007), every Cabinet transfer
+2001–2026 (rest days and working Saturdays), the festival closing days and the
+one-off days (data/lv/holidays.sexp)."
+  (%mena-calendar 'latvia-holidays-calendar "LV" year transfers suppressed working-days))
+
+;;; --- Lithuania (#21) -----------------------------------------------------------
+
+(define-calendar lithuania-holidays-calendar (:register "LT" :constructor lithuania-holidays-calendar)
+  ;; Darbo kodeksas art. 162 (2002) / art. 123 (2017); not read (e-seimas and
+  ;; e-tar refuse automated fetches).
+  (:fixed "Naujųjų metų diena" 1 1 :from 1990 :authority "Darbo kodeksas art. 162 / 123")
+  (:fixed "Lietuvos valstybės atkūrimo diena" 2 16 :from 1990 :authority "Darbo kodeksas art. 162 / 123")
+  (:fixed "Lietuvos nepriklausomybės atkūrimo diena" 3 11 :from 1990 :authority "Darbo kodeksas art. 162 / 123")
+  (:easter "Šv. Velykos" 0 :from 1990 :authority "Darbo kodeksas art. 162 / 123")
+  (:easter "Antroji šv. Velykų diena" 1 :from 1990 :authority "Darbo kodeksas art. 162 / 123")
+  (:fixed "Tarptautinė darbo diena" 5 1 :from 1990 :authority "Darbo kodeksas art. 162 / 123")
+  (:nth-weekday "Motinos diena" 5 :sunday 1 :from 1990 :authority "Darbo kodeksas art. 162 / 123 (pirmasis gegužės sekmadienis)")
+  (:nth-weekday "Tėvo diena" 6 :sunday 1 :from 1990 :authority "Darbo kodeksas art. 162 / 123 (pirmasis birželio sekmadienis)")
+  (:fixed "Rasos ir Joninių diena" 6 24 :from 2003 :authority "Darbo kodekso pakeitimo įstatymas IX-1656 (2003)")
+  (:fixed "Valstybės (Lietuvos karaliaus Mindaugo karūnavimo) diena" 7 6 :from 1991 :authority "Darbo kodeksas art. 162 / 123")
+  (:fixed "Žolinė" 8 15 :from 1990 :authority "Darbo kodeksas art. 162 / 123")
+  (:fixed "Visų Šventųjų diena" 11 1 :from 1990 :authority "Darbo kodeksas art. 162 / 123")
+  (:fixed "Mirusiųjų atminimo (Vėlinių) diena" 11 2 :from 2020 :authority "Įstatymas XIII-2415 (nuo 2020-01-01)")
+  (:fixed "Kūčių diena" 12 24 :from 1990 :authority "Darbo kodeksas art. 162 / 123")
+  (:fixed "Šv. Kalėdų pirma diena" 12 25 :from 1990 :authority "Darbo kodeksas art. 162 / 123")
+  (:fixed "Šv. Kalėdų antra diena" 12 26 :from 1990 :authority "Darbo kodeksas art. 162 / 123"))
+
+(defun lithuania-holidays-calendar (&key year transfers suppressed working-days)
+  "Švenčių dienos of Lithuania (\"LT\"): the Darbo kodeksas list by era (Joninės
+from 2003, Vėlinės from 2020), :secondary."
+  (%mena-calendar 'lithuania-holidays-calendar "LT" year transfers suppressed working-days))

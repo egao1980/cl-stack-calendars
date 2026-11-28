@@ -252,6 +252,49 @@
       (ok (holiday 2025 6 9) "Whit Monday, not Pentecost Sunday")
       (ng (holiday 2025 6 8)))))
 
+;;; --- #21: Estonia, Latvia, Lithuania --------------------------------------------
+
+(define-mena-gold-tests "EE" estonia-holidays-calendar 2000)
+
+(deftest ee-issue-21-days
+  (let ((ee (find-calendar "EE")))
+    (ng (holiday-p ee (make-date 2004 12 24)) "jõululaupäev from 2005 (#21)")
+    (ok (holiday-p ee (make-date 2005 12 24)))))
+
+(define-mena-gold-tests "LV" latvia-holidays-calendar 2000)
+
+(define-secondary-gold-test lv-secondary-gold-lower-confidence "LV"
+  "2018 and 2023: the Song and Dance Festival closing days from secondary sources.")
+
+(deftest lv-issue-21-days
+  (let ((lv (find-calendar "LV")))
+    (flet ((holiday (y m d) (holiday-p lv (make-date y m d)))
+           (business (y m d) (business-day-p lv (make-date y m d))))
+      (ng (holiday 2006 12 24) "24 December from 2007 (#21 item 1)")
+      (ok (holiday 2007 12 24))
+      (ng (holiday 2001 5 4) "4 May a holiday from 23 Apr 2002 (#21 item 2)")
+      (ok (holiday 2002 5 4))
+      (ok (holiday 2024 5 6) "4 May on a Saturday: Monday off (#21 item 3)")
+      (ok (holiday 2025 5 5))
+      (ok (holiday 2023 11 20))
+      (ok (holiday 2028 11 20))
+      (ok (holiday 2024 12 23) "Cabinet transfer (#21 item 4)")
+      (ok (business 2024 12 14) "... and its working Saturday")
+      (ok (holiday 2025 11 17))
+      (ok (holiday 2026 1 2))
+      (ok (holiday 2026 6 22))
+      (ok (holiday 2018 7 9) "festival closing day, the Monday (#21 item 5)")
+      (ok (holiday 2023 7 10))
+      (ok (holiday 2018 9 24) "papal visit")
+      (ok (holiday 2023 5 29) "ice-hockey bronze"))))
+
+(define-mena-gold-tests "LT" lithuania-holidays-calendar 2000)
+
+(deftest lt-issue-21-days
+  (let ((lt (find-calendar "LT")))
+    (ng (holiday-p lt (make-date 2002 6 24)) "Joninės from 2003 (#21)")
+    (ok (holiday-p lt (make-date 2003 6 24)))))
+
 (deftest europe-rows-and-statutes-carry-issued-and-published
   "Every block, row and act of the European lists has :ISSUED and :PUBLISHED
 (or a :DATES-NOTE) and every act :IN-FORCE (or a :DATES-NOTE) (#93)."

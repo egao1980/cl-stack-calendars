@@ -154,60 +154,6 @@
   (:fixed "Joulupäivä" 12 25 :from 1917 :authority "Virallinen juhlapäivä")
   (:fixed "Tapaninpäivä" 12 26 :from 1917 :authority "Virallinen juhlapäivä"))
 
-;;; Lithuania — valstybės šventės.
-(define-calendar lithuania-holidays-calendar (:register "LT")
-  (:fixed "Naujieji metai" 1 1 :from 1990 :authority "Lietuvos Respublikos šventės")
-  (:fixed "Lietuvos valstybės atkūrimo diena" 2 16 :from 1990
-   :authority "Vasario 16-oji")
-  (:fixed "Lietuvos nepriklausomybės atkūrimo diena" 3 11 :from 1990
-   :authority "Kovo 11-oji")
-  (:easter "Velykos" 0 :from 1990 :authority "Šventė")
-  (:easter "Velykų pirmadienis" 1 :from 1990 :authority "Šventė")
-  (:fixed "Tarptautinė darbo diena" 5 1 :from 1990 :authority "Šventė")
-  (:fixed "Joninės" 6 24 :from 1990 :authority "Rasos / Joninės")
-  (:fixed "Valstybės diena" 7 6 :from 1990
-   :authority "Karaliaus Mindaugo karūnavimo diena")
-  (:fixed "Žolinė" 8 15 :from 1990 :authority "Šventė")
-  (:fixed "Visų šventųjų diena" 11 1 :from 1990 :authority "Šventė")
-  (:fixed "Vėlinės" 11 2 :from 2020
-   :authority "Vėlinės — nedarbo diena nuo 2020")
-  (:fixed "Kūčios" 12 24 :from 1990 :authority "Šventė")
-  (:fixed "Kalėdos" 12 25 :from 1990 :authority "Šventė")
-  (:fixed "2. Kalėdų diena" 12 26 :from 1990 :authority "Šventė"))
-
-;;; Latvia — svētku dienas.
-(define-calendar latvia-holidays-calendar (:register "LV")
-  (:fixed "Jaunais Gads" 1 1 :from 1990 :authority "Latvijas Republikas svētku dienas")
-  (:easter "Lielā Piektdiena" -2 :from 1990 :authority "Svētku diena")
-  (:easter "Lieldienas" 0 :from 1990 :authority "Svētku diena")
-  (:easter "Otrās Lieldienas" 1 :from 1990 :authority "Svētku diena")
-  (:fixed "Darba svētki" 5 1 :from 1990 :authority "Svētku diena")
-  (:fixed "Latvijas Republikas Neatkarības atjaunošanas diena" 5 4 :from 1990
-   :authority "4. maijs")
-  (:fixed "Līgo Diena" 6 23 :from 1990 :authority "Līgo")
-  (:fixed "Jāņi" 6 24 :from 1990 :authority "Jāņi")
-  (:fixed "Latvijas Republikas proklamēšanas diena" 11 18 :from 1990
-   :authority "18. novembris")
-  (:fixed "Ziemassvētku vakars" 12 24 :from 1990 :authority "Svētku diena")
-  (:fixed "Ziemassvētki" 12 25 :from 1990 :authority "Svētku diena")
-  (:fixed "Otrie Ziemassvētki" 12 26 :from 1990 :authority "Svētku diena")
-  (:fixed "Vecgada vakars" 12 31 :from 1990 :authority "Svētku diena"))
-
-;;; Estonia — riigipühad.
-(define-calendar estonia-holidays-calendar (:register "EE")
-  (:fixed "uusaasta" 1 1 :from 1991 :authority "Riigipüha")
-  (:fixed "iseseisvuspäev" 2 24 :from 1991 :authority "Iseseisvuspäev")
-  (:easter "suur reede" -2 :from 1991 :authority "Riigipüha")
-  (:easter "ülestõusmispühade 1. püha" 0 :from 1991 :authority "Riigipüha")
-  (:fixed "kevadpüha" 5 1 :from 1991 :authority "Riigipüha")
-  (:easter "nelipühade 1. püha" 49 :from 1991 :authority "Riigipüha")
-  (:fixed "võidupüha" 6 23 :from 1991 :authority "Võidupüha")
-  (:fixed "jaanipäev" 6 24 :from 1991 :authority "Jaanipäev")
-  (:fixed "taasiseseisvumispäev" 8 20 :from 1991 :authority "Taasiseseisvumispäev")
-  (:fixed "jõululaupäev" 12 24 :from 1991 :authority "Riigipüha")
-  (:fixed "esimene jõulupüha" 12 25 :from 1991 :authority "Riigipüha")
-  (:fixed "teine jõulupüha" 12 26 :from 1991 :authority "Riigipüha"))
-
 ;;; Luxembourg — jours fériés légaux.
 (define-calendar luxembourg-holidays-calendar (:register "LU")
   (:fixed "Nouvel An" 1 1 :from 1900 :authority "Jours fériés légaux")
@@ -247,8 +193,5 @@
 (defun sweden-holidays-calendar () (make-instance 'sweden-holidays-calendar))
 (defun denmark-holidays-calendar () (make-instance 'denmark-holidays-calendar))
 (defun finland-holidays-calendar () (make-instance 'finland-holidays-calendar))
-(defun lithuania-holidays-calendar () (make-instance 'lithuania-holidays-calendar))
-(defun latvia-holidays-calendar () (make-instance 'latvia-holidays-calendar))
-(defun estonia-holidays-calendar () (make-instance 'estonia-holidays-calendar))
 (defun luxembourg-holidays-calendar () (make-instance 'luxembourg-holidays-calendar))
 (defun malta-holidays-calendar () (make-instance 'malta-holidays-calendar))
