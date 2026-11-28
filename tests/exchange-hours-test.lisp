@@ -136,7 +136,8 @@
 
 (deftest eu-and-asia-hour-eras
   (ok (equal (%session-hms "XAMS" (make-date 2024 6 3)) '(((9 0) (17 30)))))
-  (ok (equal (%session-hms "XDUB" (make-date 2024 6 4)) '(((8 0) (16 30))))) ; 06-03 is on the IE calendar
+  ;; Euronext Dublin trades on the Irish June bank holiday; continuous trading ends 16:28.
+  (ok (equal (%session-hms "XDUB" (make-date 2024 6 3)) '(((8 0) (16 28)))))
   (ok (equal (%session-hms "XOSL" (make-date 2024 6 3)) '(((9 0) (16 20)))))
   (ok (equal (%session-hms "XHEL" (make-date 2024 6 3)) '(((10 0) (18 30)))))
   (ok (equal (%session-hms "XTAI" (make-date 2000 12 29)) '(((9 0) (12 0)))))

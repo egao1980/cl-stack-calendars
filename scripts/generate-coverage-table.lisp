@@ -229,6 +229,56 @@ year (LISTED-YEAR-P), minus the tabular 1 Shawwal, when within 3 days."
 
 ;;; --- output ---------------------------------------------------------------------
 
+(defun exchange-gold (mic)
+  (let ((path (repo-path (format nil "data/tests/exchanges/~a-gold.sexp" mic))))
+    (when (probe-file path) (read-fixture path))))
+
+(defun exchange-differences ()
+  (let ((path (repo-path "data/tests/exchanges/differences.sexp")))
+    (when (probe-file path) (read-fixture path))))
+
+(defun notice-years (calendar)
+  "The span of years the notices of CALENDAR (own and included) date."
+  (let ((years (loop for notice in (cal:exchange-calendar-notices calendar)
+                     for issued = (or (getf notice :year) (getf notice :issued))
+                     when (integerp issued) collect issued
+                     when (consp issued) collect (first issued))))
+    (if years (format nil "~d–~d" (reduce #'min years) (reduce #'max years)) "—")))
+
+(defun write-exchanges (stream)
+  (format stream "~%## Exchanges~%~%")
+  (format stream "One row per MIC in `data/exchanges/`. \"Calendar\" is the holiday calendar the ~
+exchange queries use, with its provenance: `exchange` for the exchange's own trading-holiday ~
+calendar (`data/exchanges/calendars/`, rules and notices from the exchange), otherwise the civil ~
+calendar the MIC still uses. \"Notices\" counts the exchange notice rows (each with `:issued` / ~
+`:published`) and the years they date. \"Gold\" is the `exchange_calendars` cross-check in ~
+`data/tests/exchanges/` (every session, regular hours, early close and late open of those ~
+years); \"Recorded differences\" are the gold days where the exchange's own notice wins ~
+(`data/tests/exchanges/differences.sexp`).~%~%")
+  (format stream "| MIC | Name | Calendar | Provenance | Notices | Gold | Sessions | Early closes | Late opens | Recorded differences |~%")
+  (format stream "|---|---|---|---|---|---|---|---|---|---|~%")
+  (let ((differences (exchange-differences)))
+    (dolist (mic (cal:list-exchanges))
+      (let* ((ex (cal:find-exchange mic))
+             (name (cal:exchange-hours-calendar-name ex))
+             (calendar (and name (cal:find-calendar name :errorp nil)))
+             (exchangep (typep calendar 'cal:exchange-holiday-calendar))
+             (gold (exchange-gold mic)))
+        (format stream "| ~a | ~a | ~a | ~a | ~a | ~a | ~a | ~a | ~a | ~a |~%"
+                mic (cell (cal::exchange-hours-name ex)) (or name "—")
+                (provenance name)
+                (if exchangep
+                    (format nil "~d (~a)" (length (cal:exchange-calendar-notices calendar))
+                            (notice-years calendar))
+                    "—")
+                (if gold (span (getf gold :from) (getf gold :to)) "—")
+                (if gold (getf gold :session-count) "—")
+                (if gold (length (getf gold :early-closes)) "—")
+                (if gold (length (getf gold :late-opens)) "—")
+                (if gold
+                    (count mic differences :key (lambda (row) (getf row :mic)) :test #'equal)
+                    "—"))))))
+
 (defun write-coverage (stream)
   (let* ((golds (gold-fixtures))
          (external (external-checks))
@@ -291,9 +341,10 @@ means the list put Eid after the tabular date. A calendar uses the tabular date,
                   (round (* 100 (count 0 offsets :key #'cdr)) (length offsets))))))))
 
 (with-open-file (out (repo-path "docs/COVERAGE.md") :direction :output
-                                                     :if-exists :supersede
-                                                     :external-format :utf-8)
-  (write-coverage out))
+                                                    :if-exists :supersede
+                                                    :external-format :utf-8)
+  (write-coverage out)
+  (write-exchanges out))
 
 (format t "~&wrote ~a~%" (repo-path "docs/COVERAGE.md"))
 (uiop:quit 0)

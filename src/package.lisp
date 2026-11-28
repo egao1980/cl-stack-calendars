@@ -493,6 +493,18 @@
    #:calendar-holiday-types
    #:holiday-type
    #:*holiday-type-precedence*
-   #:calendar-substitute-name))
+   #:calendar-substitute-name
+   #:exchange-late-open
+   #:exchange-regular-sessions-for-date
+   #:exchange-holiday-calendar
+   #:load-exchange-calendar
+   #:exchange-calendar-names
+   #:exchange-notice-rows
+   #:exchange-calendar-title
+   #:exchange-calendar-authority
+   #:exchange-calendar-notices
+   #:exchange-calendar-bases
+   #:exchange-calendar-rules
+   #:exchange-calendar))
 
 (in-package #:cl-stack-calendars)

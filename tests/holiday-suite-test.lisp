@@ -389,10 +389,12 @@ both carry the gazette/decree days; MAKE-INSTANCE alone has the rules only."
 
 (deftest exchange-holiday-closes-cash-session
   "The exchange holiday calendar closes the session for every exchange query
-(EXCHANGE-TRADING-DAY-P, EXCHANGE-SESSIONS-FOR-DATE, EXCHANGE-SESSION-BOUNDS)."
+(EXCHANGE-TRADING-DAY-P, EXCHANGE-SESSIONS-FOR-DATE, EXCHANGE-SESSION-BOUNDS).
+Xetra closes on 24 December (FWB trading calendar 2024) and, since 2022,
+trades on German Unity Day (#49)."
   (load-all-exchange-hours)
   (dolist (case '(("XNYS" (2024 7 4) (2024 7 5))
-                  ("XETR" (2024 10 3) (2024 10 4))))
+                  ("XETR" (2024 12 24) (2024 10 3))))
     (destructuring-bind (mic holiday open) case
       (let ((ex (find-exchange mic))
             (h (apply #'make-date holiday))

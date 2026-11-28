@@ -177,3 +177,67 @@ For each gold year that has an official list (not provisional, not :estimated), 
 | PH | primary | 2001–2026 | -1 d: 6, 0 d: 14, +1 d: 6 | 54% |
 | PK | primary | 2022–2026 | -1 d: 2, 0 d: 3 | 60% |
 | PK | secondary | 2004–2021 | -3 d: 1, -2 d: 2, -1 d: 4, 0 d: 9, +1 d: 2 | 50% |
+
+## Exchanges
+
+One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exchange queries use, with its provenance: `exchange` for the exchange's own trading-holiday calendar (`data/exchanges/calendars/`, rules and notices from the exchange), otherwise the civil calendar the MIC still uses. "Notices" counts the exchange notice rows (each with `:issued` / `:published`) and the years they date. "Gold" is the `exchange_calendars` cross-check in `data/tests/exchanges/` (every session, regular hours, early close and late open of those years); "Recorded differences" are the gold days where the exchange's own notice wins (`data/tests/exchanges/differences.sexp`).
+
+| MIC | Name | Calendar | Provenance | Notices | Gold | Sessions | Early closes | Late opens | Recorded differences |
+|---|---|---|---|---|---|---|---|---|---|
+| BVMF | B3 S.A. - Brasil, Bolsa, Balcão | BR | normative | — | — | — | — | — | — |
+| IFEU | ICE Futures Europe | IFEU | exchange | 16 (2013–2027) | — | — | — | — | — |
+| XAMS | Euronext Amsterdam | XAMS | exchange | 27 (2001–2027) | 2001–2028 | 7166 | 39 | 0 | 21 |
+| XASX | Australian Securities Exchange | AU | normative | — | — | — | — | — | — |
+| XATH | Athens Stock Exchange | GR | normative | — | — | — | — | — | — |
+| XBKK | Stock Exchange of Thailand | TH-BANK | normative | — | — | — | — | — | — |
+| XBOM | BSE Ltd. | IN | normative | — | — | — | — | — | — |
+| XBRU | Euronext Brussels | XBRU | exchange | 27 (2001–2027) | 2001–2028 | 7167 | 39 | 0 | 20 |
+| XBUD | Budapest Stock Exchange | HU | normative | — | — | — | — | — | — |
+| XCBT | CBOT grains | USFED | normative | — | — | — | — | — | — |
+| XCEC | COMEX | USFED | normative | — | — | — | — | — | — |
+| XCME | CME Globex (equity / FX / energy template) | USFED | normative | — | — | — | — | — | — |
+| XCSE | Nasdaq Copenhagen | DK | normative | — | — | — | — | — | — |
+| XDCE | Dalian Commodity Exchange | CN | normative | — | — | — | — | — | — |
+| XDUB | Euronext Dublin | XDUB | exchange | 10 (2018–2027) | 2019–2028 | 2523 | 20 | 0 | 0 |
+| XEEE | European Energy Exchange | XEEE | exchange | 2 (2025–2025) | 2025–2028 | 1018 | 0 | 0 | 0 |
+| XETR | Xetra | XETR | exchange | 33 (2003–2027) | 2003–2028 | 6609 | 19 | 0 | 1 |
+| XEUR | Eurex | XEUR | exchange | 20 (2006–2026) | 2012–2028 | 4327 | 0 | 0 | 1 |
+| XHEL | Nasdaq Helsinki | FI | normative | — | — | — | — | — | — |
+| XHKG | Hong Kong Exchanges and Clearing | HK | normative | — | — | — | — | — | — |
+| XICE | Nasdaq Iceland | IS | corpus | — | — | — | — | — | — |
+| XIDX | Indonesia Stock Exchange | ID | normative | — | — | — | — | — | — |
+| XIMC | Multi Commodity Exchange of India | IN | normative | — | — | — | — | — | — |
+| XINE | Shanghai International Energy Exchange | CN | normative | — | — | — | — | — | — |
+| XIST | Borsa Istanbul | TR | normative | — | — | — | — | — | — |
+| XKLS | Bursa Malaysia | MY | normative | — | — | — | — | — | — |
+| XKRX | Korea Exchange | KR | normative | — | — | — | — | — | — |
+| XLIS | Euronext Lisbon | XLIS | exchange | 26 (2001–2027) | 2003–2028 | 6659 | 36 | 0 | 17 |
+| XLME | London Metal Exchange | XLME | exchange | 14 (2003–2027) | — | — | — | — | — |
+| XLON | London Stock Exchange | XLON | exchange | 24 (2003–2027) | 2003–2028 | 6570 | 52 | 0 | 0 |
+| XMAD | Bolsa de Madrid | XMAD | exchange | 4 (2024–2027) | 2024–2028 | 1280 | 8 | 0 | 0 |
+| XMAT | Euronext Paris commodities | XMAT | exchange | 32 (2000–2027) | — | — | — | — | — |
+| XMIL | Euronext Milan | XMIL | exchange | 22 (2003–2027) | 2010–2028 | 4827 | 0 | 0 | 2 |
+| XNAS | Nasdaq | NYSE | normative | — | — | — | — | — | — |
+| XNSE | National Stock Exchange of India | IN | normative | — | — | — | — | — | — |
+| XNYM | NYMEX | USFED | normative | — | — | — | — | — | — |
+| XNYS | New York Stock Exchange | NYSE | normative | — | — | — | — | — | — |
+| XOSE | Osaka Exchange / JPX derivatives | JP | normative | — | — | — | — | — | — |
+| XOSL | Euronext Oslo / Oslo Børs | NO | normative | — | — | — | — | — | — |
+| XPAR | Euronext Paris | XPAR | exchange | 28 (2000–2027) | 2000–2028 | 7420 | 39 | 0 | 20 |
+| XPHS | Philippine Stock Exchange | PH | normative | — | — | — | — | — | — |
+| XPRA | Prague Stock Exchange | CZ | normative | — | — | — | — | — | — |
+| XSAU | Saudi Exchange (Tadawul) | SA | normative | — | — | — | — | — | — |
+| XSES | Singapore Exchange | SG | normative | — | — | — | — | — | — |
+| XSGE | Shanghai Futures Exchange | CN | normative | — | — | — | — | — | — |
+| XSHE | Shenzhen Stock Exchange | CN | normative | — | — | — | — | — | — |
+| XSHG | Shanghai Stock Exchange | CN | normative | — | — | — | — | — | — |
+| XSTC | Ho Chi Minh Stock Exchange | VN | normative | — | — | — | — | — | — |
+| XSTO | Nasdaq Stockholm | SE | normative | — | — | — | — | — | — |
+| XSWX | SIX Swiss Exchange | XSWX | exchange | 20 (2012–2027) | 2012–2028 | 4269 | 0 | 0 | 0 |
+| XTAE | Tel Aviv Stock Exchange | IL | normative | — | — | — | — | — | — |
+| XTAI | Taiwan Stock Exchange | TW | normative | — | — | — | — | — | — |
+| XTKS | Tokyo Stock Exchange | JP | normative | — | — | — | — | — | — |
+| XTSE | Toronto Stock Exchange | CA | normative | — | — | — | — | — | — |
+| XWAR | Warsaw Stock Exchange | PL | normative | — | — | — | — | — | — |
+| XWBO | Wiener Börse | XWBO | exchange | 19 (2019–2027) | 2019–2028 | 2537 | 10 | 0 | 0 |
+| XZCE | Zhengzhou Commodity Exchange | CN | normative | — | — | — | — | — | — |

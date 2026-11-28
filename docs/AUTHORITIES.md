@@ -348,6 +348,38 @@ queries (`exchange-trading-day-p`, `exchange-sessions-for-date`,
 `exchange-session-bounds`, `exchange-open-p`) honour it. Eras end on the last
 trading day; a day between two eras is closed.
 
+### Exchange trading-holiday calendars (#49)
+
+Since 0.39.0 a MIC can use the exchange's own holiday calendar instead of the
+national civil one: `data/exchanges/calendars/<NAME>.sexp`, an
+`exchange-holiday-calendar` whose `calendar-provenance` is `:exchange`. Each file
+holds the exchange's recurring rules (`define-calendar` clause syntax, each with
+`:authority`), the civil calendars it follows in an era (`:bases`, with `:except`
+for holidays it trades), the family files it shares (`:include`, e.g. `EURONEXT`
+for Amsterdam, Brussels, Lisbon and Paris), and its **notices**: yearly holiday
+lists and one-off circulars, each with the days it closes, the holidays it opens,
+its early closes and late opens. A notice closure wins over a notice opening,
+which wins over the rules and bases. A family file's `:clock` (Euronext: CET) is
+the zone its notice times are written in; exchange queries convert them to the
+MIC's zone (Lisbon closes at 13:05 local on a Euronext 14:05 CET half day).
+Years for which no exchange list was found are listed under `:gaps`.
+
+Every notice records `:issued` / `:issued-uri`, `:published` / `:published-uri`
+and `:published-in` as decree rows do (#93), or a `:dates-note` saying why a date
+is NIL (many exchange calendar pages carry no date). Notices known only from a
+copy carry `:confidence :secondary`.
+
+The cross-check is Python `exchange_calendars`
+(`scripts/generate_exchange_gold.py` → `data/tests/exchanges/<MIC>-gold.sexp`):
+every session, the regular hours, every early close and late open, from the
+first year with an exchange list to 2028 (2026 where its tables stop). Where the
+exchange's notice differs, the notice wins and the day is a row of
+`data/tests/exchanges/differences.sexp` with the reason and the notice's URL;
+`tests/exchange-gold-test.lisp` fails on any other difference, and on a row that
+no longer differs. Before the gold's first year the rules are applied unverified.
+`docs/COVERAGE.md` lists each MIC's calendar, notices, gold range and recorded
+differences.
+
 | MIC | Current RTH | Last hour-change |
 |-----|-------------|------------------|
 | XNYS / XNAS | 09:30–16:00 ET | 1985-09-30 open 09:30 (NYSE timeline) |
@@ -355,15 +387,17 @@ trading day; a day between two eras is closed.
 | XTKS | 09:00–11:30 / 12:30–15:30 | JPX arrowhead 4.0 2024-11-05 |
 | XHKG | 09:30–12:00 / 13:00–16:00 | HKEX phase 2 2012-03-05 |
 | XSHG / XSHE | 09:30–11:30 / 13:00–15:00 | 1990/1991 |
-| XETR / XPAR | 09:00–17:30 | Xetra 1997 / NSC 1990s |
+| XETR | 09:00–17:30 | Xetra to 20:00 2000-06-02 – 2003-10-31 |
+| XPAR | 09:00–17:30 | Euronext 2007-02-19 (continuous to 17:30) |
 | XASX | 10:00–16:00 | SEATS 1987-10-19 |
 | XTSE | 09:30–16:00 | NYSE-aligned |
 | XNSE | 09:15–15:30 | SEBI pre-open 2010-10-18 |
 | BVMF | 10:00–17:00 | B3 cash |
 | XKRX | 09:00–15:30 | KRX 2016-08-01 |
 | XSES | 09:00–12:00 / 13:00–17:00 | lunch restored 2017-11-13 |
-| XAMS XBRU XLIS XMIL XMAD | 09:00–17:30 | Euronext / BME cash |
-| XDUB | 08:00–16:30 | Euronext Dublin local |
+| XAMS XBRU XMIL XMAD | 09:00–17:30 | Euronext / Borsa Italiana / BME cash |
+| XLIS | 08:00–16:30 Lisbon | Euronext CET clock |
+| XDUB | 08:00–16:28 | Euronext Dublin local (closing auction to 16:28–16:30) |
 | XSWX | 09:00–17:30 | SIX shares |
 | XSTO / XCSE / XHEL | 09:00–17:30 / 09:00–17:00 / 10:00–18:30 | Nasdaq Nordic |
 | XOSL / XWAR | 09:00–16:20 / 09:00–16:50 | Oslo / GPW |
