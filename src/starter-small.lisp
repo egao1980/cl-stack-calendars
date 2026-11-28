@@ -233,25 +233,6 @@
   (:computed "Mawlid" #'mawlid-date :from 1960 :authority "Public holiday (tabular)")
   (:computed "Ashura" #'ashura-date :from 1960 :authority "10 Muharram (tabular)"))
 
-(define-calendar zimbabwe-holidays-calendar (:register "ZW")
-  (:fixed "New Year's Day" 1 1 :from 1980 :authority "Public holiday")
-  (:easter "Good Friday" -2 :from 1980 :authority "Public holiday")
-  (:easter "Easter Saturday" -1 :from 1980 :authority "Public holiday")
-  (:easter "Easter Monday" 1 :from 1980 :authority "Public holiday")
-  (:fixed "Independence Day" 4 18 :from 1980
-   :authority "Independence 18 April 1980")
-  (:fixed "Workers' Day" 5 1 :from 1980 :authority "Public holiday")
-  (:fixed "Africa Day" 5 25 :from 1980 :authority "Public holiday")
-  (:nth-weekday "Heroes' Day" 8 :monday 1 :from 1980
-   :authority "Heroes' Day — first Monday in August")
-  (:computed "Defence Forces Day"
-   (lambda (y) (+ (nth-weekday-of-month y 8 1 1) 1))
-   :from 1980
-   :authority "Defence Forces Day — Tuesday after Heroes' Day")
-  (:fixed "Unity Day" 12 22 :from 1980 :authority "Public holiday")
-  (:fixed "Christmas Day" 12 25 :from 1980 :authority "Public holiday")
-  (:fixed "Boxing Day" 12 26 :from 1980 :authority "Public holiday"))
-
 (define-calendar guinea-holidays-calendar (:register "GN")
   (:fixed "Nouvel An" 1 1 :from 1958 :authority "Jour férié")
   (:fixed "Fête du Travail" 5 1 :from 1958 :authority "Jour férié")
@@ -764,7 +745,6 @@ New Year, Mid-Autumn and Christmas substitutes are rules of their own."
 (defun new-zealand-holidays-calendar () (make-instance 'new-zealand-holidays-calendar))
 (defun chad-holidays-calendar () (make-instance 'chad-holidays-calendar))
 (defun somalia-holidays-calendar () (make-instance 'somalia-holidays-calendar))
-(defun zimbabwe-holidays-calendar () (make-instance 'zimbabwe-holidays-calendar))
 (defun guinea-holidays-calendar () (make-instance 'guinea-holidays-calendar))
 (defun rwanda-holidays-calendar () (make-instance 'rwanda-holidays-calendar))
 (defun benin-holidays-calendar () (make-instance 'benin-holidays-calendar))

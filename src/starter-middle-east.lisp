@@ -28,9 +28,10 @@
 
 (defparameter *mena-last-list-year*
   '(("KW" . 2026) ("OM" . 2026) ("IQ" . 2026) ("IR" . 2026) ("DZ" . 2026) ("MA" . 2026) ("EG" . 2026)
-    ("KZ" . 2026) ("SN" . 2026))
+    ("KZ" . 2026) ("SN" . 2026)
+    ("ZA" . 2027) ("KE" . 2026) ("NG" . 2026) ("ZW" . 2027) ("ZM" . 2026) ("MW" . 2026) ("MG" . 2026))
   "Code → the last year with a list in data/<cc>/holidays.sexp (the MENA
-codes here, KZ and SN in starter-yearly-lists.lisp).")
+codes here, the others in starter-yearly-lists.lisp).")
 
 (defun mena-blocks (code)
   (or (gethash code *mena-blocks*)
@@ -60,12 +61,12 @@ list, :ESTIMATED for an earlier year with no list."
 
 (defun mena-listed-p (code year &optional key)
   "True when data/<code> has a list for YEAR that covers the rule KEY. A
-block with :COVERS (a list of keys, e.g. SN's (\"magal\")) lists only those
-rules; one without :COVERS lists every day of the year."
+block with :COVERS (a list of keys, e.g. SN's (\"magal\"); () for none)
+lists only those rules; one without :COVERS lists every day of the year."
   (let ((block (assoc year (mena-blocks code))))
     (and block
-         (let ((covers (getf (getf (cdr block) :block) :covers)))
-           (or (null covers) (and key (member key covers :test #'string=) t))))))
+         (let ((covers (getf (getf (cdr block) :block) :covers :all)))
+           (or (eq covers :all) (and key (member key covers :test #'string=) t))))))
 
 (defun %mena-estimate (code year month day offsets &optional key)
   "The days OFFSETS after the tabular Hijri MONTH/DAY occurrence of YEAR (see

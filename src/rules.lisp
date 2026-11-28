@@ -59,7 +59,27 @@
     (:sn-loi-74-52-art-2
      :implements (:sunday-next)
      :authority ("Loi n° 74-52 du 4 novembre 1974 relative à la fête nationale et aux fêtes légales, art. 2 — quand la Korité et la Tabaski tombent un dimanche, le lundi suivant est férié")
-     :uri ("https://web.archive.org/web/20250608105243/https://www.dri.gouv.sn/sites/default/files/an-documents/LOI%20N1974%2052%20DU%204%20NOVEMBRE%201974.pdf")))
+     :uri ("https://web.archive.org/web/20250608105243/https://www.dri.gouv.sn/sites/default/files/an-documents/LOI%20N1974%2052%20DU%204%20NOVEMBRE%201974.pdf"))
+    (:za-public-holidays-act-s-2-1
+     :implements (:sunday-monday)
+     :authority ("Public Holidays Act 36 of 1994 s. 2(1) — whenever any public holiday falls on a Sunday, the following Monday shall be a public holiday; no further day when that Monday is already one (Home Affairs, 13 Oct 2005)")
+     :uri ("https://www.gov.za/sites/default/files/gcis_document/201409/act36of1994.pdf"))
+    (:ke-cap-110-s-4
+     :implements (:sunday-to-monday)
+     :authority ("Public Holidays Act (Cap. 110) s. 4 (Act 2 of 1984) — where a day in Part I of the Schedule falls on a Sunday, the first succeeding day, not being a public holiday, shall be a public holiday and the first-mentioned day shall cease to be a public holiday")
+     :uri ("https://web.archive.org/web/20250118013422/https://new.kenyalaw.org/akn/ke/act/1912/21/eng@2024-04-26"))
+    (:zw-cap-10-21-s-2-1
+     :implements (:sunday-next)
+     :authority ("Public Holidays and Prohibition of Business Act [Chapter 10:21] s. 2(1) — (i) a public holiday on a Sunday makes the following Monday one; (ii) when 26 December is a Monday, the Tuesday following is one too")
+     :uri ("https://web.archive.org/web/20260417054800id_/https://zimlii.org/akn/zw/act/1969/19/eng@2016-12-31"))
+    (:zm-cap-272-s-2-2
+     :implements (:sunday-next)
+     :authority ("Public Holidays Act (Cap. 272) s. 2(2) — when a public holiday falls on a Sunday, the following day is a public holiday")
+     :uri ("https://www.parliament.gov.zm/sites/default/files/documents/acts/Public%20Holidays%20Act.pdf"))
+    (:mw-cap-18-05-s-4
+     :implements (:next-weekday)
+     :authority ("Public Holidays Act (Cap. 18:05) s. 4 — a public holiday on a Saturday or Sunday ceases to be one and the next day that is not a Sunday or a public holiday is a public holiday")
+     :uri ("https://web.archive.org/web/20211202034241id_/https://malawilii.org/akn/mw/act/1967/11/eng@2014-12-31")))
   "Normative observance policies. Prefer these over mechanical primitives in
 starter calendars; primitives exist only as implementation atoms.
 :DECREE-CANCELS-SUBSTITUTE T means a calendar transfer whose FROM is the
@@ -222,6 +242,11 @@ accounting period (so a Saturday New Year's Day leaves Dec 31 open)."
     (:au-substitute-day :substitute-next)
     (:kz-holidays-law-art-5 :substitute-next)
     (:sn-loi-74-52-art-2 :sunday-next)
+    (:za-public-holidays-act-s-2-1 :sunday-monday)
+    (:ke-cap-110-s-4 :sunday-to-monday)
+    (:zw-cap-10-21-s-2-1 :sunday-next)
+    (:zm-cap-272-s-2-2 :sunday-next)
+    (:mw-cap-18-05-s-4 :next-weekday)
     (otherwise observed)))
 
 (defun ru-new-year-holiday-block-p (date)
@@ -251,8 +276,9 @@ accounting period (so a Saturday New Year's Day leaves Dec 31 open)."
   "How the (possibly statute-named) OBSERVED policy treats NOMINAL.
 Returns (values KEEP-NOMINAL-P DIRECTION): KEEP-NOMINAL-P is true when NOMINAL
 itself stays a holiday; DIRECTION is NIL (no substitute), :FORWARD or
-:BACKWARD (one substitute placed by PLACE-SUBSTITUTE). A pure function of the
-policy and the weekday: it never looks at other rules or their order."
+:BACKWARD (one substitute placed by PLACE-SUBSTITUTE), or :NEXT-DAY (the
+following day only, when it is free). A pure function of the policy and the
+weekday: it never looks at other rules or their order."
   (let ((weekend (weekendp nominal weekend-days)))
     (ecase (canonicalize-observed observed)
       ((nil) (values t nil))
@@ -270,6 +296,10 @@ policy and the weekday: it never looks at other rules or their order."
       (:sunday-next
        ;; A Sunday holiday stays one and adds the next free weekday.
        (values t (and (sundayp nominal) :forward)))
+      (:sunday-monday
+       ;; A Sunday holiday stays one and adds the Monday, unless that Monday
+       ;; is already a holiday (then nothing).
+       (values t (and (sundayp nominal) :next-day)))
       (:nyse-rule-7-2
        (let ((shifted (shift-nyse-rule-7-2 nominal weekend-days)))
          (cond ((= shifted nominal) (values t nil))
@@ -292,8 +322,14 @@ policy and the weekday: it never looks at other rules or their order."
 (defun place-substitute (nominal direction weekend-days claimedp)
   "The substitute day for NOMINAL: the first day after (DIRECTION :FORWARD)
 or before (:BACKWARD) NOMINAL that is neither a WEEKEND-DAYS weekday nor
-CLAIMEDP. CLAIMEDP is a predicate on dates (days already taken). Signals
-CALENDAR-ERROR when no such day lies within *SUBSTITUTE-SEARCH-LIMIT* days."
+CLAIMEDP. CLAIMEDP is a predicate on dates (days already taken). DIRECTION
+:NEXT-DAY is the day after NOMINAL only: NIL when that day is a weekend day
+or claimed. Signals CALENDAR-ERROR when no such day lies within
+*SUBSTITUTE-SEARCH-LIMIT* days."
+  (when (eq direction :next-day)
+    (let ((d (+ nominal 1)))
+      (return-from place-substitute
+        (unless (or (weekendp d weekend-days) (funcall claimedp d)) d))))
   (let ((step (ecase direction (:forward 1) (:backward -1))))
     (loop for k from 1 to *substitute-search-limit*
           for d = (+ nominal (* step k))
@@ -311,9 +347,9 @@ against every rule's nominal date (see %RULE-CALENDAR-YEAR-MAP)."
   (multiple-value-bind (keep direction) (observance-moves nominal observed weekend-days)
     (let ((base (append (when keep (list nominal))
                         (when direction
-                          (list (place-substitute
-                                 nominal direction weekend-days
-                                 (lambda (d) (member d claimed :test #'=))))))))
+                          (remove nil (list (place-substitute
+                                             nominal direction weekend-days
+                                             (lambda (d) (member d claimed :test #'=)))))))))
       (apply-bridge-days base weekend-days bridge))))
 
 (defun apply-sandwich-holidays (date-name-alist &optional from)

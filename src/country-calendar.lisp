@@ -91,7 +91,14 @@ unless the calendar was loaded with :STRICT NIL."))
     ("DZ" . algeria-holidays-calendar)
     ("MA" . morocco-holidays-calendar)
     ("KZ" . kazakhstan-holidays-calendar)
-    ("SN" . senegal-holidays-calendar))
+    ("SN" . senegal-holidays-calendar)
+    ("ZA" . south-africa-holidays-calendar)
+    ("KE" . kenya-holidays-calendar)
+    ("NG" . nigeria-holidays-calendar)
+    ("ZW" . zimbabwe-holidays-calendar)
+    ("ZM" . zambia-holidays-calendar)
+    ("MW" . malawi-holidays-calendar)
+    ("MG" . madagascar-holidays-calendar))
   "Corpus codes whose COUNTRY-CALENDAR defers to a hand starter: alist CODE →
 starter constructor. The date-holidays dump for these codes is known to be
 wrong (RU: no 2–5 January from 2005, no ТК ст. 112 transfers or decrees,
@@ -126,8 +133,15 @@ on 05-01, moved to 05-05), DZ without the 19 June of 2000–2004, MA without
 years such as 2024 (Eid al-Adha 06-16 for 06-17, Arbaeen 08-24 for 08-25);
 #44. KZ: Kurban ait before 2006 (2000-03-16), weekend carry-overs before law
 267 (2000-12-18), no transfer decrees; SN: the Grand Magal on 18 Rabi'
-al-awwal (2000-05-22) instead of 18 Safar, and before loi 2013-06; #43).
-The corpus file stays as shipped; its days are no longer consulted.")
+al-awwal (2000-05-22) instead of 18 Safar, and before loi 2013-06; #43. ZA:
+no s. 2A days (2021-11-01, 2022-12-27); KE: Easter Sunday and the Sunday Eid
+itself (2020-05-24 for the gazetted 05-25), no Idd-ul-Azha notices; NG:
+estimated Eid days (2020-05-24 for the declared 05-25–26), no in-lieu
+declarations; ZW: no Easter Saturday, Youth Day or polling days; ZM: Women's
+Day on 2021-03-09 for 03-08, no Holy Saturday or Easter Sunday; MW: Saturday
+holidays kept as well as moved (2021-05-01), no Easter Saturday; MG: Africa
+Day (2020-05-25), no Pentecost Sunday, Eid days on estimated dates; #45). The
+corpus file stays as shipped; its days are no longer consulted.")
 
 (defclass normative-country-calendar (country-holiday-calendar)
   ((normative :initarg :normative :reader country-calendar-normative
