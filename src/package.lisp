@@ -482,6 +482,11 @@
    #:mena-provisional-year-p
    #:mena-estimated-year-p
    #:mena-decree-rows
-   #:*mena-statute-eras*))
+   #:*mena-statute-eras*
+   #:versioned-calendar-with-snapshot
+   #:duplicate-snapshot-version
+   #:duplicate-snapshot-version-tag
+   #:duplicate-snapshot-version-calendar
+   #:replace-snapshot))
 
 (in-package #:cl-stack-calendars)
