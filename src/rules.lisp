@@ -51,7 +51,15 @@
      :decree-cancels-substitute t
      :authority ("Трудовой кодекс РФ ст. 112 ч. 2 — при совпадении выходного и нерабочего праздничного дня выходной переносится на следующий после праздничного рабочий день; с 2013 г. (ФЗ от 23.04.2012 № 35-ФЗ) — за исключением выходных, совпадающих с праздниками 1–8 января"
                  "Трудовой кодекс РФ ст. 112 ч. 5 — Правительство РФ переносит выходные дни нормативным актом; перенесённый постановлением выходной не переносится повторно по ч. 2")
-     :uri ("http://www.consultant.ru/document/cons_doc_LAW_34683/")))
+     :uri ("http://www.consultant.ru/document/cons_doc_LAW_34683/"))
+    (:kz-holidays-law-art-5
+     :implements (:substitute-next)
+     :authority ("Закон РК от 13 декабря 2001 года № 267 «О праздниках в Республике Казахстан», ст. 5 — при совпадении выходного и праздничного дней выходным днем является следующий после праздничного рабочий день (in force 14 Dec 2001; праздничные дни only, not the выходные дни Kurban ait and 7 January)")
+     :uri ("https://adilet.zan.kz/rus/docs/Z010000267_"))
+    (:sn-loi-74-52-art-2
+     :implements (:sunday-next)
+     :authority ("Loi n° 74-52 du 4 novembre 1974 relative à la fête nationale et aux fêtes légales, art. 2 — quand la Korité et la Tabaski tombent un dimanche, le lundi suivant est férié")
+     :uri ("https://web.archive.org/web/20250608105243/https://www.dri.gouv.sn/sites/default/files/an-documents/LOI%20N1974%2052%20DU%204%20NOVEMBRE%201974.pdf")))
   "Normative observance policies. Prefer these over mechanical primitives in
 starter calendars; primitives exist only as implementation atoms.
 :DECREE-CANCELS-SUBSTITUTE T means a calendar transfer whose FROM is the
@@ -212,6 +220,8 @@ accounting period (so a Saturday New Year's Day leaves Dec 31 open)."
     (:us-federal-in-lieu :nearest-weekday)
     (:uk-proclamation-substitute :next-weekday)
     (:au-substitute-day :substitute-next)
+    (:kz-holidays-law-art-5 :substitute-next)
+    (:sn-loi-74-52-art-2 :sunday-next)
     (otherwise observed)))
 
 (defun ru-new-year-holiday-block-p (date)
@@ -257,6 +267,9 @@ policy and the weekday: it never looks at other rules or their order."
       (:sunday-to-monday
        ;; Sunday → following weekday; a Saturday holiday is not moved.
        (if (sundayp nominal) (values nil :forward) (values t nil)))
+      (:sunday-next
+       ;; A Sunday holiday stays one and adds the next free weekday.
+       (values t (and (sundayp nominal) :forward)))
       (:nyse-rule-7-2
        (let ((shifted (shift-nyse-rule-7-2 nominal weekend-days)))
          (cond ((= shifted nominal) (values t nil))

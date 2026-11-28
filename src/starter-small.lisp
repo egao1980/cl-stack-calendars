@@ -3,10 +3,6 @@
 ;;;; Smaller countries (population-order tier below ~20M) — normative starters.
 ;;;; Research window max(1900, formation) → present.
 
-(defun magal-de-touba-date (g-year)
-  "18 Rabīʿ ath-Thānī (tabular) — Magal de Touba, Senegal."
-  (islamic-date-in-gregorian-year g-year 3 18))
-
 (defun ashura-date (g-year)
   "10 Muharram (tabular)."
   (islamic-date-in-gregorian-year g-year 1 10))
@@ -209,24 +205,6 @@
   (:fixed "Boxing Day" 12 26 :from 1900 :authority "Public holiday"))
 
 ;;; --- Africa ---------------------------------------------------------------
-
-(define-calendar senegal-holidays-calendar (:register "SN")
-  (:fixed "Nouvel An" 1 1 :from 1960 :authority "Jour férié")
-  (:easter "Lundi de Pâques" 1 :from 1960 :authority "Jour férié")
-  (:fixed "Fête de l'Indépendance" 4 4 :from 1960
-   :authority "Indépendance 4 avril 1960")
-  (:fixed "Fête du Travail" 5 1 :from 1960 :authority "Jour férié")
-  (:easter "Ascension" 39 :from 1960 :authority "Jour férié")
-  (:easter "Lundi de Pentecôte" 50 :from 1960 :authority "Jour férié")
-  (:fixed "Assomption" 8 15 :from 1960 :authority "Jour férié")
-  (:fixed "Toussaint" 11 1 :from 1960 :authority "Jour férié")
-  (:fixed "Noël" 12 25 :from 1960 :authority "Jour férié")
-  (:computed "Aïd el-Fitr" #'eid-al-fitr :from 1960 :authority "Jour férié (tabular)")
-  (:computed "Aïd el-Adha" #'eid-al-adha :from 1960 :authority "Jour férié (tabular)")
-  (:computed "Mawlid" #'mawlid-date :from 1960 :authority "Jour férié (tabular)")
-  (:computed "Achoura" #'ashura-date :from 1960 :authority "10 Muharram (tabular)")
-  (:computed "Magal de Touba" #'magal-de-touba-date :from 1960
-   :authority "18 Rabīʿ II — Magal de Touba (tabular)"))
 
 (define-calendar chad-holidays-calendar (:register "TD")
   (:fixed "Nouvel An" 1 1 :from 1960 :authority "Jour férié")
@@ -784,7 +762,6 @@ New Year, Mid-Autumn and Christmas substitutes are rules of their own."
 (defun panama-holidays-calendar () (make-instance 'panama-holidays-calendar))
 (defun uruguay-holidays-calendar () (make-instance 'uruguay-holidays-calendar))
 (defun new-zealand-holidays-calendar () (make-instance 'new-zealand-holidays-calendar))
-(defun senegal-holidays-calendar () (make-instance 'senegal-holidays-calendar))
 (defun chad-holidays-calendar () (make-instance 'chad-holidays-calendar))
 (defun somalia-holidays-calendar () (make-instance 'somalia-holidays-calendar))
 (defun zimbabwe-holidays-calendar () (make-instance 'zimbabwe-holidays-calendar))

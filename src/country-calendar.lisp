@@ -89,7 +89,9 @@ unless the calendar was loaded with :STRICT NIL."))
     ("IR" . iran-holidays-calendar)
     ("EG" . egypt-holidays-calendar)
     ("DZ" . algeria-holidays-calendar)
-    ("MA" . morocco-holidays-calendar))
+    ("MA" . morocco-holidays-calendar)
+    ("KZ" . kazakhstan-holidays-calendar)
+    ("SN" . senegal-holidays-calendar))
   "Corpus codes whose COUNTRY-CALENDAR defers to a hand starter: alist CODE →
 starter constructor. The date-holidays dump for these codes is known to be
 wrong (RU: no 2–5 January from 2005, no ТК ст. 112 transfers or decrees,
@@ -122,7 +124,10 @@ day for each Eid, on the estimated date (Eid al-Adha 2024-06-16; EG declared
 on 05-01, moved to 05-05), DZ without the 19 June of 2000–2004, MA without
 14 January from 2024; IR: lunar days a day off the official calendar in
 years such as 2024 (Eid al-Adha 06-16 for 06-17, Arbaeen 08-24 for 08-25);
-#44). The corpus file stays as shipped; its days are no longer consulted.")
+#44. KZ: Kurban ait before 2006 (2000-03-16), weekend carry-overs before law
+267 (2000-12-18), no transfer decrees; SN: the Grand Magal on 18 Rabi'
+al-awwal (2000-05-22) instead of 18 Safar, and before loi 2013-06; #43).
+The corpus file stays as shipped; its days are no longer consulted.")
 
 (defclass normative-country-calendar (country-holiday-calendar)
   ((normative :initarg :normative :reader country-calendar-normative

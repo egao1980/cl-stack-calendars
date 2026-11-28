@@ -29,7 +29,7 @@ SN_STATUTES = [
          uri="https://web.archive.org/web/20250608105419/https://www.dri.gouv.sn/sites/default/files/LOI/1983/comP4%20loi%20decentralisation%20et%20travail/LOI%20N%20198354%20DU%2018%20FEVRIER%201983/LOI%20N%20198354%20DU%2018%20FEVRIER%201983.pdf",
          issued="1983-02-18", issued_uri=None,
          published=None, published_uri=None, published_in=None, in_force=None,
-         dates_note="Not fetched (SN kept brief). Content per python-holidays 0.109 (secondary) and the amended art. 4 quoted in loi 2013-06.",
+         dates_note="The DRI scan (5 pages) is images only and was not transcribed; content per the amended art. 4 that loi 2013-06 quotes (Tamxarit chômée et payée). JO issue not known.",
          summary="Adds Tamxarit (10 Muharram, Achoura) as a fête légale; art. 4 (as amended) makes the fête nationale, Tamxarit and 1er mai chômées et payées."),
     dict(key="decret-2012-magal",
          title="Décret présidentiel (A. Wade) déclarant le Grand Magal 2012 férié, chômé et payé",

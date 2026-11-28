@@ -222,7 +222,7 @@ def listed_for(mod, cc: str, year: int, key=None) -> bool:
 
 
 class Engine:
-    def __init__(self, mod, cc: str, weekends):
+    def __init__(self, mod, cc: str, weekends, suppress: bool = True):
         self.mod, self.cc, self.weekends = mod, cc, weekends
         self.rules = []   # (name, nominal-fn, eras, observed, observed_from)
         for row in getattr(mod, f"{cc}_FIXED", []):
@@ -253,7 +253,7 @@ class Engine:
         self.any_observed = any(r[3] for r in self.rules)
         self.suppressed = {date(y, int(md[:2]), int(md[3:5]))
                            for y, spec in getattr(mod, f"{cc}_YEARS").items()
-                           for md, *_ in spec.get("suppressed", [])}
+                           for md, *_ in spec.get("suppressed", [])} if suppress else set()
         self.maps = {}
 
     def _add(self, name, fn, eras, o):
@@ -316,17 +316,19 @@ class Engine:
         return sorted(found.items())
 
 
-ENGINES: dict[str, Engine] = {}
+ENGINES: dict[tuple[str, bool], Engine] = {}
 
 
-def engine(mod, cc: str) -> Engine | None:
+def engine(mod, cc: str, suppress: bool = True) -> Engine | None:
+    """The rule engine of CC; SUPPRESS NIL ignores the :suppressed rows (the
+    rule days a decree moved away are then rule days)."""
     if not getattr(mod, "OBSERVE", False):
         return None
-    if cc not in ENGINES:
+    if (cc, suppress) not in ENGINES:
         weekends = next((f.get("weekends") for k, f in FIXTURES.items()
                          if f.get("country", k) == cc and f.get("weekends")), None)
-        ENGINES[cc] = Engine(mod, cc, weekends)
-    return ENGINES[cc]
+        ENGINES[(cc, suppress)] = Engine(mod, cc, weekends, suppress)
+    return ENGINES[(cc, suppress)]
 
 
 # --- per-country rules ---------------------------------------------------------
@@ -443,7 +445,8 @@ def write_data(mod, cc: str, spec: dict) -> None:
         y = years[year]
         docs = y["docs"]
         head = docs[0]
-        rules = {d for d, _ in rule_days(mod, cc, year)}
+        raw = engine(mod, cc, suppress=False)
+        rules = {d for d, _ in (raw.days(year) if raw else rule_days(mod, cc, year))}
         lines.append(f" (:year {year}")
         lines.append(f"  :confidence :{y['confidence']}")
         if y.get("covers") is not None:

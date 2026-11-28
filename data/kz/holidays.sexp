@@ -646,6 +646,10 @@
     :issued (2019 11 1) :issued-uri "https://adilet.zan.kz/rus/docs/P1900000820" :published nil :dates-note "Issued date and number from the act header on adilet (Wayback copy); publication data not fetched (adilet /info pages mostly not archived).")
    )
   :suppressed (
+   (:date (2020 5 11) :name "Жеңіс күні (демалыс күні ауыстырылды, Заң 5-бап)"
+    :authority "Постановление Правительства РК от 2019-11-01 № 820 «О переносе дней отдыха в 2020 году» (Правительство)"
+    :uri "https://web.archive.org/web/20221023205506/https://adilet.zan.kz/rus/docs/P1900000820"
+    :issued (2019 11 1) :issued-uri "https://adilet.zan.kz/rus/docs/P1900000820" :published nil :dates-note "Issued date and number from the act header on adilet (Wayback copy); publication data not fetched (adilet /info pages mostly not archived).")
    )
   :working (
    (:date (2020 1 5)

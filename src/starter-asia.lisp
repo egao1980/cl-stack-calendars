@@ -1064,29 +1064,6 @@ Years after the last DGPA calendar are provisional (TW-PROVISIONAL-YEAR-P)."
   (:computed "Eid al-Adha" #'eid-al-adha :from 1948 :authority "Public holiday (tabular)")
   (:computed "Milad-un-Nabi" #'mawlid-date :from 1948 :authority "Public holiday (tabular)"))
 
-(define-calendar kazakhstan-holidays-calendar (:register "KZ")
-  (:fixed "Жаңа жыл" 1 1 :from 1991 :authority "Мемлекеттік мереке")
-  (:fixed "Жаңа жыл" 1 2 :from 2006
-   :authority "Жаңа жыл — 2 күн (2006 ж. реформа)")
-  (:fixed "Рождество Христово" 1 7 :from 2007
-   :authority "Рождество — мереке 7 қаңтар (2007)")
-  (:fixed "Халықаралық әйелдер күні" 3 8 :from 1991 :authority "Мереке")
-  (:fixed "Наурыз мейрамы" 3 21 :from 1991 :authority "Наурыз")
-  (:fixed "Наурыз мейрамы" 3 22 :from 1991 :authority "Наурыз")
-  (:fixed "Наурыз мейрамы" 3 23 :from 1991 :authority "Наурыз")
-  (:fixed "Қазақстан халқының бірлігі күні" 5 1 :from 1995
-   :authority "1 мамыр — Бірлік күні (1995)")
-  (:fixed "Жеңіс күні" 5 9 :from 1991 :authority "Мереке")
-  (:fixed "Астана күні" 7 6 :from 1997
-   :authority "Астана — 6 шілде (1997)")
-  (:fixed "Конституция күні" 8 30 :from 1995 :authority "Мереке")
-  (:fixed "Республика күні" 10 25 :from 1995
-   :authority "Республика күні — 25 қазан (1995)")
-  (:fixed "Тәуелсіздік күні" 12 16 :from 1991
-   :authority "Тәуелсіздік — 16 желтоқсан 1991")
-  (:computed "Ораза айт" #'eid-al-fitr :from 1991 :authority "Дini мереке (tabular)")
-  (:computed "Құрban айт" #'eid-al-adha :from 1991 :authority "Дini мереке (tabular)"))
-
 (defun north-korea-holidays-calendar () (make-instance 'north-korea-holidays-calendar))
 
 (defun nepal-holidays-calendar (&key year transfers)
@@ -1108,5 +1085,3 @@ years of it would make the calendar worse (#61)."
   (let ((tr (or transfers
                 (when year (lk-poya-transfers-for-year year)))))
     (make-instance 'sri-lanka-holidays-calendar :transfers tr)))
-
-(defun kazakhstan-holidays-calendar () (make-instance 'kazakhstan-holidays-calendar))
