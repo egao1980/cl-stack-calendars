@@ -37,6 +37,15 @@ Since 0.10.0, `holiday-p` outside the coverage signals `calendar-out-of-range`, 
 
 Corpus-derived calendars do not extrapolate: their rules run only over the corpus years, and their `:authority` says they are inferred and not normative.
 
+Per calendar, [`docs/COVERAGE.md`](docs/COVERAGE.md) gives the scope, the years each gold fixture checks (primary and secondary sources), the first provisional year, the non-primary confidence years and the sources. `scripts/generate-coverage-table.lisp` generates the table from the code and the fixtures. [`docs/AUTHORITIES.md`](docs/AUTHORITIES.md) explains the choices behind it:
+
+- [scope per calendar](docs/AUTHORITIES.md#scope-per-calendar) (government offices, federal, national subsets, banks);
+- [Sunday and weekend holidays](docs/AUTHORITIES.md#sunday-and-weekend-holidays);
+- [Islamic dates](docs/AUTHORITIES.md#islamic-dates) (listed dates, tabular "(estimated)" otherwise, measured accuracy);
+- [provisional years](docs/AUTHORITIES.md#provisional-years);
+- [`:confidence`](docs/AUTHORITIES.md#confidence-primary-and-secondary);
+- [the deliberate differences from Python `holidays`](docs/AUTHORITIES.md#deliberate-differences-from-python-holidays).
+
 ### Registered calendars and data files
 
 Since 0.12.0 a calendar found by code carries every year of its data file. Before, `find-calendar "GB"` had no proclamations, `"RU"` no decree transfers, and so on for every starter whose constructor takes `:year`. Now `find-calendar` returns the same calendar as the constructor called without `:year`, and that calendar applies every block of the file. On each day of a year Y it gives the same answers as `(constructor :year Y)`.
@@ -124,7 +133,7 @@ So `(holiday-p (find-calendar "USFED") (make-date 2026 7 4))` is `nil`, and 2026
 - `RU` (ТК ст. 112);
 - `KZ`, `BG`, `LV`, `ZA`, `ZW`, `ZM`, `HK`.
 
-The per-calendar Sunday and weekend rules are in [docs/AUTHORITIES.md](docs/AUTHORITIES.md).
+The per-calendar Sunday and weekend rules are in [docs/AUTHORITIES.md](docs/AUTHORITIES.md#sunday-and-weekend-holidays).
 
 **Names.** Since 0.38.0 a starter can name its substitute days (`define-calendar :substitute-name`, `calendar-substitute-name`):
 
