@@ -83,6 +83,7 @@
                (:file "xnys-gold-test")
                (:file "exchange-gold-test")
                (:file "exchange-calendar-test")
+               (:file "exchange-engine-test")
                (:file "data-root-test"))
   :perform (test-op (o c)
                     (unless (symbol-call :rove :run c)
