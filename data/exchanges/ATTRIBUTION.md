@@ -18,7 +18,7 @@ Each era and early-close rule cites an `:authority` (exchange notice / official 
   XNYS / XNAS use the exchange's own `NYSE` calendar (src/starter-nyse.lisp,
   data/us/nyse-closures.sexp). Since 0.39.0 XLON, IFEU, XLME, the Euronext markets
   (XPAR XAMS XBRU XLIS XDUB XMIL XMAT), XETR, XEUR, XEEE, XSWX, XWBO, XMAD and (0.40.0) the
-  Nordics XSTO, XCSE, XHEL, XICE, XOSL use their exchange's own calendar in `calendars/` (rules and notices, each cited;
+  Nordics XSTO, XCSE, XHEL, XICE, XOSL, and (0.41.0) XWAR, XBUD, XPRA, XATH, XIST use their exchange's own calendar in `calendars/` (rules and notices, each cited;
   docs/AUTHORITIES.md#exchange-trading-holiday-calendars-49)
 - Circuit-breaker cuts, weather/disaster adhocs beyond the listed notices
 
@@ -51,7 +51,7 @@ Those libraries are Apache-2.0; we independently encode published dates.
 | XSWX | [SIX shares](https://www.six-group.com/en/products-services/the-swiss-stock-exchange/trading/trading-provisions/trading-hours.html) 09:00–17:30, no early closes |
 | XSTO XCSE XHEL XICE | [Nasdaq Nordic Market Model](https://www.nasdaq.com/european-market-activity/trading-hours) — Stockholm 09:00–17:30 (09:30 before SAXESS 2004-09-27), Copenhagen 09:00–17:00, Helsinki 10:00–18:30 (18:00 before 2004-09-27), Iceland 09:30–15:30 from 2010-01-04 (10:00–17:23 CET 2007-03-26 – 2010-01-03); Stockholm half days 13:00 |
 | XOSL | Oslo Børs 09:00–16:20; 10:00–16:00 to 2005, 09:00–17:20 2008-09-01 – 2012-08-03; 13:00 close on the Wednesday before Maundy Thursday |
-| XWBO XWAR XBUD XPRA XATH | Vienna 09:00–17:30; GPW 09:00–16:50; Budapest 09:00–17:00; Prague 09:00–16:20; ATHEX 10:15–17:20 |
+| XWBO XWAR XBUD XPRA XATH | Vienna 09:00–17:30; GPW 09:00–16:50 (UTP 2013-04-15; 17:20 from 2011-01-01); Budapest 09:00–17:00; Prague 09:00–16:15 from 2020-11-30 (end of closing auction); ATHEX 10:15–17:20 (opening auction to end of trading at close, 2026 schedule) |
 | XTAI | [TWSE timeline](https://www.twse.com.tw/en/about/company/history.html) 2001-01-02: 09:00–13:30 (was 09:00–12:00) |
 | XBKK | [SET 22/2024](https://www.set.or.th/en/market/news-and-alert/newsdetails?id=86864800&symbol=SET) afternoon from 14:00 on 2024-03-25 |
 | XIDX | [Jakarta Post 2012-11-02](https://www.thejakartapost.com/news/2012/11/02/idx-will-start-trading-day-earlier-january.html) open 09:00 from 2013-01-02; Friday shorter morning |
@@ -59,7 +59,7 @@ Those libraries are Apache-2.0; we independently encode published dates.
 | XPHS | PSE 2011-10-03 to 13:00; [2012-01-02](https://business.inquirer.net/21697/stock-trading-hours-extended-starting-oct-3) 09:30–12:00 / 13:30–15:30 |
 | XSTC | HOSE 09:15–11:30 / 13:00–14:45 |
 | XBOM | Same SEBI hour changes as XNSE |
-| XIST | BIST continuous 10:00–18:00 (lunch removed) |
+| XIST | BIST continuous 10:00–18:00, lunch break removed 2019-10-04 (notice 2019/56); 10:00–13:00 / 14:00–18:00 from 2016-11-14; half days 12:30 |
 | XSAU | Tadawul 10:00–15:00; weekend Thu–Fri → Fri–Sat **2013-06-29** |
 | XTAE | TASE Sun–Thu ~10:00–17:15 |
 | XCME XNYM XCEC | [CME Globex](https://www.cftc.gov/filings/orgrules/rule021422cmedcm007.pdf) 17:00–16:00 CT, labeled by close |

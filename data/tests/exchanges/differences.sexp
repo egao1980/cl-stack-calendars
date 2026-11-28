@@ -291,4 +291,62 @@
  (:mic "XOSL" :date (2009 4 8) :kind :early-close :gold nil :ours (13 10)
   :why "Oslo Børs Opening Hours 2009: on the Wednesday before Maundy Thursday continuous trading ends 13:10; exchange_calendars has its Easter-Wednesday early close only from 2011."
   :source "https://web.archive.org/web/20090509192023/http://www.oslobors.no/ob_eng/Oslo-Boers/About-us/Opening-Hours")
+ ;; XATH
+ (:mic "XATH" :date (2000 4 21) :kind :session :gold nil :ours t
+  :why "ASE 'Exchange Holidays 2000': April shows only 28 (Orthodox Good Friday); Western Good Friday not a holiday in 2000."
+  :source "https://web.archive.org/web/20000312085823/http://www.ase.gr/Announce/Holidays.htm")
+ (:mic "XATH" :date (2000 4 24) :kind :session :gold nil :ours t
+  :why "As 2000-04-21 (Western Easter Monday not listed)."
+  :source "https://web.archive.org/web/20000312085823/http://www.ase.gr/Announce/Holidays.htm")
+ (:mic "XATH" :date (2001 1 2) :kind :session :gold t :ours nil
+  :why "ASE Market Holidays 2001 lists 'Tuesday 2 January'; also in the Euronext Athens database (02/01/2001)."
+  :source "https://web.archive.org/web/20011217235444/http://www.ase.gr/content/en/about/holidays/")
+ (:mic "XATH" :date (2001 12 31) :kind :session :gold t :ours nil
+  :why "Euronext Athens database: 'EURO 31/12/2001' (euro changeover). Not yet on the ASE page snapshot of 2001-12-17 - medium confidence."
+  :source "https://athens.euronext.com/en/trade/trading-model/calendar?page=27")
+ (:mic "XATH" :date (2008 3 5) :kind :session :gold nil :ours t
+  :why "Database lists 04/03/2008 but not 05/03/2008; ec closes both. Low confidence (no year-specific ASE page for 2008 found)."
+  :source "https://athens.euronext.com/en/trade/trading-model/calendar?page=24")
+ (:mic "XATH" :date (2014 12 31) :kind :session :gold nil :ours t
+  :why "Database 2014 list has 24, 25, 26 Dec but not 31 Dec; ec closes 31 Dec 2014. Medium confidence."
+  :source "https://athens.euronext.com/en/trade/trading-model/calendar?page=18")
+ (:mic "XATH" :date (2021 5 4) :kind :session :gold t :ours nil
+  :why "Database: 'Labour Day 04/05/2021' (moved public holiday) - market closed."
+  :source "https://athens.euronext.com/en/trade/trading-model/calendar?page=7")
+ (:mic "XATH" :date (2022 5 2) :kind :session :gold t :ours nil
+  :why "Database: 'Labour Day 02/05/2022' - market closed."
+  :source "https://athens.euronext.com/en/trade/trading-model/calendar?page=6")
+ (:mic "XATH" :date (2024 5 7) :kind :session :gold t :ours nil
+  :why "Database: 'Labour Day (Greece) 07/05/2024' (and 01/05/2024 'Labour Day') - both closed."
+  :source "https://athens.euronext.com/en/trade/trading-model/calendar?page=4")
+ (:mic "XATH" :date (2027 12 31) :kind :session :gold t :ours nil
+  :why "Euronext Athens 2027 holidays include 'New Year's Eve 31/12/2027'."
+  :source "https://athens.euronext.com/en/trade/trading-model/calendar")
+ (:mic "XATH" :from (2000 1 3) :to (2008 9 26) :kind :hours
+  :gold ((10 0) nil nil (17 0)) :ours ((10 15) nil nil (17 20))
+  :why "The modeled day runs from the opening auction (10:15) to the end of trading at close (17:20), per the Euronext Athens Cash Markets Schedule (March 2026); exchange_calendars opens at 10:00, when no phase of that schedule starts. No earlier ASE/ATHEX schedule was found, so the earlier years keep the current schedule unverified."
+  :source "https://athens.euronext.com/sites/default/files/2026-04/Euronext_Athens_PRD_OASIS_Cash_Markets_Schedule_March2026_ver3_0.pdf")
+ (:mic "XATH" :from (2008 9 29) :to (2028 12 29) :kind :hours
+  :gold ((10 0) nil nil (17 20)) :ours ((10 15) nil nil (17 20))
+  :why "The modeled day runs from the opening auction (10:15) to the end of trading at close (17:20), per the Euronext Athens Cash Markets Schedule (March 2026); exchange_calendars opens at 10:00, when no phase of that schedule starts. No earlier ASE/ATHEX schedule was found, so the earlier years keep the current schedule unverified."
+  :source "https://athens.euronext.com/sites/default/files/2026-04/Euronext_Athens_PRD_OASIS_Cash_Markets_Schedule_March2026_ver3_0.pdf")
+ ;; XWAR
+ (:mic "XWAR" :from (2011 1 3) :to (2013 4 12) :kind :hours
+  :gold ((9 0) nil nil (17 0)) :ours ((9 0) nil nil (17 20))
+  :why "GPW schedule from 2011-01-01: continuous trading 09:00-17:20, closing auction 17:20-17:30; exchange_calendars has 17:00 throughout."
+  :source "https://web.archive.org/web/20120113200502/http://www.gpw.pl/harmonogram_sesji")
+ (:mic "XWAR" :from (2013 4 15) :to (2028 12 29) :kind :hours
+  :gold ((9 0) nil nil (17 0)) :ours ((9 0) nil nil (16 50))
+  :why "GPW session details: continuous trading 09:00-16:50, closing auction 16:50-17:00. The modeled close is the end of continuous trading (as for the 2011 era and Xetra); exchange_calendars uses the end of the closing auction."
+  :source "https://www.gpw.pl/szczegoly-sesji")
+ ;; XPRA
+ (:mic "XPRA" :from (2020 11 30) :to (2028 12 29) :kind :hours
+  :gold ((9 0) nil nil (16 20)) :ours ((9 0) nil nil (16 15))
+  :why "PSE Harmonogram burzovniho dne (updated 30 Nov 2020): opening auction 08:50-09:00, continuous 09:00-16:10, closing auction 16:10-16:15, trading at close 16:15-16:25. exchange_calendars' 16:20 matches no phase; the model closes at the end of the closing auction."
+  :source "https://www.pse.cz/obchodovani/informace-o-obchodovani/kalendar-burzovnich-dni")
+ ;; XIST
+ (:mic "XIST" :from (2016 11 14) :to (2019 10 3) :kind :hours
+  :gold ((10 0) nil nil (18 0)) :ours ((10 0) (13 0) (14 0) (18 0))
+  :why "Schedule effective 14 Nov 2016: continuous 10:00-13:00, midday call auction 13:00-13:55, continuous 14:00-18:00; the lunch break was removed from 2019-10-04 (notice 2019/56). exchange_calendars has no lunch break."
+  :source "https://web.archive.org/web/20161117175157/http://www.borsaistanbul.com/images/default-source/kurumsal/equity-market-continuous-trading-normal-days-november-14-2016.jpg?sfvrsn=0")
 )

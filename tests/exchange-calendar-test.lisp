@@ -6,7 +6,8 @@
   '("XLON" "IFEU" "XLME"
     "XPAR" "XAMS" "XBRU" "XLIS" "XDUB" "XMIL" "XMAT"
     "XETR" "XEUR" "XEEE" "XSWX" "XWBO" "XMAD"
-    "XSTO" "XCSE" "XHEL" "XICE" "XOSL")
+    "XSTO" "XCSE" "XHEL" "XICE" "XOSL"
+    "XWAR" "XBUD" "XPRA" "XATH" "XIST")
   "MICs whose exchange queries use the exchange's own calendar (provenance
 :EXCHANGE). #49 moves the rest off their national civil calendars by region.")
 
@@ -61,6 +62,20 @@ key dates."
   ;; A Euronext half day written in CET is 13:05 in Lisbon.
   (ok (equal (%early-close-hm "XLIS" '(2024 12 24)) '(13 5)))
   (ok (equal (%early-close-hm "XPAR" '(2024 12 24)) '(14 5))))
+
+(deftest cee-exchange-key-dates
+  "CEE, Athens and Istanbul (#49, 0.41.0): exchange-only closures and sessions."
+  ;; BSE does not trade on Hungarian working Saturdays (BSE resolutions).
+  (ok (equal (%trading-days "XBUD" '(2024 12 7)) '(nil)))
+  ;; GPW closes on 24 and 31 December; ATHEX on Western Good Friday.
+  (ok (equal (%trading-days "XWAR" '(2024 12 24) '(2024 12 31)) '(nil nil)))
+  (ok (equal (%trading-days "XATH" '(2024 3 29)) '(nil)))
+  ;; Borsa Istanbul: the 2023 earthquake closure (KAP notice of 2023-02-08)
+  ;; and the 12:30 half day on 28 October.
+  (ok (equal (%trading-days "XIST" '(2023 2 8) '(2023 2 14) '(2023 2 15))
+             '(nil nil t)))
+  (ok (equal (%early-close-hm "XIST" '(2024 10 28)) '(12 30)))
+  (ok (equal (%early-close-hm "XIST" '(2027 10 28)) '(12 30))))
 
 (deftest civil-fixes-found-by-exchange-lists
   "#123: Norway's Ascension Day; #124: Iceland's First Day of Summer is the
