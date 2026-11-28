@@ -2,7 +2,7 @@
  :mic "XKLS"
  :name "Bursa Malaysia"
  :zone "Asia/Kuala_Lumpur"
- :calendar "MY"
+ :calendar "XKLS"
  :kind :equity
  :source "Bursa Malaysia trading sessions"
  :eras (

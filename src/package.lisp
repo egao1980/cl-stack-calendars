@@ -525,6 +525,7 @@
    #:il-erev-rosh-hashanah
    #:il-erev-yom-kippur
    #:il-erev-sukkot
-   #:il-erev-simchat-torah))
+   #:il-erev-simchat-torah
+   #:lunar-new-year-eve))
 
 (in-package #:cl-stack-calendars)

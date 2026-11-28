@@ -60,6 +60,7 @@ Column meanings are in [AUTHORITIES.md](AUTHORITIES.md#coverage-per-calendar). "
 | HT | normative | — | — | — | — | — | — | — | — |
 | HU | normative | yes | nationwide | 2000–2040 | — | — | — | — | 27: 1992. évi XXII. törvény a Munka Törvénykönyvéről, 125. § (3) |
 | ID | normative | yes | nationwide | 2005–2040 | — | — | 2028 | — | 4: SKB 3 Menteri tentang Hari Libur Nasional dan Cuti Bersama, 2014-2027… |
+| ID-CUTI | normative | — | — | — | — | — | — | — | — |
 | IE | normative | yes | nationwide | 2000–2040 | — | — | — | — | 4: Organisation of Working Time Act 1997 (No. 20 of 1997), Second Schedu… |
 | IL | normative | — | — | — | — | — | — | — | — |
 | IN | normative | yes | Central Government offices, Delhi/New Delhi | 2002–2040 | — | — | 2028 | estimated 2000–2001; estimated 2005–2006; provisional 2028–2040 | 54: DoPT O.M. No. 12/6/2001-JCA dated 10.07.2001: Holidays to be observed… |
@@ -189,7 +190,7 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XAMS | Euronext Amsterdam | XAMS | exchange | 27 (2001–2027) | 2001–2028 | 7166 | 39 | 0 | 21 |
 | XASX | Australian Securities Exchange | XASX | exchange | 18 (2009–2027) | 2000–2028 | 7339 | 36 | 0 | 8 |
 | XATH | Athens Stock Exchange | XATH | exchange | 28 (2000–2027) | 2000–2028 | 7201 | 0 | 0 | 12 |
-| XBKK | Stock Exchange of Thailand | TH-BANK | normative | — | — | — | — | — | — |
+| XBKK | Stock Exchange of Thailand | XBKK | exchange | 16 (2006–2026) | 2012–2028 | 4136 | 0 | 0 | 14 |
 | XBOM | BSE Ltd. | XBOM | exchange | 37 (2009–2026) | 2009–2026 | 4433 | 0 | 0 | 11 |
 | XBRU | Euronext Brussels | XBRU | exchange | 27 (2001–2027) | 2001–2028 | 7167 | 39 | 0 | 20 |
 | XBUD | Budapest Stock Exchange | XBUD | exchange | 9 (2018–2026) | 2018–2028 | 2743 | 0 | 0 | 0 |
@@ -205,11 +206,11 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XHEL | Nasdaq Helsinki | XHEL | exchange | 20 (2008–2027) | 2008–2028 | 5277 | 0 | 0 | 0 |
 | XHKG | Hong Kong Exchanges and Clearing | XHKG | exchange | 31 (2003–2027) | 2000–2028 | 7148 | 53 | 0 | 9 |
 | XICE | Nasdaq Iceland | XICE | exchange | 20 (2008–2027) | 2008–2028 | 5229 | 0 | 0 | 7 |
-| XIDX | Indonesia Stock Exchange | ID | normative | — | — | — | — | — | — |
+| XIDX | Indonesia Stock Exchange | XIDX | exchange | 20 (2005–2027) | 2005–2027 | 5595 | 0 | 0 | 35 |
 | XIMC | Multi Commodity Exchange of India | XIMC | exchange | 1 (2025–2025) | — | — | — | — | — |
 | XINE | Shanghai International Energy Exchange | XINE | exchange | 8 (2019–2024) | — | — | — | — | — |
 | XIST | Borsa Istanbul | XIST | exchange | 28 (2000–2026) | 2016–2026 | 2541 | 21 | 0 | 1 |
-| XKLS | Bursa Malaysia | MY | normative | — | — | — | — | — | — |
+| XKLS | Bursa Malaysia | XKLS | exchange | 46 (2001–2026) | 2001–2026 | 6402 | 29 | 0 | 32 |
 | XKRX | Korea Exchange | XKRX | exchange | 33 (2000–2027) | 2000–2028 | 7144 | 0 | 0 | 30 |
 | XLIS | Euronext Lisbon | XLIS | exchange | 26 (2001–2027) | 2003–2028 | 6659 | 36 | 0 | 17 |
 | XLME | London Metal Exchange | XLME | exchange | 14 (2003–2027) | — | — | — | — | — |
@@ -224,14 +225,14 @@ One row per MIC in `data/exchanges/`. "Calendar" is the holiday calendar the exc
 | XOSE | Osaka Exchange / JPX derivatives | XOSE | exchange | 9 (2021–2027) | — | — | — | — | — |
 | XOSL | Euronext Oslo / Oslo Børs | XOSL | exchange | 15 (2002–2027) | 2006–2028 | 5775 | 18 | 0 | 2 |
 | XPAR | Euronext Paris | XPAR | exchange | 28 (2000–2027) | 2000–2028 | 7420 | 39 | 0 | 20 |
-| XPHS | Philippine Stock Exchange | PH | normative | — | — | — | — | — | — |
+| XPHS | Philippine Stock Exchange | XPHS | exchange | 31 (2013–2026) | 2015–2026 | 2930 | 0 | 0 | 29 |
 | XPRA | Prague Stock Exchange | XPRA | exchange | 23 (2003–2027) | 2017–2028 | 3003 | 0 | 0 | 1 |
 | XSAU | Saudi Exchange (Tadawul) | SA | normative | — | — | — | — | — | — |
-| XSES | Singapore Exchange | SG | normative | — | — | — | — | — | — |
+| XSES | Singapore Exchange | XSES | exchange | 16 (2020–2027) | 2020–2026 | 1759 | 0 | 0 | 18 |
 | XSGE | Shanghai Futures Exchange | XSGE | exchange | 33 (2002–2026) | — | — | — | — | — |
 | XSHE | Shenzhen Stock Exchange | XSHE | exchange | 34 (2003–2026) | 2004–2026 | 5586 | 0 | 0 | 0 |
 | XSHG | Shanghai Stock Exchange | XSHG | exchange | 31 (2003–2026) | 2003–2026 | 5827 | 0 | 0 | 2 |
-| XSTC | Ho Chi Minh Stock Exchange | VN | normative | — | — | — | — | — | — |
+| XSTC | Ho Chi Minh Stock Exchange | XSTC | exchange | 8 (2016–2026) | — | — | — | — | — |
 | XSTO | Nasdaq Stockholm | XSTO | exchange | 20 (2008–2027) | 2008–2028 | 5277 | 92 | 0 | 0 |
 | XSWX | SIX Swiss Exchange | XSWX | exchange | 20 (2012–2027) | 2012–2028 | 4269 | 0 | 0 | 0 |
 | XTAE | Tel Aviv Stock Exchange | IL | normative | — | — | — | — | — | — |
