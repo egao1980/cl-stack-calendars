@@ -492,6 +492,7 @@
    #:holiday-observance-type
    #:calendar-holiday-types
    #:holiday-type
-   #:*holiday-type-precedence*))
+   #:*holiday-type-precedence*
+   #:calendar-substitute-name))
 
 (in-package #:cl-stack-calendars)

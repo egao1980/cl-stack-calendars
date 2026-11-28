@@ -68,6 +68,12 @@ under another."
    ;; (CALENDAR YEAR PAIRS) → PAIRS, run after sandwich and furikae.
    (observance-pass :initarg :observance-pass :initform nil
                     :accessor calendar-observance-pass)
+   (substitute-name :initarg :substitute-name :initform nil
+                    :accessor calendar-substitute-name
+                    :documentation "A format control with one ~A (the holiday's
+name) naming a substitute day placed by an OBSERVED policy, such as
+\"~a (observed)\" (USFED) or \"~a (substitute day)\" (AU, as the PM&C data
+set names it). NIL keeps the holiday's own name.")
    ;; Decree transfers: TO dates become holidays (перенос выходных).
    (transfers :initarg :transfers :initform nil :accessor calendar-transfers)
    ;; Compensatory working Saturdays/Sundays (override weekend-day-p).
@@ -129,8 +135,13 @@ computed rule can contribute several entries (RULE-NOMINAL-DATES)."
                                        (observance-moves nominal observed weekend-days)
                                      (list rule nominal keep direction year)))))))
 
-(defun %rule-entry-name (rule)
-  (or (holiday-rule-name rule) t))
+(defun %rule-entry-name (rule &optional substitute-name)
+  "RULE's holiday name (T when it has none). SUBSTITUTE-NAME, a format
+control with one ~A, names a substitute day after it."
+  (let ((name (holiday-rule-name rule)))
+    (cond ((null name) t)
+          (substitute-name (format nil substitute-name name))
+          (t name))))
 
 (defun %substitute-entry< (a b)
   "Placement order for substitutes: by nominal date, then by rule name."
@@ -169,10 +180,13 @@ names. :BRIDGE extras are added last and claim nothing."
          (pairs '()))
     (flet ((claim (d) (setf (gethash (date-rd d) claimed) t))
            (claimedp (d) (values (gethash (date-rd d) claimed)))
-           (emit (entry d)
+           (emit (entry d &optional substitutep)
              (when (and (= (fifth entry) year) (not (%suppressed-date-p calendar d)))
                (push d (gethash entry dates-by-entry))
-               (push (cons d (%rule-entry-name (first entry))) pairs))))
+               (push (cons d (%rule-entry-name (first entry)
+                                               (and substitutep
+                                                    (calendar-substitute-name calendar))))
+                     pairs))))
       (dolist (e entries)
         (when (and (third e) (not (%suppressed-date-p calendar (second e))))
           (claim (second e))
@@ -184,7 +198,7 @@ names. :BRIDGE extras are added last and claim nothing."
             (unless (and (observed-policy-decree-cancels-substitute-p (rule-observed (first e)))
                          (or (%transfer-from-date-p calendar d)
                              (%transfer-from-date-p calendar (second e))))
-              (emit e d)))))
+              (emit e d t)))))
       (dolist (e entries)
         (let ((bridge (rule-bridge (first e)))
               (dates (gethash e dates-by-entry)))
@@ -269,7 +283,8 @@ Returns CALENDAR."
                     calendar-suppressed-dates calendar-weekend-days
                     calendar-sandwich-holidays-p calendar-sandwich-from
                     calendar-furikae-chain-p calendar-furikae-from
-                    calendar-furikae-chain-from calendar-observance-pass))
+                    calendar-furikae-chain-from calendar-observance-pass
+                    calendar-substitute-name))
 
 (defmethod holiday-p ((calendar rule-calendar) date)
   (when (%suppressed-date-p calendar date)
@@ -353,7 +368,8 @@ rearrangements in starter calendars (normative source of truth)."
                                       sandwich-from
                                       furikae-chain-p furikae-from
                                       furikae-chain-from
-                                      observance-pass)
+                                      observance-pass
+                                      substitute-name)
                                 &body rules)
   "Define NAME as a RULE-CALENDAR subclass from RULES. Its instances report
 CALENDAR-PROVENANCE :NORMATIVE.
@@ -391,6 +407,11 @@ Statute-named OBSERVED (prefer these):
 
 :OBSERVED-FROM limits when OBSERVED applies (year or date) — e.g. JP 振替 from 1973.
 
+SUBSTITUTE-NAME is a format control with one ~A, the holiday's name, for the
+substitute days an OBSERVED policy places: \"~a (observed)\" (USFED),
+\"~a (substitute day)\" (AU). NIL (default) keeps the holiday's name, as
+gov.uk titles the GB substitute days.
+
 Mechanical primitives (:NEAREST-WEEKDAY, :NEXT-WEEKDAY, …) are implementation
 atoms — do not use them in starters without an AUTHORITY that implies them.
 
@@ -426,6 +447,7 @@ CALENDAR-TRANSFERS / MAKE-RUSSIAN-HOLIDAYS-CALENDAR — not in this macro."
         :furikae-from ,(%bound-form furikae-from)
         :furikae-chain-from ,(%bound-form furikae-chain-from)
         :observance-pass ,(and observance-pass `',observance-pass)
+        :substitute-name ,substitute-name
         :rules (list ,@(mapcar #'%holiday-rule-constructor-form rules))))
      ,@(when register
          (if constructor

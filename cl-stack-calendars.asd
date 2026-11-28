@@ -1,5 +1,5 @@
 (defsystem "cl-stack-calendars"
-  :version "0.37.0"
+  :version "0.38.0"
   :description "Holiday and trading calendars for cl-stack (business days, sessions, versioned as-of)"
   :author "egao1980"
   :license "MIT"
@@ -62,6 +62,7 @@
                (:file "normative-calendar-test")
                (:file "country-calendar-test")
                (:file "holiday-types-test")
+               (:file "holiday-names-test")
                (:file "holiday-suite-test")
                (:file "observance-order-test")
                (:file "hijri-occurrence-test")

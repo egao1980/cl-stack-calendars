@@ -102,6 +102,46 @@ Since 0.37.0 (#35) the corpus types are exposed and can be filtered:
 
 **Consumer-visible changes.** `calendar-holidays-table` of a country calendar now maps an RD to a *list* of `(name . type)`, not to one pair. On the 820 shared dates, `holiday-p`'s name is the joined string.
 
+### Weekend holidays and substitute-day names
+
+Python `holidays` lists a weekend holiday on its own date *and* on its observed day. Here a calendar follows its authority, so there are two kinds (#12).
+
+**The holiday moves (one day).** The authority puts the day off on a weekday in place of the weekend date, so only the observed day is a holiday. The weekend date itself answers `nil`. It is a weekend day either way, so `business-day-p` is the same under both readings. These calendars are:
+
+- `USFED` (5 U.S.C. 6103(b), EO 11582: OPM lists only the in-lieu day);
+- `GB` / `GBLO` (BFDA 1971: gov.uk lists only the substitute day);
+- `MW` (Cap. 18:05 s. 4);
+- `KE` (Cap. 110 s. 4, for a Sunday holiday);
+- `NYSE` (Rule 7.2: a Saturday holiday moves to Friday, unless that Friday ends a monthly or the yearly accounting period).
+
+So `(holiday-p (find-calendar "USFED") (make-date 2026 7 4))` is `nil`, and 2026-07-03 is the holiday.
+
+**The holiday stays and a substitute is added (two days).** The statute keeps the weekend date as a holiday and adds the next free weekday, so both dates answer `t`. These calendars include:
+
+- `AU` (Fair Work Act s. 115 with the state acts);
+- `JP` (振替休日);
+- `KR` (대체공휴일);
+- `RU` (ТК ст. 112);
+- `KZ`, `BG`, `LV`, `ZA`, `ZW`, `ZM`, `HK`.
+
+The per-calendar Sunday and weekend rules are in [docs/AUTHORITIES.md](docs/AUTHORITIES.md).
+
+**Names.** Since 0.38.0 a starter can name its substitute days (`define-calendar :substitute-name`, `calendar-substitute-name`):
+
+| Calendar | Name of the observed / substitute day | Why |
+|---|---|---|
+| `USFED` | `"Independence Day (observed)"` | OPM: the in-lieu day is the holiday "for pay and leave purposes"; Python `holidays` uses the same label |
+| `AU` | `"Christmas Day (substitute day)"` | the PM&C public-holiday data set (data.gov.au) |
+| `GB` | `"Christmas Day"` | gov.uk `bank-holidays.json` titles the day so; only its `notes` field says "Substitute day" |
+| `JP`, `KR`, `HK`, `ZA`, `CN`, `TW`, `VN`, … | the statute's own word (`振替休日`, `대체공휴일`, `The day following …`, `（补休）`, …) | written into those starters' rules and passes |
+| any other | the holiday's name | no authority labels the day |
+
+`NYSE` keeps the holiday's name.
+
+The other items of #12 were fixed earlier:
+- `CN` names every day off after its festival (`中秋节`, `国庆节`, `国庆节（调休）`) since 0.24.0;
+- `country-calendar "DE"` is the starter since 0.31.0, and its bank days (Heiliger Abend, Silvester) come in only with `:types '(:public :bank)` since 0.37.0.
+
 ### Caching and threads
 
 Since 0.9.1 a `rule-calendar` builds each year's holiday map once and keeps it, together with its working-day and suppressed-date sets, in a per-instance synchronized table (`:synchronized t` on SBCL). Queries from several threads are safe. As an example, `holidays-between` over 41 years of KR now takes milliseconds; it used to take about a minute. A `setf` of any rule-calendar accessor (`calendar-rules`, `calendar-transfers`, `calendar-working-days`, `calendar-suppressed-dates`, `calendar-weekend-days`, the sandwich and furikae settings, `calendar-observance-pass`) drops the cache. After changing a rule struct or a list in place, call `(clear-calendar-cache cal)`.
