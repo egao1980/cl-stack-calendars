@@ -94,3 +94,5 @@ Middle East and North Africa holidays live in `<cc>-holiday-gold.sexp` too, buil
 | `LV` | 2000–2040 (gaps 2018, 2023): the holiday law and amendments, Darba likums art. 133(4) and every Cabinet transfer order 2001–2026 (likumi.lv); `lv-secondary` 2018, 2023 (festival closing days). Python `holidays` agrees (it leaves out the closing Sundays). |
 | `EE` | 2000–2040, `:confidence :secondary`: PTS § 2 as search results quote it. Python `holidays` agrees. |
 | `LT` | 2000–2040, `:confidence :secondary`: Darbo kodeksas art. 162 / 123 as search results quote it. Python `holidays` agrees. |
+| `SE` | 2000–2040: Lag (1989:253), SFS 2004:1320, prop. 2004/05:23 (riksdagen.se). Python `holidays` agrees (without its optional Sundays). |
+| `FI` | 2005–2040: kirkkolaki 1054/1993 and 652/2023, laki 388/1937, vuosilomalaki 162/2005 (Finlex open data); `fi-secondary` 2000–2004. Python `holidays` has no pääsiäislauantai. |
